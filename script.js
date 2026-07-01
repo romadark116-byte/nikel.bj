@@ -8,7 +8,7 @@
 // ============================================
 // VARIABLES GLOBALES
 // ============================================
-let products = [];  // Sera rempli par Supabase
+let products = [];
 let cart = JSON.parse(localStorage.getItem('nikel_cart')) || [];
 let wishlist = JSON.parse(localStorage.getItem('nikel_wishlist')) || [];
 
@@ -18,7 +18,6 @@ let wishlist = JSON.parse(localStorage.getItem('nikel_wishlist')) || [];
 async function loadProductsFromSupabase() {
     console.log('🔄 Chargement des produits depuis Supabase...');
     
-    // Vérifier que Supabase est disponible
     if (!window.supabaseClient) {
         console.error('❌ Supabase non initialisé !');
         return false;
@@ -40,7 +39,6 @@ async function loadProductsFromSupabase() {
             return false;
         }
         
-        // Convertir les données Supabase au format attendu par le site
         products = data.map(p => ({
             id: p.id,
             name: p.nom,
@@ -50,8 +48,9 @@ async function loadProductsFromSupabase() {
             category: p.categorie || 'non-classé',
             badge: p.promo > 0 ? 'soldes' : null,
             description: p.description || '',
-            rating: 4.5 + (Math.random() * 0.5 - 0.25), // Note aléatoire entre 4.25 et 4.75
-            stock: p.stock || 0
+            rating: 4.5 + (Math.random() * 0.5 - 0.25),
+            stock: p.stock || 0,
+            promo: p.promo || 0
         }));
         
         console.log(`✅ ${products.length} produits chargés depuis Supabase`);
@@ -117,26 +116,6 @@ function handleSearch() {
     }
 }
 
-function initSearchFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    const query = params.get('search');
-    
-    if (query && products.length > 0) {
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            searchInput.value = query;
-        }
-        const results = products.filter(p => 
-            p.name.toLowerCase().includes(query.toLowerCase()) ||
-            p.category.toLowerCase().includes(query.toLowerCase()) ||
-            (p.description && p.description.toLowerCase().includes(query.toLowerCase()))
-        );
-        renderProducts(results, 'shopGrid');
-        return true;
-    }
-    return false;
-}
-
 // ============================================
 // 4. AFFICHAGE DES PRODUITS
 // ============================================
@@ -146,8 +125,8 @@ function renderProducts(productsList, containerId) {
     
     if (!productsList || productsList.length === 0) {
         container.innerHTML = `
-            <div class="empty-state" style="grid-column:1/-1;">
-                <i class="fas fa-search"></i>
+            <div class="empty-state" style="grid-column:1/-1;text-align:center;padding:60px 20px;">
+                <i class="fas fa-search" style="font-size:3rem;color:var(--gray);"></i>
                 <h3>Aucun produit trouvé</h3>
                 <p>Essayez de modifier vos filtres ou votre recherche.</p>
                 <a href="boutique.html" class="btn btn-primary" style="margin-top:16px;">
@@ -159,14 +138,12 @@ function renderProducts(productsList, containerId) {
     }
     
     container.innerHTML = productsList.map(product => {
-        // Calcul du pourcentage de réduction
-        let discountPercent = 0;
-        if (product.oldPrice && product.oldPrice > product.price) {
-            discountPercent = Math.round((1 - product.price / product.oldPrice) * 100);
-        }
+        const discountPercent = product.oldPrice && product.oldPrice > product.price 
+            ? Math.round((1 - product.price / product.oldPrice) * 100) 
+            : 0;
         
         const badgeHtml = product.badge === 'soldes' && discountPercent > 0
-            ? `<span class="badge-soldes">-${discountPercent}%</span>`
+            ? `<span class="badge-soldes" style="position:absolute;top:12px;right:12px;background:#e74c3c;color:white;padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:bold;">-${discountPercent}%</span>`
             : product.badge === 'new' 
             ? `<span class="badge-new">Nouveau</span>`
             : '';
@@ -177,8 +154,8 @@ function renderProducts(productsList, containerId) {
         
         return `
             <div class="product-card" data-id="${product.id}" data-category="${product.category}">
-                <div class="product-img">
-                    <img src="${product.image}" alt="${product.name}" loading="lazy" onerror="this.src='https://picsum.photos/seed/${product.id}/400/400'">
+                <div class="product-img" style="position:relative;overflow:hidden;height:300px;background:#f5f5f5;border-radius:12px 12px 0 0;">
+                    <img src="${product.image}" alt="${product.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s;" onerror="this.src='https://picsum.photos/seed/${product.id}/400/400'">
                     ${badgeHtml}
                     <div class="product-actions" style="position:absolute; bottom:12px; right:12px; display:flex; gap:8px; opacity:0; transition:opacity 0.3s;">
                         <button onclick="quickView('${product.id}')" class="btn-quickview" style="background:rgba(255,255,255,0.9); border:none; border-radius:50%; width:40px; height:40px; cursor:pointer; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
@@ -189,22 +166,22 @@ function renderProducts(productsList, containerId) {
                         </button>
                     </div>
                 </div>
-                <div class="product-info">
-                    <h3 class="product-name">${product.name}</h3>
+                <div class="product-info" style="padding:16px;">
+                    <h3 class="product-name" style="margin:0 0 8px 0;font-size:1.1rem;">${product.name}</h3>
                     <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
                         <span style="color:var(--gold); font-size:0.85rem;">${'★'.repeat(Math.floor(product.rating || 4.5))}${(product.rating || 4.5) % 1 >= 0.5 ? '½' : ''}</span>
                         <span style="color:var(--gray); font-size:0.8rem;">(${(product.rating || 4.5).toFixed(1)})</span>
                     </div>
-                    <p class="product-price">
-                        ${product.price.toFixed(2)} €
+                    <p class="product-price" style="display:flex;gap:10px;align-items:center;margin:8px 0;">
+                        <span style="font-size:1.2rem;font-weight:700;color:var(--gold);">${product.price.toFixed(2)} €</span>
                         ${oldPriceHtml}
                     </p>
                     ${product.stock > 0 ? `
-                        <button class="btn-add-cart" data-id="${product.id}" data-name="${product.name}" data-price="${product.price}">
+                        <button class="btn-add-cart" data-id="${product.id}" data-name="${product.name}" data-price="${product.price}" style="background:linear-gradient(135deg, var(--gold), var(--accent-dark));border:none;padding:10px 20px;border-radius:50px;color:white;font-weight:600;cursor:pointer;transition:all 0.3s;width:100%;">
                             <i class="fas fa-plus"></i> Ajouter au panier
                         </button>
                     ` : `
-                        <button class="btn-add-cart" style="background:#e74c3c; cursor:not-allowed;" disabled>
+                        <button style="width:100%;background:#e74c3c;border:none;padding:10px 20px;border-radius:50px;color:white;font-weight:600;cursor:not-allowed;">
                             <i class="fas fa-times"></i> Rupture de stock
                         </button>
                     `}
@@ -225,7 +202,7 @@ function renderProducts(productsList, containerId) {
             this.style.background = 'var(--gold)';
             setTimeout(() => {
                 this.innerHTML = '<i class="fas fa-plus"></i> Ajouter au panier';
-                this.style.background = '';
+                this.style.background = 'linear-gradient(135deg, var(--gold), var(--accent-dark))';
             }, 1500);
         });
     });
@@ -313,11 +290,11 @@ function renderCartItems() {
     
     if (cart.length === 0) {
         container.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-shopping-bag"></i>
+            <div class="empty-state" style="text-align:center;padding:60px 20px;">
+                <i class="fas fa-shopping-bag" style="font-size:3rem;color:var(--gray);"></i>
                 <h3>Votre panier est vide</h3>
                 <p>Découvrez nos produits et faites-vous plaisir !</p>
-                <a href="boutique.html" class="btn btn-primary" style="margin-top:16px;">
+                <a href="boutique.html" class="btn btn-primary" style="margin-top:16px;display:inline-block;padding:12px 30px;background:var(--gold);color:white;border-radius:50px;text-decoration:none;font-weight:600;">
                     <i class="fas fa-arrow-right"></i> Explorer la boutique
                 </a>
             </div>
@@ -326,27 +303,26 @@ function renderCartItems() {
     }
     
     container.innerHTML = cart.map(item => {
-        // Trouver l'image du produit
         const product = products.find(p => p.id === item.id);
         const imageUrl = product ? product.image : 'https://picsum.photos/seed/' + item.id + '/100/100';
         
         return `
-            <div class="cart-item" data-id="${item.id}">
-                <img src="${imageUrl}" alt="${item.name}" onerror="this.src='https://picsum.photos/seed/${item.id}/100/100'">
-                <div class="cart-item-info">
-                    <h4>${item.name}</h4>
-                    <p>${(item.price * item.quantity).toFixed(2)} €</p>
-                    <p style="font-size:0.8rem; color:var(--gray);">${item.price.toFixed(2)} € / unité</p>
+            <div class="cart-item" data-id="${item.id}" style="display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--light-gray);">
+                <img src="${imageUrl}" alt="${item.name}" style="width:80px;height:80px;object-fit:cover;border-radius:8px;" onerror="this.src='https://picsum.photos/seed/${item.id}/100/100'">
+                <div class="cart-item-info" style="flex:1;">
+                    <h4 style="margin:0 0 4px 0;">${item.name}</h4>
+                    <p style="margin:0;font-weight:600;color:var(--gold);">${(item.price * item.quantity).toFixed(2)} €</p>
+                    <p style="margin:0;font-size:0.8rem;color:var(--gray);">${item.price.toFixed(2)} € / unité</p>
                 </div>
-                <div class="cart-item-actions">
-                    <button onclick="updateQuantity('${item.id}', -1)" aria-label="Diminuer la quantité">
+                <div class="cart-item-actions" style="display:flex;align-items:center;gap:8px;">
+                    <button onclick="updateQuantity('${item.id}', -1)" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--light-gray);background:transparent;cursor:pointer;">
                         <i class="fas fa-minus"></i>
                     </button>
-                    <span style="font-weight:600; min-width:24px; text-align:center;">${item.quantity}</span>
-                    <button onclick="updateQuantity('${item.id}', 1)" aria-label="Augmenter la quantité">
+                    <span style="font-weight:600;min-width:24px;text-align:center;">${item.quantity}</span>
+                    <button onclick="updateQuantity('${item.id}', 1)" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--light-gray);background:transparent;cursor:pointer;">
                         <i class="fas fa-plus"></i>
                     </button>
-                    <button class="remove-btn" onclick="removeFromCart('${item.id}')" aria-label="Supprimer l'article">
+                    <button onclick="removeFromCart('${item.id}')" style="width:32px;height:32px;border-radius:50%;border:1px solid #e74c3c;background:transparent;color:#e74c3c;cursor:pointer;">
                         <i class="fas fa-trash-alt"></i>
                     </button>
                 </div>
@@ -383,8 +359,8 @@ function renderCheckoutItems() {
             <div style="display:flex; align-items:center; gap:16px; padding:12px 0; border-bottom:1px solid var(--light-gray);">
                 <img src="${imageUrl}" alt="${item.name}" style="width:50px; height:50px; border-radius:8px; object-fit:cover;" onerror="this.src='https://picsum.photos/seed/${item.id}/50/50'">
                 <div style="flex:1;">
-                    <p style="font-weight:600; font-size:0.95rem;">${item.name}</p>
-                    <p style="font-size:0.85rem; color:var(--gray);">Quantité : ${item.quantity}</p>
+                    <p style="font-weight:600; font-size:0.95rem;margin:0;">${item.name}</p>
+                    <p style="font-size:0.85rem; color:var(--gray);margin:0;">Quantité : ${item.quantity}</p>
                 </div>
                 <span style="font-weight:700; color:var(--accent-dark);">${(item.price * item.quantity).toFixed(2)} €</span>
             </div>
@@ -679,11 +655,10 @@ async function initSite() {
     
     if (!loaded) {
         console.warn('⚠️ Utilisation de données de secours');
-        // Données de secours si Supabase échoue
         products = [
-            { id: '1', name: 'NIKEL Essential', price: 89.00, oldPrice: null, image: 'https://via.placeholder.com/400x400/1a1a1a/FFFFFF?text=NIKEL', category: 'vêtements', badge: null, description: 'T-shirt premium', rating: 4.5, stock: 25 },
-            { id: '2', name: 'NIKEL Sport', price: 79.00, oldPrice: 99.00, image: 'https://via.placeholder.com/400x400/1a1a1a/FFFFFF?text=NIKEL', category: 'sport', badge: 'soldes', description: 'T-shirt technique', rating: 4.7, stock: 15 },
-            { id: '3', name: 'NIKEL Luxe', price: 149.00, oldPrice: null, image: 'https://via.placeholder.com/400x400/1a1a1a/FFFFFF?text=NIKEL', category: 'accessoires', badge: null, description: 'Blazer élégant', rating: 4.8, stock: 10 }
+            { id: '1', name: 'NIKEL Essential', price: 89.00, oldPrice: null, image: 'https://via.placeholder.com/400x400/1a1a1a/FFFFFF?text=NIKEL', category: 'vêtements', badge: null, description: 'T-shirt premium', rating: 4.5, stock: 25, promo: 0 },
+            { id: '2', name: 'NIKEL Sport', price: 79.00, oldPrice: 99.00, image: 'https://via.placeholder.com/400x400/1a1a1a/FFFFFF?text=NIKEL', category: 'sport', badge: 'soldes', description: 'T-shirt technique', rating: 4.7, stock: 15, promo: 20 },
+            { id: '3', name: 'NIKEL Luxe', price: 149.00, oldPrice: null, image: 'https://via.placeholder.com/400x400/1a1a1a/FFFFFF?text=NIKEL', category: 'accessoires', badge: null, description: 'Blazer élégant', rating: 4.8, stock: 10, promo: 0 }
         ];
     }
     
@@ -695,8 +670,20 @@ async function initSite() {
     
     // Page boutique
     if (document.getElementById('shopGrid')) {
-        const searchApplied = initSearchFromURL();
-        if (!searchApplied) {
+        const params = new URLSearchParams(window.location.search);
+        const query = params.get('search');
+        if (query) {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.value = query;
+            }
+            const results = products.filter(p => 
+                p.name.toLowerCase().includes(query.toLowerCase()) ||
+                p.category.toLowerCase().includes(query.toLowerCase()) ||
+                (p.description && p.description.toLowerCase().includes(query.toLowerCase()))
+            );
+            renderProducts(results, 'shopGrid');
+        } else {
             initFilters();
         }
     }
