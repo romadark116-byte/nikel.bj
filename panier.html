@@ -228,8 +228,8 @@
                     <div style="flex:1;">
                         <h4 style="margin:0 0 4px 0;font-size:1.05rem;">${item.name}</h4>
                         <p style="margin:0 0 4px 0;color:#999;font-size:0.85rem;">${item.category || 'Collection'}</p>
-                        <p style="margin:0;font-weight:600;color:var(--gold);font-size:1.1rem;">${(item.price * item.quantity).toFixed(2)} €</p>
-                        <p style="margin:0;font-size:0.8rem;color:var(--gray);">${item.price.toFixed(2)} € / unité</p>
+                        <p style="margin:0;font-weight:600;color:var(--gold);font-size:1.1rem;">${(item.price * item.quantity).toFixed(2)} FCFA</p>
+                        <p style="margin:0;font-size:0.8rem;color:var(--gray);">${item.price.toFixed(2)} FCFA / unité</p>
                     </div>
                     <div style="display:flex;align-items:center;gap:8px;">
                         <button onclick="updateQuantity('${item.id}', -1)" style="width:36px;height:36px;border-radius:50%;border:1px solid var(--light-gray);background:transparent;cursor:pointer;transition:all 0.3s;font-size:0.9rem;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--light-gray)'">
