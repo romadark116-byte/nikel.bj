@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIKEL · Boutique en ligne</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="animations.css">
+    <link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-grid">
+            <div class="logo">
+                <a href="index.html"><i class="fas fa-crown"></i> NIKEL</a>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="index.html" class="active">Accueil</a></li>
+                    <li><a href="boutique.html">Boutique</a></li>
+                    <li><a href="apropos.html">À propos</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <!-- BARRE DE RECHERCHE -->
+                <div class="header-search" style="display:flex; align-items:center; gap:8px;">
+                    <input type="text" 
+                           id="searchInput" 
+                           placeholder="Rechercher..." 
+                           style="padding:8px 16px; border:2px solid var(--light-gray); border-radius:50px; font-size:0.9rem; outline:none; transition:all 0.3s; width:160px; background:var(--off-white);"
+                           onfocus="this.style.width='220px'; this.style.borderColor='var(--gold)'" 
+                           onblur="this.style.width='160px'; this.style.borderColor='var(--light-gray)'">
+                    <button onclick="handleSearch()" style="background:linear-gradient(135deg, var(--gold), var(--accent-dark)); border:none; border-radius:50%; width:38px; height:38px; color:white; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; justify-content:center;">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <a href="panier.html" class="panier-icon">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="badge">0</span>
+                </a>
+                <a href="login.html" style="color:var(--dark-gray); transition:color 0.3s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--dark-gray)'">
+                    <i class="fas fa-user" style="font-size:1.2rem;"></i>
+                </a>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="page-header">
+        <div class="container">
+            <h1>Créer un compte</h1>
+            <p>Rejoignez la communauté NIKEL</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container" style="max-width:480px; margin:0 auto;">
+            <div style="background:var(--white); padding:40px; border-radius:16px; box-shadow:var(--shadow);">
+                <div style="text-align:center; margin-bottom:30px;">
+                    <i class="fas fa-user-plus" style="font-size:3rem; color:var(--gold);"></i>
+                    <p style="color:var(--gray); margin-top:8px;">Créez votre compte en 2 minutes</p>
+                </div>
+                
+                <form id="registerForm">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                        <div class="form-group">
+                            <label>Prénom</label>
+                            <input type="text" required placeholder="Jean">
+                        </div>
+                        <div class="form-group">
+                            <label>Nom</label>
+                            <input type="text" required placeholder="Dupont">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope" style="color:var(--gold);"></i> Email</label>
+                        <input type="email" required placeholder="votre@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-phone" style="color:var(--gold);"></i> Téléphone</label>
+                        <input type="tel" placeholder="06 12 34 56 78">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-lock" style="color:var(--gold);"></i> Mot de passe</label>
+                        <input type="password" required placeholder="••••••••" minlength="8">
+                        <p style="font-size:0.8rem; color:var(--gray); margin-top:4px;">
+                            <i class="fas fa-info-circle"></i> Minimum 8 caractères
+                        </p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-check-circle" style="color:var(--gold);"></i> Confirmer le mot de passe</label>
+                        <input type="password" required placeholder="••••••••" minlength="8">
+                    </div>
+                    
+                    <div style="margin:16px 0;">
+                        <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                            <input type="checkbox" required>
+                            <span style="font-size:0.9rem; color:var(--gray);">
+                                J'accepte les 
+                                <a href="#" style="color:var(--gold);">conditions générales</a> 
+                                et la 
+                                <a href="#" style="color:var(--gold);">politique de confidentialité</a>
+                            </span>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">
+                        <i class="fas fa-user-plus"></i> Créer mon compte
+                    </button>
+                    
+                    <p style="text-align:center; margin-top:20px; color:var(--gray);">
+                        Déjà un compte ? 
+                        <a href="login.html" style="color:var(--gold); font-weight:600;">
+                            Se connecter <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </p>
+                </form>
+            </div>
+            
+            <!-- Avantages de l'inscription -->
+            <div style="background:var(--white); padding:24px; border-radius:16px; box-shadow:var(--shadow); margin-top:24px;">
+                <h4 style="font-family:'Playfair Display',serif; text-align:center; margin-bottom:16px;">
+                    <i class="fas fa-gift" style="color:var(--gold);"></i> Avantages membres
+                </h4>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div style="display:flex; align-items:center; gap:10px; padding:8px; background:var(--off-white); border-radius:8px;">
+                        <i class="fas fa-tags" style="color:var(--gold);"></i>
+                        <span style="font-size:0.9rem;">Offres exclusives</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; padding:8px; background:var(--off-white); border-radius:8px;">
+                        <i class="fas fa-gift" style="color:var(--gold);"></i>
+                        <span style="font-size:0.9rem;">Carte cadeau</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; padding:8px; background:var(--off-white); border-radius:8px;">
+                        <i class="fas fa-undo-alt" style="color:var(--gold);"></i>
+                        <span style="font-size:0.9rem;">Retours offerts</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; padding:8px; background:var(--off-white); border-radius:8px;">
+                        <i class="fas fa-star" style="color:var(--gold);"></i>
+                        <span style="font-size:0.9rem;">Programme fidélité</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <h4><i class="fas fa-crown"></i> NIKEL</h4>
+                <p>Le style qui vous ressemble.</p>
+                <div class="socials">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h5>Liens utiles</h5>
+                <ul>
+                    <li><a href="apropos.html">À propos</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="panier.html">Panier</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5>Nos produits</h5>
+                <ul>
+                    <li><a href="boutique.html">Nouveautés</a></li>
+                    <li><a href="boutique.html">Soldes</a></li>
+                    <li><a href="boutique.html">Accessoires</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5>Newsletter</h5>
+                <p>Recevez nos offres exclusives.</p>
+                <div class="newsletter">
+                    <input type="email" placeholder="votre@email.com">
+                    <button><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 NIKEL — Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

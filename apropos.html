@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>À propos - NIKEL</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="animations.css">
+    <link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-grid">
+            <div class="logo">
+                <a href="index.html"><i class="fas fa-crown"></i> NIKEL</a>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="boutique.html">Boutique</a></li>
+                    <li><a href="apropos.html" class="active">À propos</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <div class="header-search" style="display:flex; align-items:center; gap:8px;">
+                    <input type="text" 
+                           id="searchInput" 
+                           placeholder="Rechercher..." 
+                           style="padding:8px 16px; border:2px solid var(--light-gray); border-radius:50px; font-size:0.9rem; outline:none; transition:all 0.3s; width:160px; background:var(--off-white);"
+                           onfocus="this.style.width='220px'; this.style.borderColor='var(--gold)'" 
+                           onblur="this.style.width='160px'; this.style.borderColor='var(--light-gray)'">
+                    <button onclick="handleSearch()" style="background:linear-gradient(135deg, var(--gold), var(--accent-dark)); border:none; border-radius:50%; width:38px; height:38px; color:white; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; justify-content:center;">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <a href="panier.html" class="panier-icon">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="badge">0</span>
+                </a>
+                <a href="login.html" style="color:var(--dark-gray); transition:color 0.3s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--dark-gray)'">
+                    <i class="fas fa-user" style="font-size:1.2rem;"></i>
+                </a>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="page-header">
+        <div class="container">
+            <h1>Notre histoire</h1>
+            <p>L'excellence au service de votre style depuis 2020</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container about-grid">
+            <div class="about-text animate-fade-up">
+                <h2>Une passion pour l'élégance</h2>
+                <p>NIKEL est né d'une vision : créer des pièces intemporelles qui allient esthétique minimaliste et qualité irréprochable. Chaque article est pensé pour durer et sublimer votre quotidien.</p>
+                <p>Notre équipe de designers passionnés sélectionne avec soin les matériaux les plus nobles et collabore avec des artisans d'exception pour vous offrir le meilleur de l'artisanat moderne.</p>
+                <div class="about-stats">
+                    <div><strong>500+</strong><span>Clients satisfaits</span></div>
+                    <div><strong>98%</strong><span>Retours positifs</span></div>
+                    <div><strong>4.9★</strong><span>Avis Google</span></div>
+                </div>
+                <a href="boutique.html" class="btn btn-primary" style="margin-top:30px;">
+                    Découvrir nos produits <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="about-image animate-slide-left">
+                <img src="https://images.unsplash.com/photo-1523381294911-8d3cead13475?w=600&h=400&fit=crop" alt="Notre équipe">
+                <div style="margin-top:20px; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <img src="https://images.unsplash.com/photo-1560343090-f0409e92791a?w=300&h=200&fit=crop" alt="Atelier" style="border-radius:12px;">
+                    <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=300&h=200&fit=crop" alt="Création" style="border-radius:12px;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background:var(--white);">
+        <div class="container">
+            <h2 class="section-title">Nos valeurs <span class="highlight">•</span></h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <i class="fas fa-gem"></i>
+                    <h4>Qualité premium</h4>
+                    <p>Des matériaux nobles et une finition minutieuse pour des pièces qui traversent le temps.</p>
+                </div>
+                <div class="value-card">
+                    <i class="fas fa-leaf"></i>
+                    <h4>Éco-responsable</h4>
+                    <p>Des emballages 100% recyclés et une production locale pour réduire notre empreinte.</p>
+                </div>
+                <div class="value-card">
+                    <i class="fas fa-heart"></i>
+                    <h4>Passion créative</h4>
+                    <p>L'amour du beau dans chaque détail, pour des créations qui racontent une histoire.</p>
+                </div>
+                <div class="value-card">
+                    <i class="fas fa-handshake"></i>
+                    <h4>Relation client</h4>
+                    <p>Une écoute attentive et un service personnalisé pour vous accompagner à chaque étape.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Ils nous <span class="highlight">aiment</span></h2>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:30px;">
+                <div style="background:var(--white); padding:30px; border-radius:16px; box-shadow:var(--shadow);">
+                    <div style="color:var(--gold); font-size:1.2rem; margin-bottom:12px;">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p style="font-style:italic; color:var(--gray);">"Des produits d'une qualité exceptionnelle. Le service client est à la hauteur de la marque !"</p>
+                    <p style="font-weight:600; margin-top:12px;">— Sophie M.</p>
+                </div>
+                <div style="background:var(--white); padding:30px; border-radius:16px; box-shadow:var(--shadow);">
+                    <div style="color:var(--gold); font-size:1.2rem; margin-bottom:12px;">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p style="font-style:italic; color:var(--gray);">"La livraison est rapide et les emballages sont magnifiques. Je suis fan !"</p>
+                    <p style="font-weight:600; margin-top:12px;">— Thomas L.</p>
+                </div>
+                <div style="background:var(--white); padding:30px; border-radius:16px; box-shadow:var(--shadow);">
+                    <div style="color:var(--gold); font-size:1.2rem; margin-bottom:12px;">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p style="font-style:italic; color:var(--gray);">"Une marque qui allie style et éthique. Je recommande les yeux fermés !"</p>
+                    <p style="font-weight:600; margin-top:12px;">— Camille R.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <h4><i class="fas fa-crown"></i> NIKEL</h4>
+                <p>Le style qui vous ressemble.</p>
+                <div class="socials">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h5>Liens utiles</h5>
+                <ul>
+                    <li><a href="apropos.html">À propos</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="panier.html">Panier</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5>Nos produits</h5>
+                <ul>
+                    <li><a href="boutique.html">Nouveautés</a></li>
+                    <li><a href="boutique.html">Soldes</a></li>
+                    <li><a href="boutique.html">Accessoires</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5>Newsletter</h5>
+                <p>Recevez nos offres exclusives.</p>
+                <div class="newsletter">
+                    <input type="email" placeholder="votre@email.com">
+                    <button><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 NIKEL — Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
