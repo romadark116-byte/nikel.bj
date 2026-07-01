@@ -9,18 +9,6 @@
     <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-    <!-- Supabase SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<!-- Configuration Supabase -->
-<script>
-    // À remplacer par vos vraies clés depuis votre projet Supabase
-    const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
-    
-    // Initialisation
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-</script>
 <body>
     <header class="header">
         <div class="container header-grid">
@@ -152,6 +140,30 @@
         </div>
     </footer>
 
+    <!-- ========================================== -->
+    <!-- TOUS LES SCRIPTS ICI (À LA FIN DU BODY)    -->
+    <!-- ========================================== -->
+
+    <!-- 1. Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- 2. Configuration Supabase -->
+    <script>
+        // 🔑 VOS CLÉS
+        const SUPABASE_URL = "https://eufsckavrclopkrlfwuv.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_HDi2M1-5Emn1kC54IxqV-Q_0q4FrKVY";
+        
+        // Initialisation
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // Rendre disponible dans tout le site
+        window.supabaseClient = supabaseClient;
+        
+        console.log('✅ Supabase initialisé avec succès !');
+    </script>
+
+    <!-- 3. Votre script principal -->
     <script src="script.js"></script>
+
 </body>
 </html>
