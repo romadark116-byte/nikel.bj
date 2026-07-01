@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baskets AERO - NIKEL</title>
+    <title>NIKEL · Détail du produit</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="animations.css">
     <link rel="stylesheet" href="responsive.css">
@@ -50,78 +50,10 @@
         </div>
     </header>
 
-    <section class="section">
+    <section class="section product-detail">
         <div class="container">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:50px; align-items:start;">
-                <!-- Galerie d'images -->
-                <div>
-                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&h=600&fit=crop" 
-                         alt="Baskets AERO" 
-                         style="width:100%; border-radius:16px; box-shadow:var(--shadow);">
-                    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:16px;">
-                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=150&h=150&fit=crop" style="border-radius:12px; cursor:pointer; border:2px solid var(--gold);">
-                        <img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=150&h=150&fit=crop" style="border-radius:12px; cursor:pointer;">
-                        <img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=150&h=150&fit=crop" style="border-radius:12px; cursor:pointer;">
-                        <img src="https://images.unsplash.com/photo-1556906781-9a412961c28c?w=150&h=150&fit=crop" style="border-radius:12px; cursor:pointer;">
-                    </div>
-                </div>
-
-                <!-- Infos produit -->
-                <div>
-                    <h1 style="font-family:'Playfair Display',serif; font-size:2.2rem;">Baskets AERO</h1>
-                    <p style="font-size:1.8rem; color:var(--accent-dark); font-weight:700; margin:8px 0;">
-                        89,00 € <span style="font-size:1rem; color:var(--gray); text-decoration:line-through; margin-left:12px;">112,00 €</span>
-                    </p>
-                    
-                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
-                        <span style="color:var(--gold); font-size:1.1rem;">★★★★★</span>
-                        <span style="color:var(--gray);">(4.8/5 · 127 avis)</span>
-                    </div>
-
-                    <p style="color:var(--gray); margin:16px 0; line-height:1.8;">
-                        Les baskets AERO allient confort et style urbain. Semelle en caoutchouc naturel, 
-                        tige en cuir pleine fleur. Parfaites pour un look décontracté chic.
-                    </p>
-                    
-                    <div style="margin:20px 0;">
-                        <p style="font-weight:600;">Couleur :</p>
-                        <div style="display:flex; gap:12px; margin-top:8px;">
-                            <span style="display:inline-block; width:32px; height:32px; border-radius:50%; background:#1a1a1a; border:2px solid var(--gold); cursor:pointer;"></span>
-                            <span style="display:inline-block; width:32px; height:32px; border-radius:50%; background:#c9a96e; border:2px solid transparent; cursor:pointer;"></span>
-                            <span style="display:inline-block; width:32px; height:32px; border-radius:50%; background:#ffffff; border:2px solid var(--light-gray); cursor:pointer;"></span>
-                        </div>
-                    </div>
-
-                    <div style="margin:20px 0;">
-                        <p style="font-weight:600;">Taille :</p>
-                        <div style="display:flex; gap:10px; margin-top:8px; flex-wrap:wrap;">
-                            <button style="padding:10px 18px; border:2px solid var(--light-gray); border-radius:8px; background:var(--white); cursor:pointer; font-weight:600;">36</button>
-                            <button style="padding:10px 18px; border:2px solid var(--gold); border-radius:8px; background:var(--white); cursor:pointer; font-weight:600; background:var(--gold); color:white;">37</button>
-                            <button style="padding:10px 18px; border:2px solid var(--light-gray); border-radius:8px; background:var(--white); cursor:pointer; font-weight:600;">38</button>
-                            <button style="padding:10px 18px; border:2px solid var(--light-gray); border-radius:8px; background:var(--white); cursor:pointer; font-weight:600;">39</button>
-                            <button style="padding:10px 18px; border:2px solid var(--light-gray); border-radius:8px; background:var(--white); cursor:pointer; font-weight:600;">40</button>
-                            <button style="padding:10px 18px; border:2px solid var(--light-gray); border-radius:8px; background:var(--white); cursor:pointer; font-weight:600;">41</button>
-                        </div>
-                    </div>
-
-                    <div style="display:flex; gap:16px; margin:30px 0;">
-                        <button class="btn btn-primary" style="flex:1; justify-content:center;" onclick="addToCart(1, 'Baskets AERO', 89.00)">
-                            <i class="fas fa-shopping-bag"></i> Ajouter au panier
-                        </button>
-                        <button style="width:56px; height:56px; border-radius:50%; border:2px solid var(--light-gray); background:var(--white); cursor:pointer; font-size:1.2rem; transition:all 0.3s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--light-gray)'">
-                            <i class="fas fa-heart"></i>
-                        </button>
-                    </div>
-
-                    <div style="border-top:1px solid var(--light-gray); padding-top:20px;">
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; color:var(--gray); font-size:0.9rem;">
-                            <span><i class="fas fa-truck" style="color:var(--gold); width:20px;"></i> Livraison offerte</span>
-                            <span><i class="fas fa-rotate-left" style="color:var(--gold); width:20px;"></i> Retour 30 jours</span>
-                            <span><i class="fas fa-lock" style="color:var(--gold); width:20px;"></i> Paiement sécurisé</span>
-                            <span><i class="fas fa-tag" style="color:var(--gold); width:20px;"></i> Garantie 2 ans</span>
-                        </div>
-                    </div>
-                </div>
+            <div id="productDetail" style="display:grid; grid-template-columns:1fr 1fr; gap:50px; align-items:start;">
+                <!-- Contenu chargé par JavaScript -->
             </div>
         </div>
     </section>
@@ -151,7 +83,6 @@
                 </div>
             </div>
 
-            <!-- Bouton pour ajouter un avis -->
             <div style="text-align:center; margin-top:30px;">
                 <button class="btn btn-secondary" onclick="showNotification('📝 Fonctionnalité d\'avis en développement')">
                     <i class="fas fa-pen"></i> Donnez votre avis
@@ -202,6 +133,369 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <!-- ========================================== -->
+    <!-- SCRIPTS                                    -->
+    <!-- ========================================== -->
+
+    <!-- 1️⃣ Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- 2️⃣ Configuration Supabase -->
+    <script>
+        // 🔑 TES CLÉS SUPABASE
+        const SUPABASE_URL = "https://eufsckavrclopkrlfwuv.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_HDi2M1-5Emn1kC54IxqV-Q_0q4FrKVY";
+        
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        window.supabaseClient = supabaseClient;
+        
+        console.log('✅ Supabase initialisé');
+    </script>
+
+    <!-- 3️⃣ Code produit -->
+    <script>
+        // ==========================================
+        // RÉCUPÉRER L'ID DEPUIS L'URL
+        // ==========================================
+        function getProductId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+
+        // ==========================================
+        // CHARGER LE PRODUIT
+        // ==========================================
+        async function loadProduct() {
+            const container = document.getElementById('productDetail');
+            const productId = getProductId();
+
+            if (!productId) {
+                container.innerHTML = `
+                    <div style="grid-column:1/-1;text-align:center;padding:60px 20px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size:3rem;color:#e74c3c;"></i>
+                        <h2>Produit non spécifié</h2>
+                        <p>Veuillez sélectionner un produit depuis la boutique.</p>
+                        <a href="boutique.html" class="btn btn-primary" style="margin-top:20px;">
+                            <i class="fas fa-arrow-left"></i> Retour à la boutique
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                console.log('🔄 Chargement du produit:', productId);
+
+                const { data, error } = await supabaseClient
+                    .from('produits')
+                    .select('*')
+                    .eq('id', productId)
+                    .single();
+
+                if (error) {
+                    console.error('❌ Erreur:', error);
+                    container.innerHTML = `
+                        <div style="grid-column:1/-1;text-align:center;padding:60px 20px;">
+                            <i class="fas fa-exclamation-triangle" style="font-size:3rem;color:#e74c3c;"></i>
+                            <h2>Produit non trouvé</h2>
+                            <p>Le produit que vous cherchez n'existe pas ou a été supprimé.</p>
+                            <a href="boutique.html" class="btn btn-primary" style="margin-top:20px;">
+                                <i class="fas fa-arrow-left"></i> Retour à la boutique
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                console.log('📦 Produit chargé:', data);
+                displayProduct(data);
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                container.innerHTML = `
+                    <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:red;">
+                        <i class="fas fa-exclamation-triangle" style="font-size:3rem;"></i>
+                        <h2>Erreur de chargement</h2>
+                        <p>Impossible de charger les informations du produit.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // ==========================================
+        // AFFICHER LE PRODUIT
+        // ==========================================
+        function displayProduct(product) {
+            const container = document.getElementById('productDetail');
+
+            const prixOriginal = product.prix_original && product.prix_original > product.prix ? product.prix_original : null;
+            const promo = product.promo || 0;
+            const imageUrl = product.image_url || 'https://via.placeholder.com/600x600/1a1a1a/FFFFFF?text=NIKEL';
+
+            container.innerHTML = `
+                <!-- IMAGE -->
+                <div style="position:relative;border-radius:12px;overflow:hidden;background:#f5f5f5;">
+                    <img src="${imageUrl}" 
+                         alt="${product.nom}"
+                         style="width:100%;height:500px;object-fit:cover;"
+                         onerror="this.src='https://via.placeholder.com/600x600/1a1a1a/FFFFFF?text=Image'">
+                    ${promo > 0 ? `<span style="position:absolute;top:16px;right:16px;background:#e74c3c;color:white;padding:8px 20px;border-radius:50px;font-weight:bold;font-size:1.1rem;">-${promo}%</span>` : ''}
+                    
+                    <!-- Miniatures -->
+                    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:16px;">
+                        <img src="${imageUrl}" 
+                             style="border-radius:12px; cursor:pointer; border:2px solid var(--gold); width:100%; height:80px; object-fit:cover;">
+                        <img src="${imageUrl}" 
+                             style="border-radius:12px; cursor:pointer; border:2px solid transparent; width:100%; height:80px; object-fit:cover;"
+                             onmouseover="this.style.borderColor='var(--gold)'" 
+                             onmouseout="this.style.borderColor='transparent'">
+                        <img src="${imageUrl}" 
+                             style="border-radius:12px; cursor:pointer; border:2px solid transparent; width:100%; height:80px; object-fit:cover;"
+                             onmouseover="this.style.borderColor='var(--gold)'" 
+                             onmouseout="this.style.borderColor='transparent'">
+                        <img src="${imageUrl}" 
+                             style="border-radius:12px; cursor:pointer; border:2px solid transparent; width:100%; height:80px; object-fit:cover;"
+                             onmouseover="this.style.borderColor='var(--gold)'" 
+                             onmouseout="this.style.borderColor='transparent'">
+                    </div>
+                </div>
+
+                <!-- INFOS -->
+                <div>
+                    <p style="color:#999;font-size:0.9rem;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px 0;">${product.categorie || 'Collection'}</p>
+                    <h1 style="font-family:'Playfair Display',serif; font-size:2.2rem;margin:0 0 12px 0;">${product.nom}</h1>
+                    
+                    <div style="display:flex;gap:16px;align-items:center;margin:16px 0 20px 0;">
+                        ${prixOriginal ? `<span style="text-decoration:line-through;color:#999;font-size:1.3rem;">${prixOriginal} €</span>` : ''}
+                        <span style="font-size:2rem;font-weight:700;color:var(--gold);">${product.prix} €</span>
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+                        <span style="color:var(--gold); font-size:1.1rem;">★★★★★</span>
+                        <span style="color:var(--gray);">(4.8/5 · 127 avis)</span>
+                    </div>
+
+                    <p style="color:var(--gray); margin:16px 0; line-height:1.8;">${product.description || 'Aucune description disponible pour ce produit.'}</p>
+                    
+                    ${product.stock > 0 ? `
+                        <div style="margin:16px 0;padding:12px 16px;background:#e8f5e9;border-radius:8px;">
+                            <p style="margin:0;color:#2e7d32;font-weight:600;">
+                                <i class="fas fa-check-circle"></i> En stock (${product.stock} disponibles)
+                            </p>
+                        </div>
+                    ` : `
+                        <div style="margin:16px 0;padding:12px 16px;background:#ffebee;border-radius:8px;">
+                            <p style="margin:0;color:#c62828;font-weight:600;">
+                                <i class="fas fa-times-circle"></i> Rupture de stock
+                            </p>
+                        </div>
+                    `}
+
+                    <div style="margin:20px 0;">
+                        <p style="font-weight:600;">Quantité :</p>
+                        <div style="display:flex; align-items:center; border:2px solid var(--light-gray); border-radius:50px; overflow:hidden; width:fit-content;">
+                            <button onclick="changeQuantity(-1)" style="border:none;background:transparent;padding:12px 20px;cursor:pointer;font-size:1.2rem;color:#666;transition:0.3s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='transparent'">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span id="quantityDisplay" style="padding:12px 24px;font-weight:600;font-size:1.1rem;min-width:50px;text-align:center;">1</span>
+                            <button onclick="changeQuantity(1)" style="border:none;background:transparent;padding:12px 20px;cursor:pointer;font-size:1.2rem;color:#666;transition:0.3s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='transparent'">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:16px; margin:30px 0;">
+                        <button onclick="addToCart()" style="flex:1;background:linear-gradient(135deg, var(--gold), var(--accent-dark));border:none;padding:16px 32px;border-radius:50px;color:white;font-weight:600;font-size:1rem;cursor:pointer;transition:all 0.3s;box-shadow:0 4px 15px rgba(201,168,76,0.3);" onmouseover="this.style.transform='scale(1.02)';this.style.boxShadow='0 6px 25px rgba(201,168,76,0.4)';" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 15px rgba(201,168,76,0.3)';">
+                            <i class="fas fa-shopping-bag"></i> Ajouter au panier
+                        </button>
+                        <button onclick="addToWishlist()" style="width:56px; height:56px; border-radius:50%; border:2px solid var(--light-gray); background:var(--white); cursor:pointer; font-size:1.2rem; transition:all 0.3s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--light-gray)';this.style.color='var(--dark-gray)'">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    </div>
+
+                    <div style="border-top:1px solid var(--light-gray); padding-top:20px;">
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; color:var(--gray); font-size:0.9rem;">
+                            <span><i class="fas fa-truck" style="color:var(--gold); width:20px;"></i> Livraison offerte</span>
+                            <span><i class="fas fa-rotate-left" style="color:var(--gold); width:20px;"></i> Retour 30 jours</span>
+                            <span><i class="fas fa-lock" style="color:var(--gold); width:20px;"></i> Paiement sécurisé</span>
+                            <span><i class="fas fa-tag" style="color:var(--gold); width:20px;"></i> Garantie 2 ans</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:20px;">
+                        <a href="boutique.html" style="color:var(--gold);text-decoration:none;font-size:0.95rem;transition:0.3s;" onmouseover="this.style.color='var(--accent-dark)'" onmouseout="this.style.color='var(--gold)'">
+                            <i class="fas fa-arrow-left"></i> Retour à la boutique
+                        </a>
+                    </div>
+                </div>
+            `;
+
+            // Stocker les infos du produit pour le panier
+            window.currentProduct = {
+                id: product.id,
+                name: product.nom,
+                price: product.prix,
+                image: product.image_url
+            };
+
+            // Réinitialiser la quantité
+            window.currentQuantity = 1;
+            document.getElementById('quantityDisplay').textContent = '1';
+        }
+
+        // ==========================================
+        // GESTION DE LA QUANTITÉ
+        // ==========================================
+        function changeQuantity(delta) {
+            const display = document.getElementById('quantityDisplay');
+            if (!display) return;
+            
+            let qty = parseInt(display.textContent) || 1;
+            qty = Math.max(1, qty + delta);
+            display.textContent = qty;
+            window.currentQuantity = qty;
+        }
+
+        // ==========================================
+        // AJOUTER AU PANIER
+        // ==========================================
+        function addToCart() {
+            const product = window.currentProduct;
+            const quantity = window.currentQuantity || 1;
+
+            if (!product) {
+                showNotification('❌ Produit non disponible', 'error');
+                return;
+            }
+
+            let cart = JSON.parse(localStorage.getItem('nikel_cart') || '[]');
+            
+            const existing = cart.find(item => item.id === product.id);
+            if (existing) {
+                existing.quantity += quantity;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
+                    quantity: quantity
+                });
+            }
+
+            localStorage.setItem('nikel_cart', JSON.stringify(cart));
+            updateBadge();
+            
+            showNotification(`✅ ${product.name} ajouté au panier ! (${quantity})`, 'success');
+        }
+
+        // ==========================================
+        // WISHLIST
+        // ==========================================
+        function addToWishlist() {
+            const product = window.currentProduct;
+            if (product) {
+                showNotification(`❤️ ${product.name} ajouté à vos favoris !`, 'success');
+            }
+        }
+
+        // ==========================================
+        // BADGE PANIER
+        // ==========================================
+        function updateBadge() {
+            const badge = document.querySelector('.badge');
+            if (!badge) return;
+            try {
+                const cart = JSON.parse(localStorage.getItem('nikel_cart') || '[]');
+                const total = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                badge.textContent = total;
+            } catch(e) {
+                badge.textContent = '0';
+            }
+        }
+
+        // ==========================================
+        // RECHERCHE
+        // ==========================================
+        function handleSearch() {
+            const input = document.getElementById('searchInput');
+            if (!input) return;
+            const query = input.value.trim();
+            if (query.length > 0) {
+                window.location.href = `boutique.html?search=${encodeURIComponent(query)}`;
+            }
+        }
+
+        // ==========================================
+        // NOTIFICATIONS
+        // ==========================================
+        function showNotification(message, type = 'info') {
+            const colors = {
+                success: 'var(--gold)',
+                error: '#e74c3c',
+                info: 'var(--primary)'
+            };
+
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: var(--primary);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 14px;
+                font-weight: 500;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+                z-index: 9999;
+                max-width: 400px;
+                border-left: 4px solid ${colors[type] || colors.info};
+                font-size: 0.95rem;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                animation: slideUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            `;
+            
+            toast.innerHTML = `
+                <span style="font-size:1.2rem;">
+                    ${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}
+                </span>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // ==========================================
+        // MENU MOBILE
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const nav = document.querySelector('.nav');
+            if (menuToggle && nav) {
+                menuToggle.addEventListener('click', function() {
+                    nav.classList.toggle('open');
+                });
+            }
+        });
+
+        // ==========================================
+        // LANCEMENT
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 NIKEL - Page produit');
+            loadProduct();
+            updateBadge();
+        });
+    </script>
+
 </body>
 </html>
