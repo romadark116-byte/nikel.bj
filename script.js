@@ -1,24 +1,30 @@
 // ==========================================
-// CHARGEMENT DES PRODUITS DEPUIS SUPABASE
+// SCRIPT PRINCIPAL - NIKEL BOUTIQUE
 // ==========================================
 
-// Fonction pour charger les produits vedettes
+// ==========================================
+// 1. CHARGEMENT DES PRODUITS
+// ==========================================
+
 async function loadFeaturedProducts() {
     const grid = document.getElementById('featuredGrid');
     if (!grid) {
-        console.log('⚠️ #featuredGrid non trouvé sur cette page');
+        console.log('⚠️ Grid non trouvée sur cette page');
         return;
     }
 
     // Vérifier que Supabase est disponible
     if (!window.supabaseClient) {
-        console.error('❌ Supabase non initialisé !');
-        grid.innerHTML = '<p style="text-align:center;color:red;padding:40px;">⚠️ Erreur de connexion à la base de données</p>';
+        console.error('❌ Supabase non initialisé');
+        grid.innerHTML = `
+            <div style="text-align:center;padding:40px;color:red;">
+                ❌ Erreur de connexion à la base de données
+            </div>`;
         return;
     }
 
     try {
-        console.log('🔄 Chargement des produits...');
+        console.log('🔄 Chargement des produits depuis Supabase...');
         
         const { data: products, error } = await window.supabaseClient
             .from('produits')
@@ -28,121 +34,97 @@ async function loadFeaturedProducts() {
 
         if (error) {
             console.error('❌ Erreur Supabase:', error);
-            grid.innerHTML = getDemoProducts();
+            showError(grid, error.message);
             return;
         }
 
-        console.log('📦 Produits chargés:', products);
+        console.log(`📦 ${products?.length || 0} produits trouvés`);
 
         if (!products || products.length === 0) {
-            console.log('⚠️ Aucun produit trouvé, affichage des démos');
-            grid.innerHTML = getDemoProducts();
+            grid.innerHTML = `
+                <div style="text-align:center;padding:40px;color:var(--dark-gray);grid-column:1/-1;">
+                    🛒 Aucun produit en vedette pour le moment
+                </div>`;
             return;
         }
 
-        // Générer les cartes produits
-        grid.innerHTML = products.map(product => {
-            const prixActuel = parseFloat(product.prix).toFixed(2);
-            const prixOriginal = product.prix_original ? parseFloat(product.prix_original).toFixed(2) : null;
-            const promo = product.promo || 0;
-
-            return `
-                <div class="product-card" data-id="${product.id}">
-                    <div class="product-image">
-                        <img src="${product.image_url || 'https://via.placeholder.com/300x400/1a1a1a/FFFFFF?text=NIKEL'}" 
-                             alt="${product.nom}"
-                             onerror="this.src='https://via.placeholder.com/300x400/1a1a1a/FFFFFF?text=Image+non+disponible'">
-                        ${promo > 0 ? `<span class="badge-promo">-${promo}%</span>` : ''}
-                    </div>
-                    <div class="product-info">
-                        <h3>${product.nom}</h3>
-                        <p class="product-category">${product.categorie || 'Collection'}</p>
-                        <div class="product-prices">
-                            ${prixOriginal ? 
-                                `<span class="price-old">${prixOriginal} €</span>` : 
-                                ''
-                            }
-                            <span class="price">${prixActuel} €</span>
-                        </div>
-                        <a href="produit.html?id=${product.id}" class="btn btn-outline">Voir le produit</a>
-                    </div>
-                </div>
-            `;
-        }).join('');
-
+        // Afficher les produits
+        grid.innerHTML = products.map(createProductCard).join('');
         console.log('✅ Produits affichés avec succès !');
 
-    } catch (error) {
-        console.error('❌ Erreur:', error);
-        grid.innerHTML = getDemoProducts();
+    } catch (err) {
+        console.error('❌ Erreur:', err);
+        showError(grid, 'Erreur de chargement des produits');
     }
 }
 
 // ==========================================
-// PRODUITS DE DÉMONSTRATION (si Supabase est vide)
+// 2. CRÉATION D'UNE CARTE PRODUIT
 // ==========================================
-function getDemoProducts() {
+
+function createProductCard(product) {
+    const prix = parseFloat(product.prix).toFixed(2);
+    const prixOriginal = product.prix_original ? parseFloat(product.prix_original).toFixed(2) : null;
+    const promo = product.promo || 0;
+    const imageUrl = product.image_url || 'https://via.placeholder.com/300x400/1a1a1a/FFFFFF?text=NIKEL';
+    const categorie = product.categorie || 'Collection';
+
     return `
-        <div class="product-card">
+        <div class="product-card" data-id="${product.id}">
             <div class="product-image">
-                <img src="https://via.placeholder.com/300x400/1a1a1a/FFFFFF?text=NIKEL+1" alt="Produit">
+                <img src="${imageUrl}" 
+                     alt="${product.nom}"
+                     loading="lazy"
+                     onerror="this.src='https://via.placeholder.com/300x400/1a1a1a/FFFFFF?text=Image'">
+                ${promo > 0 ? `<span class="badge-promo">-${promo}%</span>` : ''}
             </div>
             <div class="product-info">
-                <h3>NIKEL Essential</h3>
-                <p class="product-category">Collection Premium</p>
+                <h3>${escapeHtml(product.nom)}</h3>
+                <p class="product-category">${escapeHtml(categorie)}</p>
                 <div class="product-prices">
-                    <span class="price">89,00 €</span>
+                    ${prixOriginal ? `<span class="price-old">${prixOriginal} €</span>` : ''}
+                    <span class="price">${prix} €</span>
                 </div>
-                <a href="produit.html" class="btn btn-outline">Voir le produit</a>
-            </div>
-        </div>
-        <div class="product-card">
-            <div class="product-image">
-                <img src="https://via.placeholder.com/300x400/1a1a1a/FFFFFF?text=NIKEL+2" alt="Produit">
-                <span class="badge-promo">-20%</span>
-            </div>
-            <div class="product-info">
-                <h3>NIKEL Sport</h3>
-                <p class="product-category">Collection Sport</p>
-                <div class="product-prices">
-                    <span class="price-old">99,00 €</span>
-                    <span class="price">79,20 €</span>
-                </div>
-                <a href="produit.html" class="btn btn-outline">Voir le produit</a>
-            </div>
-        </div>
-        <div class="product-card">
-            <div class="product-image">
-                <img src="https://via.placeholder.com/300x400/1a1a1a/FFFFFF?text=NIKEL+3" alt="Produit">
-            </div>
-            <div class="product-info">
-                <h3>NIKEL Urban</h3>
-                <p class="product-category">Collection Urban</p>
-                <div class="product-prices">
-                    <span class="price">99,00 €</span>
-                </div>
-                <a href="produit.html" class="btn btn-outline">Voir le produit</a>
-            </div>
-        </div>
-        <div class="product-card">
-            <div class="product-image">
-                <img src="https://via.placeholder.com/300x400/1a1a1a/FFFFFF?text=NIKEL+4" alt="Produit">
-            </div>
-            <div class="product-info">
-                <h3>NIKEL Luxe</h3>
-                <p class="product-category">Collection Luxe</p>
-                <div class="product-prices">
-                    <span class="price">149,00 €</span>
-                </div>
-                <a href="produit.html" class="btn btn-outline">Voir le produit</a>
+                <a href="produit.html?id=${product.id}" class="btn btn-outline">
+                    Voir le produit
+                </a>
+                <button onclick="addToCart('${product.id}')" class="btn btn-primary" style="width:100%;margin-top:8px;">
+                    <i class="fas fa-shopping-bag"></i> Ajouter au panier
+                </button>
             </div>
         </div>
     `;
 }
 
 // ==========================================
-// GESTION DU PANIER
+// 3. GESTION DU PANIER
 // ==========================================
+
+function addToCart(productId) {
+    // Récupérer le panier existant
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    
+    // Vérifier si le produit existe déjà
+    const existing = cart.find(item => item.id === productId);
+    
+    if (existing) {
+        existing.quantity = (existing.quantity || 1) + 1;
+    } else {
+        cart.push({ id: productId, quantity: 1 });
+    }
+    
+    // Sauvegarder et mettre à jour
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartBadge();
+    
+    // Animation feedback
+    const badge = document.querySelector('.badge');
+    if (badge) {
+        badge.style.transform = 'scale(1.5)';
+        setTimeout(() => badge.style.transform = 'scale(1)', 300);
+    }
+}
+
 function updateCartBadge() {
     const badge = document.querySelector('.badge');
     if (!badge) return;
@@ -159,8 +141,9 @@ function updateCartBadge() {
 }
 
 // ==========================================
-// RECHERCHE
+// 4. RECHERCHE
 // ==========================================
+
 function handleSearch() {
     const input = document.getElementById('searchInput');
     if (!input) return;
@@ -171,9 +154,22 @@ function handleSearch() {
     }
 }
 
+// Barre de recherche - validation avec Entrée
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleSearch();
+            }
+        });
+    }
+});
+
 // ==========================================
-// MENU MOBILE
+// 5. MENU MOBILE
 // ==========================================
+
 function setupMobileMenu() {
     const menuToggle = document.getElementById('menuToggle');
     const nav = document.querySelector('.nav ul');
@@ -191,21 +187,45 @@ function setupMobileMenu() {
 }
 
 // ==========================================
-// INITIALISATION AU CHARGEMENT
+// 6. UTILITAIRES
 // ==========================================
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function showError(grid, message) {
+    grid.innerHTML = `
+        <div style="text-align:center;padding:40px;color:red;grid-column:1/-1;">
+            ❌ ${message}
+            <br><br>
+            <small style="color:var(--dark-gray);">
+                Vérifiez que votre table "produits" existe et contient des données
+            </small>
+        </div>`;
+}
+
+// ==========================================
+// 7. INITIALISATION
+// ==========================================
+
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 NIKEL - Site initialisé');
+    console.log('🚀 NIKEL - Boutique en ligne');
+    console.log('📅 ' + new Date().toLocaleString());
     
-    // 1. Charger les produits
+    // Charger les produits
     loadFeaturedProducts();
     
-    // 2. Mettre à jour le badge du panier
+    // Mettre à jour le badge du panier
     updateCartBadge();
     
-    // 3. Menu mobile
+    // Initialiser le menu mobile
     setupMobileMenu();
     
-    // 4. Écouter les changements du panier (localStorage)
+    // Écouter les changements du panier (autres onglets)
     window.addEventListener('storage', function(e) {
         if (e.key === 'cart') {
             updateCartBadge();
