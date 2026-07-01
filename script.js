@@ -793,23 +793,21 @@ const supabaseKey = SUPABASE_ANON_KEY;
 const supabaseClient = supabase;
 
 // ==========================================
-// CHARGEMENT DES PRODUITS DEPUIS SUPABASE
+// CHARGEMENT DES PRODUITS (version corrigée)
 // ==========================================
 async function loadFeaturedProducts() {
     const grid = document.getElementById('featuredGrid');
     if (!grid) return;
 
     try {
-        // Récupérer les produits depuis Supabase
         const { data: products, error } = await supabaseClient
-            .from('produits')  // Nom de votre table dans Supabase
+            .from('produits')
             .select('*')
-            .limit(4)  // 4 produits en vedette
+            .limit(4)
             .order('created_at', { ascending: false });
 
         if (error) {
-            console.error('Erreur Supabase:', error);
-            // Afficher des produits de démonstration en cas d'erreur
+            console.error('Erreur:', error);
             grid.innerHTML = getDemoProducts();
             return;
         }
@@ -819,26 +817,37 @@ async function loadFeaturedProducts() {
             return;
         }
 
-        // Générer le HTML des produits
-        grid.innerHTML = products.map(product => `
-            <div class="product-card" data-id="${product.id}">
-                <div class="product-image">
-                    <img src="${product.image_url || 'https://via.placeholder.com/300x400'}" alt="${product.nom}">
-                    ${product.promo ? `<span class="badge-promo">-${product.promo}%</span>` : ''}
-                </div>
-                <div class="product-info">
-                    <h3>${product.nom}</h3>
-                    <p class="product-category">${product.categorie || 'Collection'}</p>
-                    <div class="product-prices">
-                        ${product.promo ? 
-                            `<span class="price-old">${product.prix_original} €</span>` : ''
-                        }
-                        <span class="price">${product.prix_actuel || product.prix} €</span>
+        grid.innerHTML = products.map(product => {
+            // Calculer le prix actuel (si promo)
+            const prixActuel = product.promo > 0 ? 
+                product.prix : 
+                product.prix;
+
+            const prixOriginal = product.promo > 0 ? 
+                product.prix_original : 
+                null;
+
+            return `
+                <div class="product-card" data-id="${product.id}">
+                    <div class="product-image">
+                        <img src="${product.image_url || 'https://via.placeholder.com/300x400'}" alt="${product.nom}">
+                        ${product.promo > 0 ? `<span class="badge-promo">-${product.promo}%</span>` : ''}
                     </div>
-                    <a href="produit.html?id=${product.id}" class="btn btn-outline">Voir le produit</a>
+                    <div class="product-info">
+                        <h3>${product.nom}</h3>
+                        <p class="product-category">${product.categorie || 'Collection'}</p>
+                        <div class="product-prices">
+                            ${prixOriginal ? 
+                                `<span class="price-old">${prixOriginal} €</span>` : 
+                                ''
+                            }
+                            <span class="price">${prixActuel} €</span>
+                        </div>
+                        <a href="produit.html?id=${product.id}" class="btn btn-outline">Voir le produit</a>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
 
     } catch (error) {
         console.error('Erreur:', error);
