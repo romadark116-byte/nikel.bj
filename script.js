@@ -783,6 +783,189 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+// ==========================================
+// CONFIGURATION SUPABASE
+// ==========================================
+// Ces variables seront définies dans le HTML
+// On les récupère depuis le scope global
+const supabaseUrl = SUPABASE_URL;
+const supabaseKey = SUPABASE_ANON_KEY;
+const supabaseClient = supabase;
+
+// ==========================================
+// CHARGEMENT DES PRODUITS DEPUIS SUPABASE
+// ==========================================
+async function loadFeaturedProducts() {
+    const grid = document.getElementById('featuredGrid');
+    if (!grid) return;
+
+    try {
+        // Récupérer les produits depuis Supabase
+        const { data: products, error } = await supabaseClient
+            .from('produits')  // Nom de votre table dans Supabase
+            .select('*')
+            .limit(4)  // 4 produits en vedette
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error('Erreur Supabase:', error);
+            // Afficher des produits de démonstration en cas d'erreur
+            grid.innerHTML = getDemoProducts();
+            return;
+        }
+
+        if (!products || products.length === 0) {
+            grid.innerHTML = getDemoProducts();
+            return;
+        }
+
+        // Générer le HTML des produits
+        grid.innerHTML = products.map(product => `
+            <div class="product-card" data-id="${product.id}">
+                <div class="product-image">
+                    <img src="${product.image_url || 'https://via.placeholder.com/300x400'}" alt="${product.nom}">
+                    ${product.promo ? `<span class="badge-promo">-${product.promo}%</span>` : ''}
+                </div>
+                <div class="product-info">
+                    <h3>${product.nom}</h3>
+                    <p class="product-category">${product.categorie || 'Collection'}</p>
+                    <div class="product-prices">
+                        ${product.promo ? 
+                            `<span class="price-old">${product.prix_original} €</span>` : ''
+                        }
+                        <span class="price">${product.prix_actuel || product.prix} €</span>
+                    </div>
+                    <a href="produit.html?id=${product.id}" class="btn btn-outline">Voir le produit</a>
+                </div>
+            </div>
+        `).join('');
+
+    } catch (error) {
+        console.error('Erreur:', error);
+        grid.innerHTML = getDemoProducts();
+    }
+}
+
+// ==========================================
+// PRODUITS DE DÉMONSTRATION (si Supabase est vide)
+// ==========================================
+function getDemoProducts() {
+    return `
+        <div class="product-card">
+            <div class="product-image">
+                <img src="https://via.placeholder.com/300x400/1a1a1a/FFFFFF?text=Produit+1" alt="Produit">
+            </div>
+            <div class="product-info">
+                <h3>NIKEL Essential</h3>
+                <p class="product-category">Collection Premium</p>
+                <div class="product-prices">
+                    <span class="price">89,00 €</span>
+                </div>
+                <a href="produit.html" class="btn btn-outline">Voir le produit</a>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image">
+                <img src="https://via.placeholder.com/300x400/1a1a1a/FFFFFF?text=Produit+2" alt="Produit">
+                <span class="badge-promo">-20%</span>
+            </div>
+            <div class="product-info">
+                <h3>NIKEL Sport</h3>
+                <p class="product-category">Collection Sport</p>
+                <div class="product-prices">
+                    <span class="price-old">79,00 €</span>
+                    <span class="price">63,20 €</span>
+                </div>
+                <a href="produit.html" class="btn btn-outline">Voir le produit</a>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image">
+                <img src="https://via.placeholder.com/300x400/1a1a1a/FFFFFF?text=Produit+3" alt="Produit">
+            </div>
+            <div class="product-info">
+                <h3>NIKEL Urban</h3>
+                <p class="product-category">Collection Urban</p>
+                <div class="product-prices">
+                    <span class="price">99,00 €</span>
+                </div>
+                <a href="produit.html" class="btn btn-outline">Voir le produit</a>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image">
+                <img src="https://via.placeholder.com/300x400/1a1a1a/FFFFFF?text=Produit+4" alt="Produit">
+            </div>
+            <div class="product-info">
+                <h3>NIKEL Luxe</h3>
+                <p class="product-category">Collection Luxe</p>
+                <div class="product-prices">
+                    <span class="price">149,00 €</span>
+                </div>
+                <a href="produit.html" class="btn btn-outline">Voir le produit</a>
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================
+// GESTION DU PANIER
+// ==========================================
+function updateCartBadge() {
+    const badge = document.querySelector('.badge');
+    if (!badge) return;
+    
+    // Récupérer le panier depuis localStorage
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+    badge.textContent = total;
+    
+    // Cacher le badge si panier vide
+    badge.style.display = total > 0 ? 'flex' : 'none';
+}
+
+// ==========================================
+// RECHERCHE
+// ==========================================
+function handleSearch() {
+    const input = document.getElementById('searchInput');
+    if (!input) return;
+    
+    const query = input.value.trim();
+    if (query.length > 0) {
+        // Rediriger vers la boutique avec la recherche
+        window.location.href = `boutique.html?search=${encodeURIComponent(query)}`;
+    }
+}
+
+// ==========================================
+// INITIALISATION
+// ==========================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Charger les produits vedettes
+    loadFeaturedProducts();
+    
+    // Mettre à jour le badge du panier
+    updateCartBadge();
+    
+    // Écouter les changements du panier (pour mise à jour en temps réel)
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'cart') {
+            updateCartBadge();
+        }
+    });
+    
+    // Menu mobile
+    const menuToggle = document.getElementById('menuToggle');
+    if (menuToggle) {
+        menuToggle.addEventListener('click', function() {
+            const nav = document.querySelector('.nav');
+            if (nav) {
+                nav.classList.toggle('active');
+            }
+        });
+    }
+});
 
 // ============================================
 // 16. EXPOSER LES FONCTIONS GLOBALEMENT
