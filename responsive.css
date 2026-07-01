@@ -1,240 +1,166 @@
-/* ===== RESPONSIVE ===== */
+/* ==========================================
+   CORRECTIONS MOBILES POUR LA RECHERCHE
+   ========================================== */
 
-/* === Tablettes === */
-@media (max-width: 1024px) {
-    .hero-title {
-        font-size: 3.2rem;
-    }
-    
-    .about-grid {
-        gap: 40px;
-    }
-    
-    .footer-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 40px;
-    }
-    
-    .contact-wrapper {
-        gap: 40px;
-    }
-}
-
-/* === Mobiles === */
+/* Masquer la recherche desktop sur mobile */
 @media (max-width: 768px) {
-    .menu-toggle {
-        display: block;
+    .header-search {
+        display: none !important;
     }
     
-    .nav {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: rgba(255, 255, 255, 0.98);
-        backdrop-filter: blur(10px);
-        padding: 24px;
-        box-shadow: var(--shadow-hover);
-        transform: translateY(-10px);
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        border-bottom: 2px solid var(--gold);
+    /* Afficher la recherche mobile */
+    .header-search-mobile {
+        display: flex !important;
+        width: 100%;
+        padding: 8px 16px 12px 16px;
+        gap: 8px;
+        background: var(--white);
     }
     
-    .nav.open {
-        transform: translateY(0);
-        opacity: 1;
-        visibility: visible;
+    .header-search-mobile input {
+        flex: 1;
+        padding: 10px 16px !important;
+        border: 2px solid var(--light-gray) !important;
+        border-radius: 50px !important;
+        font-size: 0.9rem !important;
+        outline: none;
+        background: var(--off-white);
+        transition: border 0.3s;
+        width: 100% !important;
+        min-width: 0;
     }
     
-    .nav ul {
-        flex-direction: column;
-        gap: 18px;
-        align-items: stretch;
+    .header-search-mobile input:focus {
+        border-color: var(--gold) !important;
+    }
+    
+    .header-search-mobile button {
+        flex-shrink: 0;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: none;
+        background: linear-gradient(135deg, var(--gold), var(--accent-dark));
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+    }
+    
+    /* ==========================================
+       CORRECTIONS PRODUITS SUR MOBILE
+       ========================================== */
+    .product-grid {
+        gap: 12px !important;
+        padding: 0 12px;
+    }
+    
+    .product-card {
+        border-radius: 10px !important;
+    }
+    
+    .product-card .product-image {
+        height: 180px !important;
+        border-radius: 10px 10px 0 0 !important;
+    }
+    
+    .product-card .product-info {
+        padding: 10px 12px 14px 12px !important;
+    }
+    
+    .product-card .product-info h3 {
+        font-size: 0.85rem !important;
+        margin-bottom: 4px !important;
+    }
+    
+    .product-card .product-info .product-category {
+        font-size: 0.7rem !important;
+        margin-bottom: 4px !important;
+    }
+    
+    .product-card .product-info .price {
+        font-size: 0.9rem !important;
+    }
+    
+    .product-card .product-info .old-price {
+        font-size: 0.7rem !important;
+    }
+    
+    .product-card .btn-outline {
+        font-size: 0.7rem !important;
+        padding: 4px 12px !important;
+        margin-top: 6px !important;
+    }
+    
+    /* Badge promo plus petit sur mobile */
+    .product-card .badge-promo,
+    .product-card [style*="background:#e74c3c"] {
+        font-size: 0.6rem !important;
+        padding: 2px 8px !important;
+        top: 6px !important;
+        right: 6px !important;
+    }
+    
+    /* ==========================================
+       HERO SUR MOBILE
+       ========================================== */
+    .hero {
+        padding: 30px 16px !important;
+        min-height: 300px !important;
+    }
+    
+    .hero-title {
+        font-size: 1.8rem !important;
+    }
+    
+    .hero-sub {
+        font-size: 0.85rem !important;
+        margin: 8px 0 16px 0 !important;
+    }
+    
+    .btn-primary {
+        font-size: 0.8rem !important;
+        padding: 10px 20px !important;
+    }
+    
+    /* ==========================================
+       SECTION TITRES SUR MOBILE
+       ========================================== */
+    .section-title {
+        font-size: 1.4rem !important;
+        padding: 0 16px;
         text-align: center;
     }
-    
-    .nav a {
-        font-size: 1.05rem;
-        padding: 8px;
-        display: block;
-    }
-    
-    .hero {
-        min-height: 450px;
-    }
-    
-    .hero-title {
-        font-size: 2.6rem;
-    }
-    
-    .hero-sub {
-        font-size: 1rem;
-    }
-    
-    .section {
-        padding: 50px 0;
-    }
-    
-    .section-title {
-        font-size: 2rem;
-    }
-    
-    .product-grid {
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: 20px;
-    }
-    
-    .about-grid {
-        grid-template-columns: 1fr;
-        gap: 30px;
-    }
-    
-    .about-stats {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
-    }
-    
-    .contact-wrapper {
-        grid-template-columns: 1fr;
-        gap: 30px;
-    }
-    
-    .contact-form {
-        padding: 28px;
-    }
-    
-    .cart-container {
-        grid-template-columns: 1fr;
-        gap: 30px;
-    }
-    
-    .cart-summary {
-        position: static;
-    }
-    
-    .benefits-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
-    }
-    
-    .footer-grid {
-        grid-template-columns: 1fr;
-        gap: 30px;
-    }
-    
-    .page-header {
-        padding: 50px 0 40px;
-    }
-    
-    .page-header h1 {
-        font-size: 2.2rem;
-    }
-    
-    .filters {
-        flex-direction: column;
-        gap: 14px;
-    }
-    
-    .filter-group {
-        width: 100%;
-    }
-    
-    .filter-group select {
-        flex: 1;
-        width: 100%;
-    }
-    
-    .cart-item {
-        flex-wrap: wrap;
-        gap: 12px;
-    }
-    
-    .cart-item img {
-        width: 60px;
-        height: 60px;
-    }
 }
 
-/* === Très petits mobiles === */
-@media (max-width: 480px) {
-    .container {
-        padding: 0 16px;
+/* ==========================================
+   TRÈS PETITS MOBILES (max 400px)
+   ========================================== */
+@media (max-width: 400px) {
+    .product-grid {
+        gap: 10px !important;
+        padding: 0 8px;
+    }
+    
+    .product-card .product-image {
+        height: 150px !important;
+    }
+    
+    .product-card .product-info h3 {
+        font-size: 0.75rem !important;
+    }
+    
+    .product-card .product-info .price {
+        font-size: 0.8rem !important;
     }
     
     .hero-title {
-        font-size: 2rem;
-    }
-    
-    .hero {
-        min-height: 380px;
-    }
-    
-    .hero-content {
-        padding: 40px 0;
+        font-size: 1.5rem !important;
     }
     
     .hero-sub {
-        font-size: 0.95rem;
+        font-size: 0.8rem !important;
     }
-    
-    .btn {
-        padding: 14px 28px;
-        font-size: 0.85rem;
-    }
-    
-    .product-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 14px;
-    }
-    
-    .product-info {
-        padding: 16px;
-    }
-    
-    .product-name {
-        font-size: 0.95rem;
-    }
-    
-    .product-price {
-        font-size: 0.95rem;
-    }
-    
-    .btn-add-cart {
-        font-size: 0.8rem;
-        padding: 10px;
-    }
-    
-    .benefits-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-    }
-    
-    .benefit-item i {
-        font-size: 1.8rem;
-    }
-    
-    .benefit-item h4 {
-        font-size: 0.9rem;
-    }
-    
-    .benefit-item p {
-        font-size: 0.8rem;
-    }
-    
-    .section-title {
-        font-size: 1.6rem;
-    }
-    
-    .page-header h1 {
-        font-size: 1.8rem;
-    }
-    
-    .about-stats {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-    
-    .values-grid {
-        grid-template-columns
+}
