@@ -25,7 +25,6 @@
                 </ul>
             </nav>
             <div class="header-actions">
-                <!-- BARRE DE RECHERCHE -->
                 <div class="header-search" style="display:flex; align-items:center; gap:8px;">
                     <input type="text" 
                            id="searchInput" 
@@ -141,26 +140,139 @@
     </footer>
 
     <!-- ========================================== -->
-    <!-- CHARGEMENT DES SCRIPTS (ORDRE IMPORTANT)    -->
+    <!-- SCRIPTS - TOUT EN UN POUR SUPABASE         -->
     <!-- ========================================== -->
 
-    <!-- 1. D'abord Supabase SDK -->
+    <!-- 1️⃣ Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- 2. Ensuite la configuration Supabase -->
+    <!-- 2️⃣ Code complet -->
     <script>
+        // ==========================================
+        // CONFIGURATION SUPABASE
+        // ==========================================
         const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
         
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         window.supabaseClient = supabaseClient;
         
-        console.log('✅ Supabase initialisé avec succès !');
-        console.log('🔗 URL:', SUPABASE_URL);
-    </script>
+        console.log('✅ Supabase initialisé');
 
-    <!-- 3. Enfin votre script principal -->
-    <script src="script.js"></script>
+        // ==========================================
+        // CHARGER ET AFFICHER LES PRODUITS
+        // ==========================================
+        async function loadProducts() {
+            console.log('🔄 Chargement des produits...');
+            
+            const grid = document.getElementById('featuredGrid');
+            if (!grid) {
+                console.log('❌ #featuredGrid non trouvé');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('produits')
+                    .select('*')
+                    .limit(4)
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error('❌ Erreur Supabase:', error.message);
+                    grid.innerHTML = `<p style="text-align:center;padding:40px;color:red;">❌ Erreur: ${error.message}</p>`;
+                    return;
+                }
+
+                console.log('📦 Produits trouvés:', data ? data.length : 0);
+
+                if (!data || data.length === 0) {
+                    grid.innerHTML = `<p style="text-align:center;padding:40px;color:#666;">🛒 Aucun produit dans la boutique</p>`;
+                    return;
+                }
+
+                // Afficher les produits
+                grid.innerHTML = data.map(p => {
+                    const prixOriginal = p.prix_original && p.prix_original > p.prix ? p.prix_original : null;
+                    
+                    return `
+                        <div class="product-card" style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,0.08);transition:transform 0.3s;">
+                            <div class="product-image" style="position:relative;overflow:hidden;height:280px;background:#f5f5f5;">
+                                <img src="${p.image_url || 'https://via.placeholder.com/400x400/1a1a1a/FFFFFF?text=NIKEL'}" 
+                                     alt="${p.nom}"
+                                     style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s;"
+                                     onmouseover="this.style.transform='scale(1.05)'" 
+                                     onmouseout="this.style.transform='scale(1)'"
+                                     onerror="this.src='https://via.placeholder.com/400x400/1a1a1a/FFFFFF?text=Image'">
+                                ${p.promo > 0 ? `<span style="position:absolute;top:12px;right:12px;background:#e74c3c;color:white;padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:bold;">-${p.promo}%</span>` : ''}
+                            </div>
+                            <div class="product-info" style="padding:16px;">
+                                <h3 style="margin:0 0 6px 0;font-size:1rem;">${p.nom}</h3>
+                                <p style="margin:0 0 4px 0;color:#999;font-size:0.85rem;">${p.categorie || 'Collection'}</p>
+                                <div style="display:flex;gap:10px;align-items:center;margin:8px 0;">
+                                    ${prixOriginal ? `<span style="text-decoration:line-through;color:#999;font-size:0.9rem;">${prixOriginal} €</span>` : ''}
+                                    <span style="font-size:1.2rem;font-weight:700;color:var(--gold);">${p.prix} €</span>
+                                </div>
+                                <a href="produit.html?id=${p.id}" class="btn btn-outline" style="display:inline-block;margin-top:8px;padding:8px 20px;border:2px solid var(--gold);border-radius:50px;color:var(--gold);text-decoration:none;font-size:0.85rem;transition:all 0.3s;" onmouseover="this.style.background='var(--gold)';this.style.color='white';" onmouseout="this.style.background='transparent';this.style.color='var(--gold)';">
+                                    Voir le produit
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                console.log(`✅ ${data.length} produits affichés avec succès !`);
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                grid.innerHTML = `<p style="text-align:center;padding:40px;color:red;">❌ Erreur de connexion</p>`;
+            }
+        }
+
+        // ==========================================
+        // FONCTIONS UTILITAIRES
+        // ==========================================
+        function updateBadge() {
+            const badge = document.querySelector('.badge');
+            if (!badge) return;
+            try {
+                const cart = JSON.parse(localStorage.getItem('nikel_cart') || '[]');
+                const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+                badge.textContent = total;
+            } catch(e) {
+                badge.textContent = '0';
+            }
+        }
+
+        function handleSearch() {
+            const input = document.getElementById('searchInput');
+            if (!input) return;
+            const query = input.value.trim();
+            if (query.length > 0) {
+                window.location.href = `boutique.html?search=${encodeURIComponent(query)}`;
+            }
+        }
+
+        // Menu mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const nav = document.querySelector('.nav');
+            if (menuToggle && nav) {
+                menuToggle.addEventListener('click', function() {
+                    nav.classList.toggle('open');
+                });
+            }
+        });
+
+        // ==========================================
+        // LANCEMENT
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 NIKEL - Site initialisé');
+            loadProducts();
+            updateBadge();
+        });
+    </script>
 
 </body>
 </html>
