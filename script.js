@@ -1,7 +1,7 @@
 /**
  * ============================================
  * NIKEL - script.js
- * Version 4.0 - Avec Supabase
+ * Version 4.1 - Avec Supabase + WhatsApp Checkout
  * ============================================
  */
 
@@ -340,32 +340,46 @@ function updateTotal() {
 }
 
 // ============================================
-// 7. CHECKOUT
+// 7. CHECKOUT (VERSION WHATSAPP AVEC SOUS-TOTAUX)
 // ============================================
 function renderCheckoutItems() {
     const container = document.getElementById('checkoutItems');
     if (!container) return;
     
     if (cart.length === 0) {
-        container.innerHTML = '<p style="color:var(--gray); text-align:center; padding:20px;">Votre panier est vide</p>';
+        container.innerHTML = `
+            <div style="text-align:center; padding:20px 0; color:var(--gray);">
+                <i class="fas fa-shopping-bag" style="font-size:40px; display:block; margin-bottom:10px; color:#ddd;"></i>
+                Votre panier est vide
+            </div>
+        `;
         return;
     }
     
-    container.innerHTML = cart.map(item => {
+    let html = '';
+    cart.forEach(item => {
         const product = products.find(p => p.id === item.id);
         const imageUrl = product ? product.image : 'https://picsum.photos/seed/' + item.id + '/50/50';
+        const itemTotal = item.price * item.quantity;
         
-        return `
-            <div style="display:flex; align-items:center; gap:16px; padding:12px 0; border-bottom:1px solid var(--light-gray);">
-                <img src="${imageUrl}" alt="${item.name}" style="width:50px; height:50px; border-radius:8px; object-fit:cover;" onerror="this.src='https://picsum.photos/seed/${item.id}/50/50'">
-                <div style="flex:1;">
-                    <p style="font-weight:600; font-size:0.95rem;margin:0;">${item.name}</p>
-                    <p style="font-size:0.85rem; color:var(--gray);margin:0;">Quantité : ${item.quantity}</p>
+        html += `
+            <div class="cart-item-checkout" style="display:flex; flex-direction:column; padding:12px 0; border-bottom:1px solid var(--light-gray);">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <img src="${imageUrl}" alt="${item.name}" style="width:45px; height:45px; border-radius:8px; object-fit:cover;" onerror="this.src='https://picsum.photos/seed/${item.id}/50/50'">
+                    <div style="flex:1; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-weight:600; color:var(--dark-gray);">${item.name}</span>
+                        <span style="font-weight:700; color:var(--accent-dark);">${itemTotal.toFixed(2).replace('.', ',')} FCFA</span>
+                    </div>
                 </div>
-                <span style="font-weight:700; color:var(--accent-dark);">${(item.price * item.quantity).toFixed(2)} €</span>
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--gray); margin-top:4px; padding-left:57px;">
+                    <span>Prix unitaire : ${item.price.toFixed(2).replace('.', ',')} FCFA</span>
+                    <span>Quantité : ${item.quantity}</span>
+                </div>
             </div>
         `;
-    }).join('');
+    });
+    
+    container.innerHTML = html;
 }
 
 function updateCheckoutTotal() {
@@ -376,7 +390,7 @@ function updateCheckoutTotal() {
     if (!subtotalEl) return;
     
     const subtotal = getCartTotal();
-    subtotalEl.textContent = subtotal.toFixed(2) + ' €';
+    subtotalEl.textContent = subtotal.toFixed(2).replace('.', ',') + ' FCFA';
     
     let deliveryCost = 0;
     const selectedDelivery = document.querySelector('input[name="livraison"]:checked');
@@ -387,12 +401,12 @@ function updateCheckoutTotal() {
     }
     
     if (deliveryEl) {
-        deliveryEl.textContent = deliveryCost === 0 ? 'Offerte' : deliveryCost.toFixed(2) + ' €';
+        deliveryEl.textContent = deliveryCost === 0 ? 'Offerte' : deliveryCost.toFixed(2).replace('.', ',') + ' FCFA';
     }
     
     const total = subtotal + deliveryCost;
     if (totalEl) {
-        totalEl.textContent = total.toFixed(2) + ' €';
+        totalEl.textContent = total.toFixed(2).replace('.', ',') + ' FCFA';
     }
 }
 
@@ -411,28 +425,37 @@ function confirmOrder() {
     }
     
     const formData = new FormData(form);
-    const orderData = {
-        firstName: formData.get('prenom'),
-        lastName: formData.get('nom'),
-        email: formData.get('email'),
-        phone: formData.get('telephone'),
-        address: formData.get('adresse'),
-        postalCode: formData.get('code_postal'),
-        city: formData.get('ville'),
-        country: formData.get('pays'),
-        items: [...cart],
-        total: getCartTotal(),
-        orderNumber: 'NIK-' + Date.now().toString().slice(-8)
-    };
     
-    localStorage.setItem('nikel_last_order', JSON.stringify(orderData));
+    // Construire le message WhatsApp
+    let message = '🛒 *NOUVEL ACHAT* 🛒\n\n';
+    message += `👤 *Client :* ${formData.get('prenom')} ${formData.get('nom')}\n`;
+    message += `📱 *Téléphone :* ${formData.get('telephone')}\n`;
+    message += `📧 *Email :* ${formData.get('email')}\n`;
+    message += `📍 *Pays :* ${formData.get('pays')}\n`;
+    message += `🏙️ *Ville :* ${formData.get('ville')}\n\n`;
+    message += '📦 *Détails de l\'achat :*\n';
+    message += '─'.repeat(20) + '\n';
+    
+    let total = 0;
+    cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        message += `• ${item.name} x ${item.quantity} = ${itemTotal.toFixed(2).replace('.', ',')} FCFA\n`;
+    });
+    
+    message += '─'.repeat(20) + '\n';
+    message += `💰 *Total :* ${total.toFixed(2).replace('.', ',')} FCFA\n\n`;
+    message += '📱 Merci de confirmer votre achat !';
+    
+    const encodedMessage = encodeURIComponent(message);
+    const phoneNumber = '33612345678'; // À remplacer par votre numéro
+    
+    window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+    
+    // Vider le panier après validation
     cart = [];
     updateCart();
-    
-    showNotification('✅ Commande validée ! Merci pour votre achat.', 'success');
-    setTimeout(() => {
-        window.location.href = 'confirmation.html';
-    }, 1500);
+    showNotification('✅ Commande envoyée sur WhatsApp !', 'success');
 }
 
 // ============================================
@@ -648,7 +671,7 @@ function showNotification(message, type = 'info') {
 // 15. INITIALISATION
 // ============================================
 async function initSite() {
-    console.log('🚀 NIKEL - Boutique en ligne v4.0 (Supabase)');
+    console.log('🚀 NIKEL - Boutique en ligne v4.1 (WhatsApp Checkout)');
     
     // Charger les produits depuis Supabase
     const loaded = await loadProductsFromSupabase();
