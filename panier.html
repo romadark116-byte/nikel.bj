@@ -64,7 +64,8 @@
             </div>
             <div class="cart-summary" style="background:white;padding:24px;border-radius:12px;box-shadow:0 2px 20px rgba(0,0,0,0.08);position:sticky;top:20px;">
                 <h3 style="margin:0 0 16px 0;font-family:'Playfair Display',serif;">Récapitulatif</h3>
-                <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--light-gray);">
+                <!-- Sous-total CACHÉ (gardé pour JavaScript) -->
+                <div style="display:none; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--light-gray);">
                     <span>Sous-total</span>
                     <span id="cartSubtotal">0,00 FCFA</span>
                 </div>
@@ -258,7 +259,9 @@
             
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             
+            // Sous-total mis à jour mais caché
             if (subtotalEl) subtotalEl.textContent = subtotal.toFixed(2) + ' FCFA';
+            // Total affiché
             if (totalEl) totalEl.textContent = subtotal.toFixed(2) + ' FCFA';
         }
 
