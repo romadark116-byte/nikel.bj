@@ -13,27 +13,26 @@
         .checkout-wrapper {
             display: flex;
             gap: 30px;
-            align-items: stretch; /* ← Changé de 'flex-start' à 'stretch' pour que les blocs aient la même hauteur */
+            align-items: stretch;
         }
 
         .checkout-form-col {
-            flex: 1.8; /* ~55% */
+            flex: 1.8;
             min-width: 0;
             display: flex;
             flex-direction: column;
         }
 
         .checkout-cart-col {
-            flex: 1.4; /* ~45% */
+            flex: 1.4;
             min-width: 0;
             position: sticky;
             top: 100px;
-            align-self: start; /* Gardé pour le sticky */
+            align-self: start;
             display: flex;
             flex-direction: column;
         }
 
-        /* Pour que les cartes intérieures prennent toute la hauteur */
         .checkout-form-col > div,
         .checkout-cart-col > div {
             flex: 1;
@@ -41,9 +40,44 @@
             flex-direction: column;
         }
 
-        /* Le récapitulatif prend tout l'espace disponible */
         .checkout-cart-col > div {
             flex: 1;
+        }
+
+        /* Style des articles du panier */
+        .cart-item-checkout {
+            display: flex;
+            flex-direction: column;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .cart-item-checkout:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-checkout .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-item-checkout .item-name {
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .cart-item-checkout .item-total {
+            font-weight: 700;
+            color: var(--accent-dark);
+        }
+
+        .cart-item-checkout .item-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-top: 4px;
         }
 
         @media (max-width: 768px) {
@@ -108,10 +142,9 @@
 
     <section class="section">
         <div class="container">
-            <!-- Conteneur flex pour les deux colonnes -->
             <div class="checkout-wrapper">
 
-                <!-- ===== COLONNE GAUCHE : Formulaire (55%) ===== -->
+                <!-- ===== COLONNE GAUCHE : Formulaire ===== -->
                 <div class="checkout-form-col">
                     <div style="background:var(--white); padding:32px; border-radius:16px; box-shadow:var(--shadow);">
                         <h3 style="font-family:'Playfair Display',serif; margin-bottom:20px; font-size:1.2rem;">
@@ -157,29 +190,60 @@
                     </div>
                 </div>
 
-                <!-- ===== COLONNE DROITE : Récapitulatif (45%) ===== -->
+                <!-- ===== COLONNE DROITE : Récapitulatif ===== -->
                 <div class="checkout-cart-col">
                     <div style="background:var(--white); padding:32px; border-radius:16px; box-shadow:var(--shadow); display:flex; flex-direction:column;">
                         <h3 style="font-family:'Playfair Display',serif; margin-bottom:20px; font-size:1.2rem;">
                             <i class="fas fa-shopping-bag" style="color:var(--gold);"></i> Récapitulatif de votre panier
                         </h3>
                         
+                        <!-- ===== ARTICLES AVEC SOUS-TOTAUX ===== -->
                         <div id="checkoutItems" style="margin-bottom:20px; flex:1;">
-                            <!-- Articles chargés par JavaScript -->
-                            <div style="text-align:center; padding:20px 0; color:var(--gray);">
-                                <i class="fas fa-shopping-bag" style="font-size:40px; display:block; margin-bottom:10px; color:#ddd;"></i>
-                                Votre panier est vide
+                            <!-- Exemple d'article avec sous-total -->
+                            <div class="cart-item-checkout">
+                                <div class="item-row">
+                                    <span class="item-name">Sac NOMAD</span>
+                                    <span class="item-total">354,00 FCFA</span>
+                                </div>
+                                <div class="item-details">
+                                    <span>Prix unitaire : 59,00 FCFA</span>
+                                    <span>Quantité : 6</span>
+                                </div>
+                            </div>
+
+                            <div class="cart-item-checkout">
+                                <div class="item-row">
+                                    <span class="item-name">Montre EDGE</span>
+                                    <span class="item-total">149,00 FCFA</span>
+                                </div>
+                                <div class="item-details">
+                                    <span>Prix unitaire : 149,00 FCFA</span>
+                                    <span>Quantité : 1</span>
+                                </div>
+                            </div>
+
+                            <div class="cart-item-checkout">
+                                <div class="item-row">
+                                    <span class="item-name">NIKEL Urban Gris</span>
+                                    <span class="item-total">99,00 FCFA</span>
+                                </div>
+                                <div class="item-details">
+                                    <span>Prix unitaire : 99,00 FCFA</span>
+                                    <span>Quantité : 1</span>
+                                </div>
                             </div>
                         </div>
 
+                        <!-- ===== TOTAL ===== -->
                         <div style="border-top:2px solid var(--light-gray); padding-top:16px; margin-top:auto;">
-                            <div style="display:none; justify-content:space-between; padding:8px 0;">
-                                <span style="color:var(--gray);">Sous-total</span>
-                                <span id="subtotal">0,00 FCFA</span>
+                            <!-- Sous-total caché (gardé pour JavaScript) -->
+                            <div style="display:none;">
+                                <span id="subtotal">602,00 FCFA</span>
                             </div>
+                            
                             <div style="display:flex; justify-content:space-between; padding:8px 0; font-size:1.2rem; font-weight:700; border-top:2px solid var(--light-gray); margin-top:8px; padding-top:16px;">
                                 <span>Total</span>
-                                <span id="checkoutTotal" style="color:var(--accent-dark);">0,00 FCFA</span>
+                                <span id="checkoutTotal" style="color:var(--accent-dark);">602,00 FCFA</span>
                             </div>
                         </div>
 
@@ -190,8 +254,18 @@
                             <i class="fas fa-arrow-left"></i> Retour au panier
                         </a>
                     </div>
+
+                    <!-- Badge de sécurité -->
+                    <div style="background:var(--white); padding:16px 20px; border-radius:16px; box-shadow:var(--shadow); margin-top:16px; text-align:center;">
+                        <div style="display:flex; justify-content:center; gap:24px; color:var(--gray); font-size:0.9rem;">
+                            <span><i class="fas fa-lock" style="color:var(--gold);"></i> Sécurisé</span>
+                            <span><i class="fas fa-clock" style="color:var(--gold);"></i> 24/7</span>
+                            <span><i class="fas fa-headset" style="color:var(--gold);"></i> Support</span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            <!-- Fin checkout-wrapper -->
         </div>
     </section>
 
