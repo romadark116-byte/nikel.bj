@@ -448,7 +448,7 @@ function confirmOrder() {
     message += '📱 Merci de confirmer votre achat !';
     
     const encodedMessage = encodeURIComponent(message);
-    const phoneNumber = '33612345678'; // À remplacer par votre numéro
+    const phoneNumber = '22991647681'; // À remplacer par votre numéro
     
     window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
     
