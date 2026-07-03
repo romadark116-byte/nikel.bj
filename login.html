@@ -317,8 +317,10 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <!-- ===== SUPABASE SDK ===== -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- ===== CODE DE CONNEXION UNIQUEMENT ===== -->
     <script>
         // ==========================================
         // SUPABASE CONFIG
@@ -344,6 +346,9 @@
         // NOTIFICATION
         // ==========================================
         function showNotification(message, type = 'info') {
+            // Supprimer les anciennes notifications
+            document.querySelectorAll('.toast').forEach(t => t.remove());
+            
             const toast = document.createElement('div');
             toast.className = 'toast ' + type;
             toast.innerHTML = `<span>${message}</span>`;
@@ -374,9 +379,6 @@
                 // 1. Hasher le mot de passe saisi
                 const hashedPassword = await hashPassword(password);
                 
-                console.log('🔐 Email saisi:', email);
-                console.log('🔐 Hash saisi:', hashedPassword);
-                
                 // 2. Vérifier dans la table admins
                 const { data, error } = await supabaseClient
                     .from('admins')
@@ -386,11 +388,8 @@
 
                 if (error || !data) {
                     showNotification('❌ Email ou mot de passe incorrect', 'error');
-                    console.error('❌ Erreur Supabase:', error);
                     return;
                 }
-
-                console.log('🔐 Hash en base:', data.mot_de_passe);
 
                 // 3. Comparer les hash
                 if (data.mot_de_passe !== hashedPassword) {
