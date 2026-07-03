@@ -1,4 +1,4 @@
-<!-- suivi-ventes.html - Suivi des ventes -->
+<!-- ventes.html - Suivi des ventes -->
 <div id="ventesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
@@ -30,14 +30,12 @@
     <!-- ===== BARRE DE RECHERCHE & FILTRES ===== -->
     <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
 
-        <!-- Recherche -->
         <div style="flex:2; min-width:200px;">
             <input type="text" id="searchInputVentes" placeholder="🔍 Rechercher par nom ou email..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#ffffff;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'">
         </div>
 
-        <!-- Filtre Statut -->
         <div style="min-width:150px;">
-            <select id="filterStatut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer;" onchange="applyFilters()">
+            <select id="filterStatut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer;">
                 <option value="all">📊 Tous les statuts</option>
                 <option value="soldé">✅ Soldé</option>
                 <option value="en attente">⏳ En attente</option>
@@ -45,17 +43,14 @@
             </select>
         </div>
 
-        <!-- Date début -->
         <div style="min-width:150px;">
-            <input type="datetime-local" id="dateDebut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onchange="applyFilters()">
+            <input type="datetime-local" id="dateDebut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;">
         </div>
 
-        <!-- Date fin -->
         <div style="min-width:150px;">
-            <input type="datetime-local" id="dateFin" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onchange="applyFilters()">
+            <input type="datetime-local" id="dateFin" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;">
         </div>
 
-        <!-- Boutons -->
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button onclick="applyFilters()" style="padding:10px 20px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                 <i class="fas fa-filter"></i> Filtrer
@@ -119,75 +114,7 @@
         const itemsPerPage = 10;
 
         // ==========================================
-        // CHARGER LES DONNÉES DEPUIS SUPABASE
-        // ==========================================
-        async function loadVentesData() {
-            const tbody = document.getElementById('ventesTableBody');
-            
-            try {
-                // Vérifier si Supabase est disponible
-                if (!window.supabaseClient) {
-                    console.warn('⚠️ Supabase non disponible, utilisation de données de test');
-                    allClients = getTestData();
-                    filteredClients = [...allClients];
-                    renderTable();
-                    updateStats();
-                    updatePaginationInfo();
-                    return;
-                }
-
-                // Charger les données depuis Supabase
-                const { data, error } = await window.supabaseClient
-                    .from('clients')
-                    .select('*')
-                    .order('date_clic', { ascending: false });
-
-                if (error) {
-                    console.error('❌ Erreur Supabase:', error);
-                    allClients = getTestData();
-                    filteredClients = [...allClients];
-                    renderTable();
-                    updateStats();
-                    updatePaginationInfo();
-                    return;
-                }
-
-                if (!data || data.length === 0) {
-                    console.warn('⚠️ Aucune donnée trouvée');
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="8" style="text-align:center; padding:40px; color:#888;">
-                                <i class="fas fa-inbox" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
-                                Aucune vente enregistrée pour le moment.
-                            </td>
-                        </tr>
-                    `;
-                    return;
-                }
-
-                allClients = data.map(client => ({
-                    ...client,
-                    statut: client.statut || 'en attente',
-                    date_clic_formatted: formatDate(client.date_clic)
-                }));
-
-                filteredClients = [...allClients];
-                renderTable();
-                updateStats();
-                updatePaginationInfo();
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                allClients = getTestData();
-                filteredClients = [...allClients];
-                renderTable();
-                updateStats();
-                updatePaginationInfo();
-            }
-        }
-
-        // ==========================================
-        // DONNÉES DE TEST (si Supabase n'est pas dispo)
+        // DONNÉES DE TEST
         // ==========================================
         function getTestData() {
             return [
@@ -239,15 +166,14 @@
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="8" style="text-align:center; padding:40px; color:#888;">
-                            <i class="fas fa-search" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
-                            Aucun résultat trouvé pour vos critères de recherche.
+                            <i class="fas fa-inbox" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
+                            Aucune vente enregistrée pour le moment.
                         </td>
                     </tr>
                 `;
                 return;
             }
 
-            // Pagination
             const startIndex = (currentPage - 1) * itemsPerPage;
             const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
             const pageItems = filteredClients.slice(startIndex, endIndex);
@@ -332,7 +258,6 @@
             const dateFin = document.getElementById('dateFin').value;
 
             filteredClients = allClients.filter(client => {
-                // Recherche par nom ou email
                 let matchSearch = true;
                 if (searchTerm) {
                     const fullName = (client.prenom + ' ' + client.nom).toLowerCase();
@@ -340,13 +265,11 @@
                     matchSearch = fullName.includes(searchTerm) || email.includes(searchTerm);
                 }
 
-                // Filtre statut
                 let matchStatut = true;
                 if (statutFilter !== 'all') {
                     matchStatut = client.statut === statutFilter;
                 }
 
-                // Filtre date
                 let matchDate = true;
                 if (dateDebut) {
                     const d1 = new Date(dateDebut);
@@ -385,7 +308,6 @@
             const client = allClients.find(c => c.id === id);
             if (!client) return;
 
-            // Mettre à jour dans Supabase (si disponible)
             if (window.supabaseClient) {
                 window.supabaseClient
                     .from('clients')
@@ -400,10 +322,7 @@
                     });
             }
 
-            // Mettre à jour localement
             client.statut = newStatut;
-            
-            // Mettre à jour dans filteredClients aussi
             const filteredClient = filteredClients.find(c => c.id === id);
             if (filteredClient) filteredClient.statut = newStatut;
 
@@ -417,18 +336,65 @@
         }
 
         // ==========================================
-        // CHARGEMENT INITIAL
+        // CHARGER LES DONNÉES
         // ==========================================
-        document.addEventListener('DOMContentLoaded', function() {
-            loadVentesData();
-        });
+        async function loadVentesData() {
+            try {
+                if (window.supabaseClient) {
+                    const { data, error } = await window.supabaseClient
+                        .from('clients')
+                        .select('*')
+                        .order('date_clic', { ascending: false });
 
-        // Exposer les fonctions globalement
+                    if (!error && data && data.length > 0) {
+                        allClients = data.map(client => ({
+                            ...client,
+                            statut: client.statut || 'en attente',
+                            date_clic_formatted: formatDate(client.date_clic)
+                        }));
+                        filteredClients = [...allClients];
+                        renderTable();
+                        updateStats();
+                        updatePaginationInfo();
+                        return;
+                    }
+                }
+
+                allClients = getTestData().map(client => ({
+                    ...client,
+                    date_clic_formatted: formatDate(client.date_clic)
+                }));
+                filteredClients = [...allClients];
+                renderTable();
+                updateStats();
+                updatePaginationInfo();
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                allClients = getTestData().map(client => ({
+                    ...client,
+                    date_clic_formatted: formatDate(client.date_clic)
+                }));
+                filteredClients = [...allClients];
+                renderTable();
+                updateStats();
+                updatePaginationInfo();
+            }
+        }
+
+        // ==========================================
+        // EXPOSER LES FONCTIONS GLOBALEMENT
+        // ==========================================
         window.applyFilters = applyFilters;
         window.resetFilters = resetFilters;
         window.previousPage = previousPage;
         window.nextPage = nextPage;
         window.updateStatut = updateStatut;
+
+        // ==========================================
+        // CHARGEMENT INITIAL
+        // ==========================================
+        loadVentesData();
 
     })();
 </script>
