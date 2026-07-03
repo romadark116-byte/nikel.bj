@@ -3,11 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIKEL · Boutique en ligne</title>
+    <title>Mon compte - NIKEL</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="animations.css">
     <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Menu latéral - style actif */
+        .sidebar-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu ul li {
+            margin-bottom: 4px;
+        }
+
+        .sidebar-menu ul li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            transition: all 0.3s;
+            color: var(--gray);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .sidebar-menu ul li a:hover {
+            background: var(--off-white);
+            color: var(--dark-gray);
+        }
+
+        .sidebar-menu ul li a.active {
+            background: var(--off-white);
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        .sidebar-menu ul li a i {
+            width: 20px;
+            text-align: center;
+            color: var(--gold);
+        }
+
+        .sidebar-menu ul li a .badge-notif {
+            margin-left: auto;
+            background: var(--gold);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+        }
+
+        .sidebar-menu ul li a .badge-count {
+            margin-left: auto;
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
+
+        /* Contenu chargé dynamiquement */
+        #mainContent {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Déconnexion */
+        .logout-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            transition: all 0.3s;
+            color: #e74c3c;
+            text-decoration: none;
+            cursor: pointer;
+            margin-top: 12px;
+            border-top: 1px solid var(--light-gray);
+            padding-top: 12px;
+        }
+
+        .logout-link:hover {
+            background: #fde8e8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -17,7 +110,7 @@
             </div>
             <nav class="nav">
                 <ul>
-                    <li><a href="index.html" class="active">Accueil</a></li>
+                    <li><a href="index.html">Accueil</a></li>
                     <li><a href="boutique.html">Boutique</a></li>
                     <li><a href="apropos.html">À propos</a></li>
                     <li><a href="contact.html">Contact</a></li>
@@ -25,7 +118,6 @@
                 </ul>
             </nav>
             <div class="header-actions">
-                <!-- BARRE DE RECHERCHE -->
                 <div class="header-search" style="display:flex; align-items:center; gap:8px;">
                     <input type="text" 
                            id="searchInput" 
@@ -50,6 +142,7 @@
             </div>
         </div>
     </header>
+
     <section class="page-header">
         <div class="container">
             <h1>Mon compte</h1>
@@ -59,9 +152,9 @@
 
     <section class="section">
         <div class="container">
-            <div style="display:grid; grid-template-columns:300px 1fr; gap:30px;">
+            <div class="dashboard-layout" style="display:grid; grid-template-columns:280px 1fr; gap:30px;">
                 
-                <!-- Menu latéral -->
+                <!-- ===== SIDEBAR ===== -->
                 <div style="background:var(--white); border-radius:16px; box-shadow:var(--shadow); padding:24px; align-self:start;">
                     <div style="text-align:center; padding-bottom:20px; border-bottom:1px solid var(--light-gray);">
                         <div style="width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg, var(--gold), var(--accent-dark)); margin:0 auto 12px; display:flex; align-items:center; justify-content:center; font-size:2.5rem; color:white;">
@@ -71,52 +164,170 @@
                         <p style="font-size:0.9rem; color:var(--gray);">jean@email.com</p>
                     </div>
                     
-                    <nav style="margin-top:20px;">
-                        <ul style="display:flex; flex-direction:column; gap:4px;">
+                    <nav class="sidebar-menu">
+                        <ul>
                             <li>
-                                <a href="#" class="active" style="display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:10px; transition:all 0.3s; background:var(--off-white); font-weight:600;">
-                                    <i class="fas fa-home" style="color:var(--gold);"></i>
-                                    Tableau de bord
+                                <a href="#" class="active" data-page="dashboard">
+                                    <i class="fas fa-home"></i> Tableau de bord
                                 </a>
                             </li>
                             <li>
-                                <a href="#" style="display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:10px; transition:all 0.3s; color:var(--gray);">
-                                    <i class="fas fa-box" style="color:var(--gold);"></i>
-                                    Mes commandes
-                                    <span style="margin-left:auto; background:var(--gold); color:white; padding:2px 10px; border-radius:50px; font-size:0.75rem;">3</span>
+                                <a href="#" data-page="profil">
+                                    <i class="fas fa-user-circle"></i> Profil
+                                    <span class="badge-notif">3</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#" style="display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:10px; transition:all 0.3s; color:var(--gray);">
-                                    <i class="fas fa-heart" style="color:var(--gold);"></i>
-                                    Liste de souhaits
-                                    <span style="margin-left:auto; color:var(--gray); font-size:0.85rem;">5</span>
+                                <a href="#" data-page="ventes">
+                                    <i class="fas fa-chart-line"></i> Suivi des ventes
+                                    <span class="badge-count">5</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#" style="display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:10px; transition:all 0.3s; color:var(--gray);">
-                                    <i class="fas fa-user-edit" style="color:var(--gold);"></i>
-                                    Profil
+                                <a href="#" data-page="contacts">
+                                    <i class="fas fa-address-book"></i> Mes contacts
                                 </a>
                             </li>
                             <li>
-                                <a href="#" style="display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:10px; transition:all 0.3s; color:var(--gray);">
-                                    <i class="fas fa-address-book" style="color:var(--gold);"></i>
-                                    Adresses
+                                <a href="#" data-page="articles">
+                                    <i class="fas fa-cube"></i> Mes articles
                                 </a>
                             </li>
-                            <li style="margin-top:12px; border-top:1px solid var(--light-gray); padding-top:12px;">
-                                <a href="#" style="display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:10px; transition:all 0.3s; color:#e74c3c;" onclick="showNotification('👋 Déconnexion réussie !');">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                    Se déconnecter
+                            <li>
+                                <a href="#" data-page="favoris">
+                                    <i class="fas fa-heart"></i> Favoris des clients
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" data-page="avis">
+                                    <i class="fas fa-star"></i> Avis et notes
                                 </a>
                             </li>
                         </ul>
                     </nav>
+
+                    <a href="#" class="logout-link" onclick="showNotification('👋 Déconnexion réussie !');">
+                        <i class="fas fa-sign-out-alt"></i> Se déconnecter
+                    </a>
                 </div>
 
-                <!-- Contenu principal -->
-                <div>
+                <!-- ===== CONTENU PRINCIPAL ===== -->
+                <div id="mainContent">
+                    <!-- Le contenu sera chargé ici dynamiquement -->
+                    <div id="loadingIndicator" style="text-align:center; padding:40px; color:var(--gray);">
+                        <i class="fas fa-spinner fa-spin" style="font-size:2rem;"></i>
+                        <p style="margin-top:12px;">Chargement...</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <h4><i class="fas fa-crown"></i> NIKEL</h4>
+                <p>Le style qui vous ressemble.</p>
+                <div class="socials">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h5>Liens utiles</h5>
+                <ul>
+                    <li><a href="apropos.html">À propos</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="panier.html">Panier</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5>Nos produits</h5>
+                <ul>
+                    <li><a href="boutique.html">Nouveautés</a></li>
+                    <li><a href="boutique.html">Soldes</a></li>
+                    <li><a href="boutique.html">Accessoires</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5>Newsletter</h5>
+                <p>Recevez nos offres exclusives.</p>
+                <div class="newsletter">
+                    <input type="email" placeholder="votre@email.com">
+                    <button><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 NIKEL — Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // ==========================================
+        // CHARGEMENT DYNAMIQUE DES PAGES
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainContent = document.getElementById('mainContent');
+            const menuLinks = document.querySelectorAll('.sidebar-menu a[data-page]');
+
+            // Fonction pour charger une page
+            function loadPage(page) {
+                // Afficher l'indicateur de chargement
+                mainContent.innerHTML = `
+                    <div style="text-align:center; padding:40px; color:var(--gray);">
+                        <i class="fas fa-spinner fa-spin" style="font-size:2rem;"></i>
+                        <p style="margin-top:12px;">Chargement...</p>
+                    </div>
+                `;
+
+                // Simuler un délai de chargement (pour l'effet)
+                setTimeout(() => {
+                    // Si c'est le tableau de bord, charger le contenu directement
+                    if (page === 'dashboard') {
+                        mainContent.innerHTML = getDashboardContent();
+                    } else {
+                        // Charger la page via fetch
+                        fetch(page + '.html')
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Page non trouvée');
+                                }
+                                return response.text();
+                            })
+                            .then(html => {
+                                mainContent.innerHTML = html;
+                                
+                                // Ré-exécuter les scripts dans la page chargée
+                                const scripts = mainContent.querySelectorAll('script');
+                                scripts.forEach(script => {
+                                    const newScript = document.createElement('script');
+                                    newScript.textContent = script.textContent;
+                                    document.body.appendChild(newScript);
+                                    document.body.removeChild(newScript);
+                                });
+                            })
+                            .catch(() => {
+                                // Si la page n'existe pas, afficher un message
+                                mainContent.innerHTML = `
+                                    <div style="background:var(--white); border-radius:16px; box-shadow:var(--shadow); padding:40px; text-align:center;">
+                                        <i class="fas fa-construction" style="font-size:3rem; color:var(--gold);"></i>
+                                        <h3 style="margin-top:16px;">Page en construction</h3>
+                                        <p style="color:var(--gray);">Le contenu de cette section sera bientôt disponible.</p>
+                                    </div>
+                                `;
+                            });
+                    }
+                }, 300);
+            }
+
+            // Contenu du tableau de bord (intégré)
+            function getDashboardContent() {
+                return `
                     <!-- Statistiques -->
                     <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:30px;">
                         <div style="background:var(--white); padding:20px; border-radius:12px; box-shadow:var(--shadow); text-align:center;">
@@ -224,53 +435,94 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
+                `;
+            }
 
-    <footer class="footer">
-        <div class="container footer-grid">
-            <div class="footer-col">
-                <h4><i class="fas fa-crown"></i> NIKEL</h4>
-                <p>Le style qui vous ressemble.</p>
-                <div class="socials">
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-tiktok"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                </div>
-            </div>
-            <div class="footer-col">
-                <h5>Liens utiles</h5>
-                <ul>
-                    <li><a href="apropos.html">À propos</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                    <li><a href="faq.html">FAQ</a></li>
-                    <li><a href="panier.html">Panier</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h5>Nos produits</h5>
-                <ul>
-                    <li><a href="boutique.html">Nouveautés</a></li>
-                    <li><a href="boutique.html">Soldes</a></li>
-                    <li><a href="boutique.html">Accessoires</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h5>Newsletter</h5>
-                <p>Recevez nos offres exclusives.</p>
-                <div class="newsletter">
-                    <input type="email" placeholder="votre@email.com">
-                    <button><i class="fas fa-paper-plane"></i></button>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 NIKEL — Tous droits réservés.</p>
-        </div>
-    </footer>
+            // Gérer les clics sur les liens du menu
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = this.dataset.page;
 
-    <script src="script.js"></script>
+                    // Mettre à jour le menu actif
+                    menuLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Charger la page
+                    loadPage(page);
+                });
+            });
+
+            // Charger le tableau de bord par défaut
+            loadPage('dashboard');
+
+            // Menu mobile
+            const menuToggle = document.getElementById('menuToggle');
+            const nav = document.querySelector('.nav');
+            if (menuToggle && nav) {
+                menuToggle.addEventListener('click', function() {
+                    nav.classList.toggle('open');
+                });
+            }
+
+            // Mettre à jour le badge du panier
+            const badge = document.querySelector('.badge');
+            const cart = JSON.parse(localStorage.getItem('nikel_cart')) || [];
+            const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+            if (badge) {
+                badge.textContent = total;
+                badge.style.display = total > 0 ? 'flex' : 'none';
+            }
+        });
+
+        // ==========================================
+        // NOTIFICATIONS
+        // ==========================================
+        function showNotification(message, type = 'info') {
+            const colors = {
+                success: 'var(--gold)',
+                error: '#e74c3c',
+                info: 'var(--primary)'
+            };
+
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: var(--primary);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 14px;
+                font-weight: 500;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+                z-index: 9999;
+                max-width: 400px;
+                border-left: 4px solid ${colors[type] || colors.info};
+                font-size: 0.95rem;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                animation: slideUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            `;
+            toast.innerHTML = `<span>${message}</span>`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // Exposer pour les clics inline
+        window.showNotification = showNotification;
+        window.handleSearch = function() {
+            const input = document.getElementById('searchInput');
+            if (input && input.value.trim().length > 0) {
+                window.location.href = `boutique.html?search=${encodeURIComponent(input.value.trim())}`;
+            }
+        };
+    </script>
 </body>
 </html>
