@@ -9,46 +9,38 @@
     <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Style spécifique pour la page de connexion */
         .login-container {
             max-width: 480px;
             margin: 0 auto;
         }
-
         .login-card {
             background: var(--white);
             padding: 40px;
             border-radius: 16px;
             box-shadow: var(--shadow);
         }
-
         .login-card .logo-icon {
             text-align: center;
             margin-bottom: 30px;
         }
-
         .login-card .logo-icon i {
             font-size: 3rem;
             color: var(--gold);
         }
-
         .login-card .logo-icon h2 {
             font-family: 'Playfair Display', serif;
             font-size: 1.8rem;
             margin: 8px 0 4px 0;
             color: var(--dark-gray);
         }
-
         .login-card .logo-icon p {
             color: var(--gray);
             font-size: 0.95rem;
             margin: 0;
         }
-
         .form-group {
             margin-bottom: 16px;
         }
-
         .form-group label {
             display: block;
             font-weight: 600;
@@ -56,13 +48,11 @@
             margin-bottom: 4px;
             color: var(--dark-gray);
         }
-
         .form-group label i {
             color: var(--gold);
             margin-right: 6px;
             width: 16px;
         }
-
         .form-group input {
             width: 100%;
             padding: 12px 14px;
@@ -73,13 +63,11 @@
             background: var(--off-white);
             box-sizing: border-box;
         }
-
         .form-group input:focus {
             border-color: var(--gold);
             outline: none;
             background: white;
         }
-
         .btn-login {
             width: 100%;
             padding: 14px;
@@ -96,51 +84,19 @@
             justify-content: center;
             gap: 10px;
         }
-
         .btn-login:hover {
             transform: scale(1.02);
             box-shadow: 0 4px 20px rgba(201, 168, 76, 0.4);
         }
-
         .login-footer {
             text-align: center;
             margin-top: 16px;
             color: var(--gray);
             font-size: 0.85rem;
         }
-
         .login-footer i {
             color: var(--gold);
         }
-
-        /* Avantages */
-        .benefits {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 16px;
-            margin-top: 24px;
-        }
-
-        .benefits .benefit-item {
-            background: var(--white);
-            padding: 16px;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            text-align: center;
-        }
-
-        .benefits .benefit-item i {
-            color: var(--gold);
-            font-size: 1.2rem;
-        }
-
-        .benefits .benefit-item p {
-            font-size: 0.8rem;
-            margin-top: 4px;
-            color: var(--gray);
-        }
-
-        /* Notification Toast */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -159,23 +115,18 @@
             gap: 12px;
             animation: slideUp 0.5s ease;
         }
-
         .toast.error {
             border-left: 4px solid #e74c3c;
         }
-
         .toast.success {
             border-left: 4px solid #27ae60;
         }
-
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
         @media (max-width: 768px) {
             .login-card { padding: 24px; }
-            .benefits { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -229,7 +180,6 @@
 
     <section class="section">
         <div class="container login-container">
-
             <div class="login-card">
                 <div class="logo-icon">
                     <i class="fas fa-crown"></i>
@@ -254,22 +204,6 @@
 
                 <div class="login-footer">
                     <i class="fas fa-shield-alt"></i> Accès réservé aux administrateurs
-                </div>
-            </div>
-            
-            <!-- Avantages -->
-            <div class="benefits">
-                <div class="benefit-item">
-                    <i class="fas fa-chart-line"></i>
-                    <p>Suivi des ventes</p>
-                </div>
-                <div class="benefit-item">
-                    <i class="fas fa-users"></i>
-                    <p>Gestion des clients</p>
-                </div>
-                <div class="benefit-item">
-                    <i class="fas fa-cube"></i>
-                    <p>Gestion des produits</p>
                 </div>
             </div>
         </div>
@@ -317,10 +251,7 @@
         </div>
     </footer>
 
-    <!-- ===== SUPABASE SDK ===== -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <!-- ===== CODE DE CONNEXION UNIQUEMENT ===== -->
     <script>
         // ==========================================
         // SUPABASE CONFIG
@@ -332,21 +263,9 @@
         window.supabaseClient = supabaseClient;
 
         // ==========================================
-        // FONCTION DE HASHAGE (SHA-256)
-        // ==========================================
-        async function hashPassword(password) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(password);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
-        // ==========================================
         // NOTIFICATION
         // ==========================================
         function showNotification(message, type = 'info') {
-            // Supprimer les anciennes notifications
             document.querySelectorAll('.toast').forEach(t => t.remove());
             
             const toast = document.createElement('div');
@@ -362,7 +281,7 @@
         }
 
         // ==========================================
-        // CONNEXION ADMIN AVEC HASH
+        // CONNEXION ADMIN
         // ==========================================
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -376,41 +295,52 @@
             }
 
             try {
-                // 1. Hasher le mot de passe saisi
-                const hashedPassword = await hashPassword(password);
-                
-                // 2. Vérifier dans la table admins
+                // 1. Récupérer l'admin
                 const { data, error } = await supabaseClient
                     .from('admins')
                     .select('*')
-                    .eq('email', email)
-                    .single();
+                    .eq('email', email);
 
-                if (error || !data) {
+                console.log('📝 Résultat requête:', { data, error });
+
+                if (error) {
+                    console.error('❌ Erreur:', error);
+                    showNotification('❌ Erreur de connexion', 'error');
+                    return;
+                }
+
+                if (!data || data.length === 0) {
                     showNotification('❌ Email ou mot de passe incorrect', 'error');
                     return;
                 }
 
-                // 3. Comparer les hash
-                if (data.mot_de_passe !== hashedPassword) {
+                const admin = data[0];
+                console.log('✅ Admin trouvé:', admin);
+                console.log('🔐 Mot de passe en base:', admin.mot_de_passe);
+                console.log('🔐 Mot de passe saisi:', password);
+
+                // 2. Comparaison
+                if (admin.mot_de_passe !== password) {
                     showNotification('❌ Email ou mot de passe incorrect', 'error');
                     return;
                 }
 
-                // 4. ✅ Connexion réussie
+                console.log('✅ Connexion réussie !');
+
+                // 3. Stocker la session
                 localStorage.setItem('nikel_admin', JSON.stringify({
-                    id: data.id,
-                    prenom: data.prenom,
-                    nom: data.nom,
-                    email: data.email,
-                    telephone: data.telephone,
-                    boutique_nom: data.boutique_nom || 'NIKEL'
+                    id: admin.id,
+                    prenom: admin.prenom,
+                    nom: admin.nom,
+                    email: admin.email,
+                    telephone: admin.telephone,
+                    boutique_nom: admin.boutique_nom || 'NIKEL'
                 }));
 
-                showNotification('✅ Bonjour ' + data.prenom + ' !', 'success');
+                showNotification('✅ Bonjour ' + admin.prenom + ' !', 'success');
                 
                 setTimeout(() => {
-                    window.location.href = 'admin-dashboard.html';
+                    window.location.href = 'mon-compte.html';
                 }, 1000);
 
             } catch (err) {
@@ -420,11 +350,11 @@
         });
 
         // ==========================================
-        // VÉRIFICATION SI DÉJÀ CONNECTÉ
+        // VÉRIFICATION SESSION
         // ==========================================
         const admin = JSON.parse(localStorage.getItem('nikel_admin'));
         if (admin) {
-            window.location.href = 'admin-dashboard.html';
+            window.location.href = 'mon-compte.html';
         }
 
         // ==========================================
@@ -449,7 +379,6 @@
                 });
             }
 
-            // Badge panier
             const badge = document.querySelector('.badge');
             const cart = JSON.parse(localStorage.getItem('nikel_cart')) || [];
             const total = cart.reduce((sum, item) => sum + item.quantity, 0);
