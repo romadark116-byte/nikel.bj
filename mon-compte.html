@@ -200,13 +200,14 @@
                             </li>
                             <li>
                                 <a href="#" data-page="avis">
-                                    <i class="fas fa-heart"></i> Avis et notes
+                                    <i class="fas fa-star"></i> Avis et notes
                                 </a>
                             </li>
                         </ul>
                     </nav>
 
-                    <a href="#" class="logout-link" onclick="showNotification('👋 Déconnexion réussie !');">
+                    <!-- ===== DÉCONNEXION AVEC NOTIFICATION ===== -->
+                    <a href="#" class="logout-link" onclick="handleLogout(event)">
                         <i class="fas fa-sign-out-alt"></i> Se déconnecter
                     </a>
                 </div>
@@ -343,6 +344,21 @@
         });
 
         // ==========================================
+        // DÉCONNEXION AVEC NOTIFICATION + REDIRECTION
+        // ==========================================
+        function handleLogout(event) {
+            event.preventDefault();
+            
+            // Afficher la notification
+            showNotification('👋 Déconnexion réussie !', 'info');
+            
+            // Rediriger vers l'accueil après 2 secondes
+            setTimeout(function() {
+                window.location.href = 'index.html';
+            }, 2000);
+        }
+
+        // ==========================================
         // NOTIFICATIONS
         // ==========================================
         function showNotification(message, type = 'info') {
@@ -383,6 +399,7 @@
         }
 
         window.showNotification = showNotification;
+        window.handleLogout = handleLogout;
         window.handleSearch = function() {
             const input = document.getElementById('searchInput');
             if (input && input.value.trim().length > 0) {
