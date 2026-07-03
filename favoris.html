@@ -1,0 +1,162 @@
+<!-- favoris.html - Favoris des clients -->
+<div id="favorisContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
+
+    <!-- ===== TITRE ===== -->
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:24px;">
+        <div>
+            <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:#1a1a1a; margin-bottom:4px;">
+                <i class="fas fa-heart" style="color:#c9a84c;"></i> Favoris des clients
+            </h2>
+            <p style="color:#888; font-size:0.95rem;">Découvrez les produits les plus appréciés par vos clients.</p>
+        </div>
+    </div>
+
+    <!-- ===== STATISTIQUES ===== -->
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px;">
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total favoris</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#1a1a1a;" id="totalFavoris">0</p>
+        </div>
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Produits favoris</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#27ae60;" id="totalProduits">0</p>
+        </div>
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Clients actifs</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#f39c12;" id="totalClients">0</p>
+        </div>
+    </div>
+
+    <!-- ===== BARRE DE RECHERCHE ===== -->
+    <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
+        <div style="flex:2; min-width:200px;">
+            <input type="text" id="searchFavoris" placeholder="🔍 Rechercher un produit..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onkeyup="applyFavorisFilters()">
+        </div>
+        <div style="min-width:150px;">
+            <select id="filterFavorisCategorie" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onchange="applyFavorisFilters()">
+                <option value="all">📂 Toutes les catégories</option>
+                <option value="vêtements">👕 Vêtements</option>
+                <option value="accessoires">👜 Accessoires</option>
+                <option value="chaussures">👟 Chaussures</option>
+                <option value="sport">🏋️ Sport</option>
+            </select>
+        </div>
+        <button onclick="resetFavorisFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; cursor:pointer; color:#888;">Réinitialiser</button>
+    </div>
+
+    <!-- ===== GRILLE FAVORIS ===== -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:20px;" id="favorisGrid">
+        <div style="text-align:center; padding:40px; color:#888; grid-column:1/-1;">
+            <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
+            Chargement...
+        </div>
+    </div>
+
+    <!-- ===== PAGINATION ===== -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; flex-wrap:wrap; gap:12px;">
+        <span style="color:#888; font-size:0.9rem;" id="favorisPaginationInfo">Affichage de 0 à 0 sur 0</span>
+        <div style="display:flex; gap:8px;">
+            <button onclick="prevFavorisPage()" id="prevFavorisPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; color:#888;">◀ Précédent</button>
+            <span id="favorisPageInfo" style="display:flex; align-items:center; padding:0 12px; font-weight:600;">Page 1</span>
+            <button onclick="nextFavorisPage()" id="nextFavorisPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; color:#888;">Suivant ▶</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+    (function() {
+        let allFavoris = [], filteredFavoris = [], currentPage = 1;
+        const perPage = 9;
+
+        const testData = [
+            { id: 1, produit: 'NIKEL Sport Blanc', categorie: 'sport', prix: 7900, image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=200&h=200&fit=crop', nbFavoris: 12, clients: ['Jean D.', 'Marie M.'] },
+            { id: 2, produit: 'Montre EDGE', categorie: 'accessoires', prix: 14900, image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop', nbFavoris: 8, clients: ['Amadou D.'] },
+            { id: 3, produit: 'Sac NOMAD', categorie: 'accessoires', prix: 5900, image: 'https://images.unsplash.com/photo-1547949003-9792a18a2601?w=200&h=200&fit=crop', nbFavoris: 5, clients: ['Sophie B.'] },
+            { id: 4, produit: 'NIKEL Essential Bleu', categorie: 'vêtements', prix: 8900, image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=200&h=200&fit=crop', nbFavoris: 4, clients: ['Marie M.'] },
+            { id: 5, produit: 'NIKEL Urban Gris', categorie: 'vêtements', prix: 9900, image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=200&h=200&fit=crop', nbFavoris: 3, clients: ['Jean D.'] }
+        ];
+
+        function renderFavoris() {
+            const grid = document.getElementById('favorisGrid');
+            if (filteredFavoris.length === 0) {
+                grid.innerHTML = `<div style="text-align:center; padding:40px; color:#888; grid-column:1/-1;">Aucun favori trouvé.</div>`;
+                return;
+            }
+            const start = (currentPage - 1) * perPage;
+            const items = filteredFavoris.slice(start, start + perPage);
+            grid.innerHTML = items.map(f => `
+                <div style="background:#f8f8f8; border-radius:12px; overflow:hidden;">
+                    <img src="${f.image}" style="width:100%; height:160px; object-fit:cover;" onerror="this.src='https://via.placeholder.com/200x200/1a1a1a/FFFFFF?text=NIKEL'">
+                    <div style="padding:14px;">
+                        <h4 style="font-weight:600;">${f.produit}</h4>
+                        <p style="color:#888; font-size:0.85rem;">${f.categorie}</p>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-weight:700; color:#c9a84c;">${f.prix.toLocaleString()} FCFA</span>
+                            <span style="background:white; padding:2px 12px; border-radius:50px; font-size:0.8rem; color:#e74c3c;">❤️ ${f.nbFavoris}</span>
+                        </div>
+                        <details style="font-size:0.8rem; color:#888; margin-top:6px;">
+                            <summary>👥 ${f.clients.length} clients</summary>
+                            <div style="margin-top:6px; display:flex; flex-wrap:wrap; gap:4px;">
+                                ${f.clients.map(c => `<span style="background:#e8e8e8; padding:2px 10px; border-radius:50px; font-size:0.75rem;">${c}</span>`).join('')}
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            `).join('');
+            updatePaginationInfo();
+        }
+
+        function updateStats() {
+            document.getElementById('totalFavoris').textContent = allFavoris.reduce((s, f) => s + f.nbFavoris, 0);
+            document.getElementById('totalProduits').textContent = allFavoris.length;
+            document.getElementById('totalClients').textContent = [...new Set(allFavoris.flatMap(f => f.clients))].length;
+        }
+
+        function updatePaginationInfo() {
+            const total = filteredFavoris.length;
+            const start = (currentPage - 1) * perPage + 1;
+            const end = Math.min(currentPage * perPage, total);
+            document.getElementById('favorisPaginationInfo').textContent = `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total}`;
+            document.getElementById('favorisPageInfo').textContent = `Page ${currentPage} sur ${Math.ceil(total / perPage) || 1}`;
+        }
+
+        function applyFavorisFilters() {
+            const search = document.getElementById('searchFavoris').value.toLowerCase().trim();
+            const cat = document.getElementById('filterFavorisCategorie').value;
+            filteredFavoris = allFavoris.filter(f => {
+                let m = true;
+                if (search) m = f.produit.toLowerCase().includes(search);
+                if (cat !== 'all') m = m && f.categorie === cat;
+                return m;
+            });
+            currentPage = 1;
+            renderFavoris();
+        }
+
+        function resetFavorisFilters() {
+            document.getElementById('searchFavoris').value = '';
+            document.getElementById('filterFavorisCategorie').value = 'all';
+            filteredFavoris = [...allFavoris];
+            currentPage = 1;
+            renderFavoris();
+        }
+
+        function prevFavorisPage() { if (currentPage > 1) { currentPage--; renderFavoris(); } }
+        function nextFavorisPage() { if (currentPage < Math.ceil(filteredFavoris.length / perPage)) { currentPage++; renderFavoris(); } }
+
+        function loadData() {
+            allFavoris = testData;
+            filteredFavoris = [...allFavoris];
+            renderFavoris();
+            updateStats();
+        }
+
+        window.applyFavorisFilters = applyFavorisFilters;
+        window.resetFavorisFilters = resetFavorisFilters;
+        window.prevFavorisPage = prevFavorisPage;
+        window.nextFavorisPage = nextFavorisPage;
+
+        document.addEventListener('DOMContentLoaded', loadData);
+    })();
+</script>
