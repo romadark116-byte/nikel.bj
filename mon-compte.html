@@ -285,44 +285,44 @@
                     </div>
                 `;
 
-                // Simuler un délai de chargement (pour l'effet)
-                setTimeout(() => {
-                    // Si c'est le tableau de bord, charger le contenu directement
-                    if (page === 'dashboard') {
+                // Si c'est le tableau de bord, charger le contenu directement
+                if (page === 'dashboard') {
+                    setTimeout(() => {
                         mainContent.innerHTML = getDashboardContent();
-                    } else {
-                        // Charger la page via fetch
-                        fetch(page + '.html')
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error('Page non trouvée');
-                                }
-                                return response.text();
-                            })
-                            .then(html => {
-                                mainContent.innerHTML = html;
-                                
-                                // Ré-exécuter les scripts dans la page chargée
-                                const scripts = mainContent.querySelectorAll('script');
-                                scripts.forEach(script => {
-                                    const newScript = document.createElement('script');
-                                    newScript.textContent = script.textContent;
-                                    document.body.appendChild(newScript);
-                                    document.body.removeChild(newScript);
-                                });
-                            })
-                            .catch(() => {
-                                // Si la page n'existe pas, afficher un message
-                                mainContent.innerHTML = `
-                                    <div style="background:var(--white); border-radius:16px; box-shadow:var(--shadow); padding:40px; text-align:center;">
-                                        <i class="fas fa-construction" style="font-size:3rem; color:var(--gold);"></i>
-                                        <h3 style="margin-top:16px;">Page en construction</h3>
-                                        <p style="color:var(--gray);">Le contenu de cette section sera bientôt disponible.</p>
-                                    </div>
-                                `;
-                            });
-                    }
-                }, 300);
+                    }, 300);
+                    return;
+                }
+
+                // Charger la page via fetch
+                fetch(page + '.html')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Page non trouvée');
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        mainContent.innerHTML = html;
+                        
+                        // Ré-exécuter les scripts dans la page chargée
+                        const scripts = mainContent.querySelectorAll('script');
+                        scripts.forEach(script => {
+                            const newScript = document.createElement('script');
+                            newScript.textContent = script.textContent;
+                            document.body.appendChild(newScript);
+                            document.body.removeChild(newScript);
+                        });
+                    })
+                    .catch(() => {
+                        // Si la page n'existe pas, afficher un message
+                        mainContent.innerHTML = `
+                            <div style="background:var(--white); border-radius:16px; box-shadow:var(--shadow); padding:40px; text-align:center;">
+                                <i class="fas fa-construction" style="font-size:3rem; color:var(--gold);"></i>
+                                <h3 style="margin-top:16px;">Page en construction</h3>
+                                <p style="color:var(--gray);">Le contenu de cette section sera bientôt disponible.</p>
+                            </div>
+                        `;
+                    });
             }
 
             // Contenu du tableau de bord (intégré)
