@@ -1,0 +1,603 @@
+<!-- articles.html - Mes articles -->
+<div id="articlesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
+
+    <!-- ===== TITRE ===== -->
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:24px;">
+        <div>
+            <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:#1a1a1a; margin-bottom:4px;">
+                <i class="fas fa-cube" style="color:#c9a84c;"></i> Mes articles
+            </h2>
+            <p style="color:#888; font-size:0.95rem;">Gérez votre catalogue de produits.</p>
+        </div>
+        <button onclick="openAddArticleModal()" style="padding:12px 24px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+            <i class="fas fa-plus"></i> Ajouter un article
+        </button>
+    </div>
+
+    <!-- ===== STATISTIQUES RAPIDES ===== -->
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total articles</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#1a1a1a;" id="totalArticles">0</p>
+        </div>
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">En stock</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#27ae60;" id="totalStock">0</p>
+        </div>
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Rupture</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#f39c12;" id="totalRupture">0</p>
+        </div>
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #e74c3c;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">En solde</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#e74c3c;" id="totalSoldes">0</p>
+        </div>
+    </div>
+
+    <!-- ===== FILTRES & RECHERCHE ===== -->
+    <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
+        <div style="flex:2; min-width:200px;">
+            <input type="text" id="searchInputArticles" placeholder="🔍 Rechercher un produit..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#ffffff;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onkeyup="applyArticleFilters()">
+        </div>
+        <div style="min-width:150px;">
+            <select id="filterCategorie" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer;" onchange="applyArticleFilters()">
+                <option value="all">📂 Toutes les catégories</option>
+                <option value="vêtements">👕 Vêtements</option>
+                <option value="accessoires">👜 Accessoires</option>
+                <option value="chaussures">👟 Chaussures</option>
+                <option value="sport">🏋️ Sport</option>
+                <option value="électronique">📱 Électronique</option>
+            </select>
+        </div>
+        <div style="min-width:150px;">
+            <select id="filterStatutArticle" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer;" onchange="applyArticleFilters()">
+                <option value="all">📊 Tous les statuts</option>
+                <option value="stock">✅ En stock</option>
+                <option value="rupture">⚠️ Rupture</option>
+                <option value="soldes">🔥 En solde</option>
+            </select>
+        </div>
+        <button onclick="resetArticleFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+            <i class="fas fa-undo"></i> Réinitialiser
+        </button>
+    </div>
+
+    <!-- ===== TABLEAU DES ARTICLES ===== -->
+    <div style="overflow-x:auto; border-radius:12px; border:1px solid #f0f0f0;">
+        <table style="width:100%; border-collapse:collapse; font-size:0.95rem;">
+            <thead>
+                <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">ID</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Image</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Nom</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Catégorie</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Prix</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Stock</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Statut</th>
+                    <th style="text-align:center; padding:14px 12px; font-weight:600; color:#1a1a1a;">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="articlesTableBody">
+                <tr>
+                    <td colspan="8" style="text-align:center; padding:40px; color:#888;">
+                        <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
+                        Chargement des articles...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ===== PAGINATION ===== -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:12px;">
+        <span style="color:#888; font-size:0.9rem;" id="paginationInfo">Affichage de 0 à 0 sur 0 entrées</span>
+        <div style="display:flex; gap:8px;">
+            <button onclick="previousArticlePage()" id="prevArticlePage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+                <i class="fas fa-chevron-left"></i> Précédent
+            </button>
+            <span id="articlePageInfo" style="display:flex; align-items:center; padding:0 12px; font-weight:600; color:#1a1a1a;">Page 1</span>
+            <button onclick="nextArticlePage()" id="nextArticlePage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+                Suivant <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL AJOUT / MODIFICATION ARTICLE ===== -->
+<div id="articleModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:white; border-radius:16px; padding:32px; max-width:550px; width:90%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h3 id="articleModalTitle" style="font-family:'Playfair Display',serif; font-size:1.4rem; margin:0;">
+                <i class="fas fa-cube" style="color:#c9a84c;"></i> Ajouter un article
+            </h3>
+            <button onclick="closeArticleModal()" style="background:transparent; border:none; font-size:1.5rem; cursor:pointer; color:#888;" onmouseover="this.style.color='#e74c3c'" onmouseout="this.style.color='#888'">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <form id="articleForm">
+            <input type="hidden" id="articleId" value="">
+            
+            <!-- Nom -->
+            <div class="form-group">
+                <label for="articleNom"><i class="fas fa-tag"></i> Nom du produit</label>
+                <input type="text" id="articleNom" placeholder="Ex: NIKEL Sport Blanc" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+            </div>
+
+            <!-- Catégorie & Prix -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div class="form-group">
+                    <label for="articleCategorie"><i class="fas fa-folder"></i> Catégorie</label>
+                    <select id="articleCategorie" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+                        <option value="vêtements">👕 Vêtements</option>
+                        <option value="accessoires">👜 Accessoires</option>
+                        <option value="chaussures">👟 Chaussures</option>
+                        <option value="sport">🏋️ Sport</option>
+                        <option value="électronique">📱 Électronique</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="articlePrix"><i class="fas fa-money-bill-wave"></i> Prix (FCFA)</label>
+                    <input type="number" id="articlePrix" placeholder="0" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+                </div>
+            </div>
+
+            <!-- Stock & Prix original -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div class="form-group">
+                    <label for="articleStock"><i class="fas fa-boxes"></i> Stock</label>
+                    <input type="number" id="articleStock" placeholder="0" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+                </div>
+                <div class="form-group">
+                    <label for="articleOldPrice"><i class="fas fa-tag"></i> Ancien prix (optionnel)</label>
+                    <input type="number" id="articleOldPrice" placeholder="0" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+                <label for="articleDescription"><i class="fas fa-align-left"></i> Description</label>
+                <textarea id="articleDescription" rows="3" placeholder="Description du produit..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; resize:vertical; font-family:inherit;"></textarea>
+            </div>
+
+            <!-- Image URL -->
+            <div class="form-group">
+                <label for="articleImage"><i class="fas fa-image"></i> URL de l'image</label>
+                <input type="url" id="articleImage" placeholder="https://exemple.com/image.jpg" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+            </div>
+
+            <!-- Boutons -->
+            <div style="display:flex; gap:12px; margin-top:16px;">
+                <button type="submit" id="saveArticleBtn" style="flex:1; padding:12px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:600; cursor:pointer; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                    <i class="fas fa-save"></i> Enregistrer
+                </button>
+                <button type="button" onclick="closeArticleModal()" style="flex:1; padding:12px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:1rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#e74c3c';this.style.color='#e74c3c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+    (function() {
+        // ==========================================
+        // VARIABLES GLOBALES
+        // ==========================================
+        let allArticles = [];
+        let filteredArticles = [];
+        let currentArticlePage = 1;
+        const articlesPerPage = 10;
+        let isEditingArticle = false;
+
+        // ==========================================
+        // DONNÉES DE TEST
+        // ==========================================
+        function getTestArticles() {
+            return [
+                { id: 1, nom: 'NIKEL Sport Blanc', categorie: 'sport', prix: 79.00, oldPrice: 99.00, stock: 15, description: 'T-shirt technique en maille respirante', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=100&h=100&fit=crop', statut: 'stock' },
+                { id: 2, nom: 'NIKEL Essential Bleu', categorie: 'vêtements', prix: 89.00, oldPrice: null, stock: 25, description: 'T-shirt premium en coton bio', image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=100&h=100&fit=crop', statut: 'stock' },
+                { id: 3, nom: 'Sac NOMAD', categorie: 'accessoires', prix: 59.00, oldPrice: null, stock: 0, description: 'Sac en cuir véritable', image: 'https://images.unsplash.com/photo-1547949003-9792a18a2601?w=100&h=100&fit=crop', statut: 'rupture' },
+                { id: 4, nom: 'Montre EDGE', categorie: 'accessoires', prix: 149.00, oldPrice: 199.00, stock: 8, description: 'Montre connectée avec GPS', image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100&h=100&fit=crop', statut: 'soldes' },
+                { id: 5, nom: 'NIKEL Urban Gris', categorie: 'vêtements', prix: 99.00, oldPrice: null, stock: 12, description: 'Sweat-shirt urbain', image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=100&h=100&fit=crop', statut: 'stock' }
+            ];
+        }
+
+        // ==========================================
+        // FORMATER LE PRIX
+        // ==========================================
+        function formatPrice(price) {
+            return price.toFixed(2).replace('.', ',') + ' FCFA';
+        }
+
+        // ==========================================
+        // AFFICHER LE STATUT AVEC COULEUR
+        // ==========================================
+        function getArticleStatutBadge(statut) {
+            const statuts = {
+                'stock': { bg: '#27ae60', icon: 'fa-check', text: 'En stock' },
+                'rupture': { bg: '#f39c12', icon: 'fa-times', text: 'Rupture' },
+                'soldes': { bg: '#e74c3c', icon: 'fa-fire', text: 'En solde' }
+            };
+            const s = statuts[statut] || statuts['stock'];
+            return `<span style="background:${s.bg}; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                <i class="fas ${s.icon}"></i> ${s.text}
+            </span>`;
+        }
+
+        // ==========================================
+        // RENDU DU TABLEAU
+        // ==========================================
+        function renderArticleTable() {
+            const tbody = document.getElementById('articlesTableBody');
+            
+            if (filteredArticles.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align:center; padding:40px; color:#888;">
+                            <i class="fas fa-box-open" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
+                            Aucun article trouvé.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            const startIndex = (currentArticlePage - 1) * articlesPerPage;
+            const endIndex = Math.min(startIndex + articlesPerPage, filteredArticles.length);
+            const pageItems = filteredArticles.slice(startIndex, endIndex);
+
+            tbody.innerHTML = pageItems.map(article => `
+                <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
+                    <td style="padding:12px; font-weight:600; color:#1a1a1a;">#${article.id}</td>
+                    <td style="padding:12px;">
+                        <img src="${article.image || 'https://via.placeholder.com/50x50/1a1a1a/FFFFFF?text=NIKEL'}" 
+                             alt="${article.nom}" 
+                             style="width:50px; height:50px; object-fit:cover; border-radius:8px;"
+                             onerror="this.src='https://via.placeholder.com/50x50/1a1a1a/FFFFFF?text=NIKEL'">
+                    </td>
+                    <td style="padding:12px; font-weight:500;">${article.nom}</td>
+                    <td style="padding:12px; color:#888;">${article.categorie || '—'}</td>
+                    <td style="padding:12px; font-weight:700; color:#c9a84c;">
+                        ${formatPrice(article.prix)}
+                        ${article.oldPrice ? `<span style="font-size:0.8rem; color:#999; text-decoration:line-through; display:block;">${formatPrice(article.oldPrice)}</span>` : ''}
+                    </td>
+                    <td style="padding:12px; text-align:center; font-weight:600;">${article.stock || 0}</td>
+                    <td style="padding:12px;">${getArticleStatutBadge(article.statut)}</td>
+                    <td style="padding:12px; text-align:center;">
+                        <button onclick="editArticle(${article.id})" style="padding:6px 12px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Modifier">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteArticle(${article.id})" style="padding:6px 12px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Supprimer">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ==========================================
+        // METTRE À JOUR LES STATISTIQUES
+        // ==========================================
+        function updateArticleStats() {
+            const total = allArticles.length;
+            const stock = allArticles.filter(a => a.statut === 'stock' || (a.stock > 0 && a.statut !== 'soldes')).length;
+            const rupture = allArticles.filter(a => a.statut === 'rupture' || a.stock === 0).length;
+            const soldes = allArticles.filter(a => a.statut === 'soldes' || (a.oldPrice && a.oldPrice > a.prix)).length;
+
+            document.getElementById('totalArticles').textContent = total;
+            document.getElementById('totalStock').textContent = stock;
+            document.getElementById('totalRupture').textContent = rupture;
+            document.getElementById('totalSoldes').textContent = soldes;
+        }
+
+        // ==========================================
+        // METTRE À JOUR LES INFOS DE PAGINATION
+        // ==========================================
+        function updateArticlePaginationInfo() {
+            const total = filteredArticles.length;
+            const start = (currentArticlePage - 1) * articlesPerPage + 1;
+            const end = Math.min(currentArticlePage * articlesPerPage, total);
+            const totalPages = Math.ceil(total / articlesPerPage);
+
+            document.getElementById('paginationInfo').textContent = 
+                `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
+            document.getElementById('articlePageInfo').textContent = `Page ${currentArticlePage} sur ${totalPages || 1}`;
+
+            document.getElementById('prevArticlePage').disabled = currentArticlePage <= 1;
+            document.getElementById('nextArticlePage').disabled = currentArticlePage >= totalPages;
+        }
+
+        // ==========================================
+        // PAGINATION
+        // ==========================================
+        function previousArticlePage() {
+            if (currentArticlePage > 1) {
+                currentArticlePage--;
+                renderArticleTable();
+                updateArticlePaginationInfo();
+            }
+        }
+
+        function nextArticlePage() {
+            const totalPages = Math.ceil(filteredArticles.length / articlesPerPage);
+            if (currentArticlePage < totalPages) {
+                currentArticlePage++;
+                renderArticleTable();
+                updateArticlePaginationInfo();
+            }
+        }
+
+        // ==========================================
+        // FILTRES
+        // ==========================================
+        function applyArticleFilters() {
+            const searchTerm = document.getElementById('searchInputArticles').value.toLowerCase().trim();
+            const categorie = document.getElementById('filterCategorie').value;
+            const statut = document.getElementById('filterStatutArticle').value;
+
+            filteredArticles = allArticles.filter(article => {
+                let matchSearch = true;
+                if (searchTerm) {
+                    matchSearch = article.nom.toLowerCase().includes(searchTerm) ||
+                                  (article.description && article.description.toLowerCase().includes(searchTerm));
+                }
+
+                let matchCategorie = true;
+                if (categorie !== 'all') {
+                    matchCategorie = article.categorie === categorie;
+                }
+
+                let matchStatut = true;
+                if (statut !== 'all') {
+                    if (statut === 'stock') matchStatut = article.statut === 'stock' || (article.stock > 0 && article.statut !== 'soldes');
+                    else if (statut === 'rupture') matchStatut = article.statut === 'rupture' || article.stock === 0;
+                    else if (statut === 'soldes') matchStatut = article.statut === 'soldes' || (article.oldPrice && article.oldPrice > article.prix);
+                }
+
+                return matchSearch && matchCategorie && matchStatut;
+            });
+
+            currentArticlePage = 1;
+            renderArticleTable();
+            updateArticlePaginationInfo();
+        }
+
+        function resetArticleFilters() {
+            document.getElementById('searchInputArticles').value = '';
+            document.getElementById('filterCategorie').value = 'all';
+            document.getElementById('filterStatutArticle').value = 'all';
+            filteredArticles = [...allArticles];
+            currentArticlePage = 1;
+            renderArticleTable();
+            updateArticlePaginationInfo();
+        }
+
+        // ==========================================
+        // MODAL : AJOUTER
+        // ==========================================
+        function openAddArticleModal() {
+            isEditingArticle = false;
+            document.getElementById('articleModalTitle').innerHTML = '<i class="fas fa-cube" style="color:#c9a84c;"></i> Ajouter un article';
+            document.getElementById('articleId').value = '';
+            document.getElementById('articleForm').reset();
+            document.getElementById('articleModal').style.display = 'flex';
+        }
+
+        // ==========================================
+        // MODAL : MODIFIER
+        // ==========================================
+        function editArticle(id) {
+            const article = allArticles.find(a => a.id === id);
+            if (!article) return;
+
+            isEditingArticle = true;
+            document.getElementById('articleModalTitle').innerHTML = '<i class="fas fa-edit" style="color:#c9a84c;"></i> Modifier l\'article';
+            document.getElementById('articleId').value = article.id;
+            document.getElementById('articleNom').value = article.nom || '';
+            document.getElementById('articleCategorie').value = article.categorie || 'vêtements';
+            document.getElementById('articlePrix').value = article.prix || '';
+            document.getElementById('articleOldPrice').value = article.oldPrice || '';
+            document.getElementById('articleStock').value = article.stock || 0;
+            document.getElementById('articleDescription').value = article.description || '';
+            document.getElementById('articleImage').value = article.image || '';
+            document.getElementById('articleModal').style.display = 'flex';
+        }
+
+        // ==========================================
+        // MODAL : FERMER
+        // ==========================================
+        function closeArticleModal() {
+            document.getElementById('articleModal').style.display = 'none';
+            document.getElementById('articleForm').reset();
+        }
+
+        // ==========================================
+        // SAUVEGARDER ARTICLE
+        // ==========================================
+        function saveArticle(event) {
+            event.preventDefault();
+
+            const id = document.getElementById('articleId').value;
+            const prix = parseFloat(document.getElementById('articlePrix').value) || 0;
+            const oldPrice = document.getElementById('articleOldPrice').value ? parseFloat(document.getElementById('articleOldPrice').value) : null;
+            const stock = parseInt(document.getElementById('articleStock').value) || 0;
+            
+            // Déterminer le statut
+            let statut = 'stock';
+            if (stock === 0) statut = 'rupture';
+            if (oldPrice && oldPrice > prix) statut = 'soldes';
+
+            const articleData = {
+                nom: document.getElementById('articleNom').value.trim(),
+                categorie: document.getElementById('articleCategorie').value,
+                prix: prix,
+                oldPrice: oldPrice,
+                stock: stock,
+                statut: statut,
+                description: document.getElementById('articleDescription').value.trim(),
+                image: document.getElementById('articleImage').value.trim()
+            };
+
+            if (id) {
+                // MODIFICATION
+                const index = allArticles.findIndex(a => a.id === parseInt(id));
+                if (index !== -1) {
+                    allArticles[index] = { ...allArticles[index], ...articleData };
+                    showNotification('✅ Article modifié avec succès !', 'success');
+                }
+            } else {
+                // AJOUT
+                const newId = Math.max(...allArticles.map(a => a.id), 0) + 1;
+                allArticles.push({ id: newId, ...articleData });
+                showNotification('✅ Article ajouté avec succès !', 'success');
+            }
+
+            closeArticleModal();
+            filteredArticles = [...allArticles];
+            renderArticleTable();
+            updateArticleStats();
+            updateArticlePaginationInfo();
+
+            // Sauvegarder dans Supabase
+            saveArticleToSupabase(articleData, id);
+        }
+
+        // ==========================================
+        // SUPPRIMER ARTICLE
+        // ==========================================
+        function deleteArticle(id) {
+            if (!confirm('Voulez-vous vraiment supprimer cet article ?')) return;
+
+            const article = allArticles.find(a => a.id === id);
+            allArticles = allArticles.filter(a => a.id !== id);
+            filteredArticles = [...allArticles];
+            renderArticleTable();
+            updateArticleStats();
+            updateArticlePaginationInfo();
+            showNotification(`🗑️ "${article?.nom || 'Article'}" supprimé`, 'info');
+
+            if (window.supabaseClient) {
+                window.supabaseClient
+                    .from('produits')
+                    .delete()
+                    .eq('id', id)
+                    .then(({ error }) => {
+                        if (error) console.error('❌ Erreur suppression:', error);
+                    });
+            }
+        }
+
+        // ==========================================
+        // SAUVEGARDER DANS SUPABASE
+        // ==========================================
+        function saveArticleToSupabase(articleData, id) {
+            if (!window.supabaseClient) return;
+
+            const data = {
+                nom: articleData.nom,
+                categorie: articleData.categorie,
+                prix: articleData.prix,
+                prix_original: articleData.oldPrice || null,
+                stock: articleData.stock,
+                description: articleData.description || '',
+                image_url: articleData.image || '',
+                promo: articleData.oldPrice && articleData.oldPrice > articleData.prix ? 
+                        Math.round((1 - articleData.prix / articleData.oldPrice) * 100) : 0
+            };
+
+            if (id) {
+                window.supabaseClient
+                    .from('produits')
+                    .update(data)
+                    .eq('id', parseInt(id))
+                    .then(({ error }) => {
+                        if (error) console.error('❌ Erreur mise à jour:', error);
+                    });
+            } else {
+                window.supabaseClient
+                    .from('produits')
+                    .insert([data])
+                    .then(({ error }) => {
+                        if (error) console.error('❌ Erreur insertion:', error);
+                    });
+            }
+        }
+
+        // ==========================================
+        // CHARGER LES DONNÉES
+        // ==========================================
+        async function loadArticlesData() {
+            try {
+                if (window.supabaseClient) {
+                    const { data, error } = await window.supabaseClient
+                        .from('produits')
+                        .select('*')
+                        .order('id', { ascending: true });
+
+                    if (!error && data && data.length > 0) {
+                        allArticles = data.map(p => ({
+                            id: p.id,
+                            nom: p.nom,
+                            categorie: p.categorie || 'vêtements',
+                            prix: parseFloat(p.prix),
+                            oldPrice: p.prix_original ? parseFloat(p.prix_original) : null,
+                            stock: p.stock || 0,
+                            description: p.description || '',
+                            image: p.image_url || '',
+                            statut: p.stock === 0 ? 'rupture' : 
+                                    (p.prix_original && parseFloat(p.prix_original) > parseFloat(p.prix) ? 'soldes' : 'stock')
+                        }));
+                        filteredArticles = [...allArticles];
+                        renderArticleTable();
+                        updateArticleStats();
+                        updateArticlePaginationInfo();
+                        return;
+                    }
+                }
+
+                allArticles = getTestArticles();
+                filteredArticles = [...allArticles];
+                renderArticleTable();
+                updateArticleStats();
+                updateArticlePaginationInfo();
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                allArticles = getTestArticles();
+                filteredArticles = [...allArticles];
+                renderArticleTable();
+                updateArticleStats();
+                updateArticlePaginationInfo();
+            }
+        }
+
+        // ==========================================
+        // EXPOSER LES FONCTIONS GLOBALEMENT
+        // ==========================================
+        window.applyArticleFilters = applyArticleFilters;
+        window.resetArticleFilters = resetArticleFilters;
+        window.previousArticlePage = previousArticlePage;
+        window.nextArticlePage = nextArticlePage;
+        window.openAddArticleModal = openAddArticleModal;
+        window.editArticle = editArticle;
+        window.deleteArticle = deleteArticle;
+        window.closeArticleModal = closeArticleModal;
+        window.saveArticle = saveArticle;
+
+        // ==========================================
+        // ÉVÉNEMENTS
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadArticlesData();
+
+            document.getElementById('articleForm').addEventListener('submit', saveArticle);
+
+            document.getElementById('articleModal').addEventListener('click', function(e) {
+                if (e.target === this) closeArticleModal();
+            });
+        });
+
+    })();
+</script>
