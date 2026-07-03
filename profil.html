@@ -1,0 +1,382 @@
+<!-- profil.html - Page Profil du vendeur -->
+<div style="background:var(--white); border-radius:16px; box-shadow:var(--shadow); padding:32px;">
+    
+    <!-- ===== TITRE ===== -->
+    <h2 style="font-family:'Playfair Display',serif; margin-bottom:24px; padding-bottom:16px; border-bottom:2px solid var(--light-gray);">
+        <i class="fas fa-user-circle" style="color:var(--gold);"></i> Mon Profil
+    </h2>
+
+    <form id="profileForm" style="display:flex; flex-direction:column; gap:30px;">
+
+        <!-- ===== SECTION 1 : PHOTO DE PROFIL ===== -->
+        <div style="display:flex; align-items:center; gap:24px; padding:20px; background:var(--off-white); border-radius:12px; flex-wrap:wrap;">
+            <div style="position:relative; width:100px; height:100px; flex-shrink:0;">
+                <div id="profilePhoto" style="width:100px; height:100px; border-radius:50%; background:linear-gradient(135deg, var(--gold), var(--accent-dark)); display:flex; align-items:center; justify-content:center; font-size:3rem; color:white; overflow:hidden; border:3px solid var(--gold);">
+                    <i class="fas fa-user"></i>
+                </div>
+                <label for="photoInput" style="position:absolute; bottom:0; right:0; background:var(--gold); color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.9rem; border:2px solid white;">
+                    <i class="fas fa-camera"></i>
+                </label>
+                <input type="file" id="photoInput" accept="image/*" style="display:none;">
+            </div>
+            <div>
+                <h4 style="margin-bottom:4px;">Photo de profil</h4>
+                <p style="font-size:0.9rem; color:var(--gray);">Cliquez sur l'icône appareil photo pour changer votre photo.</p>
+                <p style="font-size:0.8rem; color:var(--gray);">Formats acceptés : JPG, PNG · Max 2 Mo</p>
+            </div>
+        </div>
+
+        <!-- ===== SECTION 2 : INFORMATIONS PERSONNELLES ===== -->
+        <div>
+            <h3 style="font-family:'Playfair Display',serif; margin-bottom:16px; font-size:1.1rem; color:var(--dark-gray);">
+                <i class="fas fa-id-card" style="color:var(--gold);"></i> Informations personnelles
+            </h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div class="form-group">
+                    <label for="prenom"><i class="fas fa-user"></i> Prénom</label>
+                    <input type="text" id="prenom" name="prenom" value="Jean" required>
+                </div>
+                <div class="form-group">
+                    <label for="nom"><i class="fas fa-user"></i> Nom</label>
+                    <input type="text" id="nom" name="nom" value="Dupont" required>
+                </div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div class="form-group">
+                    <label for="ville"><i class="fas fa-city"></i> Ville</label>
+                    <input type="text" id="ville" name="ville" value="Paris">
+                </div>
+                <div class="form-group">
+                    <label for="pays"><i class="fas fa-globe"></i> Pays</label>
+                    <select id="pays" name="pays">
+                        <option value="FR" selected>France</option>
+                        <option value="BJ">Bénin</option>
+                        <option value="TG">Togo</option>
+                        <option value="BF">Burkina Faso</option>
+                        <option value="CI">Côte d'Ivoire</option>
+                        <option value="SN">Sénégal</option>
+                        <option value="ML">Mali</option>
+                        <option value="NE">Niger</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="telephone"><i class="fas fa-phone"></i> Téléphone</label>
+                <input type="tel" id="telephone" name="telephone" value="06 12 34 56 78" required>
+            </div>
+            <div class="form-group">
+                <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" id="email" name="email" value="jean@email.com" required>
+            </div>
+        </div>
+
+        <!-- ===== SECTION 3 : PARAMÈTRES DE LA BOUTIQUE ===== -->
+        <div>
+            <h3 style="font-family:'Playfair Display',serif; margin-bottom:16px; font-size:1.1rem; color:var(--dark-gray);">
+                <i class="fas fa-store" style="color:var(--gold);"></i> Paramètres de la boutique
+            </h3>
+            
+            <div class="form-group">
+                <label for="nomBoutique"><i class="fas fa-tag"></i> Nom de la boutique</label>
+                <input type="text" id="nomBoutique" name="nomBoutique" value="NIKEL">
+            </div>
+
+            <!-- Photo de la boutique -->
+            <div style="display:flex; align-items:center; gap:20px; padding:16px; background:var(--off-white); border-radius:12px; margin-bottom:16px; flex-wrap:wrap;">
+                <div style="position:relative; width:80px; height:80px; flex-shrink:0;">
+                    <div id="boutiquePhoto" style="width:80px; height:80px; border-radius:12px; background:linear-gradient(135deg, #2d2d2d, #1a1a1a); display:flex; align-items:center; justify-content:center; font-size:2rem; color:white; overflow:hidden; border:2px solid var(--light-gray);">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <label for="boutiquePhotoInput" style="position:absolute; bottom:0; right:0; background:var(--gold); color:white; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.8rem; border:2px solid white;">
+                        <i class="fas fa-camera"></i>
+                    </label>
+                    <input type="file" id="boutiquePhotoInput" accept="image/*" style="display:none;">
+                </div>
+                <div>
+                    <h4 style="font-size:0.95rem; margin-bottom:2px;">Photo de la boutique</h4>
+                    <p style="font-size:0.85rem; color:var(--gray);">Image qui représente votre boutique.</p>
+                </div>
+            </div>
+
+            <!-- Photo professionnelle -->
+            <div style="display:flex; align-items:center; gap:20px; padding:16px; background:var(--off-white); border-radius:12px; margin-bottom:16px; flex-wrap:wrap;">
+                <div style="position:relative; width:80px; height:80px; flex-shrink:0;">
+                    <div id="proPhoto" style="width:80px; height:80px; border-radius:12px; background:linear-gradient(135deg, #2d2d2d, #1a1a1a); display:flex; align-items:center; justify-content:center; font-size:2rem; color:white; overflow:hidden; border:2px solid var(--light-gray);">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <label for="proPhotoInput" style="position:absolute; bottom:0; right:0; background:var(--gold); color:white; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.8rem; border:2px solid white;">
+                        <i class="fas fa-camera"></i>
+                    </label>
+                    <input type="file" id="proPhotoInput" accept="image/*" style="display:none;">
+                </div>
+                <div>
+                    <h4 style="font-size:0.95rem; margin-bottom:2px;">Photo professionnelle</h4>
+                    <p style="font-size:0.85rem; color:var(--gray);">Photo qui apparaîtra sur vos cartes professionnelles.</p>
+                </div>
+            </div>
+
+            <!-- Description / Bio -->
+            <div class="form-group">
+                <label for="bio"><i class="fas fa-align-left"></i> Description Pro (Bio)</label>
+                <textarea id="bio" name="bio" rows="4" style="width:100%; padding:12px 16px; border:2px solid var(--light-gray); border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:var(--off-white); font-family:inherit; resize:vertical;">Votre description professionnelle ici. Présentez votre boutique, votre passion et ce qui vous rend unique.</textarea>
+            </div>
+        </div>
+
+        <!-- ===== BOUTON ENREGISTRER ===== -->
+        <div style="display:flex; gap:12px; flex-wrap:wrap; border-top:2px solid var(--light-gray); padding-top:20px;">
+            <button type="submit" class="btn-save">
+                <i class="fas fa-save"></i> Enregistrer les modifications
+            </button>
+            <button type="reset" class="btn-reset" style="padding:12px 30px; background:transparent; border:2px solid var(--light-gray); border-radius:10px; font-size:1rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:var(--gray);" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)';" onmouseout="this.style.borderColor='var(--light-gray)';this.style.color='var(--gray)';">
+                <i class="fas fa-undo"></i> Réinitialiser
+            </button>
+        </div>
+
+    </form>
+</div>
+
+<!-- ===== STYLES SPÉCIFIQUES ===== -->
+<style>
+    .form-group {
+        margin-bottom: 14px;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 4px;
+        color: var(--dark-gray);
+    }
+
+    .form-group label i {
+        color: var(--gold);
+        margin-right: 6px;
+        width: 16px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px 14px;
+        border: 2px solid var(--light-gray);
+        border-radius: 10px;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+        background: var(--off-white);
+        font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: var(--gold);
+        outline: none;
+        background: white;
+    }
+
+    .btn-save {
+        padding: 12px 30px;
+        background: linear-gradient(135deg, var(--gold), var(--accent-dark));
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-save:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 20px rgba(201, 168, 76, 0.4);
+    }
+
+    @media (max-width: 768px) {
+        .form-group {
+            margin-bottom: 12px;
+        }
+        .form-group input,
+        .form-group select {
+            padding: 8px 12px;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+    // ==========================================
+    // GESTION DES PHOTOS
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // Photo de profil
+        const photoInput = document.getElementById('photoInput');
+        const profilePhoto = document.getElementById('profilePhoto');
+        
+        if (photoInput && profilePhoto) {
+            photoInput.addEventListener('change', function(e) {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        profilePhoto.innerHTML = `<img src="${event.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Photo de la boutique
+        const boutiquePhotoInput = document.getElementById('boutiquePhotoInput');
+        const boutiquePhoto = document.getElementById('boutiquePhoto');
+        
+        if (boutiquePhotoInput && boutiquePhoto) {
+            boutiquePhotoInput.addEventListener('change', function(e) {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        boutiquePhoto.innerHTML = `<img src="${event.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Photo professionnelle
+        const proPhotoInput = document.getElementById('proPhotoInput');
+        const proPhoto = document.getElementById('proPhoto');
+        
+        if (proPhotoInput && proPhoto) {
+            proPhotoInput.addEventListener('change', function(e) {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        proPhoto.innerHTML = `<img src="${event.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // ==========================================
+        // SOUMISSION DU FORMULAIRE
+        // ==========================================
+        const profileForm = document.getElementById('profileForm');
+        if (profileForm) {
+            profileForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Récupérer les données du formulaire
+                const formData = {
+                    prenom: document.getElementById('prenom').value,
+                    nom: document.getElementById('nom').value,
+                    ville: document.getElementById('ville').value,
+                    pays: document.getElementById('pays').value,
+                    telephone: document.getElementById('telephone').value,
+                    email: document.getElementById('email').value,
+                    nomBoutique: document.getElementById('nomBoutique').value,
+                    bio: document.getElementById('bio').value
+                };
+                
+                console.log('📝 Données enregistrées:', formData);
+                
+                // Sauvegarder dans localStorage
+                localStorage.setItem('nikel_profil', JSON.stringify(formData));
+                
+                // Notification
+                showNotification('✅ Profil mis à jour avec succès !');
+            });
+
+            // Réinitialiser le formulaire
+            profileForm.addEventListener('reset', function(e) {
+                e.preventDefault();
+                if (confirm('Voulez-vous vraiment réinitialiser les modifications ?')) {
+                    // Recharger les valeurs initiales depuis localStorage ou par défaut
+                    const savedData = JSON.parse(localStorage.getItem('nikel_profil'));
+                    if (savedData) {
+                        document.getElementById('prenom').value = savedData.prenom || '';
+                        document.getElementById('nom').value = savedData.nom || '';
+                        document.getElementById('ville').value = savedData.ville || '';
+                        document.getElementById('pays').value = savedData.pays || 'FR';
+                        document.getElementById('telephone').value = savedData.telephone || '';
+                        document.getElementById('email').value = savedData.email || '';
+                        document.getElementById('nomBoutique').value = savedData.nomBoutique || '';
+                        document.getElementById('bio').value = savedData.bio || '';
+                    }
+                    showNotification('🔄 Formulaire réinitialisé');
+                }
+            });
+        }
+
+        // ==========================================
+        // CHARGER LES DONNÉES SAUVEGARDÉES
+        // ==========================================
+        function loadSavedProfile() {
+            const savedData = JSON.parse(localStorage.getItem('nikel_profil'));
+            if (savedData) {
+                if (document.getElementById('prenom')) document.getElementById('prenom').value = savedData.prenom || '';
+                if (document.getElementById('nom')) document.getElementById('nom').value = savedData.nom || '';
+                if (document.getElementById('ville')) document.getElementById('ville').value = savedData.ville || '';
+                if (document.getElementById('pays')) document.getElementById('pays').value = savedData.pays || 'FR';
+                if (document.getElementById('telephone')) document.getElementById('telephone').value = savedData.telephone || '';
+                if (document.getElementById('email')) document.getElementById('email').value = savedData.email || '';
+                if (document.getElementById('nomBoutique')) document.getElementById('nomBoutique').value = savedData.nomBoutique || '';
+                if (document.getElementById('bio')) document.getElementById('bio').value = savedData.bio || '';
+                console.log('📂 Données chargées depuis localStorage');
+            }
+        }
+
+        loadSavedProfile();
+    });
+
+    // ==========================================
+    // NOTIFICATION (si non définie ailleurs)
+    // ==========================================
+    if (typeof showNotification !== 'function') {
+        function showNotification(message, type = 'info') {
+            const colors = {
+                success: 'var(--gold)',
+                error: '#e74c3c',
+                info: 'var(--primary)'
+            };
+
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: var(--primary);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 14px;
+                font-weight: 500;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+                z-index: 9999;
+                max-width: 400px;
+                border-left: 4px solid ${colors[type] || colors.info};
+                font-size: 0.95rem;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                animation: slideUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            `;
+            toast.innerHTML = `<span>${message}</span>`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+        window.showNotification = showNotification;
+    }
+</script>
