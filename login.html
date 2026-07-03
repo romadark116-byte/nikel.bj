@@ -240,7 +240,7 @@
                 <form id="loginForm">
                     <div class="form-group">
                         <label><i class="fas fa-envelope"></i> Email</label>
-                        <input type="email" id="loginEmail" placeholder="Entrez votre votre adresse e-mail" required>
+                        <input type="email" id="loginEmail" placeholder="Entrez votre adresse e-mail" required>
                     </div>
                     <div class="form-group">
                         <label><i class="fas fa-lock"></i> Mot de passe</label>
@@ -330,6 +330,17 @@
         window.supabaseClient = supabaseClient;
 
         // ==========================================
+        // FONCTION DE HASHAGE (SHA-256)
+        // ==========================================
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // ==========================================
         // NOTIFICATION
         // ==========================================
         function showNotification(message, type = 'info') {
@@ -346,7 +357,7 @@
         }
 
         // ==========================================
-        // CONNEXION ADMIN
+        // CONNEXION ADMIN AVEC HASH
         // ==========================================
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -360,7 +371,13 @@
             }
 
             try {
-                // Vérifier dans la table admins
+                // 1. Hasher le mot de passe saisi
+                const hashedPassword = await hashPassword(password);
+                
+                console.log('🔐 Email saisi:', email);
+                console.log('🔐 Hash saisi:', hashedPassword);
+                
+                // 2. Vérifier dans la table admins
                 const { data, error } = await supabaseClient
                     .from('admins')
                     .select('*')
@@ -369,16 +386,19 @@
 
                 if (error || !data) {
                     showNotification('❌ Email ou mot de passe incorrect', 'error');
+                    console.error('❌ Erreur Supabase:', error);
                     return;
                 }
 
-                // Vérification du mot de passe
-                if (data.mot_de_passe !== password) {
+                console.log('🔐 Hash en base:', data.mot_de_passe);
+
+                // 3. Comparer les hash
+                if (data.mot_de_passe !== hashedPassword) {
                     showNotification('❌ Email ou mot de passe incorrect', 'error');
                     return;
                 }
 
-                // Stocker la session admin
+                // 4. ✅ Connexion réussie
                 localStorage.setItem('nikel_admin', JSON.stringify({
                     id: data.id,
                     prenom: data.prenom,
