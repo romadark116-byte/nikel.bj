@@ -429,8 +429,6 @@ function confirmOrder() {
     // Construire le message WhatsApp
     let message = '🛒 *NOUVEL ACHAT* 🛒\n\n';
     message += `👤 *Client :* ${formData.get('prenom')} ${formData.get('nom')}\n`;
-    message += `📱 *Téléphone :* ${formData.get('telephone')}\n`;
-    message += `📧 *Email :* ${formData.get('email')}\n`;
     message += `📍 *Pays :* ${formData.get('pays')}\n`;
     message += `🏙️ *Ville :* ${formData.get('ville')}\n\n`;
     message += '📦 *Détails de l\'achat :*\n';
@@ -445,7 +443,6 @@ function confirmOrder() {
     
     message += '─'.repeat(20) + '\n';
     message += `💰 *Total :* ${total.toFixed(2).replace('.', ',')} FCFA\n\n`;
-    message += '📱 Merci de confirmer votre achat !';
     
     const encodedMessage = encodeURIComponent(message);
     const phoneNumber = '2290191647681'; // À remplacer par votre numéro
