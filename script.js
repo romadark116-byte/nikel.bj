@@ -1,7 +1,7 @@
 /**
  * ============================================
  * NIKEL - script.js
- * Version 4.2 - Avec Supabase + WhatsApp Checkout + Enregistrement clients
+ * Version 4.1 - Avec Supabase + WhatsApp Checkout
  * ============================================
  */
 
@@ -340,71 +340,7 @@ function updateTotal() {
 }
 
 // ============================================
-// 7. ENREGISTRER LE CLIENT DANS SUPABASE
-// ============================================
-async function saveClientToSupabase(clientData) {
-    try {
-        // Vérifier si le client existe déjà (par email)
-        const { data: existing, error: checkError } = await window.supabaseClient
-            .from('clients')
-            .select('id, email')
-            .eq('email', clientData.email)
-            .maybeSingle();
-        
-        if (existing) {
-            // Mettre à jour l'existant
-            const { error: updateError } = await window.supabaseClient
-                .from('clients')
-                .update({
-                    prenom: clientData.prenom,
-                    nom: clientData.nom,
-                    telephone: clientData.telephone,
-                    ville: clientData.ville,
-                    pays: clientData.pays,
-                    date_clic: new Date().toISOString(),
-                    total_achat: clientData.total,
-                    produits: clientData.produits
-                })
-                .eq('id', existing.id);
-            
-            if (updateError) {
-                console.error('❌ Erreur mise à jour:', updateError);
-                return false;
-            }
-            console.log('✅ Client mis à jour !');
-            return true;
-        }
-        
-        // Nouveau client
-        const { error } = await window.supabaseClient
-            .from('clients')
-            .insert([{
-                prenom: clientData.prenom,
-                nom: clientData.nom,
-                email: clientData.email,
-                telephone: clientData.telephone,
-                ville: clientData.ville,
-                pays: clientData.pays,
-                total_achat: clientData.total,
-                produits: clientData.produits
-            }]);
-
-        if (error) {
-            console.error('❌ Erreur insertion:', error);
-            return false;
-        }
-        
-        console.log('✅ Nouveau client enregistré !');
-        return true;
-
-    } catch (err) {
-        console.error('❌ Erreur:', err);
-        return false;
-    }
-}
-
-// ============================================
-// 8. CHECKOUT (WHATSAPP + ENREGISTREMENT)
+// 7. CHECKOUT (VERSION WHATSAPP AVEC SOUS-TOTAUX)
 // ============================================
 function renderCheckoutItems() {
     const container = document.getElementById('checkoutItems');
@@ -490,76 +426,40 @@ function confirmOrder() {
     
     const formData = new FormData(form);
     
-    // 1. Récupérer les données du client
-    const clientData = {
-        prenom: formData.get('prenom'),
-        nom: formData.get('nom'),
-        email: formData.get('email'),
-        telephone: formData.get('telephone'),
-        ville: formData.get('ville'),
-        pays: formData.get('pays')
-    };
+    // Construire le message WhatsApp
+    let message = '🛒 *NOUVEL ACHAT* 🛒\n\n';
+    message += `👤 *Client :* ${formData.get('prenom')} ${formData.get('nom')}\n`;
+    message += `📱 *Téléphone :* ${formData.get('telephone')}\n`;
+    message += `📧 *Email :* ${formData.get('email')}\n`;
+    message += `📍 *Pays :* ${formData.get('pays')}\n`;
+    message += `🏙️ *Ville :* ${formData.get('ville')}\n\n`;
+    message += '📦 *Détails de l\'achat :*\n';
+    message += '─'.repeat(20) + '\n';
     
-    // 2. Calculer le total et la liste des produits
     let total = 0;
-    let produitsList = [];
     cart.forEach(item => {
         const itemTotal = item.price * item.quantity;
         total += itemTotal;
-        produitsList.push(`${item.name} x ${item.quantity}`);
-    });
-    clientData.total = total;
-    clientData.produits = produitsList.join(', ');
-    
-    // 3. ENREGISTRER LE CLIENT DANS SUPABASE
-    saveClientToSupabase(clientData).then(success => {
-        if (success) {
-            console.log('✅ Client enregistré avec succès');
-        } else {
-            console.warn('⚠️ Problème d\'enregistrement');
-        }
-    });
-    
-    // 4. Construire le message WhatsApp (simplifié)
-    const paysOptions = {
-        'BJ': 'Bénin',
-        'TG': 'Togo',
-        'BF': 'Burkina Faso',
-        'CI': "Côte d'Ivoire",
-        'SN': 'Sénégal',
-        'FR': 'France'
-    };
-    const paysNom = paysOptions[clientData.pays] || clientData.pays;
-    
-    let message = '🛒 *NOUVEL ACHAT* 🛒\n\n';
-    message += `👤 *Client :* ${clientData.prenom} ${clientData.nom}\n`;
-    message += `📍 *Pays :* ${paysNom}\n`;
-    message += `🏙️ *Ville :* ${clientData.ville}\n\n`;
-    message += '📦 *Détails :*\n';
-    message += '────────────────────\n';
-    
-    cart.forEach(item => {
-        const itemTotal = item.price * item.quantity;
         message += `• ${item.name} x ${item.quantity} = ${itemTotal.toFixed(2).replace('.', ',')} FCFA\n`;
     });
     
-    message += '────────────────────\n';
-    message += `💰 *Total :* ${total.toFixed(2).replace('.', ',')} FCFA`;
+    message += '─'.repeat(20) + '\n';
+    message += `💰 *Total :* ${total.toFixed(2).replace('.', ',')} FCFA\n\n`;
+    message += '📱 Merci de confirmer votre achat !';
     
-    // 5. Ouvrir WhatsApp
     const encodedMessage = encodeURIComponent(message);
-    const phoneNumber = '2290191647681'; // Remplacez par votre numéro
+    const phoneNumber = '2290191647681'; // À remplacer par votre numéro
     
     window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
     
-    // 6. Vider le panier
+    // Vider le panier après validation
     cart = [];
     updateCart();
-    showNotification('✅ Achat envoyé ! Client enregistré.', 'success');
+    showNotification('✅ Commande envoyée sur WhatsApp !', 'success');
 }
 
 // ============================================
-// 9. PAGE CONFIRMATION
+// 8. PAGE CONFIRMATION
 // ============================================
 function renderConfirmation() {
     const container = document.getElementById('confirmationItems');
@@ -588,7 +488,7 @@ function renderConfirmation() {
 }
 
 // ============================================
-// 10. FILTRES ET TRI
+// 9. FILTRES ET TRI
 // ============================================
 function initFilters() {
     const categoryFilter = document.getElementById('categoryFilter');
@@ -624,7 +524,7 @@ function initFilters() {
 }
 
 // ============================================
-// 11. WISHLIST
+// 10. WISHLIST
 // ============================================
 function addToWishlist(id) {
     const product = products.find(p => p.id === id);
@@ -642,7 +542,7 @@ function addToWishlist(id) {
 }
 
 // ============================================
-// 12. QUICK VIEW
+// 11. QUICK VIEW
 // ============================================
 function quickView(id) {
     const product = products.find(p => p.id === id);
@@ -651,7 +551,7 @@ function quickView(id) {
 }
 
 // ============================================
-// 13. FAQ ACCORDÉON
+// 12. FAQ ACCORDÉON
 // ============================================
 function initFaq() {
     document.querySelectorAll('.faq-question').forEach(question => {
@@ -671,7 +571,7 @@ function initFaq() {
 }
 
 // ============================================
-// 14. FORMULAIRES
+// 13. FORMULAIRES
 // ============================================
 function initContactForm() {
     const contactForm = document.getElementById('contactForm');
@@ -719,7 +619,7 @@ function initRegisterForm() {
 }
 
 // ============================================
-// 15. NOTIFICATIONS (TOAST)
+// 14. NOTIFICATIONS (TOAST)
 // ============================================
 function showNotification(message, type = 'info') {
     const colors = {
@@ -768,10 +668,10 @@ function showNotification(message, type = 'info') {
 }
 
 // ============================================
-// 16. INITIALISATION
+// 15. INITIALISATION
 // ============================================
 async function initSite() {
-    console.log('🚀 NIKEL - Boutique en ligne v4.2 (WhatsApp + Clients)');
+    console.log('🚀 NIKEL - Boutique en ligne v4.1 (WhatsApp Checkout)');
     
     // Charger les produits depuis Supabase
     const loaded = await loadProductsFromSupabase();
@@ -839,3 +739,43 @@ async function initSite() {
     
     // FAQ
     initFaq();
+    
+    // Formulaires
+    initContactForm();
+    initLoginForm();
+    initRegisterForm();
+    
+    // Mettre à jour le badge
+    updateBadge();
+    
+    // Recherche avec la touche Entrée
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleSearch();
+            }
+        });
+    }
+    
+    console.log(`✅ ${products.length} produits disponibles`);
+    console.log(`🛒 ${cart.length} articles dans le panier`);
+}
+
+// Lancer l'initialisation
+document.addEventListener('DOMContentLoaded', initSite);
+
+// ============================================
+// 16. EXPOSER LES FONCTIONS GLOBALEMENT
+// ============================================
+window.addToCart = addToCart;
+window.removeFromCart = removeFromCart;
+window.updateQuantity = updateQuantity;
+window.clearCart = clearCart;
+window.addToWishlist = addToWishlist;
+window.quickView = quickView;
+window.handleSearch = handleSearch;
+window.confirmOrder = confirmOrder;
+window.showNotification = showNotification;
+
+console.log('✅ script.js chargé avec succès !');
