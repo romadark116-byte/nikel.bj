@@ -9,133 +9,32 @@
     <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        .login-container {
-            max-width: 480px;
-            margin: 0 auto;
-        }
-        .login-card {
-            background: var(--white);
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-        }
-        .login-card .logo-icon {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .login-card .logo-icon i {
-            font-size: 3rem;
-            color: var(--gold);
-        }
-        .login-card .logo-icon h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            margin: 8px 0 4px 0;
-            color: var(--dark-gray);
-        }
-        .login-card .logo-icon p {
-            color: var(--gray);
-            font-size: 0.95rem;
-            margin: 0;
-        }
-        .form-group {
-            margin-bottom: 16px;
-        }
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-bottom: 4px;
-            color: var(--dark-gray);
-        }
-        .form-group label i {
-            color: var(--gold);
-            margin-right: 6px;
-            width: 16px;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 12px 14px;
-            border: 2px solid var(--light-gray);
-            border-radius: 10px;
-            font-size: 0.95rem;
-            transition: all 0.3s;
-            background: var(--off-white);
-            box-sizing: border-box;
-        }
-        .form-group input:focus {
-            border-color: var(--gold);
-            outline: none;
-            background: white;
-        }
-        .btn-login {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, var(--gold), var(--accent-dark));
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .btn-login:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 20px rgba(201, 168, 76, 0.4);
-        }
-        .login-footer {
-            text-align: center;
-            margin-top: 16px;
-            color: var(--gray);
-            font-size: 0.85rem;
-        }
-        .login-footer i {
-            color: var(--gold);
-        }
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--primary);
-            color: white;
-            padding: 16px 24px;
-            border-radius: 14px;
-            font-weight: 500;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.25);
-            z-index: 9999;
-            max-width: 400px;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            animation: slideUp 0.5s ease;
-        }
-        .toast.error {
-            border-left: 4px solid #e74c3c;
-        }
-        .toast.success {
-            border-left: 4px solid #27ae60;
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @media (max-width: 768px) {
-            .login-card { padding: 24px; }
-        }
+        .login-container { max-width: 480px; margin: 0 auto; }
+        .login-card { background: var(--white); padding: 40px; border-radius: 16px; box-shadow: var(--shadow); }
+        .login-card .logo-icon { text-align: center; margin-bottom: 30px; }
+        .login-card .logo-icon i { font-size: 3rem; color: var(--gold); }
+        .login-card .logo-icon h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin: 8px 0 4px 0; color: var(--dark-gray); }
+        .login-card .logo-icon p { color: var(--gray); font-size: 0.95rem; margin: 0; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; color: var(--dark-gray); }
+        .form-group label i { color: var(--gold); margin-right: 6px; width: 16px; }
+        .form-group input { width: 100%; padding: 12px 14px; border: 2px solid var(--light-gray); border-radius: 10px; font-size: 0.95rem; transition: all 0.3s; background: var(--off-white); box-sizing: border-box; }
+        .form-group input:focus { border-color: var(--gold); outline: none; background: white; }
+        .btn-login { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--gold), var(--accent-dark)); color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-login:hover { transform: scale(1.02); box-shadow: 0 4px 20px rgba(201, 168, 76, 0.4); }
+        .login-footer { text-align: center; margin-top: 16px; color: var(--gray); font-size: 0.85rem; }
+        .login-footer i { color: var(--gold); }
+        .toast { position: fixed; bottom: 30px; right: 30px; background: var(--primary); color: white; padding: 16px 24px; border-radius: 14px; font-weight: 500; box-shadow: 0 8px 40px rgba(0,0,0,0.25); z-index: 9999; max-width: 400px; font-size: 0.95rem; display: flex; align-items: center; gap: 12px; animation: slideUp 0.5s ease; }
+        .toast.error { border-left: 4px solid #e74c3c; }
+        .toast.success { border-left: 4px solid #27ae60; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) { .login-card { padding: 24px; } }
     </style>
 </head>
 <body>
     <header class="header">
         <div class="container header-grid">
-            <div class="logo">
-                <a href="index.html"><i class="fas fa-crown"></i> NIKEL</a>
-            </div>
+            <div class="logo"><a href="index.html"><i class="fas fa-crown"></i> NIKEL</a></div>
             <nav class="nav">
                 <ul>
                     <li><a href="index.html">Accueil</a></li>
@@ -147,26 +46,12 @@
             </nav>
             <div class="header-actions">
                 <div class="header-search" style="display:flex; align-items:center; gap:8px;">
-                    <input type="text" 
-                           id="searchInput" 
-                           placeholder="Rechercher..." 
-                           style="padding:8px 16px; border:2px solid var(--light-gray); border-radius:50px; font-size:0.9rem; outline:none; transition:all 0.3s; width:160px; background:var(--off-white);"
-                           onfocus="this.style.width='220px'; this.style.borderColor='var(--gold)'" 
-                           onblur="this.style.width='160px'; this.style.borderColor='var(--light-gray)'">
-                    <button onclick="handleSearch()" style="background:linear-gradient(135deg, var(--gold), var(--accent-dark)); border:none; border-radius:50%; width:38px; height:38px; color:white; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; justify-content:center;">
-                        <i class="fas fa-search"></i>
-                    </button>
+                    <input type="text" id="searchInput" placeholder="Rechercher..." style="padding:8px 16px; border:2px solid var(--light-gray); border-radius:50px; font-size:0.9rem; outline:none; transition:all 0.3s; width:160px; background:var(--off-white);">
+                    <button onclick="handleSearch()" style="background:linear-gradient(135deg, var(--gold), var(--accent-dark)); border:none; border-radius:50%; width:38px; height:38px; color:white; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; justify-content:center;"><i class="fas fa-search"></i></button>
                 </div>
-                <a href="panier.html" class="panier-icon">
-                    <i class="fas fa-shopping-bag"></i>
-                    <span class="badge">0</span>
-                </a>
-                <a href="login.html" style="color:var(--dark-gray); transition:color 0.3s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--dark-gray)'">
-                    <i class="fas fa-user" style="font-size:1.2rem;"></i>
-                </a>
-                <button class="menu-toggle" id="menuToggle">
-                    <i class="fas fa-bars"></i>
-                </button>
+                <a href="panier.html" class="panier-icon"><i class="fas fa-shopping-bag"></i><span class="badge">0</span></a>
+                <a href="login.html" style="color:var(--dark-gray); transition:color 0.3s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--dark-gray)'"><i class="fas fa-user" style="font-size:1.2rem;"></i></a>
+                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
             </div>
         </div>
     </header>
@@ -259,8 +144,11 @@
         const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
         
+        // ✅ Utiliser un nom différent pour éviter le conflit
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         window.supabaseClient = supabaseClient;
+
+        console.log('✅ Supabase initialisé');
 
         // ==========================================
         // NOTIFICATION
@@ -281,13 +169,42 @@
         }
 
         // ==========================================
-        // CONNEXION ADMIN
+        // TEST DE CONNEXION DIRECT
+        // ==========================================
+        async function testSupabase() {
+            console.log('🔍 Test de récupération des admins...');
+            try {
+                const { data, error } = await supabaseClient
+                    .from('admins')
+                    .select('*');
+                
+                console.log('📊 Données:', data);
+                console.log('❌ Erreur:', error);
+                
+                if (data && data.length > 0) {
+                    console.log('✅ Admin trouvé:', data[0]);
+                    console.log('🔐 Mot de passe en base:', data[0].mot_de_passe);
+                } else {
+                    console.log('⚠️ Aucun admin trouvé dans la table');
+                }
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+            }
+        }
+
+        // Exécuter le test au chargement
+        testSupabase();
+
+        // ==========================================
+        // CONNEXION
         // ==========================================
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
+            
+            console.log('📝 Tentative de connexion avec:', { email, password });
             
             if (!email || !password) {
                 showNotification('❌ Veuillez remplir tous les champs', 'error');
@@ -301,15 +218,16 @@
                     .select('*')
                     .eq('email', email);
 
-                console.log('📝 Résultat requête:', { data, error });
+                console.log('📝 Résultat de la requête:', { data, error });
 
                 if (error) {
-                    console.error('❌ Erreur:', error);
-                    showNotification('❌ Erreur de connexion', 'error');
+                    console.error('❌ Erreur Supabase:', error);
+                    showNotification('❌ Erreur de connexion à la base', 'error');
                     return;
                 }
 
                 if (!data || data.length === 0) {
+                    console.log('❌ Aucun admin avec cet email');
                     showNotification('❌ Email ou mot de passe incorrect', 'error');
                     return;
                 }
@@ -321,6 +239,7 @@
 
                 // 2. Comparaison
                 if (admin.mot_de_passe !== password) {
+                    console.log('❌ Mots de passe différents');
                     showNotification('❌ Email ou mot de passe incorrect', 'error');
                     return;
                 }
@@ -350,7 +269,7 @@
         });
 
         // ==========================================
-        // VÉRIFICATION SESSION
+        // SESSION
         // ==========================================
         const admin = JSON.parse(localStorage.getItem('nikel_admin'));
         if (admin) {
