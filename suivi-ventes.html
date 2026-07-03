@@ -1,0 +1,434 @@
+<!-- suivi-ventes.html - Suivi des ventes -->
+<div id="ventesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
+
+    <!-- ===== TITRE ===== -->
+    <h2 style="font-family:'Playfair Display',serif; margin-bottom:8px; font-size:1.6rem; color:#1a1a1a;">
+        <i class="fas fa-chart-line" style="color:#c9a84c;"></i> Suivi des ventes
+    </h2>
+    <p style="color:#888; margin-bottom:24px; font-size:0.95rem;">Gérez et suivez toutes vos commandes en un seul endroit.</p>
+
+    <!-- ===== STATISTIQUES RAPIDES ===== -->
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total commandes</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#1a1a1a;" id="totalCommandes">0</p>
+        </div>
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Soldées</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#27ae60;" id="totalSoldees">0</p>
+        </div>
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">En attente</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#f39c12;" id="totalEnAttente">0</p>
+        </div>
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #e74c3c;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Annulées</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#e74c3c;" id="totalAnnulees">0</p>
+        </div>
+    </div>
+
+    <!-- ===== BARRE DE RECHERCHE & FILTRES ===== -->
+    <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
+
+        <!-- Recherche -->
+        <div style="flex:2; min-width:200px;">
+            <input type="text" id="searchInputVentes" placeholder="🔍 Rechercher par nom ou email..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#ffffff;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'">
+        </div>
+
+        <!-- Filtre Statut -->
+        <div style="min-width:150px;">
+            <select id="filterStatut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer;" onchange="applyFilters()">
+                <option value="all">📊 Tous les statuts</option>
+                <option value="soldé">✅ Soldé</option>
+                <option value="en attente">⏳ En attente</option>
+                <option value="annulé">❌ Annulé</option>
+            </select>
+        </div>
+
+        <!-- Date début -->
+        <div style="min-width:150px;">
+            <input type="datetime-local" id="dateDebut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onchange="applyFilters()">
+        </div>
+
+        <!-- Date fin -->
+        <div style="min-width:150px;">
+            <input type="datetime-local" id="dateFin" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onchange="applyFilters()">
+        </div>
+
+        <!-- Boutons -->
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button onclick="applyFilters()" style="padding:10px 20px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                <i class="fas fa-filter"></i> Filtrer
+            </button>
+            <button onclick="resetFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+                <i class="fas fa-undo"></i> Réinitialiser
+            </button>
+        </div>
+    </div>
+
+    <!-- ===== TABLEAU DES VENTES ===== -->
+    <div style="overflow-x:auto; border-radius:12px; border:1px solid #f0f0f0;">
+        <table style="width:100%; border-collapse:collapse; font-size:0.95rem;">
+            <thead>
+                <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">ID</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Client</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Email</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Date de clic</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Produits</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Total</th>
+                    <th style="text-align:center; padding:14px 12px; font-weight:600; color:#1a1a1a;">Statut</th>
+                    <th style="text-align:center; padding:14px 12px; font-weight:600; color:#1a1a1a;">Action</th>
+                </tr>
+            </thead>
+            <tbody id="ventesTableBody">
+                <tr>
+                    <td colspan="8" style="text-align:center; padding:40px; color:#888;">
+                        <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
+                        Chargement des données...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ===== PAGINATION ===== -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:12px;">
+        <span style="color:#888; font-size:0.9rem;" id="paginationInfo">Affichage de 0 à 0 sur 0 entrées</span>
+        <div style="display:flex; gap:8px;">
+            <button onclick="previousPage()" id="prevPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+                <i class="fas fa-chevron-left"></i> Précédent
+            </button>
+            <span id="pageInfo" style="display:flex; align-items:center; padding:0 12px; font-weight:600; color:#1a1a1a;">Page 1</span>
+            <button onclick="nextPage()" id="nextPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+                Suivant <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+    (function() {
+        // ==========================================
+        // VARIABLES GLOBALES
+        // ==========================================
+        let allClients = [];
+        let filteredClients = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
+
+        // ==========================================
+        // CHARGER LES DONNÉES DEPUIS SUPABASE
+        // ==========================================
+        async function loadVentesData() {
+            const tbody = document.getElementById('ventesTableBody');
+            
+            try {
+                // Vérifier si Supabase est disponible
+                if (!window.supabaseClient) {
+                    console.warn('⚠️ Supabase non disponible, utilisation de données de test');
+                    allClients = getTestData();
+                    filteredClients = [...allClients];
+                    renderTable();
+                    updateStats();
+                    updatePaginationInfo();
+                    return;
+                }
+
+                // Charger les données depuis Supabase
+                const { data, error } = await window.supabaseClient
+                    .from('clients')
+                    .select('*')
+                    .order('date_clic', { ascending: false });
+
+                if (error) {
+                    console.error('❌ Erreur Supabase:', error);
+                    allClients = getTestData();
+                    filteredClients = [...allClients];
+                    renderTable();
+                    updateStats();
+                    updatePaginationInfo();
+                    return;
+                }
+
+                if (!data || data.length === 0) {
+                    console.warn('⚠️ Aucune donnée trouvée');
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="8" style="text-align:center; padding:40px; color:#888;">
+                                <i class="fas fa-inbox" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
+                                Aucune vente enregistrée pour le moment.
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                allClients = data.map(client => ({
+                    ...client,
+                    statut: client.statut || 'en attente',
+                    date_clic_formatted: formatDate(client.date_clic)
+                }));
+
+                filteredClients = [...allClients];
+                renderTable();
+                updateStats();
+                updatePaginationInfo();
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                allClients = getTestData();
+                filteredClients = [...allClients];
+                renderTable();
+                updateStats();
+                updatePaginationInfo();
+            }
+        }
+
+        // ==========================================
+        // DONNÉES DE TEST (si Supabase n'est pas dispo)
+        // ==========================================
+        function getTestData() {
+            return [
+                { id: 1, prenom: 'Jean', nom: 'Dupont', email: 'jean@email.com', telephone: '0612345678', ville: 'Paris', pays: 'FR', date_clic: new Date().toISOString(), produits: 'Sac NOMAD x 1, Montre EDGE x 1', total_achat: 398.00, statut: 'soldé' },
+                { id: 2, prenom: 'Fleury', nom: 'HAMIDOU', email: 'f91631072@gmail.com', telephone: '0191647720', ville: 'Parakou', pays: 'BJ', date_clic: new Date(Date.now() - 86400000).toISOString(), produits: 'NIKEL Sport x 2, NIKEL Essential x 1', total_achat: 267.00, statut: 'en attente' },
+                { id: 3, prenom: 'Marie', nom: 'Martin', email: 'marie@email.com', telephone: '0765432109', ville: 'Lyon', pays: 'FR', date_clic: new Date(Date.now() - 172800000).toISOString(), produits: 'Veste BOMBER x 1', total_achat: 159.00, statut: 'annulé' },
+                { id: 4, prenom: 'Amadou', nom: 'Diallo', email: 'amadou@email.com', telephone: '779012345', ville: 'Dakar', pays: 'SN', date_clic: new Date(Date.now() - 259200000).toISOString(), produits: 'Lunettes NOIR x 2, Sac NOMAD x 1', total_achat: 299.00, statut: 'soldé' },
+                { id: 5, prenom: 'Sophie', nom: 'Bernard', email: 'sophie@email.com', telephone: '0612345987', ville: 'Marseille', pays: 'FR', date_clic: new Date(Date.now() - 345600000).toISOString(), produits: 'Montre EDGE x 1', total_achat: 149.00, statut: 'en attente' }
+            ];
+        }
+
+        // ==========================================
+        // FORMATER LA DATE
+        // ==========================================
+        function formatDate(dateString) {
+            if (!dateString) return '—';
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return '—';
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${day}/${month}/${year} ${hours}:${minutes}`;
+        }
+
+        // ==========================================
+        // AFFICHER LE STATUT AVEC COULEUR
+        // ==========================================
+        function getStatutBadge(statut) {
+            const statuts = {
+                'soldé': { bg: '#27ae60', icon: 'fa-check', text: 'Soldé' },
+                'en attente': { bg: '#f39c12', icon: 'fa-clock', text: 'En attente' },
+                'annulé': { bg: '#e74c3c', icon: 'fa-times', text: 'Annulé' }
+            };
+            const s = statuts[statut] || statuts['en attente'];
+            return `<span style="background:${s.bg}; color:white; padding:4px 12px; border-radius:50px; font-size:0.8rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                <i class="fas ${s.icon}"></i> ${s.text}
+            </span>`;
+        }
+
+        // ==========================================
+        // RENDU DU TABLEAU
+        // ==========================================
+        function renderTable() {
+            const tbody = document.getElementById('ventesTableBody');
+            
+            if (filteredClients.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align:center; padding:40px; color:#888;">
+                            <i class="fas fa-search" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
+                            Aucun résultat trouvé pour vos critères de recherche.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            // Pagination
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredClients.length);
+            const pageItems = filteredClients.slice(startIndex, endIndex);
+
+            tbody.innerHTML = pageItems.map(client => `
+                <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
+                    <td style="padding:12px; font-weight:600; color:#1a1a1a;">#${client.id}</td>
+                    <td style="padding:12px; font-weight:500;">${client.prenom || ''} ${client.nom || ''}</td>
+                    <td style="padding:12px; color:#888;">${client.email || '—'}</td>
+                    <td style="padding:12px; color:#888; font-size:0.9rem;">${client.date_clic_formatted || '—'}</td>
+                    <td style="padding:12px; color:#555; font-size:0.9rem; max-width:150px; word-wrap:break-word;">${client.produits || '—'}</td>
+                    <td style="padding:12px; font-weight:700; color:#c9a84c;">${client.total_achat ? client.total_achat.toFixed(2) + ' FCFA' : '—'}</td>
+                    <td style="padding:12px; text-align:center;">${getStatutBadge(client.statut)}</td>
+                    <td style="padding:12px; text-align:center;">
+                        <button onclick="updateStatut(${client.id}, 'soldé')" style="padding:4px 10px; border:none; border-radius:6px; background:#27ae60; color:white; cursor:pointer; font-size:0.75rem; margin:2px;" title="Marquer comme soldé">✅</button>
+                        <button onclick="updateStatut(${client.id}, 'en attente')" style="padding:4px 10px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.75rem; margin:2px;" title="Marquer en attente">⏳</button>
+                        <button onclick="updateStatut(${client.id}, 'annulé')" style="padding:4px 10px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.75rem; margin:2px;" title="Marquer annulé">❌</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ==========================================
+        // METTRE À JOUR LES STATISTIQUES
+        // ==========================================
+        function updateStats() {
+            const total = allClients.length;
+            const soldees = allClients.filter(c => c.statut === 'soldé').length;
+            const enAttente = allClients.filter(c => c.statut === 'en attente').length;
+            const annulees = allClients.filter(c => c.statut === 'annulé').length;
+
+            document.getElementById('totalCommandes').textContent = total;
+            document.getElementById('totalSoldees').textContent = soldees;
+            document.getElementById('totalEnAttente').textContent = enAttente;
+            document.getElementById('totalAnnulees').textContent = annulees;
+        }
+
+        // ==========================================
+        // METTRE À JOUR LES INFOS DE PAGINATION
+        // ==========================================
+        function updatePaginationInfo() {
+            const total = filteredClients.length;
+            const start = (currentPage - 1) * itemsPerPage + 1;
+            const end = Math.min(currentPage * itemsPerPage, total);
+            const totalPages = Math.ceil(total / itemsPerPage);
+
+            document.getElementById('paginationInfo').textContent = 
+                `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
+            document.getElementById('pageInfo').textContent = `Page ${currentPage} sur ${totalPages || 1}`;
+
+            document.getElementById('prevPage').disabled = currentPage <= 1;
+            document.getElementById('nextPage').disabled = currentPage >= totalPages;
+        }
+
+        // ==========================================
+        // PAGINATION
+        // ==========================================
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+                updatePaginationInfo();
+            }
+        }
+
+        function nextPage() {
+            const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+                updatePaginationInfo();
+            }
+        }
+
+        // ==========================================
+        // FILTRES
+        // ==========================================
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInputVentes').value.toLowerCase().trim();
+            const statutFilter = document.getElementById('filterStatut').value;
+            const dateDebut = document.getElementById('dateDebut').value;
+            const dateFin = document.getElementById('dateFin').value;
+
+            filteredClients = allClients.filter(client => {
+                // Recherche par nom ou email
+                let matchSearch = true;
+                if (searchTerm) {
+                    const fullName = (client.prenom + ' ' + client.nom).toLowerCase();
+                    const email = (client.email || '').toLowerCase();
+                    matchSearch = fullName.includes(searchTerm) || email.includes(searchTerm);
+                }
+
+                // Filtre statut
+                let matchStatut = true;
+                if (statutFilter !== 'all') {
+                    matchStatut = client.statut === statutFilter;
+                }
+
+                // Filtre date
+                let matchDate = true;
+                if (dateDebut) {
+                    const d1 = new Date(dateDebut);
+                    const dClient = new Date(client.date_clic);
+                    if (d1 > dClient) matchDate = false;
+                }
+                if (dateFin && matchDate) {
+                    const d2 = new Date(dateFin);
+                    const dClient = new Date(client.date_clic);
+                    if (d2 < dClient) matchDate = false;
+                }
+
+                return matchSearch && matchStatut && matchDate;
+            });
+
+            currentPage = 1;
+            renderTable();
+            updatePaginationInfo();
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInputVentes').value = '';
+            document.getElementById('filterStatut').value = 'all';
+            document.getElementById('dateDebut').value = '';
+            document.getElementById('dateFin').value = '';
+            filteredClients = [...allClients];
+            currentPage = 1;
+            renderTable();
+            updatePaginationInfo();
+        }
+
+        // ==========================================
+        // METTRE À JOUR LE STATUT D'UN CLIENT
+        // ==========================================
+        function updateStatut(id, newStatut) {
+            const client = allClients.find(c => c.id === id);
+            if (!client) return;
+
+            // Mettre à jour dans Supabase (si disponible)
+            if (window.supabaseClient) {
+                window.supabaseClient
+                    .from('clients')
+                    .update({ statut: newStatut })
+                    .eq('id', id)
+                    .then(({ error }) => {
+                        if (error) {
+                            console.error('❌ Erreur mise à jour:', error);
+                            return;
+                        }
+                        console.log(`✅ Statut du client #${id} mis à jour: ${newStatut}`);
+                    });
+            }
+
+            // Mettre à jour localement
+            client.statut = newStatut;
+            
+            // Mettre à jour dans filteredClients aussi
+            const filteredClient = filteredClients.find(c => c.id === id);
+            if (filteredClient) filteredClient.statut = newStatut;
+
+            renderTable();
+            updateStats();
+            updatePaginationInfo();
+
+            if (typeof showNotification === 'function') {
+                showNotification(`✅ Statut mis à jour : ${newStatut}`, 'success');
+            }
+        }
+
+        // ==========================================
+        // CHARGEMENT INITIAL
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadVentesData();
+        });
+
+        // Exposer les fonctions globalement
+        window.applyFilters = applyFilters;
+        window.resetFilters = resetFilters;
+        window.previousPage = previousPage;
+        window.nextPage = nextPage;
+        window.updateStatut = updateStatut;
+
+    })();
+</script>
