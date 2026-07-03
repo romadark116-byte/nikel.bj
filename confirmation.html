@@ -3,11 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Commande confirmée - NIKEL</title>
+    <title>Confirmation - NIKEL</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="animations.css">
     <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .confirmation-icon {
+            font-size: 4rem;
+            color: var(--gold);
+            margin-bottom: 16px;
+            display: block;
+        }
+        .confirmation-card {
+            background: var(--white);
+            padding: 50px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .order-number {
+            background: var(--off-white);
+            padding: 8px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 600;
+            color: var(--gold);
+            font-size: 1.1rem;
+            margin: 12px 0;
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+        .btn-group .btn {
+            min-width: 180px;
+            justify-content: center;
+        }
+        .success-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            text-align: left;
+            margin: 16px 0;
+            padding: 0;
+        }
+        .success-steps li {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            background: var(--off-white);
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        .success-steps li i {
+            color: var(--gold);
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+        .success-steps li .wa-icon {
+            color: #25D366;
+        }
+        @media (max-width: 768px) {
+            .confirmation-card {
+                padding: 24px;
+                margin: 0 10px;
+            }
+            .btn-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn-group .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -50,38 +129,59 @@
         </div>
     </header>
 
+    <section class="page-header">
+        <div class="container">
+            <h1>🎉 Prêt pour WhatsApp ! 🎉</h1>
+            <p>Votre demande nous a bien été envoyée</p>
+        </div>
+    </section>
+
     <section class="section">
-        <div class="container" style="max-width:600px; margin:0 auto; text-align:center;">
-            <div style="background:var(--white); padding:50px; border-radius:16px; box-shadow:var(--shadow);">
-                <div style="font-size:4rem; color:var(--gold); margin-bottom:20px;">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <h1 style="font-family:'Playfair Display',serif; font-size:2.2rem; margin-bottom:12px;">
-                    Commande confirmée ! 🎉
-                </h1>
-                <p style="color:var(--gray); font-size:1.1rem; margin-bottom:8px;">
-                    Merci pour votre achat. Vous allez recevoir un email de confirmation.
-                </p>
-                <p style="color:var(--gray);">
-                    Numéro de commande : <strong style="color:var(--primary);" id="orderNumber">#NIK-2026-001</strong>
-                </p>
+        <div class="container">
+            <div class="confirmation-card">
                 
-                <div style="margin:30px 0; padding:20px; background:var(--off-white); border-radius:12px; text-align:left;">
-                    <h4 style="margin-bottom:12px;">📦 Récapitulatif</h4>
-                    <div id="confirmationItems"></div>
+                <!-- Icône -->
+                <i class="fas fa-check-circle confirmation-icon"></i>
+                
+                <h2 style="font-family:'Playfair Display',serif; margin-bottom:8px;">
+                    Merci pour votre confiance ! 🙏
+                </h2>
+                <p style="color:var(--gray); font-size:0.95rem;">
+                    Nous avons bien reçu votre demande d'achat. 
+                    <br>Nous vous attendons sur WhatsApp pour finaliser votre commande.
+                </p>
+
+                <!-- Numéro de demande -->
+                <div class="order-number" id="orderNumber">
+                    #NIK-2026-001
                 </div>
 
-                <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
-                    <a href="index.html" class="btn btn-primary">
+                <!-- Étapes à suivre -->
+                <ul class="success-steps">
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span><strong>Demande envoyée</strong> — Nous avons bien reçu vos coordonnées</span>
+                    </li>
+                    <li>
+                        <i class="fab fa-whatsapp wa-icon"></i>
+                        <span><strong>Finalisation sur WhatsApp</strong> — Nous vous contactons pour confirmer les détails</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-envelope" style="color:var(--gold);"></i>
+                        <span><strong>Confirmation par email</strong> — Vous recevrez une notification dès que votre achat sera finalisé</span>
+                    </li>
+                </ul>
+
+                <!-- Boutons -->
+                <div class="btn-group">
+                    <a href="index.html" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:10px; padding:14px 28px; background:linear-gradient(135deg, var(--gold), var(--accent-dark)); color:white; border-radius:50px; text-decoration:none; font-weight:600; transition:all 0.3s;">
                         <i class="fas fa-home"></i> Retour à l'accueil
                     </a>
-                    <a href="boutique.html" class="btn btn-secondary">
+                    <a href="boutique.html" class="btn btn-secondary" style="display:inline-flex; align-items:center; gap:10px; padding:14px 28px; border:2px solid var(--gold); color:var(--gold); border-radius:50px; text-decoration:none; font-weight:600; transition:all 0.3s; background:transparent;" onmouseover="this.style.background='var(--gold)';this.style.color='white';" onmouseout="this.style.background='transparent';this.style.color='var(--gold)';">
                         <i class="fas fa-shopping-bag"></i> Continuer mes achats
                     </a>
-                    <a href="mon-compte.html" class="btn btn-secondary">
-                        <i class="fas fa-user"></i> Voir mes commandes
-                    </a>
                 </div>
+
             </div>
         </div>
     </section>
@@ -129,5 +229,38 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // Mettre à jour le numéro de commande
+        function updateOrderNumber() {
+            const order = JSON.parse(localStorage.getItem('nikel_last_order'));
+            const orderNumberEl = document.getElementById('orderNumber');
+            if (orderNumberEl && order && order.orderNumber) {
+                orderNumberEl.textContent = order.orderNumber;
+            }
+        }
+        
+        // Charger au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateOrderNumber();
+            
+            // Mettre à jour le badge du panier
+            const cart = JSON.parse(localStorage.getItem('nikel_cart')) || [];
+            const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const badges = document.querySelectorAll('.badge');
+            badges.forEach(badge => {
+                badge.textContent = total;
+                badge.style.display = total > 0 ? 'flex' : 'none';
+            });
+            
+            // Menu mobile
+            const menuToggle = document.getElementById('menuToggle');
+            const nav = document.querySelector('.nav');
+            if (menuToggle && nav) {
+                menuToggle.addEventListener('click', function() {
+                    nav.classList.toggle('open');
+                });
+            }
+        });
+    </script>
 </body>
 </html>
