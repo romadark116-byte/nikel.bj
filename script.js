@@ -344,6 +344,8 @@ function updateTotal() {
 // ============================================
 async function saveClientToSupabase(clientData) {
     try {
+        console.log('📝 Enregistrement du client...', clientData);
+        
         // Vérifier si le client existe déjà (par email)
         const { data: existing, error: checkError } = await window.supabaseClient
             .from('clients')
@@ -351,8 +353,13 @@ async function saveClientToSupabase(clientData) {
             .eq('email', clientData.email)
             .maybeSingle();
         
+        if (checkError) {
+            console.error('❌ Erreur vérification:', checkError);
+        }
+        
         if (existing) {
             // Mettre à jour l'existant
+            console.log('📝 Client existant, mise à jour...');
             const { error: updateError } = await window.supabaseClient
                 .from('clients')
                 .update({
@@ -362,8 +369,8 @@ async function saveClientToSupabase(clientData) {
                     ville: clientData.ville,
                     pays: clientData.pays,
                     date_clic: new Date().toISOString(),
-                    total_achat: clientData.total,
-                    produits: clientData.produits
+                    total_achat: clientData.total || 0,
+                    produits: clientData.produits || ''
                 })
                 .eq('id', existing.id);
             
@@ -371,12 +378,13 @@ async function saveClientToSupabase(clientData) {
                 console.error('❌ Erreur mise à jour:', updateError);
                 return false;
             }
-            console.log('✅ Client mis à jour !');
+            console.log('✅ Client mis à jour avec succès !');
             return true;
         }
         
         // Nouveau client
-        const { error } = await window.supabaseClient
+        console.log('📝 Nouveau client, insertion...');
+        const { data, error } = await window.supabaseClient
             .from('clients')
             .insert([{
                 prenom: clientData.prenom,
@@ -385,16 +393,17 @@ async function saveClientToSupabase(clientData) {
                 telephone: clientData.telephone,
                 ville: clientData.ville,
                 pays: clientData.pays,
-                total_achat: clientData.total,
-                produits: clientData.produits
-            }]);
+                total_achat: clientData.total || 0,
+                produits: clientData.produits || ''
+            }])
+            .select();
 
         if (error) {
             console.error('❌ Erreur insertion:', error);
             return false;
         }
         
-        console.log('✅ Nouveau client enregistré !');
+        console.log('✅ Nouveau client enregistré avec succès !', data);
         return true;
 
     } catch (err) {
@@ -525,11 +534,15 @@ function confirmOrder() {
     localStorage.setItem('nikel_last_order', JSON.stringify(orderData));
     
     // 5. ENREGISTRER LE CLIENT DANS SUPABASE
+    showNotification('📝 Enregistrement en cours...', 'info');
+    
     saveClientToSupabase(clientData).then(success => {
         if (success) {
-            console.log('✅ Client enregistré avec succès');
+            console.log('✅ Client enregistré dans Supabase');
+            showNotification('✅ Client enregistré !', 'success');
         } else {
-            console.warn('⚠️ Problème d\'enregistrement');
+            console.warn('⚠️ Problème d\'enregistrement client');
+            showNotification('⚠️ Problème d\'enregistrement', 'error');
         }
     });
     
