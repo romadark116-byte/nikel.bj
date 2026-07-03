@@ -3,11 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIKEL · Boutique en ligne</title>
+    <title>Connexion Admin - NIKEL</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="animations.css">
     <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Style spécifique pour la page de connexion */
+        .login-container {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .login-card {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .login-card .logo-icon {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-card .logo-icon i {
+            font-size: 3rem;
+            color: var(--gold);
+        }
+
+        .login-card .logo-icon h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin: 8px 0 4px 0;
+            color: var(--dark-gray);
+        }
+
+        .login-card .logo-icon p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            color: var(--dark-gray);
+        }
+
+        .form-group label i {
+            color: var(--gold);
+            margin-right: 6px;
+            width: 16px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid var(--light-gray);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            background: var(--off-white);
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            border-color: var(--gold);
+            outline: none;
+            background: white;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--gold), var(--accent-dark));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-login:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 20px rgba(201, 168, 76, 0.4);
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 16px;
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
+
+        .login-footer i {
+            color: var(--gold);
+        }
+
+        /* Avantages */
+        .benefits {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .benefits .benefit-item {
+            background: var(--white);
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .benefits .benefit-item i {
+            color: var(--gold);
+            font-size: 1.2rem;
+        }
+
+        .benefits .benefit-item p {
+            font-size: 0.8rem;
+            margin-top: 4px;
+            color: var(--gray);
+        }
+
+        /* Notification Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 14px;
+            font-weight: 500;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+            z-index: 9999;
+            max-width: 400px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideUp 0.5s ease;
+        }
+
+        .toast.error {
+            border-left: 4px solid #e74c3c;
+        }
+
+        .toast.success {
+            border-left: 4px solid #27ae60;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .login-card { padding: 24px; }
+            .benefits { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -17,7 +187,7 @@
             </div>
             <nav class="nav">
                 <ul>
-                    <li><a href="index.html" class="active">Accueil</a></li>
+                    <li><a href="index.html">Accueil</a></li>
                     <li><a href="boutique.html">Boutique</a></li>
                     <li><a href="apropos.html">À propos</a></li>
                     <li><a href="contact.html">Contact</a></li>
@@ -25,7 +195,6 @@
                 </ul>
             </nav>
             <div class="header-actions">
-                <!-- BARRE DE RECHERCHE -->
                 <div class="header-search" style="display:flex; align-items:center; gap:8px;">
                     <input type="text" 
                            id="searchInput" 
@@ -53,66 +222,54 @@
 
     <section class="page-header">
         <div class="container">
-            <h1>Connexion</h1>
-            <p>Retrouvez votre compte et vos commandes</p>
+            <h1>🔐 Espace Admin</h1>
+            <p>Connectez-vous pour accéder à votre tableau de bord</p>
         </div>
     </section>
 
     <section class="section">
-        <div class="container" style="max-width:480px; margin:0 auto;">
-            <div style="background:var(--white); padding:40px; border-radius:16px; box-shadow:var(--shadow);">
-                <div style="text-align:center; margin-bottom:30px;">
-                    <i class="fas fa-user-circle" style="font-size:3rem; color:var(--gold);"></i>
+        <div class="container login-container">
+
+            <div class="login-card">
+                <div class="logo-icon">
+                    <i class="fas fa-crown"></i>
+                    <h2>NIKEL</h2>
+                    <p>Espace Administrateur</p>
                 </div>
                 
                 <form id="loginForm">
                     <div class="form-group">
-                        <label><i class="fas fa-envelope" style="color:var(--gold);"></i> Email</label>
-                        <input type="email" required placeholder="votre@email.com">
+                        <label><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="loginEmail" placeholder="Entrez votre votre adresse e-mail" required>
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-lock" style="color:var(--gold);"></i> Mot de passe</label>
-                        <input type="password" required placeholder="••••••••">
-                        <p style="text-align:right; margin-top:4px; font-size:0.85rem;">
-                            <a href="#" style="color:var(--gray);">Mot de passe oublié ?</a>
-                        </p>
+                        <label><i class="fas fa-lock"></i> Mot de passe</label>
+                        <input type="password" id="loginPassword" placeholder="Entrez votre mot de passe" required>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">
+                    <button type="submit" class="btn-login">
                         <i class="fas fa-sign-in-alt"></i> Se connecter
                     </button>
-                    
-                    <div style="margin:16px 0; text-align:center; position:relative;">
-                        <span style="background:var(--white); padding:0 16px; color:var(--gray); font-size:0.9rem;">ou</span>
-                        <hr style="border: none; border-top:1px solid var(--light-gray); margin-top:-10px;">
-                    </div>
-                    
-                    <button type="button" class="btn btn-secondary" style="width:100%; justify-content:center; gap:12px;" onclick="showNotification('🔜 Connexion Google en cours de développement')">
-                        <i class="fab fa-google"></i> Continuer avec Google
-                    </button>
-                    
-                    <p style="text-align:center; margin-top:20px; color:var(--gray);">
-                        Pas encore de compte ? 
-                        <a href="register.html" style="color:var(--gold); font-weight:600;">
-                            Créer un compte <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </p>
                 </form>
+
+                <div class="login-footer">
+                    <i class="fas fa-shield-alt"></i> Accès réservé aux administrateurs
+                </div>
             </div>
             
             <!-- Avantages -->
-            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-top:24px; text-align:center;">
-                <div style="background:var(--white); padding:16px; border-radius:12px; box-shadow:var(--shadow);">
-                    <i class="fas fa-truck" style="color:var(--gold); font-size:1.2rem;"></i>
-                    <p style="font-size:0.8rem; margin-top:4px;">Livraison offerte</p>
+            <div class="benefits">
+                <div class="benefit-item">
+                    <i class="fas fa-chart-line"></i>
+                    <p>Suivi des ventes</p>
                 </div>
-                <div style="background:var(--white); padding:16px; border-radius:12px; box-shadow:var(--shadow);">
-                    <i class="fas fa-rotate-left" style="color:var(--gold); font-size:1.2rem;"></i>
-                    <p style="font-size:0.8rem; margin-top:4px;">Retour 30 jours</p>
+                <div class="benefit-item">
+                    <i class="fas fa-users"></i>
+                    <p>Gestion des clients</p>
                 </div>
-                <div style="background:var(--white); padding:16px; border-radius:12px; box-shadow:var(--shadow);">
-                    <i class="fas fa-headset" style="color:var(--gold); font-size:1.2rem;"></i>
-                    <p style="font-size:0.8rem; margin-top:4px;">Support 7/7</p>
+                <div class="benefit-item">
+                    <i class="fas fa-cube"></i>
+                    <p>Gestion des produits</p>
                 </div>
             </div>
         </div>
@@ -161,5 +318,127 @@
     </footer>
 
     <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // ==========================================
+        // SUPABASE CONFIG
+        // ==========================================
+        const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
+        
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        window.supabaseClient = supabaseClient;
+
+        // ==========================================
+        // NOTIFICATION
+        // ==========================================
+        function showNotification(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.innerHTML = `<span>${message}</span>`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // ==========================================
+        // CONNEXION ADMIN
+        // ==========================================
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            
+            if (!email || !password) {
+                showNotification('❌ Veuillez remplir tous les champs', 'error');
+                return;
+            }
+
+            try {
+                // Vérifier dans la table admins
+                const { data, error } = await supabaseClient
+                    .from('admins')
+                    .select('*')
+                    .eq('email', email)
+                    .single();
+
+                if (error || !data) {
+                    showNotification('❌ Email ou mot de passe incorrect', 'error');
+                    return;
+                }
+
+                // Vérification du mot de passe
+                if (data.mot_de_passe !== password) {
+                    showNotification('❌ Email ou mot de passe incorrect', 'error');
+                    return;
+                }
+
+                // Stocker la session admin
+                localStorage.setItem('nikel_admin', JSON.stringify({
+                    id: data.id,
+                    prenom: data.prenom,
+                    nom: data.nom,
+                    email: data.email,
+                    telephone: data.telephone,
+                    boutique_nom: data.boutique_nom || 'NIKEL'
+                }));
+
+                showNotification('✅ Bonjour ' + data.prenom + ' !', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = 'admin-dashboard.html';
+                }, 1000);
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                showNotification('❌ Une erreur est survenue', 'error');
+            }
+        });
+
+        // ==========================================
+        // VÉRIFICATION SI DÉJÀ CONNECTÉ
+        // ==========================================
+        const admin = JSON.parse(localStorage.getItem('nikel_admin'));
+        if (admin) {
+            window.location.href = 'admin-dashboard.html';
+        }
+
+        // ==========================================
+        // RECHERCHE
+        // ==========================================
+        window.handleSearch = function() {
+            const input = document.getElementById('searchInput');
+            if (input && input.value.trim().length > 0) {
+                window.location.href = `boutique.html?search=${encodeURIComponent(input.value.trim())}`;
+            }
+        };
+
+        // ==========================================
+        // MENU MOBILE
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const nav = document.querySelector('.nav');
+            if (menuToggle && nav) {
+                menuToggle.addEventListener('click', function() {
+                    nav.classList.toggle('open');
+                });
+            }
+
+            // Badge panier
+            const badge = document.querySelector('.badge');
+            const cart = JSON.parse(localStorage.getItem('nikel_cart')) || [];
+            const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+            if (badge) {
+                badge.textContent = total;
+                badge.style.display = total > 0 ? 'flex' : 'none';
+            }
+        });
+    </script>
 </body>
 </html>
