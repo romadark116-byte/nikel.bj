@@ -1,0 +1,547 @@
+<!-- contacts.html - Mes contacts -->
+<div id="contactsContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
+
+    <!-- ===== TITRE ===== -->
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:24px;">
+        <div>
+            <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:#1a1a1a; margin-bottom:4px;">
+                <i class="fas fa-address-book" style="color:#c9a84c;"></i> Mes contacts
+            </h2>
+            <p style="color:#888; font-size:0.95rem;">Gérez votre liste de clients et prospects.</p>
+        </div>
+        <button onclick="openAddModal()" style="padding:12px 24px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+            <i class="fas fa-plus"></i> Ajouter un contact
+        </button>
+    </div>
+
+    <!-- ===== STATISTIQUES RAPIDES ===== -->
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px;">
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total contacts</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#1a1a1a;" id="totalContacts">0</p>
+        </div>
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Clients</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#27ae60;" id="totalClients">0</p>
+        </div>
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Prospects</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#f39c12;" id="totalProspects">0</p>
+        </div>
+    </div>
+
+    <!-- ===== BARRE DE RECHERCHE ===== -->
+    <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
+        <div style="flex:2; min-width:200px;">
+            <input type="text" id="searchInputContacts" placeholder="🔍 Rechercher par nom, email ou téléphone..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#ffffff;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onkeyup="applyFilters()">
+        </div>
+        <div style="min-width:150px;">
+            <select id="filterType" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer;" onchange="applyFilters()">
+                <option value="all">👥 Tous les contacts</option>
+                <option value="client">✅ Clients</option>
+                <option value="prospect">⭐ Prospects</option>
+            </select>
+        </div>
+        <button onclick="resetFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+            <i class="fas fa-undo"></i> Réinitialiser
+        </button>
+    </div>
+
+    <!-- ===== TABLEAU DES CONTACTS ===== -->
+    <div style="overflow-x:auto; border-radius:12px; border:1px solid #f0f0f0;">
+        <table style="width:100%; border-collapse:collapse; font-size:0.95rem;">
+            <thead>
+                <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">ID</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Prénom</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Nom</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Email</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Téléphone</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Ville</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Pays</th>
+                    <th style="text-align:center; padding:14px 12px; font-weight:600; color:#1a1a1a;">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="contactsTableBody">
+                <tr>
+                    <td colspan="8" style="text-align:center; padding:40px; color:#888;">
+                        <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
+                        Chargement des contacts...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ===== PAGINATION ===== -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:12px;">
+        <span style="color:#888; font-size:0.9rem;" id="paginationInfo">Affichage de 0 à 0 sur 0 entrées</span>
+        <div style="display:flex; gap:8px;">
+            <button onclick="previousPage()" id="prevPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+                <i class="fas fa-chevron-left"></i> Précédent
+            </button>
+            <span id="pageInfo" style="display:flex; align-items:center; padding:0 12px; font-weight:600; color:#1a1a1a;">Page 1</span>
+            <button onclick="nextPage()" id="nextPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+                Suivant <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL AJOUT / MODIFICATION ===== -->
+<div id="contactModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:white; border-radius:16px; padding:32px; max-width:500px; width:90%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h3 id="modalTitle" style="font-family:'Playfair Display',serif; font-size:1.4rem; margin:0;">
+                <i class="fas fa-user-plus" style="color:#c9a84c;"></i> Ajouter un contact
+            </h3>
+            <button onclick="closeModal()" style="background:transparent; border:none; font-size:1.5rem; cursor:pointer; color:#888;" onmouseover="this.style.color='#e74c3c'" onmouseout="this.style.color='#888'">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <form id="contactForm">
+            <input type="hidden" id="contactId" value="">
+            
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div class="form-group">
+                    <label for="prenom"><i class="fas fa-user"></i> Prénom</label>
+                    <input type="text" id="prenom" placeholder="Jean" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+                </div>
+                <div class="form-group">
+                    <label for="nom"><i class="fas fa-user"></i> Nom</label>
+                    <input type="text" id="nom" placeholder="Dupont" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" id="email" placeholder="jean@email.com" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+            </div>
+
+            <div class="form-group">
+                <label for="telephone"><i class="fas fa-phone"></i> Téléphone</label>
+                <input type="tel" id="telephone" placeholder="06 12 34 56 78" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div class="form-group">
+                    <label for="ville"><i class="fas fa-city"></i> Ville</label>
+                    <input type="text" id="ville" placeholder="Paris" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+                </div>
+                <div class="form-group">
+                    <label for="pays"><i class="fas fa-globe"></i> Pays</label>
+                    <select id="pays" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+                        <option value="FR">France</option>
+                        <option value="BJ">Bénin</option>
+                        <option value="TG">Togo</option>
+                        <option value="BF">Burkina Faso</option>
+                        <option value="CI">Côte d'Ivoire</option>
+                        <option value="SN">Sénégal</option>
+                        <option value="ML">Mali</option>
+                        <option value="NE">Niger</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:12px; margin-top:16px;">
+                <button type="submit" id="saveContactBtn" style="flex:1; padding:12px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:600; cursor:pointer; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                    <i class="fas fa-save"></i> Enregistrer
+                </button>
+                <button type="button" onclick="closeModal()" style="flex:1; padding:12px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:1rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#e74c3c';this.style.color='#e74c3c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+    (function() {
+        // ==========================================
+        // VARIABLES GLOBALES
+        // ==========================================
+        let allContacts = [];
+        let filteredContacts = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let isEditing = false;
+
+        // ==========================================
+        // DONNÉES DE TEST
+        // ==========================================
+        function getTestContacts() {
+            return [
+                { id: 1, prenom: 'Jean', nom: 'Dupont', email: 'jean@email.com', telephone: '0612345678', ville: 'Paris', pays: 'FR', type: 'client' },
+                { id: 2, prenom: 'Fleury', nom: 'HAMIDOU', email: 'f91631072@gmail.com', telephone: '0191647720', ville: 'Parakou', pays: 'BJ', type: 'client' },
+                { id: 3, prenom: 'Marie', nom: 'Martin', email: 'marie@email.com', telephone: '0765432109', ville: 'Lyon', pays: 'FR', type: 'prospect' },
+                { id: 4, prenom: 'Amadou', nom: 'Diallo', email: 'amadou@email.com', telephone: '779012345', ville: 'Dakar', pays: 'SN', type: 'client' },
+                { id: 5, prenom: 'Sophie', nom: 'Bernard', email: 'sophie@email.com', telephone: '0612345987', ville: 'Marseille', pays: 'FR', type: 'prospect' }
+            ];
+        }
+
+        // ==========================================
+        // PAYS VERS LIBELLÉ
+        // ==========================================
+        function getPaysLabel(code) {
+            const pays = {
+                'FR': 'France', 'BJ': 'Bénin', 'TG': 'Togo', 'BF': 'Burkina Faso',
+                'CI': "Côte d'Ivoire", 'SN': 'Sénégal', 'ML': 'Mali', 'NE': 'Niger'
+            };
+            return pays[code] || code;
+        }
+
+        // ==========================================
+        // AFFICHER LE TYPE AVEC COULEUR
+        // ==========================================
+        function getTypeBadge(type) {
+            if (type === 'client') {
+                return `<span style="background:#27ae60; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                    <i class="fas fa-check"></i> Client
+                </span>`;
+            } else {
+                return `<span style="background:#f39c12; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                    <i class="fas fa-star"></i> Prospect
+                </span>`;
+            }
+        }
+
+        // ==========================================
+        // RENDU DU TABLEAU
+        // ==========================================
+        function renderTable() {
+            const tbody = document.getElementById('contactsTableBody');
+            
+            if (filteredContacts.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align:center; padding:40px; color:#888;">
+                            <i class="fas fa-inbox" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
+                            Aucun contact trouvé.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredContacts.length);
+            const pageItems = filteredContacts.slice(startIndex, endIndex);
+
+            tbody.innerHTML = pageItems.map(contact => `
+                <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
+                    <td style="padding:12px; font-weight:600; color:#1a1a1a;">#${contact.id}</td>
+                    <td style="padding:12px; font-weight:500;">${contact.prenom || ''}</td>
+                    <td style="padding:12px; font-weight:500;">${contact.nom || ''}</td>
+                    <td style="padding:12px; color:#888;">${contact.email || '—'}</td>
+                    <td style="padding:12px;">${contact.telephone || '—'}</td>
+                    <td style="padding:12px;">${contact.ville || '—'}</td>
+                    <td style="padding:12px;">${getPaysLabel(contact.pays)}</td>
+                    <td style="padding:12px; text-align:center;">
+                        <button onclick="editContact(${contact.id})" style="padding:6px 12px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Modifier">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteContact(${contact.id})" style="padding:6px 12px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Supprimer">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ==========================================
+        // METTRE À JOUR LES STATISTIQUES
+        // ==========================================
+        function updateStats() {
+            const total = allContacts.length;
+            const clients = allContacts.filter(c => c.type === 'client').length;
+            const prospects = allContacts.filter(c => c.type === 'prospect').length;
+
+            document.getElementById('totalContacts').textContent = total;
+            document.getElementById('totalClients').textContent = clients;
+            document.getElementById('totalProspects').textContent = prospects;
+        }
+
+        // ==========================================
+        // METTRE À JOUR LES INFOS DE PAGINATION
+        // ==========================================
+        function updatePaginationInfo() {
+            const total = filteredContacts.length;
+            const start = (currentPage - 1) * itemsPerPage + 1;
+            const end = Math.min(currentPage * itemsPerPage, total);
+            const totalPages = Math.ceil(total / itemsPerPage);
+
+            document.getElementById('paginationInfo').textContent = 
+                `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
+            document.getElementById('pageInfo').textContent = `Page ${currentPage} sur ${totalPages || 1}`;
+
+            document.getElementById('prevPage').disabled = currentPage <= 1;
+            document.getElementById('nextPage').disabled = currentPage >= totalPages;
+        }
+
+        // ==========================================
+        // PAGINATION
+        // ==========================================
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+                updatePaginationInfo();
+            }
+        }
+
+        function nextPage() {
+            const totalPages = Math.ceil(filteredContacts.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+                updatePaginationInfo();
+            }
+        }
+
+        // ==========================================
+        // FILTRES
+        // ==========================================
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInputContacts').value.toLowerCase().trim();
+            const typeFilter = document.getElementById('filterType').value;
+
+            filteredContacts = allContacts.filter(contact => {
+                let matchSearch = true;
+                if (searchTerm) {
+                    const fullName = (contact.prenom + ' ' + contact.nom).toLowerCase();
+                    const email = (contact.email || '').toLowerCase();
+                    const telephone = (contact.telephone || '').toLowerCase();
+                    matchSearch = fullName.includes(searchTerm) || email.includes(searchTerm) || telephone.includes(searchTerm);
+                }
+
+                let matchType = true;
+                if (typeFilter !== 'all') {
+                    matchType = contact.type === typeFilter;
+                }
+
+                return matchSearch && matchType;
+            });
+
+            currentPage = 1;
+            renderTable();
+            updatePaginationInfo();
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInputContacts').value = '';
+            document.getElementById('filterType').value = 'all';
+            filteredContacts = [...allContacts];
+            currentPage = 1;
+            renderTable();
+            updatePaginationInfo();
+        }
+
+        // ==========================================
+        // MODAL : AJOUTER
+        // ==========================================
+        function openAddModal() {
+            isEditing = false;
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus" style="color:#c9a84c;"></i> Ajouter un contact';
+            document.getElementById('contactId').value = '';
+            document.getElementById('contactForm').reset();
+            document.getElementById('contactModal').style.display = 'flex';
+        }
+
+        // ==========================================
+        // MODAL : MODIFIER
+        // ==========================================
+        function editContact(id) {
+            const contact = allContacts.find(c => c.id === id);
+            if (!contact) return;
+
+            isEditing = true;
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-edit" style="color:#c9a84c;"></i> Modifier le contact';
+            document.getElementById('contactId').value = contact.id;
+            document.getElementById('prenom').value = contact.prenom || '';
+            document.getElementById('nom').value = contact.nom || '';
+            document.getElementById('email').value = contact.email || '';
+            document.getElementById('telephone').value = contact.telephone || '';
+            document.getElementById('ville').value = contact.ville || '';
+            document.getElementById('pays').value = contact.pays || 'FR';
+            document.getElementById('contactModal').style.display = 'flex';
+        }
+
+        // ==========================================
+        // MODAL : FERMER
+        // ==========================================
+        function closeModal() {
+            document.getElementById('contactModal').style.display = 'none';
+            document.getElementById('contactForm').reset();
+        }
+
+        // ==========================================
+        // SAUVEGARDER CONTACT
+        // ==========================================
+        function saveContact(event) {
+            event.preventDefault();
+
+            const id = document.getElementById('contactId').value;
+            const contactData = {
+                prenom: document.getElementById('prenom').value.trim(),
+                nom: document.getElementById('nom').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                telephone: document.getElementById('telephone').value.trim(),
+                ville: document.getElementById('ville').value.trim(),
+                pays: document.getElementById('pays').value,
+                type: 'client'
+            };
+
+            if (id) {
+                // MODIFICATION
+                const index = allContacts.findIndex(c => c.id === parseInt(id));
+                if (index !== -1) {
+                    allContacts[index] = { ...allContacts[index], ...contactData };
+                    showNotification('✅ Contact modifié avec succès !', 'success');
+                }
+            } else {
+                // AJOUT
+                const newId = Math.max(...allContacts.map(c => c.id), 0) + 1;
+                allContacts.push({ id: newId, ...contactData });
+                showNotification('✅ Contact ajouté avec succès !', 'success');
+            }
+
+            closeModal();
+            filteredContacts = [...allContacts];
+            renderTable();
+            updateStats();
+            updatePaginationInfo();
+
+            // Sauvegarder dans Supabase
+            saveToSupabase(contactData, id);
+        }
+
+        // ==========================================
+        // SUPPRIMER CONTACT
+        // ==========================================
+        function deleteContact(id) {
+            if (!confirm('Voulez-vous vraiment supprimer ce contact ?')) return;
+
+            allContacts = allContacts.filter(c => c.id !== id);
+            filteredContacts = [...allContacts];
+            renderTable();
+            updateStats();
+            updatePaginationInfo();
+            showNotification('🗑️ Contact supprimé', 'info');
+
+            // Supprimer de Supabase
+            if (window.supabaseClient) {
+                window.supabaseClient
+                    .from('clients')
+                    .delete()
+                    .eq('id', id)
+                    .then(({ error }) => {
+                        if (error) console.error('❌ Erreur suppression:', error);
+                    });
+            }
+        }
+
+        // ==========================================
+        // SAUVEGARDER DANS SUPABASE
+        // ==========================================
+        function saveToSupabase(contactData, id) {
+            if (!window.supabaseClient) return;
+
+            const data = {
+                prenom: contactData.prenom,
+                nom: contactData.nom,
+                email: contactData.email,
+                telephone: contactData.telephone,
+                ville: contactData.ville,
+                pays: contactData.pays
+            };
+
+            if (id) {
+                window.supabaseClient
+                    .from('clients')
+                    .update(data)
+                    .eq('id', parseInt(id))
+                    .then(({ error }) => {
+                        if (error) console.error('❌ Erreur mise à jour:', error);
+                    });
+            } else {
+                window.supabaseClient
+                    .from('clients')
+                    .insert([data])
+                    .then(({ error }) => {
+                        if (error) console.error('❌ Erreur insertion:', error);
+                    });
+            }
+        }
+
+        // ==========================================
+        // CHARGER LES DONNÉES
+        // ==========================================
+        async function loadContactsData() {
+            try {
+                if (window.supabaseClient) {
+                    const { data, error } = await window.supabaseClient
+                        .from('clients')
+                        .select('*')
+                        .order('id', { ascending: true });
+
+                    if (!error && data && data.length > 0) {
+                        allContacts = data.map(c => ({
+                            ...c,
+                            type: c.statut === 'soldé' ? 'client' : 'prospect'
+                        }));
+                        filteredContacts = [...allContacts];
+                        renderTable();
+                        updateStats();
+                        updatePaginationInfo();
+                        return;
+                    }
+                }
+
+                allContacts = getTestContacts();
+                filteredContacts = [...allContacts];
+                renderTable();
+                updateStats();
+                updatePaginationInfo();
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                allContacts = getTestContacts();
+                filteredContacts = [...allContacts];
+                renderTable();
+                updateStats();
+                updatePaginationInfo();
+            }
+        }
+
+        // ==========================================
+        // EXPOSER LES FONCTIONS GLOBALEMENT
+        // ==========================================
+        window.applyFilters = applyFilters;
+        window.resetFilters = resetFilters;
+        window.previousPage = previousPage;
+        window.nextPage = nextPage;
+        window.openAddModal = openAddModal;
+        window.editContact = editContact;
+        window.deleteContact = deleteContact;
+        window.closeModal = closeModal;
+        window.saveContact = saveContact;
+
+        // ==========================================
+        // ÉVÉNEMENTS
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadContactsData();
+
+            // Formulaire
+            document.getElementById('contactForm').addEventListener('submit', saveContact);
+
+            // Fermer la modal en cliquant à l'extérieur
+            document.getElementById('contactModal').addEventListener('click', function(e) {
+                if (e.target === this) closeModal();
+            });
+        });
+
+    })();
+</script>
