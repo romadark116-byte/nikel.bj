@@ -103,8 +103,21 @@
 </div>
 
 <!-- ===== SCRIPTS ===== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     (function() {
+        // ==========================================
+        // SUPABASE CONFIG
+        // ==========================================
+        const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
+        
+        // ✅ Initialiser Supabase avec window.supabase
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        window.supabaseClient = supabaseClient;
+
+        console.log('✅ Supabase initialisé dans suivi-ventes.html');
+
         // ==========================================
         // VARIABLES
         // ==========================================
@@ -114,7 +127,7 @@
         const perPage = 10;
 
         // ==========================================
-        // DONNÉES DE TEST
+        // DONNÉES DE TEST (fallback)
         // ==========================================
         function getTestData() {
             return [
@@ -304,32 +317,54 @@
         }
 
         // ==========================================
-        // CHARGER LES DONNÉES
+        // CHARGER LES DONNÉES DEPUIS SUPABASE
         // ==========================================
         async function loadVentesData() {
             try {
-                if (window.supabaseClient) {
-                    const { data, error } = await window.supabaseClient
-                        .from('clients')
-                        .select('*')
-                        .order('date_clic', { ascending: false });
-
-                    if (!error && data && data.length > 0) {
-                        allVentes = data.map(c => ({
-                            ...c,
-                            statut: c.statut || 'en attente'
-                        }));
-                        filteredVentes = [...allVentes];
-                        renderVentes();
-                        updateVentesStats();
-                        return;
-                    }
+                console.log('📝 Chargement des données depuis Supabase...');
+                
+                // Vérifier si Supabase est disponible
+                if (!window.supabaseClient) {
+                    console.warn('⚠️ Supabase non disponible, utilisation des données de test');
+                    allVentes = getTestData();
+                    filteredVentes = [...allVentes];
+                    renderVentes();
+                    updateVentesStats();
+                    return;
                 }
 
-                allVentes = getTestData();
-                filteredVentes = [...allVentes];
-                renderVentes();
-                updateVentesStats();
+                // Charger les données depuis la table clients
+                const { data, error } = await window.supabaseClient
+                    .from('clients')
+                    .select('*')
+                    .order('date_clic', { ascending: false });
+
+                if (error) {
+                    console.error('❌ Erreur chargement:', error);
+                    // Utiliser les données de test en cas d'erreur
+                    allVentes = getTestData();
+                    filteredVentes = [...allVentes];
+                    renderVentes();
+                    updateVentesStats();
+                    return;
+                }
+
+                if (data && data.length > 0) {
+                    console.log(`✅ ${data.length} clients chargés depuis Supabase`);
+                    allVentes = data.map(c => ({
+                        ...c,
+                        statut: c.statut || 'en attente'
+                    }));
+                    filteredVentes = [...allVentes];
+                    renderVentes();
+                    updateVentesStats();
+                } else {
+                    console.warn('⚠️ Aucune donnée trouvée, utilisation des données de test');
+                    allVentes = getTestData();
+                    filteredVentes = [...allVentes];
+                    renderVentes();
+                    updateVentesStats();
+                }
 
             } catch (err) {
                 console.error('❌ Erreur:', err);
@@ -337,6 +372,26 @@
                 filteredVentes = [...allVentes];
                 renderVentes();
                 updateVentesStats();
+            }
+        }
+
+        // ==========================================
+        // TEST DE CONNEXION SUPABASE
+        // ==========================================
+        async function testConnection() {
+            try {
+                console.log('🔍 Test de connexion à Supabase...');
+                const { data, error } = await window.supabaseClient
+                    .from('clients')
+                    .select('count');
+                
+                if (error) {
+                    console.error('❌ Erreur de connexion:', error);
+                } else {
+                    console.log('✅ Connexion Supabase réussie');
+                }
+            } catch (err) {
+                console.error('❌ Erreur:', err);
             }
         }
 
@@ -353,7 +408,13 @@
         // ==========================================
         // INIT
         // ==========================================
-        document.addEventListener('DOMContentLoaded', loadVentesData);
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Chargement de suivi-ventes.html...');
+            // Tester la connexion
+            testConnection();
+            // Charger les données
+            loadVentesData();
+        });
 
     })();
 </script>
