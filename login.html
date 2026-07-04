@@ -144,7 +144,6 @@
         const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
         
-        // ✅ Utiliser un nom différent pour éviter le conflit
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         window.supabaseClient = supabaseClient;
 
@@ -169,31 +168,69 @@
         }
 
         // ==========================================
-        // TEST DE CONNEXION DIRECT
+        // 🔍 RÉINITIALISATION COMPLÈTE DE LA PAGE
         // ==========================================
-        async function testSupabase() {
-            console.log('🔍 Test de récupération des admins...');
-            try {
-                const { data, error } = await supabaseClient
-                    .from('admins')
-                    .select('*');
-                
-                console.log('📊 Données:', data);
-                console.log('❌ Erreur:', error);
-                
-                if (data && data.length > 0) {
-                    console.log('✅ Admin trouvé:', data[0]);
-                    console.log('🔐 Mot de passe en base:', data[0].mot_de_passe);
-                } else {
-                    console.log('⚠️ Aucun admin trouvé dans la table');
-                }
-            } catch (err) {
-                console.error('❌ Erreur:', err);
+        (function resetLoginPage() {
+            console.log('🔄 [LOGIN] Réinitialisation de la page...');
+            
+            // 1. Nettoyer l'URL (supprimer les paramètres)
+            if (window.location.search) {
+                const cleanUrl = window.location.pathname;
+                window.history.replaceState({}, document.title, cleanUrl);
+                console.log('🧹 [LOGIN] URL nettoyée');
             }
-        }
+            
+            // 2. Supprimer toute session résiduelle
+            const sessionData = localStorage.getItem('nikel_admin');
+            if (sessionData) {
+                console.warn('⚠️ [LOGIN] Session résiduelle trouvée, suppression...');
+                localStorage.removeItem('nikel_admin');
+            }
+            
+            // 3. Vider le sessionStorage
+            sessionStorage.clear();
+            
+            // 4. Réinitialiser le formulaire
+            const form = document.getElementById('loginForm');
+            if (form) {
+                form.reset();
+                console.log('🧹 [LOGIN] Formulaire réinitialisé');
+            }
+            
+            // 5. Effacer les champs manuellement
+            const emailInput = document.getElementById('loginEmail');
+            const passwordInput = document.getElementById('loginPassword');
+            if (emailInput) emailInput.value = '';
+            if (passwordInput) passwordInput.value = '';
+            
+            console.log('✅ [LOGIN] Page réinitialisée avec succès');
+        })();
 
-        // Exécuter le test au chargement
-        testSupabase();
+        // ==========================================
+        // 🔍 VÉRIFICATION FINALE DE SESSION
+        // ==========================================
+        (function checkSession() {
+            const sessionData = localStorage.getItem('nikel_admin');
+            console.log('🔍 [LOGIN] Vérification finale de la session...');
+
+            if (sessionData) {
+                try {
+                    const admin = JSON.parse(sessionData);
+                    if (admin && admin.email) {
+                        console.log('✅ [LOGIN] Session valide, redirection vers mon-compte.html');
+                        window.location.href = 'mon-compte.html';
+                    } else {
+                        console.warn('⚠️ [LOGIN] Session invalide, suppression...');
+                        localStorage.removeItem('nikel_admin');
+                    }
+                } catch (e) {
+                    console.warn('⚠️ [LOGIN] Erreur de parsing, suppression...');
+                    localStorage.removeItem('nikel_admin');
+                }
+            } else {
+                console.log('✅ [LOGIN] Aucune session, affichage du formulaire');
+            }
+        })();
 
         // ==========================================
         // CONNEXION
@@ -267,14 +304,6 @@
                 showNotification('❌ Une erreur est survenue', 'error');
             }
         });
-
-        // ==========================================
-        // SESSION
-        // ==========================================
-        const admin = JSON.parse(localStorage.getItem('nikel_admin'));
-        if (admin) {
-            window.location.href = 'mon-compte.html';
-        }
 
         // ==========================================
         // RECHERCHE
