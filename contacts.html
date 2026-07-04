@@ -189,7 +189,6 @@
         let filteredContacts = [];
         let currentPage = 1;
         const itemsPerPage = 10;
-        let isEditing = false;
 
         // ==========================================
         // PAYS VERS LIBELLÉ
@@ -225,6 +224,7 @@
             try {
                 console.log('📝 Chargement des contacts depuis Supabase...');
                 
+                // Vérifier d'abord la connexion
                 const { data, error } = await supabaseClient
                     .from('clients')
                     .select('*')
@@ -233,17 +233,22 @@
                 if (error) {
                     console.error('❌ Erreur chargement:', error);
                     showNotification('❌ Erreur de chargement des contacts', 'error');
+                    allContacts = [];
+                    filteredContacts = [];
+                    renderTable();
+                    updateStats();
+                    updatePaginationInfo();
                     return;
                 }
 
                 if (data && data.length > 0) {
+                    console.log(`✅ ${data.length} contacts trouvés dans Supabase`);
                     allContacts = data.map(c => ({
                         ...c,
                         statut: c.statut || 'prospect'
                     }));
-                    console.log(`✅ ${allContacts.length} contacts chargés`);
                 } else {
-                    console.warn('⚠️ Aucun contact trouvé');
+                    console.warn('⚠️ Aucun contact trouvé dans Supabase');
                     allContacts = [];
                 }
 
@@ -255,6 +260,11 @@
             } catch (err) {
                 console.error('❌ Erreur:', err);
                 showNotification('❌ Erreur de chargement', 'error');
+                allContacts = [];
+                filteredContacts = [];
+                renderTable();
+                updateStats();
+                updatePaginationInfo();
             }
         }
 
@@ -390,7 +400,6 @@
         // MODAL : AJOUTER
         // ==========================================
         function openAddModal() {
-            isEditing = false;
             document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus" style="color:#c9a84c;"></i> Ajouter un contact';
             document.getElementById('contactId').value = '';
             document.getElementById('contactForm').reset();
@@ -404,7 +413,6 @@
             const contact = allContacts.find(c => c.id === id);
             if (!contact) return;
 
-            isEditing = true;
             document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-edit" style="color:#c9a84c;"></i> Modifier le contact';
             document.getElementById('contactId').value = contact.id;
             document.getElementById('prenom').value = contact.prenom || '';
