@@ -172,15 +172,36 @@
 <script>
     (function() {
         // ==========================================
-        // SUPABASE CONFIG
+        // SUPABASE CONFIG (version locale)
         // ==========================================
         const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
         
+        // ✅ Initialisation locale comme dans profil.html
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         window.supabaseClient = supabaseClient;
 
         console.log('✅ Supabase initialisé dans contacts.html');
+
+        // ==========================================
+        // TEST DE CONNEXION
+        // ==========================================
+        async function testSupabaseConnection() {
+            try {
+                console.log('🔍 Test de connexion à Supabase...');
+                const { data, error } = await supabaseClient
+                    .from('clients')
+                    .select('count');
+                
+                if (error) {
+                    console.error('❌ Erreur test:', error);
+                } else {
+                    console.log('✅ Connexion Supabase réussie');
+                }
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+            }
+        }
 
         // ==========================================
         // VARIABLES GLOBALES
@@ -224,7 +245,6 @@
             try {
                 console.log('📝 Chargement des contacts depuis Supabase...');
                 
-                // Vérifier d'abord la connexion
                 const { data, error } = await supabaseClient
                     .from('clients')
                     .select('*')
@@ -581,7 +601,10 @@
         function init() {
             console.log('🚀 Chargement de contacts.html...');
             
-            loadContactsData();
+            // Tester la connexion d'abord
+            testSupabaseConnection().then(() => {
+                loadContactsData();
+            });
 
             document.getElementById('contactForm').addEventListener('submit', saveContact);
 
