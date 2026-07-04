@@ -59,12 +59,13 @@
                     <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Téléphone</th>
                     <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Ville</th>
                     <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Pays</th>
+                    <th style="text-align:center; padding:14px 12px; font-weight:600; color:#1a1a1a;">Statut</th>
                     <th style="text-align:center; padding:14px 12px; font-weight:600; color:#1a1a1a;">Actions</th>
                 </tr>
             </thead>
             <tbody id="contactsTableBody">
                 <tr>
-                    <td colspan="8" style="text-align:center; padding:40px; color:#888;">
+                    <td colspan="9" style="text-align:center; padding:40px; color:#888;">
                         <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
                         Chargement des contacts...
                     </td>
@@ -144,6 +145,16 @@
                 </div>
             </div>
 
+            <div class="form-group">
+                <label for="statut"><i class="fas fa-tag"></i> Statut</label>
+                <select id="statut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+                    <option value="client">✅ Client</option>
+                    <option value="prospect">⭐ Prospect</option>
+                    <option value="en attente">⏳ En attente</option>
+                    <option value="annulé">❌ Annulé</option>
+                </select>
+            </div>
+
             <div style="display:flex; gap:12px; margin-top:16px;">
                 <button type="submit" id="saveContactBtn" style="flex:1; padding:12px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:600; cursor:pointer; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                     <i class="fas fa-save"></i> Enregistrer
@@ -157,8 +168,20 @@
 </div>
 
 <!-- ===== SCRIPTS ===== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     (function() {
+        // ==========================================
+        // SUPABASE CONFIG
+        // ==========================================
+        const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
+        
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        window.supabaseClient = supabaseClient;
+
+        console.log('✅ Supabase initialisé dans contacts.html');
+
         // ==========================================
         // VARIABLES GLOBALES
         // ==========================================
@@ -167,19 +190,6 @@
         let currentPage = 1;
         const itemsPerPage = 10;
         let isEditing = false;
-
-        // ==========================================
-        // DONNÉES DE TEST
-        // ==========================================
-        function getTestContacts() {
-            return [
-                { id: 1, prenom: 'Jean', nom: 'Dupont', email: 'jean@email.com', telephone: '0612345678', ville: 'Paris', pays: 'FR', type: 'client' },
-                { id: 2, prenom: 'Fleury', nom: 'HAMIDOU', email: 'f91631072@gmail.com', telephone: '0191647720', ville: 'Parakou', pays: 'BJ', type: 'client' },
-                { id: 3, prenom: 'Marie', nom: 'Martin', email: 'marie@email.com', telephone: '0765432109', ville: 'Lyon', pays: 'FR', type: 'prospect' },
-                { id: 4, prenom: 'Amadou', nom: 'Diallo', email: 'amadou@email.com', telephone: '779012345', ville: 'Dakar', pays: 'SN', type: 'client' },
-                { id: 5, prenom: 'Sophie', nom: 'Bernard', email: 'sophie@email.com', telephone: '0612345987', ville: 'Marseille', pays: 'FR', type: 'prospect' }
-            ];
-        }
 
         // ==========================================
         // PAYS VERS LIBELLÉ
@@ -193,17 +203,58 @@
         }
 
         // ==========================================
-        // AFFICHER LE TYPE AVEC COULEUR
+        // BADGE STATUT
         // ==========================================
-        function getTypeBadge(type) {
-            if (type === 'client') {
-                return `<span style="background:#27ae60; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-                    <i class="fas fa-check"></i> Client
-                </span>`;
-            } else {
-                return `<span style="background:#f39c12; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-                    <i class="fas fa-star"></i> Prospect
-                </span>`;
+        function getStatutBadge(statut) {
+            const s = {
+                'client': { bg: '#27ae60', icon: 'fa-check', text: 'Client' },
+                'prospect': { bg: '#f39c12', icon: 'fa-star', text: 'Prospect' },
+                'en attente': { bg: '#f39c12', icon: 'fa-clock', text: 'En attente' },
+                'annulé': { bg: '#e74c3c', icon: 'fa-times', text: 'Annulé' }
+            };
+            const st = s[statut] || s['prospect'];
+            return `<span style="background:${st.bg}; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                <i class="fas ${st.icon}"></i> ${st.text}
+            </span>`;
+        }
+
+        // ==========================================
+        // CHARGER LES DONNÉES DEPUIS SUPABASE
+        // ==========================================
+        async function loadContactsData() {
+            try {
+                console.log('📝 Chargement des contacts depuis Supabase...');
+                
+                const { data, error } = await supabaseClient
+                    .from('clients')
+                    .select('*')
+                    .order('id', { ascending: true });
+
+                if (error) {
+                    console.error('❌ Erreur chargement:', error);
+                    showNotification('❌ Erreur de chargement des contacts', 'error');
+                    return;
+                }
+
+                if (data && data.length > 0) {
+                    allContacts = data.map(c => ({
+                        ...c,
+                        statut: c.statut || 'prospect'
+                    }));
+                    console.log(`✅ ${allContacts.length} contacts chargés`);
+                } else {
+                    console.warn('⚠️ Aucun contact trouvé');
+                    allContacts = [];
+                }
+
+                filteredContacts = [...allContacts];
+                renderTable();
+                updateStats();
+                updatePaginationInfo();
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                showNotification('❌ Erreur de chargement', 'error');
             }
         }
 
@@ -216,7 +267,7 @@
             if (filteredContacts.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="8" style="text-align:center; padding:40px; color:#888;">
+                        <td colspan="9" style="text-align:center; padding:40px; color:#888;">
                             <i class="fas fa-inbox" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
                             Aucun contact trouvé.
                         </td>
@@ -238,6 +289,7 @@
                     <td style="padding:12px;">${contact.telephone || '—'}</td>
                     <td style="padding:12px;">${contact.ville || '—'}</td>
                     <td style="padding:12px;">${getPaysLabel(contact.pays)}</td>
+                    <td style="padding:12px; text-align:center;">${getStatutBadge(contact.statut)}</td>
                     <td style="padding:12px; text-align:center;">
                         <button onclick="editContact(${contact.id})" style="padding:6px 12px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Modifier">
                             <i class="fas fa-edit"></i>
@@ -251,20 +303,19 @@
         }
 
         // ==========================================
-        // METTRE À JOUR LES STATISTIQUES
+        // STATISTIQUES
         // ==========================================
         function updateStats() {
             const total = allContacts.length;
-            const clients = allContacts.filter(c => c.type === 'client').length;
-            const prospects = allContacts.filter(c => c.type === 'prospect').length;
-
+            const clients = allContacts.filter(c => c.statut === 'client').length;
+            const prospects = allContacts.filter(c => c.statut === 'prospect' || c.statut === 'en attente').length;
             document.getElementById('totalContacts').textContent = total;
             document.getElementById('totalClients').textContent = clients;
             document.getElementById('totalProspects').textContent = prospects;
         }
 
         // ==========================================
-        // METTRE À JOUR LES INFOS DE PAGINATION
+        // PAGINATION
         // ==========================================
         function updatePaginationInfo() {
             const total = filteredContacts.length;
@@ -280,9 +331,6 @@
             document.getElementById('nextPage').disabled = currentPage >= totalPages;
         }
 
-        // ==========================================
-        // PAGINATION
-        // ==========================================
         function previousPage() {
             if (currentPage > 1) {
                 currentPage--;
@@ -318,7 +366,7 @@
 
                 let matchType = true;
                 if (typeFilter !== 'all') {
-                    matchType = contact.type === typeFilter;
+                    matchType = contact.statut === typeFilter;
                 }
 
                 return matchSearch && matchType;
@@ -365,6 +413,7 @@
             document.getElementById('telephone').value = contact.telephone || '';
             document.getElementById('ville').value = contact.ville || '';
             document.getElementById('pays').value = contact.pays || 'FR';
+            document.getElementById('statut').value = contact.statut || 'prospect';
             document.getElementById('contactModal').style.display = 'flex';
         }
 
@@ -379,7 +428,7 @@
         // ==========================================
         // SAUVEGARDER CONTACT
         // ==========================================
-        function saveContact(event) {
+        async function saveContact(event) {
             event.preventDefault();
 
             const id = document.getElementById('contactId').value;
@@ -390,116 +439,49 @@
                 telephone: document.getElementById('telephone').value.trim(),
                 ville: document.getElementById('ville').value.trim(),
                 pays: document.getElementById('pays').value,
-                type: 'client'
+                statut: document.getElementById('statut').value,
+                date_clic: new Date().toISOString()
             };
 
-            if (id) {
-                // MODIFICATION
-                const index = allContacts.findIndex(c => c.id === parseInt(id));
-                if (index !== -1) {
-                    allContacts[index] = { ...allContacts[index], ...contactData };
-                    showNotification('✅ Contact modifié avec succès !', 'success');
-                }
-            } else {
-                // AJOUT
-                const newId = Math.max(...allContacts.map(c => c.id), 0) + 1;
-                allContacts.push({ id: newId, ...contactData });
-                showNotification('✅ Contact ajouté avec succès !', 'success');
-            }
-
-            closeModal();
-            filteredContacts = [...allContacts];
-            renderTable();
-            updateStats();
-            updatePaginationInfo();
-
-            // Sauvegarder dans Supabase
-            saveToSupabase(contactData, id);
-        }
-
-        // ==========================================
-        // SUPPRIMER CONTACT
-        // ==========================================
-        function deleteContact(id) {
-            if (!confirm('Voulez-vous vraiment supprimer ce contact ?')) return;
-
-            allContacts = allContacts.filter(c => c.id !== id);
-            filteredContacts = [...allContacts];
-            renderTable();
-            updateStats();
-            updatePaginationInfo();
-            showNotification('🗑️ Contact supprimé', 'info');
-
-            // Supprimer de Supabase
-            if (window.supabaseClient) {
-                window.supabaseClient
-                    .from('clients')
-                    .delete()
-                    .eq('id', id)
-                    .then(({ error }) => {
-                        if (error) console.error('❌ Erreur suppression:', error);
-                    });
-            }
-        }
-
-        // ==========================================
-        // SAUVEGARDER DANS SUPABASE
-        // ==========================================
-        function saveToSupabase(contactData, id) {
-            if (!window.supabaseClient) return;
-
-            const data = {
-                prenom: contactData.prenom,
-                nom: contactData.nom,
-                email: contactData.email,
-                telephone: contactData.telephone,
-                ville: contactData.ville,
-                pays: contactData.pays
-            };
-
-            if (id) {
-                window.supabaseClient
-                    .from('clients')
-                    .update(data)
-                    .eq('id', parseInt(id))
-                    .then(({ error }) => {
-                        if (error) console.error('❌ Erreur mise à jour:', error);
-                    });
-            } else {
-                window.supabaseClient
-                    .from('clients')
-                    .insert([data])
-                    .then(({ error }) => {
-                        if (error) console.error('❌ Erreur insertion:', error);
-                    });
-            }
-        }
-
-        // ==========================================
-        // CHARGER LES DONNÉES
-        // ==========================================
-        async function loadContactsData() {
             try {
-                if (window.supabaseClient) {
-                    const { data, error } = await window.supabaseClient
+                if (id) {
+                    // MODIFICATION
+                    const { error } = await supabaseClient
                         .from('clients')
-                        .select('*')
-                        .order('id', { ascending: true });
+                        .update(contactData)
+                        .eq('id', parseInt(id));
 
-                    if (!error && data && data.length > 0) {
-                        allContacts = data.map(c => ({
-                            ...c,
-                            type: c.statut === 'soldé' ? 'client' : 'prospect'
-                        }));
-                        filteredContacts = [...allContacts];
-                        renderTable();
-                        updateStats();
-                        updatePaginationInfo();
+                    if (error) {
+                        console.error('❌ Erreur mise à jour:', error);
+                        showNotification('❌ Erreur lors de la modification', 'error');
                         return;
                     }
+
+                    const index = allContacts.findIndex(c => c.id === parseInt(id));
+                    if (index !== -1) {
+                        allContacts[index] = { ...allContacts[index], ...contactData };
+                    }
+                    showNotification('✅ Contact modifié avec succès !', 'success');
+                } else {
+                    // AJOUT
+                    const { data, error } = await supabaseClient
+                        .from('clients')
+                        .insert([contactData])
+                        .select();
+
+                    if (error) {
+                        console.error('❌ Erreur insertion:', error);
+                        showNotification('❌ Erreur lors de l\'ajout', 'error');
+                        return;
+                    }
+
+                    if (data && data.length > 0) {
+                        allContacts.push(data[0]);
+                    }
+                    showNotification('✅ Contact ajouté avec succès !', 'success');
                 }
 
-                allContacts = getTestContacts();
+                closeModal();
                 filteredContacts = [...allContacts];
                 renderTable();
                 updateStats();
@@ -507,16 +489,101 @@
 
             } catch (err) {
                 console.error('❌ Erreur:', err);
-                allContacts = getTestContacts();
-                filteredContacts = [...allContacts];
-                renderTable();
-                updateStats();
-                updatePaginationInfo();
+                showNotification('❌ Une erreur est survenue', 'error');
             }
         }
 
         // ==========================================
-        // EXPOSER LES FONCTIONS GLOBALEMENT
+        // SUPPRIMER CONTACT
+        // ==========================================
+        async function deleteContact(id) {
+            if (!confirm('Voulez-vous vraiment supprimer ce contact ?')) return;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('clients')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) {
+                    console.error('❌ Erreur suppression:', error);
+                    showNotification('❌ Erreur lors de la suppression', 'error');
+                    return;
+                }
+
+                allContacts = allContacts.filter(c => c.id !== id);
+                filteredContacts = [...allContacts];
+                renderTable();
+                updateStats();
+                updatePaginationInfo();
+                showNotification('🗑️ Contact supprimé', 'info');
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                showNotification('❌ Une erreur est survenue', 'error');
+            }
+        }
+
+        // ==========================================
+        // NOTIFICATION
+        // ==========================================
+        function showNotification(message, type = 'info') {
+            document.querySelectorAll('.toast-nikel').forEach(t => t.remove());
+            
+            const colors = {
+                success: '#27ae60',
+                error: '#e74c3c',
+                info: '#c9a84c'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-nikel';
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: #1a1a1a;
+                color: white;
+                padding: 16px 24px;
+                border-radius: 14px;
+                font-weight: 500;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+                z-index: 9999;
+                max-width: 400px;
+                font-size: 0.95rem;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                animation: slideUp 0.5s ease;
+                border-left: 4px solid ${colors[type] || colors.info};
+            `;
+            toast.innerHTML = `<span>${message}</span>`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // ==========================================
+        // INITIALISATION
+        // ==========================================
+        function init() {
+            console.log('🚀 Chargement de contacts.html...');
+            
+            loadContactsData();
+
+            document.getElementById('contactForm').addEventListener('submit', saveContact);
+
+            document.getElementById('contactModal').addEventListener('click', function(e) {
+                if (e.target === this) closeModal();
+            });
+        }
+
+        // ==========================================
+        // EXPOSER LES FONCTIONS
         // ==========================================
         window.applyFilters = applyFilters;
         window.resetFilters = resetFilters;
@@ -527,21 +594,16 @@
         window.deleteContact = deleteContact;
         window.closeModal = closeModal;
         window.saveContact = saveContact;
+        window.showNotification = showNotification;
 
         // ==========================================
-        // ÉVÉNEMENTS
+        // LANCEMENT
         // ==========================================
-        document.addEventListener('DOMContentLoaded', function() {
-            loadContactsData();
-
-            // Formulaire
-            document.getElementById('contactForm').addEventListener('submit', saveContact);
-
-            // Fermer la modal en cliquant à l'extérieur
-            document.getElementById('contactModal').addEventListener('click', function(e) {
-                if (e.target === this) closeModal();
-            });
-        });
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
 
     })();
 </script>
