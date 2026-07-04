@@ -150,13 +150,14 @@
 <script>
     (function() {
         // ==========================================
-        // SUPABASE CONFIG (initialisation locale)
+        // SUPABASE CONFIG
         // ==========================================
         const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
         
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        window.supabaseClient = supabase;
+        // ✅ Correction : Utiliser un nom différent pour éviter le conflit
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        window.supabaseClient = supabaseClient;
 
         console.log('✅ Supabase initialisé dans profil.html');
 
@@ -215,45 +216,64 @@
             }
 
             try {
-                console.log('📝 Chargement des données pour:', adminSession.email);
-                console.log('📝 ID Admin:', adminSession.id);
+                console.log('📝 [1] Chargement des données pour:', adminSession.email);
+                console.log('📝 [1] ID Admin:', adminSession.id);
                 
+                // ==========================================
                 // 1. Charger les infos personnelles (table admins)
-                const { data: adminData, error: adminError } = await supabase
+                // ==========================================
+                console.log('📝 [2] Chargement de la table admins...');
+                const { data: adminData, error: adminError } = await supabaseClient
                     .from('admins')
                     .select('*')
                     .eq('email', adminSession.email)
                     .single();
 
                 if (adminError) {
-                    console.error('❌ Erreur chargement admin:', adminError);
+                    console.error('❌ [2] Erreur chargement admin:', adminError);
                     showNotification('❌ Erreur chargement: ' + adminError.message, 'error');
                     return;
                 }
 
                 if (adminData) {
-                    console.log('✅ Admin trouvé');
+                    console.log('✅ [2] Admin trouvé:', {
+                        id: adminData.id,
+                        email: adminData.email,
+                        prenom: adminData.prenom,
+                        nom: adminData.nom
+                    });
                     document.getElementById('prenom').value = adminData.prenom || '';
                     document.getElementById('nom').value = adminData.nom || '';
                     document.getElementById('ville').value = adminData.ville || '';
                     document.getElementById('pays').value = adminData.pays || 'FR';
                     document.getElementById('telephone').value = adminData.telephone || '';
                     document.getElementById('email').value = adminData.email || '';
+                } else {
+                    console.warn('⚠️ [2] Aucun admin trouvé');
                 }
 
+                // ==========================================
                 // 2. Charger les paramètres boutique (table boutique)
-                const { data: boutiqueData, error: boutiqueError } = await supabase
+                // ==========================================
+                console.log('📝 [3] Chargement de la table boutique...');
+                const { data: boutiqueData, error: boutiqueError } = await supabaseClient
                     .from('boutique')
                     .select('*')
                     .eq('admin_id', adminSession.id);
 
                 if (boutiqueError) {
-                    console.error('❌ Erreur chargement boutique:', boutiqueError);
+                    console.error('❌ [3] Erreur chargement boutique:', boutiqueError);
+                    showNotification('❌ Erreur chargement boutique: ' + boutiqueError.message, 'error');
                 }
 
                 if (boutiqueData && boutiqueData.length > 0) {
                     const data = boutiqueData[0];
-                    console.log('✅ Boutique trouvée');
+                    console.log('✅ [3] Boutique trouvée:', {
+                        id: data.id,
+                        admin_id: data.admin_id,
+                        nom: data.nom,
+                        adresse: data.adresse
+                    });
                     document.getElementById('nomBoutique').value = data.nom || 'NIKEL';
                     document.getElementById('adresseBoutique').value = data.adresse || '';
                     document.getElementById('descriptionBoutique').value = data.description || '';
@@ -269,9 +289,10 @@
                     }
                     showNotification('✅ Données chargées avec succès', 'success');
                 } else {
-                    console.warn('⚠️ Aucune boutique trouvée, création...');
-                    // Créer une boutique par défaut
-                    const { error: createError } = await supabase
+                    console.warn('⚠️ [3] Aucune boutique trouvée pour admin_id:', adminSession.id);
+                    console.log('📝 [3] Création automatique de la boutique...');
+                    
+                    const { data: newBoutique, error: createError } = await supabaseClient
                         .from('boutique')
                         .insert([{
                             admin_id: adminSession.id,
@@ -279,19 +300,21 @@
                             adresse: '123 rue de l\'Élégance, 75001 Paris',
                             description: 'NIKEL est une boutique de prêt-à-porter qui allie élégance intemporelle et qualité exceptionnelle.',
                             bio: 'Passionné par la mode et le design, j\'ai fondé NIKEL en 2020 avec une vision claire : offrir des pièces qui allient élégance et qualité.'
-                        }]);
+                        }])
+                        .select();
 
                     if (createError) {
-                        console.error('❌ Erreur création boutique:', createError);
-                        showNotification('❌ Erreur création boutique', 'error');
+                        console.error('❌ [3] Erreur création boutique:', createError);
+                        showNotification('❌ Erreur création boutique: ' + createError.message, 'error');
                     } else {
-                        console.log('✅ Boutique créée avec succès');
+                        console.log('✅ [3] Boutique créée avec succès !', newBoutique);
                         showNotification('✅ Paramètres boutique initialisés', 'success');
-                        // Recharger les données
                         await loadAdminData();
                         return;
                     }
                 }
+
+                console.log('✅ [4] Chargement terminé');
 
             } catch (err) {
                 console.error('❌ Erreur générale:', err);
@@ -312,8 +335,7 @@
             try {
                 console.log('📝 Sauvegarde des données...');
                 
-                // 1. Mettre à jour les infos personnelles (table admins)
-                const { error: adminError } = await supabase
+                const { error: adminError } = await supabaseClient
                     .from('admins')
                     .update({
                         prenom: formData.prenom,
@@ -327,7 +349,6 @@
                 if (adminError) throw adminError;
                 console.log('✅ Infos personnelles sauvegardées');
 
-                // 2. Mettre à jour la boutique (table boutique)
                 const boutiqueData = {
                     nom: formData.nomBoutique,
                     adresse: formData.adresseBoutique,
@@ -336,25 +357,21 @@
                     updated_at: new Date().toISOString()
                 };
 
-                const { data: existing, error: checkError } = await supabase
+                const { data: existing, error: checkError } = await supabaseClient
                     .from('boutique')
                     .select('id')
                     .eq('admin_id', adminSession.id)
                     .maybeSingle();
 
-                if (checkError && checkError.code !== 'PGRST116') {
-                    console.warn('⚠️ Erreur vérification boutique:', checkError);
-                }
-
                 if (existing) {
-                    const { error } = await supabase
+                    const { error } = await supabaseClient
                         .from('boutique')
                         .update(boutiqueData)
                         .eq('admin_id', adminSession.id);
                     if (error) throw error;
                     console.log('✅ Boutique mise à jour');
                 } else {
-                    const { error } = await supabase
+                    const { error } = await supabaseClient
                         .from('boutique')
                         .insert([{
                             admin_id: adminSession.id,
@@ -364,7 +381,6 @@
                     console.log('✅ Boutique créée');
                 }
 
-                // Mettre à jour la session locale
                 const updatedAdmin = JSON.parse(localStorage.getItem('nikel_admin'));
                 updatedAdmin.prenom = formData.prenom;
                 updatedAdmin.nom = formData.nom;
@@ -448,12 +464,12 @@
             setupPhotoUpload('photoInput', 'profilePhoto', 'nikel_profile_photo');
             setupPhotoUpload('boutiquePhotoInput', 'boutiquePhoto', 'nikel_boutique_photo');
             setupPhotoUpload('proPhotoInput', 'proPhoto', 'nikel_pro_photo');
-            loadAdminData();
+            
+            setTimeout(() => {
+                loadAdminData();
+            }, 500);
         }
 
-        // ==========================================
-        // LANCEMENT
-        // ==========================================
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', init);
         } else {
