@@ -137,7 +137,7 @@
                 </div>
             </div>
 
-            <!-- Ville & Pays (Pays en lecture seule, généré par l'indicatif) -->
+            <!-- Ville & Pays (Pays en lecture seule) -->
             <div style="display:grid; grid-template-columns:2fr 1fr; gap:12px;">
                 <div class="form-group">
                     <label for="ville"><i class="fas fa-city"></i> Ville</label>
@@ -319,7 +319,6 @@
 
                 if (error) {
                     console.error('❌ Erreur chargement:', error);
-                    showNotification('❌ Erreur de chargement des contacts', 'error');
                     allContacts = [];
                     filteredContacts = [];
                     renderTable();
@@ -346,7 +345,6 @@
 
             } catch (err) {
                 console.error('❌ Erreur:', err);
-                showNotification('❌ Erreur de chargement', 'error');
                 allContacts = [];
                 filteredContacts = [];
                 renderTable();
@@ -511,7 +509,6 @@
             document.getElementById('nom').value = contact.nom || '';
             document.getElementById('email').value = contact.email || '';
             
-            // Gérer le téléphone avec indicatif
             const phone = contact.telephone || '';
             const indicatif = paysToIndicatif[contact.pays] || '+229';
             const numero = phone.replace(indicatif, '').trim();
@@ -558,7 +555,6 @@
 
             try {
                 if (id) {
-                    // MODIFICATION
                     const { error } = await supabaseClient
                         .from('clients')
                         .update(contactData)
@@ -576,7 +572,6 @@
                     }
                     showNotification('✅ Contact modifié avec succès !', 'success');
                 } else {
-                    // AJOUT
                     const { data, error } = await supabaseClient
                         .from('clients')
                         .insert([contactData])
@@ -641,6 +636,7 @@
         // NOTIFICATION
         // ==========================================
         function showNotification(message, type = 'info') {
+            // Supprimer les anciennes notifications
             document.querySelectorAll('.toast-nikel').forEach(t => t.remove());
             
             const colors = {
@@ -685,8 +681,11 @@
         // ==========================================
         function init() {
             console.log('🚀 Chargement de contacts.html...');
+            
+            // Charger les données
             loadContactsData();
 
+            // Événements
             document.getElementById('contactForm').addEventListener('submit', saveContact);
 
             document.getElementById('contactModal').addEventListener('click', function(e) {
