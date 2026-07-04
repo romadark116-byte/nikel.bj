@@ -288,6 +288,21 @@
         </div>
     </footer>
 
+    <!-- ✅ Charger Supabase SDK UNE SEULE FOIS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- ✅ Initialiser Supabase GLOBALEMENT -->
+    <script>
+        const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
+        
+        // Initialiser et rendre disponible globalement
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        window.supabaseClient = supabaseClient;
+        
+        console.log('✅ Supabase initialisé globalement dans mon-compte.html');
+    </script>
+
     <script src="script.js"></script>
     <script>
         // ==========================================
