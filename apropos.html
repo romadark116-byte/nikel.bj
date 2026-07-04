@@ -8,6 +8,111 @@
     <link rel="stylesheet" href="animations.css">
     <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Section Fondateur */
+        .founder-section {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 40px;
+            margin-top: 30px;
+        }
+
+        .founder-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .founder-photo {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            aspect-ratio: 1/1;
+            background: var(--off-white);
+        }
+
+        .founder-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .founder-photo:hover img {
+            transform: scale(1.03);
+        }
+
+        .founder-photo .social-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.6));
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .founder-photo .social-overlay a {
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            opacity: 0.8;
+        }
+
+        .founder-photo .social-overlay a:hover {
+            opacity: 1;
+            transform: translateY(-3px);
+        }
+
+        .founder-info h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 4px;
+            color: var(--dark-gray);
+        }
+
+        .founder-info .title {
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .founder-info .bio {
+            color: var(--gray);
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .founder-info .bio:last-of-type {
+            margin-bottom: 20px;
+        }
+
+        .founder-info .signature {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: var(--gold);
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .founder-grid {
+                grid-template-columns: 1fr;
+            }
+            .founder-photo {
+                max-width: 280px;
+                margin: 0 auto;
+            }
+            .founder-section {
+                padding: 24px;
+            }
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -57,6 +162,51 @@
         </div>
     </section>
 
+    <!-- ===== SECTION FONDATEUR ===== -->
+    <section class="section">
+        <div class="container">
+            <div class="founder-section">
+                <div class="founder-grid">
+                    <!-- Photo du fondateur -->
+                    <div class="founder-photo">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" 
+                             alt="Fleury HAMIDOU - Fondateur de NIKEL"
+                             id="founderImage"
+                             onerror="this.src='https://ui-avatars.com/api/?name=Fleury+HAMIDOU&size=400&background=c9a84c&color=fff&font-size=0.5'">
+                        <div class="social-overlay">
+                            <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Informations du fondateur -->
+                    <div class="founder-info">
+                        <h3 id="founderName">Fleury HAMIDOU</h3>
+                        <span class="title">👑 Fondateur &amp; CEO</span>
+                        
+                        <p class="bio" id="founderBio">
+                            Passionné par la mode et le design depuis mon plus jeune âge, j'ai fondé NIKEL en 2020 avec une vision claire : 
+                            offrir des pièces qui allient <strong>élégance intemporelle</strong> et <strong>qualité exceptionnelle</strong>.
+                        </p>
+                        <p class="bio">
+                            Chaque création NIKEL est le fruit d'un processus minutieux où l'<strong>authenticité</strong> et le <strong>savoir-faire</strong> 
+                            sont au cœur de nos préoccupations. Je crois fermement que le style est une forme d'expression personnelle, 
+                            et notre mission est de vous offrir les moyens de vous exprimer avec confiance et élégance.
+                        </p>
+                        <p class="bio">
+                            Au-delà de la mode, NIKEL est une <strong>philosophie</strong> : celle d'un art de vivre où chaque détail compte, 
+                            où la durabilité et l'éthique ne sont pas des options mais des <strong>engagements</strong>.
+                        </p>
+                        
+                        <div class="signature">✨ Fleury HAMIDOU</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION HISTOIRE ET VALEURS ===== -->
     <section class="section">
         <div class="container about-grid">
             <div class="about-text animate-fade-up">
@@ -182,5 +332,45 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // ==========================================
+        // CHARGER LES DONNÉES DU FONDATEUR
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Récupérer les données du fondateur depuis localStorage ou Supabase
+            const founderData = {
+                name: 'Fleury HAMIDOU',
+                title: '👑 Fondateur & CEO',
+                bio: [
+                    'Passionné par la mode et le design depuis mon plus jeune âge, j\'ai fondé NIKEL en 2020 avec une vision claire : offrir des pièces qui allient <strong>élégance intemporelle</strong> et <strong>qualité exceptionnelle</strong>.',
+                    'Chaque création NIKEL est le fruit d\'un processus minutieux où l\'<strong>authenticité</strong> et le <strong>savoir-faire</strong> sont au cœur de nos préoccupations. Je crois fermement que le style est une forme d\'expression personnelle, et notre mission est de vous offrir les moyens de vous exprimer avec confiance et élégance.',
+                    'Au-delà de la mode, NIKEL est une <strong>philosophie</strong> : celle d\'un art de vivre où chaque détail compte, où la durabilité et l\'éthique ne sont pas des options mais des <strong>engagements</strong>.'
+                ],
+                image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
+                signature: '✨ Fleury HAMIDOU'
+            };
+
+            // Mettre à jour les éléments
+            const nameEl = document.getElementById('founderName');
+            const titleEl = document.querySelector('.founder-info .title');
+            const bioEls = document.querySelectorAll('.founder-info .bio');
+            const imageEl = document.getElementById('founderImage');
+            const signatureEl = document.querySelector('.founder-info .signature');
+
+            if (nameEl) nameEl.textContent = founderData.name;
+            if (titleEl) titleEl.textContent = founderData.title;
+            if (imageEl) imageEl.src = founderData.image;
+            if (signatureEl) signatureEl.textContent = founderData.signature;
+
+            // Mettre à jour les bios
+            if (bioEls.length > 0) {
+                founderData.bio.forEach((text, index) => {
+                    if (bioEls[index]) {
+                        bioEls[index].innerHTML = text;
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
