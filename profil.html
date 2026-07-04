@@ -150,13 +150,12 @@
 <script>
     (function() {
         // ==========================================
-        // SUPABASE CONFIG
+        // SUPABASE CONFIG - CORRECTION
         // ==========================================
         const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
         
-        // ✅ CORRECTION : Utiliser window.supabase ou self.supabase
-        // La variable 'supabase' est définie par le CDN
+        // ✅ UTILISER window.supabase qui est défini par le CDN
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         window.supabaseClient = supabaseClient;
 
@@ -164,7 +163,7 @@
         console.log('🔍 supabaseClient disponible:', !!supabaseClient);
 
         // ==========================================
-        // TEST DE CONNEXION IMMÉDIAT
+        // TEST DE CONNEXION
         // ==========================================
         async function testSupabaseConnection() {
             try {
@@ -175,7 +174,6 @@
                     return;
                 }
                 
-                // Tester la table admins
                 const { data, error } = await supabaseClient
                     .from('admins')
                     .select('*')
@@ -236,7 +234,7 @@
         }
 
         // ==========================================
-        // CHARGER LES DONNÉES DEPUIS SUPABASE
+        // CHARGER LES DONNÉES
         // ==========================================
         async function loadAdminData() {
             const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
@@ -250,9 +248,7 @@
                 console.log('📝 [1] Chargement des données pour:', adminSession.email);
                 console.log('📝 [1] ID Admin:', adminSession.id);
                 
-                // ==========================================
-                // 1. Charger les infos personnelles (table admins)
-                // ==========================================
+                // 1. Charger les infos personnelles
                 console.log('📝 [2] Chargement de la table admins...');
                 const { data: adminData, error: adminError } = await supabaseClient
                     .from('admins')
@@ -267,12 +263,7 @@
                 }
 
                 if (adminData) {
-                    console.log('✅ [2] Admin trouvé:', {
-                        id: adminData.id,
-                        email: adminData.email,
-                        prenom: adminData.prenom,
-                        nom: adminData.nom
-                    });
+                    console.log('✅ [2] Admin trouvé:', adminData);
                     document.getElementById('prenom').value = adminData.prenom || '';
                     document.getElementById('nom').value = adminData.nom || '';
                     document.getElementById('ville').value = adminData.ville || '';
@@ -283,9 +274,7 @@
                     console.warn('⚠️ [2] Aucun admin trouvé');
                 }
 
-                // ==========================================
-                // 2. Charger les paramètres boutique (table boutique)
-                // ==========================================
+                // 2. Charger les paramètres boutique
                 console.log('📝 [3] Chargement de la table boutique...');
                 const { data: boutiqueData, error: boutiqueError } = await supabaseClient
                     .from('boutique')
@@ -299,12 +288,7 @@
 
                 if (boutiqueData && boutiqueData.length > 0) {
                     const data = boutiqueData[0];
-                    console.log('✅ [3] Boutique trouvée:', {
-                        id: data.id,
-                        admin_id: data.admin_id,
-                        nom: data.nom,
-                        adresse: data.adresse
-                    });
+                    console.log('✅ [3] Boutique trouvée:', data);
                     document.getElementById('nomBoutique').value = data.nom || 'NIKEL';
                     document.getElementById('adresseBoutique').value = data.adresse || '';
                     document.getElementById('descriptionBoutique').value = data.description || '';
@@ -320,25 +304,23 @@
                     }
                     showNotification('✅ Données chargées avec succès', 'success');
                 } else {
-                    console.warn('⚠️ [3] Aucune boutique trouvée pour admin_id:', adminSession.id);
-                    console.log('📝 [3] Création automatique de la boutique...');
+                    console.warn('⚠️ [3] Aucune boutique trouvée, création...');
                     
-                    const { data: newBoutique, error: createError } = await supabaseClient
+                    const { error: createError } = await supabaseClient
                         .from('boutique')
                         .insert([{
                             admin_id: adminSession.id,
                             nom: 'NIKEL',
                             adresse: '123 rue de l\'Élégance, 75001 Paris',
                             description: 'NIKEL est une boutique de prêt-à-porter qui allie élégance intemporelle et qualité exceptionnelle.',
-                            bio: 'Passionné par la mode et le design, j\'ai fondé NIKEL en 2020 avec une vision claire : offrir des pièces qui allient élégance et qualité.'
-                        }])
-                        .select();
+                            bio: 'Passionné par la mode et le design, j\'ai fondé NIKEL en 2020.'
+                        }]);
 
                     if (createError) {
                         console.error('❌ [3] Erreur création boutique:', createError);
                         showNotification('❌ Erreur création boutique: ' + createError.message, 'error');
                     } else {
-                        console.log('✅ [3] Boutique créée avec succès !', newBoutique);
+                        console.log('✅ [3] Boutique créée avec succès');
                         showNotification('✅ Paramètres boutique initialisés', 'success');
                         await loadAdminData();
                         return;
@@ -366,7 +348,7 @@
             try {
                 console.log('📝 Sauvegarde des données...');
                 
-                // 1. Mettre à jour les infos personnelles (table admins)
+                // 1. Mettre à jour les infos personnelles
                 const { error: adminError } = await supabaseClient
                     .from('admins')
                     .update({
@@ -378,13 +360,10 @@
                     })
                     .eq('email', adminSession.email);
 
-                if (adminError) {
-                    console.error('❌ Erreur mise à jour admin:', adminError);
-                    throw adminError;
-                }
+                if (adminError) throw adminError;
                 console.log('✅ Infos personnelles sauvegardées');
 
-                // 2. Mettre à jour la boutique (table boutique)
+                // 2. Mettre à jour la boutique
                 const boutiqueData = {
                     nom: formData.nomBoutique,
                     adresse: formData.adresseBoutique,
@@ -398,10 +377,6 @@
                     .select('id')
                     .eq('admin_id', adminSession.id)
                     .maybeSingle();
-
-                if (checkError && checkError.code !== 'PGRST116') {
-                    console.warn('⚠️ Erreur vérification boutique:', checkError);
-                }
 
                 if (existing) {
                     const { error } = await supabaseClient
@@ -421,7 +396,7 @@
                     console.log('✅ Boutique créée');
                 }
 
-                // Mettre à jour la session locale
+                // Mettre à jour la session
                 const updatedAdmin = JSON.parse(localStorage.getItem('nikel_admin'));
                 updatedAdmin.prenom = formData.prenom;
                 updatedAdmin.nom = formData.nom;
@@ -508,7 +483,6 @@
             setupPhotoUpload('boutiquePhotoInput', 'boutiquePhoto', 'nikel_boutique_photo');
             setupPhotoUpload('proPhotoInput', 'proPhoto', 'nikel_pro_photo');
             
-            // Test de connexion d'abord
             setTimeout(async () => {
                 await testSupabaseConnection();
                 await loadAdminData();
