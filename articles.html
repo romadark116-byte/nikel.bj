@@ -183,13 +183,32 @@
 <script>
     (function() {
         // ==========================================
+        // RÉFÉRENCE SUPABASE
+        // ==========================================
+        const supabaseClient = window.supabaseClient;
+
+        if (!supabaseClient) {
+            console.error('❌ SupabaseClient non disponible !');
+            document.getElementById('articlesContainer').innerHTML = `
+                <div style="text-align:center; padding:60px; color:red;">
+                    <i class="fas fa-exclamation-circle" style="font-size:3rem;"></i>
+                    <h3>Erreur de connexion</h3>
+                    <p>Impossible de se connecter à la base de données.</p>
+                    <p style="font-size:0.9rem; color:#888;">Veuillez rafraîchir la page.</p>
+                </div>
+            `;
+            return;
+        }
+
+        console.log('✅ SupabaseClient disponible dans articles.html');
+
+        // ==========================================
         // VARIABLES GLOBALES
         // ==========================================
         let allArticles = [];
         let filteredArticles = [];
         let currentArticlePage = 1;
         const articlesPerPage = 10;
-        let isEditingArticle = false;
 
         // ==========================================
         // DONNÉES DE TEST
@@ -375,10 +394,65 @@
         }
 
         // ==========================================
+        // CHARGER LES DONNÉES DEPUIS SUPABASE
+        // ==========================================
+        async function loadArticlesData() {
+            try {
+                console.log('📝 Chargement des articles depuis Supabase...');
+                
+                const { data, error } = await supabaseClient
+                    .from('produits')
+                    .select('*')
+                    .order('id', { ascending: true });
+
+                if (error) {
+                    console.error('❌ Erreur chargement:', error);
+                    allArticles = [];
+                    filteredArticles = [];
+                    renderArticleTable();
+                    updateArticleStats();
+                    updateArticlePaginationInfo();
+                    return;
+                }
+
+                if (data && data.length > 0) {
+                    console.log(`✅ ${data.length} articles chargés depuis Supabase`);
+                    allArticles = data.map(p => ({
+                        id: p.id,
+                        nom: p.nom,
+                        categorie: p.categorie || 'vêtements',
+                        prix: parseFloat(p.prix),
+                        oldPrice: p.prix_original ? parseFloat(p.prix_original) : null,
+                        stock: p.stock || 0,
+                        description: p.description || '',
+                        image: p.image_url || '',
+                        statut: p.stock === 0 ? 'rupture' : 
+                                (p.prix_original && parseFloat(p.prix_original) > parseFloat(p.prix) ? 'soldes' : 'stock')
+                    }));
+                } else {
+                    console.warn('⚠️ Aucun article trouvé dans Supabase');
+                    allArticles = [];
+                }
+
+                filteredArticles = [...allArticles];
+                renderArticleTable();
+                updateArticleStats();
+                updateArticlePaginationInfo();
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                allArticles = [];
+                filteredArticles = [];
+                renderArticleTable();
+                updateArticleStats();
+                updateArticlePaginationInfo();
+            }
+        }
+
+        // ==========================================
         // MODAL : AJOUTER
         // ==========================================
         function openAddArticleModal() {
-            isEditingArticle = false;
             document.getElementById('articleModalTitle').innerHTML = '<i class="fas fa-cube" style="color:#c9a84c;"></i> Ajouter un article';
             document.getElementById('articleId').value = '';
             document.getElementById('articleForm').reset();
@@ -392,7 +466,6 @@
             const article = allArticles.find(a => a.id === id);
             if (!article) return;
 
-            isEditingArticle = true;
             document.getElementById('articleModalTitle').innerHTML = '<i class="fas fa-edit" style="color:#c9a84c;"></i> Modifier l\'article';
             document.getElementById('articleId').value = article.id;
             document.getElementById('articleNom').value = article.nom || '';
@@ -416,7 +489,7 @@
         // ==========================================
         // SAUVEGARDER ARTICLE
         // ==========================================
-        function saveArticle(event) {
+        async function saveArticle(event) {
             event.preventDefault();
 
             const id = document.getElementById('articleId').value;
@@ -424,7 +497,6 @@
             const oldPrice = document.getElementById('articleOldPrice').value ? parseFloat(document.getElementById('articleOldPrice').value) : null;
             const stock = parseInt(document.getElementById('articleStock').value) || 0;
             
-            // Déterminer le statut
             let statut = 'stock';
             if (stock === 0) statut = 'rupture';
             if (oldPrice && oldPrice > prix) statut = 'soldes';
@@ -433,131 +505,52 @@
                 nom: document.getElementById('articleNom').value.trim(),
                 categorie: document.getElementById('articleCategorie').value,
                 prix: prix,
-                oldPrice: oldPrice,
+                prix_original: oldPrice,
                 stock: stock,
                 statut: statut,
                 description: document.getElementById('articleDescription').value.trim(),
-                image: document.getElementById('articleImage').value.trim()
+                image_url: document.getElementById('articleImage').value.trim()
             };
 
-            if (id) {
-                // MODIFICATION
-                const index = allArticles.findIndex(a => a.id === parseInt(id));
-                if (index !== -1) {
-                    allArticles[index] = { ...allArticles[index], ...articleData };
-                    showNotification('✅ Article modifié avec succès !', 'success');
-                }
-            } else {
-                // AJOUT
-                const newId = Math.max(...allArticles.map(a => a.id), 0) + 1;
-                allArticles.push({ id: newId, ...articleData });
-                showNotification('✅ Article ajouté avec succès !', 'success');
-            }
-
-            closeArticleModal();
-            filteredArticles = [...allArticles];
-            renderArticleTable();
-            updateArticleStats();
-            updateArticlePaginationInfo();
-
-            // Sauvegarder dans Supabase
-            saveArticleToSupabase(articleData, id);
-        }
-
-        // ==========================================
-        // SUPPRIMER ARTICLE
-        // ==========================================
-        function deleteArticle(id) {
-            if (!confirm('Voulez-vous vraiment supprimer cet article ?')) return;
-
-            const article = allArticles.find(a => a.id === id);
-            allArticles = allArticles.filter(a => a.id !== id);
-            filteredArticles = [...allArticles];
-            renderArticleTable();
-            updateArticleStats();
-            updateArticlePaginationInfo();
-            showNotification(`🗑️ "${article?.nom || 'Article'}" supprimé`, 'info');
-
-            if (window.supabaseClient) {
-                window.supabaseClient
-                    .from('produits')
-                    .delete()
-                    .eq('id', id)
-                    .then(({ error }) => {
-                        if (error) console.error('❌ Erreur suppression:', error);
-                    });
-            }
-        }
-
-        // ==========================================
-        // SAUVEGARDER DANS SUPABASE
-        // ==========================================
-        function saveArticleToSupabase(articleData, id) {
-            if (!window.supabaseClient) return;
-
-            const data = {
-                nom: articleData.nom,
-                categorie: articleData.categorie,
-                prix: articleData.prix,
-                prix_original: articleData.oldPrice || null,
-                stock: articleData.stock,
-                description: articleData.description || '',
-                image_url: articleData.image || '',
-                promo: articleData.oldPrice && articleData.oldPrice > articleData.prix ? 
-                        Math.round((1 - articleData.prix / articleData.oldPrice) * 100) : 0
-            };
-
-            if (id) {
-                window.supabaseClient
-                    .from('produits')
-                    .update(data)
-                    .eq('id', parseInt(id))
-                    .then(({ error }) => {
-                        if (error) console.error('❌ Erreur mise à jour:', error);
-                    });
-            } else {
-                window.supabaseClient
-                    .from('produits')
-                    .insert([data])
-                    .then(({ error }) => {
-                        if (error) console.error('❌ Erreur insertion:', error);
-                    });
-            }
-        }
-
-        // ==========================================
-        // CHARGER LES DONNÉES
-        // ==========================================
-        async function loadArticlesData() {
             try {
-                if (window.supabaseClient) {
-                    const { data, error } = await window.supabaseClient
+                if (id) {
+                    // MODIFICATION
+                    const { error } = await supabaseClient
                         .from('produits')
-                        .select('*')
-                        .order('id', { ascending: true });
+                        .update(articleData)
+                        .eq('id', parseInt(id));
 
-                    if (!error && data && data.length > 0) {
-                        allArticles = data.map(p => ({
-                            id: p.id,
-                            nom: p.nom,
-                            categorie: p.categorie || 'vêtements',
-                            prix: parseFloat(p.prix),
-                            oldPrice: p.prix_original ? parseFloat(p.prix_original) : null,
-                            stock: p.stock || 0,
-                            description: p.description || '',
-                            image: p.image_url || '',
-                            statut: p.stock === 0 ? 'rupture' : 
-                                    (p.prix_original && parseFloat(p.prix_original) > parseFloat(p.prix) ? 'soldes' : 'stock')
-                        }));
-                        filteredArticles = [...allArticles];
-                        renderArticleTable();
-                        updateArticleStats();
-                        updateArticlePaginationInfo();
+                    if (error) {
+                        console.error('❌ Erreur mise à jour:', error);
+                        showNotification('❌ Erreur lors de la modification', 'error');
                         return;
                     }
+
+                    const index = allArticles.findIndex(a => a.id === parseInt(id));
+                    if (index !== -1) {
+                        allArticles[index] = { ...allArticles[index], ...articleData };
+                    }
+                    showNotification('✅ Article modifié avec succès !', 'success');
+                } else {
+                    // AJOUT
+                    const { data, error } = await supabaseClient
+                        .from('produits')
+                        .insert([articleData])
+                        .select();
+
+                    if (error) {
+                        console.error('❌ Erreur insertion:', error);
+                        showNotification('❌ Erreur lors de l\'ajout', 'error');
+                        return;
+                    }
+
+                    if (data && data.length > 0) {
+                        allArticles.push(data[0]);
+                    }
+                    showNotification('✅ Article ajouté avec succès !', 'success');
                 }
 
-                allArticles = getTestArticles();
+                closeArticleModal();
                 filteredArticles = [...allArticles];
                 renderArticleTable();
                 updateArticleStats();
@@ -565,16 +558,100 @@
 
             } catch (err) {
                 console.error('❌ Erreur:', err);
-                allArticles = getTestArticles();
-                filteredArticles = [...allArticles];
-                renderArticleTable();
-                updateArticleStats();
-                updateArticlePaginationInfo();
+                showNotification('❌ Une erreur est survenue', 'error');
             }
         }
 
         // ==========================================
-        // EXPOSER LES FONCTIONS GLOBALEMENT
+        // SUPPRIMER ARTICLE
+        // ==========================================
+        async function deleteArticle(id) {
+            if (!confirm('Voulez-vous vraiment supprimer cet article ?')) return;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('produits')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) {
+                    console.error('❌ Erreur suppression:', error);
+                    showNotification('❌ Erreur lors de la suppression', 'error');
+                    return;
+                }
+
+                allArticles = allArticles.filter(a => a.id !== id);
+                filteredArticles = [...allArticles];
+                renderArticleTable();
+                updateArticleStats();
+                updateArticlePaginationInfo();
+                showNotification('🗑️ Article supprimé', 'info');
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                showNotification('❌ Une erreur est survenue', 'error');
+            }
+        }
+
+        // ==========================================
+        // NOTIFICATION
+        // ==========================================
+        function showNotification(message, type = 'info') {
+            document.querySelectorAll('.toast-nikel').forEach(t => t.remove());
+            
+            const colors = {
+                success: '#27ae60',
+                error: '#e74c3c',
+                info: '#c9a84c'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-nikel';
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: #1a1a1a;
+                color: white;
+                padding: 16px 24px;
+                border-radius: 14px;
+                font-weight: 500;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+                z-index: 9999;
+                max-width: 400px;
+                font-size: 0.95rem;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                animation: slideUp 0.5s ease;
+                border-left: 4px solid ${colors[type] || colors.info};
+            `;
+            toast.innerHTML = `<span>${message}</span>`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // ==========================================
+        // INITIALISATION
+        // ==========================================
+        function init() {
+            console.log('🚀 Chargement de articles.html...');
+            loadArticlesData();
+
+            document.getElementById('articleForm').addEventListener('submit', saveArticle);
+
+            document.getElementById('articleModal').addEventListener('click', function(e) {
+                if (e.target === this) closeArticleModal();
+            });
+        }
+
+        // ==========================================
+        // EXPOSER LES FONCTIONS
         // ==========================================
         window.applyArticleFilters = applyArticleFilters;
         window.resetArticleFilters = resetArticleFilters;
@@ -585,19 +662,16 @@
         window.deleteArticle = deleteArticle;
         window.closeArticleModal = closeArticleModal;
         window.saveArticle = saveArticle;
+        window.showNotification = showNotification;
 
         // ==========================================
-        // ÉVÉNEMENTS
+        // LANCEMENT
         // ==========================================
-        document.addEventListener('DOMContentLoaded', function() {
-            loadArticlesData();
-
-            document.getElementById('articleForm').addEventListener('submit', saveArticle);
-
-            document.getElementById('articleModal').addEventListener('click', function(e) {
-                if (e.target === this) closeArticleModal();
-            });
-        });
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
 
     })();
 </script>
