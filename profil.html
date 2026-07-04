@@ -66,8 +66,8 @@
             </div>
             <div class="form-group">
                 <label for="email" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-envelope" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Email</label>
-                <input type="email" id="email" name="email" required readonly style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#e8e8e8; font-family:inherit; cursor:not-allowed; color:#888;" title="L'email ne peut pas être modifié">
-                <small style="color:#888; font-size:0.8rem;">L'email est utilisé pour la connexion et ne peut pas être modifié.</small>
+                <input type="email" id="email" name="email" value="" readonly style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f0f0f0; font-family:inherit; cursor:not-allowed; color:#666;" title="L'email ne peut pas être modifié">
+                <small style="color:#888; font-size:0.8rem;">🔒 L'email est utilisé pour la connexion et ne peut pas être modifié.</small>
             </div>
         </div>
 
@@ -155,7 +155,6 @@
         const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
         
-        // Initialiser Supabase
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         window.supabaseClient = supabase;
 
@@ -219,7 +218,7 @@
                 console.log('📝 Chargement des données pour:', adminSession.email);
                 console.log('📝 ID Admin:', adminSession.id);
                 
-                // 1. Charger les infos personnelles
+                // 1. Charger les infos personnelles (table admins)
                 const { data: adminData, error: adminError } = await supabase
                     .from('admins')
                     .select('*')
@@ -242,7 +241,7 @@
                     document.getElementById('email').value = adminData.email || '';
                 }
 
-                // 2. Charger les paramètres boutique
+                // 2. Charger les paramètres boutique (table boutique)
                 const { data: boutiqueData, error: boutiqueError } = await supabase
                     .from('boutique')
                     .select('*')
@@ -271,7 +270,7 @@
                     showNotification('✅ Données chargées avec succès', 'success');
                 } else {
                     console.warn('⚠️ Aucune boutique trouvée, création...');
-                    // Créer une boutique
+                    // Créer une boutique par défaut
                     const { error: createError } = await supabase
                         .from('boutique')
                         .insert([{
@@ -279,7 +278,7 @@
                             nom: 'NIKEL',
                             adresse: '123 rue de l\'Élégance, 75001 Paris',
                             description: 'NIKEL est une boutique de prêt-à-porter qui allie élégance intemporelle et qualité exceptionnelle.',
-                            bio: 'Passionné par la mode et le design, j\'ai fondé NIKEL en 2020.'
+                            bio: 'Passionné par la mode et le design, j\'ai fondé NIKEL en 2020 avec une vision claire : offrir des pièces qui allient élégance et qualité.'
                         }]);
 
                     if (createError) {
@@ -288,6 +287,7 @@
                     } else {
                         console.log('✅ Boutique créée avec succès');
                         showNotification('✅ Paramètres boutique initialisés', 'success');
+                        // Recharger les données
                         await loadAdminData();
                         return;
                     }
@@ -312,7 +312,7 @@
             try {
                 console.log('📝 Sauvegarde des données...');
                 
-                // 1. Mettre à jour les infos personnelles
+                // 1. Mettre à jour les infos personnelles (table admins)
                 const { error: adminError } = await supabase
                     .from('admins')
                     .update({
@@ -327,7 +327,7 @@
                 if (adminError) throw adminError;
                 console.log('✅ Infos personnelles sauvegardées');
 
-                // 2. Mettre à jour la boutique
+                // 2. Mettre à jour la boutique (table boutique)
                 const boutiqueData = {
                     nom: formData.nomBoutique,
                     adresse: formData.adresseBoutique,
@@ -341,6 +341,10 @@
                     .select('id')
                     .eq('admin_id', adminSession.id)
                     .maybeSingle();
+
+                if (checkError && checkError.code !== 'PGRST116') {
+                    console.warn('⚠️ Erreur vérification boutique:', checkError);
+                }
 
                 if (existing) {
                     const { error } = await supabase
@@ -360,7 +364,7 @@
                     console.log('✅ Boutique créée');
                 }
 
-                // Mettre à jour la session
+                // Mettre à jour la session locale
                 const updatedAdmin = JSON.parse(localStorage.getItem('nikel_admin'));
                 updatedAdmin.prenom = formData.prenom;
                 updatedAdmin.nom = formData.nom;
@@ -420,7 +424,11 @@
                 };
                 
                 console.log('📝 Données à sauvegarder:', formData);
-                await saveAllData(formData);
+                const success = await saveAllData(formData);
+                
+                if (success) {
+                    showNotification('✅ Profil mis à jour avec succès !', 'success');
+                }
             });
 
             profileForm.addEventListener('reset', function(e) {
