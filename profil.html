@@ -155,11 +155,42 @@
         const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
         
-        // ✅ Correction : Utiliser un nom différent pour éviter le conflit
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // ✅ CORRECTION : Utiliser window.supabase ou self.supabase
+        // La variable 'supabase' est définie par le CDN
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         window.supabaseClient = supabaseClient;
 
         console.log('✅ Supabase initialisé dans profil.html');
+        console.log('🔍 supabaseClient disponible:', !!supabaseClient);
+
+        // ==========================================
+        // TEST DE CONNEXION IMMÉDIAT
+        // ==========================================
+        async function testSupabaseConnection() {
+            try {
+                console.log('🔍 Test de connexion à Supabase...');
+                const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
+                if (!adminSession) {
+                    console.warn('⚠️ Aucun admin connecté');
+                    return;
+                }
+                
+                // Tester la table admins
+                const { data, error } = await supabaseClient
+                    .from('admins')
+                    .select('*')
+                    .eq('email', adminSession.email);
+                
+                if (error) {
+                    console.error('❌ Erreur test Supabase:', error);
+                    showNotification('❌ Erreur de connexion à la base de données', 'error');
+                } else {
+                    console.log('✅ Test Supabase réussi, données:', data);
+                }
+            } catch (err) {
+                console.error('❌ Erreur test:', err);
+            }
+        }
 
         // ==========================================
         // NOTIFICATION
@@ -335,6 +366,7 @@
             try {
                 console.log('📝 Sauvegarde des données...');
                 
+                // 1. Mettre à jour les infos personnelles (table admins)
                 const { error: adminError } = await supabaseClient
                     .from('admins')
                     .update({
@@ -346,9 +378,13 @@
                     })
                     .eq('email', adminSession.email);
 
-                if (adminError) throw adminError;
+                if (adminError) {
+                    console.error('❌ Erreur mise à jour admin:', adminError);
+                    throw adminError;
+                }
                 console.log('✅ Infos personnelles sauvegardées');
 
+                // 2. Mettre à jour la boutique (table boutique)
                 const boutiqueData = {
                     nom: formData.nomBoutique,
                     adresse: formData.adresseBoutique,
@@ -362,6 +398,10 @@
                     .select('id')
                     .eq('admin_id', adminSession.id)
                     .maybeSingle();
+
+                if (checkError && checkError.code !== 'PGRST116') {
+                    console.warn('⚠️ Erreur vérification boutique:', checkError);
+                }
 
                 if (existing) {
                     const { error } = await supabaseClient
@@ -381,6 +421,7 @@
                     console.log('✅ Boutique créée');
                 }
 
+                // Mettre à jour la session locale
                 const updatedAdmin = JSON.parse(localStorage.getItem('nikel_admin'));
                 updatedAdmin.prenom = formData.prenom;
                 updatedAdmin.nom = formData.nom;
@@ -461,12 +502,16 @@
         // ==========================================
         function init() {
             console.log('🚀 Démarrage de profil.html...');
+            console.log('🔍 window.supabase disponible:', !!window.supabase);
+            
             setupPhotoUpload('photoInput', 'profilePhoto', 'nikel_profile_photo');
             setupPhotoUpload('boutiquePhotoInput', 'boutiquePhoto', 'nikel_boutique_photo');
             setupPhotoUpload('proPhotoInput', 'proPhoto', 'nikel_pro_photo');
             
-            setTimeout(() => {
-                loadAdminData();
+            // Test de connexion d'abord
+            setTimeout(async () => {
+                await testSupabaseConnection();
+                await loadAdminData();
             }, 500);
         }
 
