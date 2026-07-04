@@ -91,7 +91,7 @@
 
 <!-- ===== MODAL AJOUT / MODIFICATION ===== -->
 <div id="contactModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
-    <div style="background:white; border-radius:16px; padding:32px; max-width:500px; width:90%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="background:white; border-radius:16px; padding:32px; max-width:550px; width:90%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h3 id="modalTitle" style="font-family:'Playfair Display',serif; font-size:1.4rem; margin:0;">
                 <i class="fas fa-user-plus" style="color:#c9a84c;"></i> Ajouter un contact
@@ -104,6 +104,7 @@
         <form id="contactForm">
             <input type="hidden" id="contactId" value="">
             
+            <!-- Prénom & Nom -->
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                 <div class="form-group">
                     <label for="prenom"><i class="fas fa-user"></i> Prénom</label>
@@ -115,46 +116,81 @@
                 </div>
             </div>
 
+            <!-- Email -->
             <div class="form-group">
                 <label for="email"><i class="fas fa-envelope"></i> Email</label>
                 <input type="email" id="email" placeholder="jean@email.com" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
             </div>
 
+            <!-- Téléphone avec indicatif -->
             <div class="form-group">
-                <label for="telephone"><i class="fas fa-phone"></i> Téléphone</label>
-                <input type="tel" id="telephone" placeholder="06 12 34 56 78" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+                <label><i class="fas fa-phone"></i> Téléphone</label>
+                <div style="display:flex; gap:8px;">
+                    <select id="indicatif" style="width:100px; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; flex-shrink:0;">
+                        <option value="+229">🇧🇯 +229</option>
+                        <option value="+228">🇹🇬 +228</option>
+                        <option value="+227">🇳🇪 +227</option>
+                        <option value="+226">🇧🇫 +226</option>
+                        <option value="+225">🇨🇮 +225</option>
+                    </select>
+                    <input type="tel" id="telephone" placeholder="01 23 45 67" required style="flex:1; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+                </div>
             </div>
 
+            <!-- Ville & Pays -->
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                 <div class="form-group">
                     <label for="ville"><i class="fas fa-city"></i> Ville</label>
-                    <input type="text" id="ville" placeholder="Paris" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+                    <select id="ville" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+                        <option value="Cotonou">Cotonou</option>
+                        <option value="Porto-Novo">Porto-Novo</option>
+                        <option value="Parakou">Parakou</option>
+                        <option value="Abomey-Calavi">Abomey-Calavi</option>
+                        <option value="Djougou">Djougou</option>
+                        <option value="Lomé">Lomé</option>
+                        <option value="Kara">Kara</option>
+                        <option value="Sokodé">Sokodé</option>
+                        <option value="Atakpamé">Atakpamé</option>
+                        <option value="Palimé">Palimé</option>
+                        <option value="Niamey">Niamey</option>
+                        <option value="Zinder">Zinder</option>
+                        <option value="Maradi">Maradi</option>
+                        <option value="Agadez">Agadez</option>
+                        <option value="Tahoua">Tahoua</option>
+                        <option value="Ouagadougou">Ouagadougou</option>
+                        <option value="Bobo-Dioulasso">Bobo-Dioulasso</option>
+                        <option value="Koudougou">Koudougou</option>
+                        <option value="Banfora">Banfora</option>
+                        <option value="Ouahigouya">Ouahigouya</option>
+                        <option value="Abidjan">Abidjan</option>
+                        <option value="Yamoussoukro">Yamoussoukro</option>
+                        <option value="Bouaké">Bouaké</option>
+                        <option value="San-Pédro">San-Pédro</option>
+                        <option value="Korhogo">Korhogo</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="pays"><i class="fas fa-globe"></i> Pays</label>
-                    <select id="pays" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
-                        <option value="FR">France</option>
-                        <option value="BJ">Bénin</option>
-                        <option value="TG">Togo</option>
-                        <option value="BF">Burkina Faso</option>
-                        <option value="CI">Côte d'Ivoire</option>
-                        <option value="SN">Sénégal</option>
-                        <option value="ML">Mali</option>
-                        <option value="NE">Niger</option>
+                    <select id="pays" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;" onchange="updateVilles()">
+                        <option value="BJ">🇧🇯 Bénin</option>
+                        <option value="TG">🇹🇬 Togo</option>
+                        <option value="NE">🇳🇪 Niger</option>
+                        <option value="BF">🇧🇫 Burkina Faso</option>
+                        <option value="CI">🇨🇮 Côte d'Ivoire</option>
                     </select>
                 </div>
             </div>
 
+            <!-- Statut -->
             <div class="form-group">
                 <label for="statut"><i class="fas fa-tag"></i> Statut</label>
                 <select id="statut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+                    <option value="prospect" selected>⭐ Prospect</option>
                     <option value="client">✅ Client</option>
-                    <option value="prospect">⭐ Prospect</option>
-                    <option value="en attente">⏳ En attente</option>
-                    <option value="annulé">❌ Annulé</option>
                 </select>
             </div>
 
+            <!-- Boutons -->
             <div style="display:flex; gap:12px; margin-top:16px;">
                 <button type="submit" id="saveContactBtn" style="flex:1; padding:12px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:600; cursor:pointer; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                     <i class="fas fa-save"></i> Enregistrer
@@ -177,7 +213,6 @@
 
         if (!supabaseClient) {
             console.error('❌ SupabaseClient non disponible !');
-            // Afficher un message d'erreur dans la page
             document.getElementById('contactsContainer').innerHTML = `
                 <div style="text-align:center; padding:60px; color:red;">
                     <i class="fas fa-exclamation-circle" style="font-size:3rem;"></i>
@@ -192,39 +227,89 @@
         console.log('✅ SupabaseClient disponible dans contacts.html');
 
         // ==========================================
-        // VARIABLES GLOBALES
+        // DONNÉES DES VILLES PAR PAYS
         // ==========================================
-        let allContacts = [];
-        let filteredContacts = [];
-        let currentPage = 1;
-        const itemsPerPage = 10;
+        const villesParPays = {
+            'BJ': ['Cotonou', 'Porto-Novo', 'Parakou', 'Abomey-Calavi', 'Djougou'],
+            'TG': ['Lomé', 'Kara', 'Sokodé', 'Atakpamé', 'Palimé'],
+            'NE': ['Niamey', 'Zinder', 'Maradi', 'Agadez', 'Tahoua'],
+            'BF': ['Ouagadougou', 'Bobo-Dioulasso', 'Koudougou', 'Banfora', 'Ouahigouya'],
+            'CI': ['Abidjan', 'Yamoussoukro', 'Bouaké', 'San-Pédro', 'Korhogo']
+        };
 
         // ==========================================
         // PAYS VERS LIBELLÉ
         // ==========================================
         function getPaysLabel(code) {
             const pays = {
-                'FR': 'France', 'BJ': 'Bénin', 'TG': 'Togo', 'BF': 'Burkina Faso',
-                'CI': "Côte d'Ivoire", 'SN': 'Sénégal', 'ML': 'Mali', 'NE': 'Niger'
+                'BJ': 'Bénin', 'TG': 'Togo', 'NE': 'Niger',
+                'BF': 'Burkina Faso', 'CI': "Côte d'Ivoire"
             };
             return pays[code] || code;
+        }
+
+        // ==========================================
+        // INDICATIF VERS PAYS
+        // ==========================================
+        function getPaysFromIndicatif(indicatif) {
+            const map = {
+                '+229': 'BJ',
+                '+228': 'TG',
+                '+227': 'NE',
+                '+226': 'BF',
+                '+225': 'CI'
+            };
+            return map[indicatif] || 'BJ';
+        }
+
+        // ==========================================
+        // INDICATIF PAR DÉFAUT
+        // ==========================================
+        function getIndicatifFromPays(pays) {
+            const map = {
+                'BJ': '+229',
+                'TG': '+228',
+                'NE': '+227',
+                'BF': '+226',
+                'CI': '+225'
+            };
+            return map[pays] || '+229';
+        }
+
+        // ==========================================
+        // METTRE À JOUR LES VILLES SELON LE PAYS
+        // ==========================================
+        function updateVilles() {
+            const paysSelect = document.getElementById('pays');
+            const villeSelect = document.getElementById('ville');
+            const pays = paysSelect.value;
+            const villes = villesParPays[pays] || ['Cotonou', 'Porto-Novo', 'Parakou', 'Abomey-Calavi', 'Djougou'];
+            
+            villeSelect.innerHTML = villes.map(v => `<option value="${v}">${v}</option>`).join('');
         }
 
         // ==========================================
         // BADGE STATUT
         // ==========================================
         function getStatutBadge(statut) {
-            const s = {
-                'client': { bg: '#27ae60', icon: 'fa-check', text: 'Client' },
-                'prospect': { bg: '#f39c12', icon: 'fa-star', text: 'Prospect' },
-                'en attente': { bg: '#f39c12', icon: 'fa-clock', text: 'En attente' },
-                'annulé': { bg: '#e74c3c', icon: 'fa-times', text: 'Annulé' }
-            };
-            const st = s[statut] || s['prospect'];
-            return `<span style="background:${st.bg}; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-                <i class="fas ${st.icon}"></i> ${st.text}
-            </span>`;
+            if (statut === 'client') {
+                return `<span style="background:#27ae60; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                    <i class="fas fa-check"></i> Client
+                </span>`;
+            } else {
+                return `<span style="background:#f39c12; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                    <i class="fas fa-star"></i> Prospect
+                </span>`;
+            }
         }
+
+        // ==========================================
+        // VARIABLES GLOBALES
+        // ==========================================
+        let allContacts = [];
+        let filteredContacts = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
 
         // ==========================================
         // CHARGER LES DONNÉES DEPUIS SUPABASE
@@ -326,7 +411,7 @@
         function updateStats() {
             const total = allContacts.length;
             const clients = allContacts.filter(c => c.statut === 'client').length;
-            const prospects = allContacts.filter(c => c.statut === 'prospect' || c.statut === 'en attente').length;
+            const prospects = allContacts.filter(c => c.statut === 'prospect').length;
             document.getElementById('totalContacts').textContent = total;
             document.getElementById('totalClients').textContent = clients;
             document.getElementById('totalProspects').textContent = prospects;
@@ -411,7 +496,9 @@
             document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus" style="color:#c9a84c;"></i> Ajouter un contact';
             document.getElementById('contactId').value = '';
             document.getElementById('contactForm').reset();
+            document.getElementById('statut').value = 'prospect';
             document.getElementById('contactModal').style.display = 'flex';
+            updateVilles();
         }
 
         // ==========================================
@@ -426,11 +513,19 @@
             document.getElementById('prenom').value = contact.prenom || '';
             document.getElementById('nom').value = contact.nom || '';
             document.getElementById('email').value = contact.email || '';
-            document.getElementById('telephone').value = contact.telephone || '';
-            document.getElementById('ville').value = contact.ville || '';
-            document.getElementById('pays').value = contact.pays || 'FR';
+            
+            // Gérer le téléphone avec indicatif
+            const phone = contact.telephone || '';
+            const indicatif = getIndicatifFromPays(contact.pays || 'BJ');
+            const numero = phone.replace(indicatif, '').trim();
+            document.getElementById('indicatif').value = indicatif;
+            document.getElementById('telephone').value = numero;
+            
+            document.getElementById('ville').value = contact.ville || 'Cotonou';
+            document.getElementById('pays').value = contact.pays || 'BJ';
             document.getElementById('statut').value = contact.statut || 'prospect';
             document.getElementById('contactModal').style.display = 'flex';
+            updateVilles();
         }
 
         // ==========================================
@@ -448,12 +543,15 @@
             event.preventDefault();
 
             const id = document.getElementById('contactId').value;
+            const indicatif = document.getElementById('indicatif').value;
+            const telephone = document.getElementById('telephone').value.trim();
+            
             const contactData = {
                 prenom: document.getElementById('prenom').value.trim(),
                 nom: document.getElementById('nom').value.trim(),
                 email: document.getElementById('email').value.trim(),
-                telephone: document.getElementById('telephone').value.trim(),
-                ville: document.getElementById('ville').value.trim(),
+                telephone: indicatif + ' ' + telephone,
+                ville: document.getElementById('ville').value,
                 pays: document.getElementById('pays').value,
                 statut: document.getElementById('statut').value,
                 date_clic: new Date().toISOString()
@@ -595,6 +693,9 @@
             document.getElementById('contactModal').addEventListener('click', function(e) {
                 if (e.target === this) closeModal();
             });
+
+            // Mettre à jour les villes quand le pays change
+            document.getElementById('pays').addEventListener('change', updateVilles);
         }
 
         // ==========================================
@@ -610,6 +711,7 @@
         window.closeModal = closeModal;
         window.saveContact = saveContact;
         window.showNotification = showNotification;
+        window.updateVilles = updateVilles;
 
         // ==========================================
         // LANCEMENT
