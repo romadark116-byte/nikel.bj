@@ -74,7 +74,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Déconnexion */
+        /* Déconnexion (sidebar) */
         .logout-link {
             display: flex;
             align-items: center;
@@ -94,6 +94,23 @@
             background: #fde8e8;
         }
 
+        /* Quitter (menu header) */
+        .quit-link {
+            color: #e74c3c !important;
+            font-weight: 600 !important;
+        }
+
+        .quit-link:hover {
+            color: #c0392b !important;
+        }
+
+        /* Lien désactivé dans le menu public */
+        .nav-link-disabled {
+            opacity: 0.5 !important;
+            cursor: not-allowed !important;
+            pointer-events: none !important;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .dashboard-layout {
@@ -110,11 +127,16 @@
             </div>
             <nav class="nav">
                 <ul>
-                    <li><a href="index.html">Accueil</a></li>
-                    <li><a href="boutique.html">Boutique</a></li>
-                    <li><a href="apropos.html">À propos</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                    <li><a href="faq.html">FAQ</a></li>
+                    <!-- Liens publics désactivés -->
+                    <li><a href="index.html" class="nav-link-disabled">Accueil</a></li>
+                    <li><a href="boutique.html" class="nav-link-disabled">Boutique</a></li>
+                    <li><a href="apropos.html" class="nav-link-disabled">À propos</a></li>
+                    <li><a href="contact.html" class="nav-link-disabled">Contact</a></li>
+                    <li><a href="faq.html" class="nav-link-disabled">FAQ</a></li>
+                    <!-- Bouton Quitter (retour site public) -->
+                    <li><a href="#" onclick="handleQuit(event)" class="quit-link">
+                        <i class="fas fa-sign-out-alt"></i> Quitter l'espace admin
+                    </a></li>
                 </ul>
             </nav>
             <div class="header-actions">
@@ -146,7 +168,7 @@
     <section class="page-header">
         <div class="container">
             <h1>Mon compte</h1>
-            <p>Bienvenue, <span id="userName" style="color:var(--gold);">Jean Dupont</span></p>
+            <p>Bienvenue, <span id="userName" style="color:var(--gold);">Administrateur</span></p>
         </div>
     </section>
 
@@ -160,8 +182,8 @@
                         <div style="width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg, var(--gold), var(--accent-dark)); margin:0 auto 12px; display:flex; align-items:center; justify-content:center; font-size:2.5rem; color:white;">
                             <i class="fas fa-user"></i>
                         </div>
-                        <h4 style="font-family:'Playfair Display',serif;">Jean Dupont</h4>
-                        <p style="font-size:0.9rem; color:var(--gray);">jean@email.com</p>
+                        <h4 id="adminName" style="font-family:'Playfair Display',serif;">Administrateur</h4>
+                        <p id="adminEmail" style="font-size:0.9rem; color:var(--gray);">admin@nikel.com</p>
                     </div>
                     
                     <nav class="sidebar-menu">
@@ -206,7 +228,7 @@
                         </ul>
                     </nav>
 
-                    <!-- ===== DÉCONNEXION AVEC NOTIFICATION ===== -->
+                    <!-- ===== SE DÉCONNECTER → login.html ===== -->
                     <a href="#" class="logout-link" onclick="handleLogout(event)">
                         <i class="fas fa-sign-out-alt"></i> Se déconnecter
                     </a>
@@ -269,9 +291,90 @@
     <script src="script.js"></script>
     <script>
         // ==========================================
+        // VÉRIFICATION DE SESSION ADMIN
+        // ==========================================
+        function checkAdminSession() {
+            console.log('🔍 [MON-COMPTE] Vérification de la session...');
+            
+            const sessionData = localStorage.getItem('nikel_admin');
+            console.log('📝 [MON-COMPTE] Session trouvée:', sessionData ? 'OUI ✅' : 'NON ❌');
+            
+            if (!sessionData) {
+                console.warn('⚠️ [MON-COMPTE] Pas de session, redirection vers login');
+                window.location.href = 'login.html';
+                return false;
+            }
+            
+            try {
+                const admin = JSON.parse(sessionData);
+                if (!admin || !admin.email) {
+                    console.warn('⚠️ [MON-COMPTE] Session invalide, suppression...');
+                    localStorage.removeItem('nikel_admin');
+                    window.location.href = 'login.html';
+                    return false;
+                }
+                
+                console.log('✅ [MON-COMPTE] Session valide pour:', admin.email);
+                
+                // ✅ Mettre à jour le nom dans le header
+                const userName = document.getElementById('userName');
+                if (userName) {
+                    userName.textContent = admin.prenom + ' ' + admin.nom;
+                }
+                
+                // ✅ Mettre à jour le nom dans la sidebar
+                const adminName = document.getElementById('adminName');
+                if (adminName) {
+                    adminName.textContent = admin.prenom + ' ' + admin.nom;
+                }
+                
+                // ✅ Mettre à jour l'email dans la sidebar
+                const adminEmail = document.getElementById('adminEmail');
+                if (adminEmail) {
+                    adminEmail.textContent = admin.email;
+                }
+                
+                return true;
+                
+            } catch (e) {
+                console.warn('⚠️ [MON-COMPTE] Erreur de parsing, suppression...');
+                localStorage.removeItem('nikel_admin');
+                window.location.href = 'login.html';
+                return false;
+            }
+        }
+
+        // ==========================================
+        // BLOQUER LA NAVIGATION VERS LES PAGES PUBLIQUES
+        // ==========================================
+        function blockPublicNavigation() {
+            const navLinks = document.querySelectorAll('.nav ul li a');
+            const publicPages = ['index.html', 'boutique.html', 'apropos.html', 'contact.html', 'faq.html'];
+            
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && publicPages.some(page => href.includes(page))) {
+                    // Désactiver le lien
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        showNotification('⚠️ Vous êtes dans l\'espace admin. Utilisez "Quitter l\'espace admin" pour retourner sur le site.', 'error');
+                    });
+                    // Ajouter la classe de désactivation
+                    link.classList.add('nav-link-disabled');
+                }
+            });
+        }
+
+        // ==========================================
         // CHARGEMENT DYNAMIQUE DES PAGES
         // ==========================================
         document.addEventListener('DOMContentLoaded', function() {
+            // Vérifier la session avant tout
+            if (!checkAdminSession()) return;
+            
+            // Bloquer la navigation publique
+            blockPublicNavigation();
+            
             const mainContent = document.getElementById('mainContent');
             const menuLinks = document.querySelectorAll('.sidebar-menu a[data-page]');
 
@@ -344,18 +447,73 @@
         });
 
         // ==========================================
-        // DÉCONNEXION AVEC NOTIFICATION + REDIRECTION
+        // 1. DÉCONNEXION (Sidebar) → login.html
         // ==========================================
         function handleLogout(event) {
             event.preventDefault();
             
-            // Afficher la notification
+            console.log('🔍 [DÉCONNEXION] Début du processus...');
+            
+            // 1. Supprimer la session admin
+            localStorage.removeItem('nikel_admin');
+            console.log('🗑️ [DÉCONNEXION] Session supprimée');
+            
+            // 2. Vider le sessionStorage
+            sessionStorage.clear();
+            console.log('🗑️ [DÉCONNEXION] sessionStorage vidé');
+            
+            // 3. Vérifier que la session est bien supprimée
+            const sessionAfter = localStorage.getItem('nikel_admin');
+            if (sessionAfter) {
+                console.warn('⚠️ [DÉCONNEXION] La session existe encore !');
+                localStorage.removeItem('nikel_admin');
+            } else {
+                console.log('✅ [DÉCONNEXION] Session bien supprimée');
+            }
+            
+            // 4. Notification
             showNotification('👋 Déconnexion réussie !', 'info');
             
-            // Rediriger vers l'accueil après 2 secondes
+            // 5. Redirection vers login (pour se reconnecter)
             setTimeout(function() {
+                console.log('🚀 [DÉCONNEXION] Redirection vers login.html');
+                window.location.href = 'login.html';
+            }, 1500);
+        }
+
+        // ==========================================
+        // 2. QUITTER (Menu header) → index.html
+        // ==========================================
+        function handleQuit(event) {
+            event.preventDefault();
+            
+            console.log('🔍 [QUITTER] Retour au site public...');
+            
+            // 1. Supprimer la session admin
+            localStorage.removeItem('nikel_admin');
+            console.log('🗑️ [QUITTER] Session supprimée');
+            
+            // 2. Vider le sessionStorage
+            sessionStorage.clear();
+            console.log('🗑️ [QUITTER] sessionStorage vidé');
+            
+            // 3. Vérifier que la session est bien supprimée
+            const sessionAfter = localStorage.getItem('nikel_admin');
+            if (sessionAfter) {
+                console.warn('⚠️ [QUITTER] La session existe encore !');
+                localStorage.removeItem('nikel_admin');
+            } else {
+                console.log('✅ [QUITTER] Session bien supprimée');
+            }
+            
+            // 4. Notification
+            showNotification('👋 Retour au site public !', 'info');
+            
+            // 5. Redirection vers index (site public)
+            setTimeout(function() {
+                console.log('🚀 [QUITTER] Redirection vers index.html');
                 window.location.href = 'index.html';
-            }, 2000);
+            }, 1500);
         }
 
         // ==========================================
@@ -398,8 +556,10 @@
             }, 3000);
         }
 
+        // Exposer les fonctions globalement
         window.showNotification = showNotification;
         window.handleLogout = handleLogout;
+        window.handleQuit = handleQuit;
         window.handleSearch = function() {
             const input = document.getElementById('searchInput');
             if (input && input.value.trim().length > 0) {
