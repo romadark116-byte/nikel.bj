@@ -26,7 +26,7 @@
             </div>
         </div>
 
-        <!-- ===== SECTION 2 : INFORMATIONS PERSONNELLES ===== -->
+        <!-- ===== SECTION 2 : INFORMATIONS PERSONNELLES (Table admins) ===== -->
         <div>
             <h3 style="font-family:'Playfair Display',serif; margin-bottom:16px; font-size:1.1rem; color:#1a1a1a;">
                 <i class="fas fa-id-card" style="color:#c9a84c;"></i> Informations personnelles
@@ -34,22 +34,22 @@
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
                 <div class="form-group">
                     <label for="prenom" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-user" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Prénom</label>
-                    <input type="text" id="prenom" name="prenom" value="Jean" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
+                    <input type="text" id="prenom" name="prenom" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
                 </div>
                 <div class="form-group">
                     <label for="nom" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-user" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Nom</label>
-                    <input type="text" id="nom" name="nom" value="Dupont" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
+                    <input type="text" id="nom" name="nom" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
                 </div>
             </div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
                 <div class="form-group">
                     <label for="ville" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-city" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Ville</label>
-                    <input type="text" id="ville" name="ville" value="Paris" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
+                    <input type="text" id="ville" name="ville" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
                 </div>
                 <div class="form-group">
                     <label for="pays" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-globe" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Pays</label>
                     <select id="pays" name="pays" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
-                        <option value="FR" selected>France</option>
+                        <option value="FR">France</option>
                         <option value="BJ">Bénin</option>
                         <option value="TG">Togo</option>
                         <option value="BF">Burkina Faso</option>
@@ -62,15 +62,16 @@
             </div>
             <div class="form-group">
                 <label for="telephone" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-phone" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Téléphone</label>
-                <input type="tel" id="telephone" name="telephone" value="06 12 34 56 78" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
+                <input type="tel" id="telephone" name="telephone" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
             </div>
             <div class="form-group">
                 <label for="email" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-envelope" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Email</label>
-                <input type="email" id="email" name="email" value="jean@email.com" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
+                <input type="email" id="email" name="email" required readonly style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#e8e8e8; font-family:inherit; cursor:not-allowed;" title="L'email ne peut pas être modifié">
+                <small style="color:#888; font-size:0.8rem;">L'email est utilisé pour la connexion et ne peut pas être modifié.</small>
             </div>
         </div>
 
-        <!-- ===== SECTION 3 : PARAMÈTRES DE LA BOUTIQUE ===== -->
+        <!-- ===== SECTION 3 : PARAMÈTRES DE LA BOUTIQUE (Table boutique) ===== -->
         <div>
             <h3 style="font-family:'Playfair Display',serif; margin-bottom:16px; font-size:1.1rem; color:#1a1a1a;">
                 <i class="fas fa-store" style="color:#c9a84c;"></i> Paramètres de la boutique
@@ -79,13 +80,13 @@
             <!-- Nom de la boutique -->
             <div class="form-group">
                 <label for="nomBoutique" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-tag" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Nom de la boutique</label>
-                <input type="text" id="nomBoutique" name="nomBoutique" value="NIKEL" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
+                <input type="text" id="nomBoutique" name="nomBoutique" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
             </div>
 
             <!-- Adresse de la boutique -->
             <div class="form-group">
                 <label for="adresseBoutique" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-map-marker-alt" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Adresse de la boutique</label>
-                <input type="text" id="adresseBoutique" name="adresseBoutique" value="123 rue de l'Élégance, 75001 Paris" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
+                <input type="text" id="adresseBoutique" name="adresseBoutique" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
             </div>
 
             <!-- Photo de la boutique -->
@@ -108,7 +109,7 @@
             <!-- Description de la boutique -->
             <div class="form-group">
                 <label for="descriptionBoutique" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-align-left" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Description de la boutique</label>
-                <textarea id="descriptionBoutique" name="descriptionBoutique" rows="4" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit; resize:vertical;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">NIKEL est une boutique de prêt-à-porter qui allie élégance intemporelle et qualité exceptionnelle. Chaque pièce est pensée pour durer et sublimer votre quotidien.</textarea>
+                <textarea id="descriptionBoutique" name="descriptionBoutique" rows="4" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit; resize:vertical;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'"></textarea>
             </div>
 
             <!-- Photo professionnelle -->
@@ -131,7 +132,7 @@
             <!-- Description Pro (Bio) -->
             <div class="form-group">
                 <label for="bio" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-align-left" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Description Pro (Bio)</label>
-                <textarea id="bio" name="bio" rows="4" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit; resize:vertical;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">Votre description professionnelle ici. Présentez votre boutique, votre passion et ce qui vous rend unique.</textarea>
+                <textarea id="bio" name="bio" rows="4" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit; resize:vertical;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'"></textarea>
             </div>
         </div>
 
@@ -152,58 +153,177 @@
 <script>
     (function() {
         // ==========================================
-        // GESTION DES PHOTOS
+        // RÉFÉRENCES SUPABASE
         // ==========================================
-        
-        // Photo de profil
-        const photoInput = document.getElementById('photoInput');
-        const profilePhoto = document.getElementById('profilePhoto');
-        
-        if (photoInput && profilePhoto) {
-            photoInput.addEventListener('change', function(e) {
-                const file = this.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        profilePhoto.innerHTML = '<img src="' + event.target.result + '" style="width:100%;height:100%;object-fit:cover;">';
-                    };
-                    reader.readAsDataURL(file);
+        const supabase = window.supabaseClient;
+
+        // ==========================================
+        // CHARGER LES DONNÉES DEPUIS SUPABASE
+        // ==========================================
+        async function loadAdminData() {
+            const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
+            if (!adminSession || !adminSession.email) {
+                console.warn('⚠️ Aucun admin connecté');
+                showNotification('⚠️ Vous devez être connecté pour modifier votre profil', 'error');
+                return;
+            }
+
+            try {
+                // 1. Charger les infos personnelles (table admins)
+                const { data: adminData, error: adminError } = await supabase
+                    .from('admins')
+                    .select('*')
+                    .eq('email', adminSession.email)
+                    .single();
+
+                if (adminError) throw adminError;
+
+                if (adminData) {
+                    document.getElementById('prenom').value = adminData.prenom || '';
+                    document.getElementById('nom').value = adminData.nom || '';
+                    document.getElementById('ville').value = adminData.ville || '';
+                    document.getElementById('pays').value = adminData.pays || 'FR';
+                    document.getElementById('telephone').value = adminData.telephone || '';
+                    document.getElementById('email').value = adminData.email || '';
                 }
-            });
+
+                // 2. Charger les paramètres de la boutique (table boutique)
+                const { data: boutiqueData, error: boutiqueError } = await supabase
+                    .from('boutique')
+                    .select('*')
+                    .eq('admin_id', adminSession.id)
+                    .single();
+
+                if (boutiqueError && boutiqueError.code !== 'PGRST116') {
+                    console.warn('⚠️ Erreur chargement boutique:', boutiqueError);
+                }
+
+                if (boutiqueData) {
+                    document.getElementById('nomBoutique').value = boutiqueData.nom || 'NIKEL';
+                    document.getElementById('adresseBoutique').value = boutiqueData.adresse || '';
+                    document.getElementById('descriptionBoutique').value = boutiqueData.description || '';
+                    document.getElementById('bio').value = boutiqueData.bio || '';
+                    
+                    // Photos
+                    if (boutiqueData.photo_url) {
+                        document.getElementById('boutiquePhoto').innerHTML = 
+                            `<img src="${boutiqueData.photo_url}" style="width:100%;height:100%;object-fit:cover;">`;
+                    }
+                    if (boutiqueData.pro_photo_url) {
+                        document.getElementById('proPhoto').innerHTML = 
+                            `<img src="${boutiqueData.pro_photo_url}" style="width:100%;height:100%;object-fit:cover;">`;
+                    }
+                }
+
+                console.log('✅ Données chargées depuis Supabase');
+                
+            } catch (err) {
+                console.error('❌ Erreur chargement:', err);
+                showNotification('❌ Erreur de chargement des données', 'error');
+            }
         }
 
-        // Photo de la boutique
-        const boutiquePhotoInput = document.getElementById('boutiquePhotoInput');
-        const boutiquePhoto = document.getElementById('boutiquePhoto');
-        
-        if (boutiquePhotoInput && boutiquePhoto) {
-            boutiquePhotoInput.addEventListener('change', function(e) {
-                const file = this.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        boutiquePhoto.innerHTML = '<img src="' + event.target.result + '" style="width:100%;height:100%;object-fit:cover;">';
-                    };
-                    reader.readAsDataURL(file);
+        // ==========================================
+        // SAUVEGARDER LES DONNÉES DANS SUPABASE
+        // ==========================================
+        async function saveAllData(formData) {
+            const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
+            if (!adminSession || !adminSession.email) {
+                showNotification('⚠️ Vous devez être connecté', 'error');
+                return false;
+            }
+
+            try {
+                // 1. Mettre à jour les infos personnelles (table admins)
+                const { error: adminError } = await supabase
+                    .from('admins')
+                    .update({
+                        prenom: formData.prenom,
+                        nom: formData.nom,
+                        ville: formData.ville,
+                        pays: formData.pays,
+                        telephone: formData.telephone
+                    })
+                    .eq('email', adminSession.email);
+
+                if (adminError) throw adminError;
+
+                // 2. Mettre à jour les paramètres de la boutique (table boutique)
+                const boutiqueData = {
+                    nom: formData.nomBoutique,
+                    adresse: formData.adresseBoutique,
+                    description: formData.descriptionBoutique,
+                    bio: formData.bio,
+                    updated_at: new Date().toISOString()
+                };
+
+                // Vérifier si la boutique existe
+                const { data: existing, error: checkError } = await supabase
+                    .from('boutique')
+                    .select('id')
+                    .eq('admin_id', adminSession.id)
+                    .single();
+
+                let boutiqueError;
+                if (existing) {
+                    // Mise à jour
+                    const { error } = await supabase
+                        .from('boutique')
+                        .update(boutiqueData)
+                        .eq('admin_id', adminSession.id);
+                    boutiqueError = error;
+                } else {
+                    // Création
+                    const { error } = await supabase
+                        .from('boutique')
+                        .insert([{
+                            admin_id: adminSession.id,
+                            ...boutiqueData
+                        }]);
+                    boutiqueError = error;
                 }
-            });
+
+                if (boutiqueError) throw boutiqueError;
+
+                console.log('✅ Données sauvegardées dans Supabase');
+                
+                // Mettre à jour la session locale
+                const updatedAdmin = JSON.parse(localStorage.getItem('nikel_admin'));
+                updatedAdmin.prenom = formData.prenom;
+                updatedAdmin.nom = formData.nom;
+                updatedAdmin.telephone = formData.telephone;
+                localStorage.setItem('nikel_admin', JSON.stringify(updatedAdmin));
+                
+                return true;
+                
+            } catch (err) {
+                console.error('❌ Erreur sauvegarde:', err);
+                showNotification('❌ Erreur lors de la sauvegarde: ' + err.message, 'error');
+                return false;
+            }
         }
 
-        // Photo professionnelle
-        const proPhotoInput = document.getElementById('proPhotoInput');
-        const proPhoto = document.getElementById('proPhoto');
-        
-        if (proPhotoInput && proPhoto) {
-            proPhotoInput.addEventListener('change', function(e) {
-                const file = this.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        proPhoto.innerHTML = '<img src="' + event.target.result + '" style="width:100%;height:100%;object-fit:cover;">';
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
+        // ==========================================
+        // GESTION DES PHOTOS (Base64 temporaire)
+        // ==========================================
+        function setupPhotoUpload(inputId, displayId, storageKey) {
+            const input = document.getElementById(inputId);
+            const display = document.getElementById(displayId);
+            
+            if (input && display) {
+                input.addEventListener('change', function(e) {
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            display.innerHTML = '<img src="' + event.target.result + '" style="width:100%;height:100%;object-fit:cover;">';
+                            // Sauvegarde en localStorage (temporaire)
+                            localStorage.setItem(storageKey, event.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
         }
 
         // ==========================================
@@ -211,116 +331,102 @@
         // ==========================================
         const profileForm = document.getElementById('profileForm');
         if (profileForm) {
-            profileForm.addEventListener('submit', function(e) {
+            profileForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
-                // Récupérer TOUTES les données du formulaire
                 const formData = {
                     prenom: document.getElementById('prenom').value || '',
                     nom: document.getElementById('nom').value || '',
                     ville: document.getElementById('ville').value || '',
                     pays: document.getElementById('pays').value || 'FR',
                     telephone: document.getElementById('telephone').value || '',
-                    email: document.getElementById('email').value || '',
                     nomBoutique: document.getElementById('nomBoutique').value || '',
                     adresseBoutique: document.getElementById('adresseBoutique').value || '',
                     descriptionBoutique: document.getElementById('descriptionBoutique').value || '',
                     bio: document.getElementById('bio').value || ''
                 };
                 
-                console.log('📝 Données enregistrées:', formData);
+                console.log('📝 Données à sauvegarder:', formData);
                 
-                // Sauvegarder dans localStorage
-                localStorage.setItem('nikel_profil', JSON.stringify(formData));
+                const success = await saveAllData(formData);
                 
-                // Notification
-                if (typeof showNotification === 'function') {
-                    showNotification('✅ Profil mis à jour avec succès !');
-                } else {
-                    alert('✅ Profil mis à jour avec succès !');
+                if (success) {
+                    showNotification('✅ Profil mis à jour avec succès !', 'success');
                 }
             });
 
-            // Réinitialiser le formulaire
             profileForm.addEventListener('reset', function(e) {
                 e.preventDefault();
-                if (confirm('Voulez-vous vraiment réinitialiser les modifications ?')) {
-                    const savedData = JSON.parse(localStorage.getItem('nikel_profil'));
-                    if (savedData) {
-                        document.getElementById('prenom').value = savedData.prenom || '';
-                        document.getElementById('nom').value = savedData.nom || '';
-                        document.getElementById('ville').value = savedData.ville || '';
-                        document.getElementById('pays').value = savedData.pays || 'FR';
-                        document.getElementById('telephone').value = savedData.telephone || '';
-                        document.getElementById('email').value = savedData.email || '';
-                        document.getElementById('nomBoutique').value = savedData.nomBoutique || '';
-                        document.getElementById('adresseBoutique').value = savedData.adresseBoutique || '';
-                        document.getElementById('descriptionBoutique').value = savedData.descriptionBoutique || '';
-                        document.getElementById('bio').value = savedData.bio || '';
-                    }
-                    if (typeof showNotification === 'function') {
-                        showNotification('🔄 Formulaire réinitialisé');
-                    }
+                if (confirm('Voulez-vous vraiment réinitialiser les modifications non sauvegardées ?')) {
+                    loadAdminData();
+                    showNotification('🔄 Formulaire réinitialisé', 'info');
                 }
             });
         }
 
         // ==========================================
-        // CHARGER LES DONNÉES SAUVEGARDÉES
+        // INITIALISATION
         // ==========================================
-        function loadSavedProfile() {
-            const savedData = JSON.parse(localStorage.getItem('nikel_profil'));
-            if (savedData) {
-                if (document.getElementById('prenom')) document.getElementById('prenom').value = savedData.prenom || '';
-                if (document.getElementById('nom')) document.getElementById('nom').value = savedData.nom || '';
-                if (document.getElementById('ville')) document.getElementById('ville').value = savedData.ville || '';
-                if (document.getElementById('pays')) document.getElementById('pays').value = savedData.pays || 'FR';
-                if (document.getElementById('telephone')) document.getElementById('telephone').value = savedData.telephone || '';
-                if (document.getElementById('email')) document.getElementById('email').value = savedData.email || '';
-                if (document.getElementById('nomBoutique')) document.getElementById('nomBoutique').value = savedData.nomBoutique || '';
-                if (document.getElementById('adresseBoutique')) document.getElementById('adresseBoutique').value = savedData.adresseBoutique || '';
-                if (document.getElementById('descriptionBoutique')) document.getElementById('descriptionBoutique').value = savedData.descriptionBoutique || '';
-                if (document.getElementById('bio')) document.getElementById('bio').value = savedData.bio || '';
-                console.log('📂 Données chargées depuis localStorage');
-            }
+        function init() {
+            setupPhotoUpload('photoInput', 'profilePhoto', 'nikel_profile_photo');
+            setupPhotoUpload('boutiquePhotoInput', 'boutiquePhoto', 'nikel_boutique_photo');
+            setupPhotoUpload('proPhotoInput', 'proPhoto', 'nikel_pro_photo');
+            loadAdminData();
         }
 
         // ==========================================
-        // CHARGEMENT AU DÉMARRAGE
+        // NOTIFICATION
         // ==========================================
-        loadSavedProfile();
-
-        // Exposer la fonction de notification si elle n'existe pas
-        if (typeof showNotification !== 'function') {
-            window.showNotification = function(message, type) {
-                const toast = document.createElement('div');
-                toast.style.cssText = `
-                    position: fixed;
-                    bottom: 30px;
-                    right: 30px;
-                    background: #1a1a1a;
-                    color: white;
-                    padding: 16px 24px;
-                    border-radius: 14px;
-                    font-weight: 500;
-                    box-shadow: 0 8px 40px rgba(0,0,0,0.25);
-                    z-index: 9999;
-                    max-width: 400px;
-                    font-size: 0.95rem;
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                    animation: slideUp 0.5s ease;
-                `;
-                toast.innerHTML = `<span>${message}</span>`;
-                document.body.appendChild(toast);
-                setTimeout(() => {
-                    toast.style.opacity = '0';
-                    toast.style.transform = 'translateY(20px)';
-                    toast.style.transition = 'all 0.4s ease';
-                    setTimeout(() => toast.remove(), 400);
-                }, 3000);
+        function showNotification(message, type = 'info') {
+            document.querySelectorAll('.toast-nikel').forEach(t => t.remove());
+            
+            const colors = {
+                success: '#27ae60',
+                error: '#e74c3c',
+                info: '#c9a84c'
             };
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-nikel';
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: #1a1a1a;
+                color: white;
+                padding: 16px 24px;
+                border-radius: 14px;
+                font-weight: 500;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+                z-index: 9999;
+                max-width: 400px;
+                font-size: 0.95rem;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                animation: slideUp 0.5s ease;
+                border-left: 4px solid ${colors[type] || colors.info};
+            `;
+            toast.innerHTML = `<span>${message}</span>`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
         }
+
+        // ==========================================
+        // LANCEMENT
+        // ==========================================
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        window.showNotification = showNotification;
+        
     })();
 </script>
