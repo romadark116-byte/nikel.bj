@@ -1,4 +1,4 @@
-<!-- contacts.html - Mes contacts (version corrigée) -->
+<!-- contacts.html - Mes contacts -->
 <div id="contactsContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
@@ -429,7 +429,8 @@
                     console.log(`✅ ${data.length} contacts chargés depuis Supabase`);
                     allContacts = data.map(c => ({
                         ...c,
-                        statut: c.statut || 'prospect'
+                        statut: c.statut || 'prospect',
+                        indicatif: c.indicatif || paysToIndicatif[c.pays] || '+229'
                     }));
                 } else {
                     console.warn('⚠️ Aucun contact trouvé dans Supabase');
@@ -473,13 +474,16 @@
             const endIndex = Math.min(startIndex + itemsPerPage, filteredContacts.length);
             const pageItems = filteredContacts.slice(startIndex, endIndex);
 
-            tbody.innerHTML = pageItems.map(contact => `
+            tbody.innerHTML = pageItems.map(contact => {
+                // Afficher le téléphone complet (indicatif + numéro)
+                const fullPhone = (contact.indicatif || '+229') + ' ' + (contact.telephone || '');
+                return `
                 <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
                     <td style="padding:12px; font-weight:600; color:#1a1a1a;">#${contact.id}</td>
                     <td style="padding:12px; font-weight:500;">${contact.prenom || ''}</td>
                     <td style="padding:12px; font-weight:500;">${contact.nom || ''}</td>
                     <td style="padding:12px; color:#888;">${contact.email || '—'}</td>
-                    <td style="padding:12px;">${contact.telephone || '—'}</td>
+                    <td style="padding:12px;">${fullPhone}</td>
                     <td style="padding:12px;">${contact.ville || '—'}</td>
                     <td style="padding:12px;">${paysLabels[contact.pays] || contact.pays || '—'}</td>
                     <td style="padding:12px; text-align:center;">${getStatutBadge(contact.statut)}</td>
@@ -492,7 +496,7 @@
                         </button>
                     </td>
                 </tr>
-            `).join('');
+            `}).join('');
         }
 
         // ==========================================
@@ -596,7 +600,7 @@
         }
 
         // ==========================================
-        // MODAL : MODIFIER (TOUTES LES INFOS SONT CHARGÉES)
+        // MODAL : MODIFIER
         // ==========================================
         function editContact(id) {
             const contact = allContacts.find(c => c.id === id);
@@ -612,10 +616,9 @@
             document.getElementById('nom').value = contact.nom || '';
             document.getElementById('email').value = contact.email || '';
             
-            // ✅ Téléphone complet avec indicatif
-            const phone = contact.telephone || '';
-            const indicatif = paysToIndicatif[contact.pays] || '+229';
-            const numero = phone.replace(indicatif, '').trim();
+            // ✅ Téléphone : indicatif dans la colonne indicatif, numéro seul dans telephone
+            const indicatif = contact.indicatif || paysToIndicatif[contact.pays] || '+229';
+            const numero = contact.telephone || '';
             document.getElementById('indicatif').value = indicatif;
             document.getElementById('telephone').value = numero;
             
@@ -631,7 +634,6 @@
             updateVilles();
             updatePhonePlaceholder();
             
-            // ✅ Afficher une notification pour informer que les données sont chargées
             showNotification('📋 Données chargées, vous pouvez les modifier', 'info');
         }
 
@@ -662,7 +664,8 @@
                 prenom: document.getElementById('prenom').value.trim(),
                 nom: document.getElementById('nom').value.trim(),
                 email: document.getElementById('email').value.trim(),
-                telephone: indicatif + ' ' + telephone,
+                telephone: telephone, // ✅ Seulement le numéro, sans indicatif
+                indicatif: indicatif,   // ✅ Indicatif séparé
                 ville: document.getElementById('ville').value,
                 pays: paysCode,
                 statut: document.getElementById('statut').value,
