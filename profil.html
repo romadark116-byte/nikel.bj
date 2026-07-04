@@ -26,7 +26,7 @@
             </div>
         </div>
 
-        <!-- ===== SECTION 2 : INFORMATIONS PERSONNELLES ===== -->
+        <!-- ===== SECTION 2 : INFORMATIONS PERSONNELLES (Table admins) ===== -->
         <div>
             <h3 style="font-family:'Playfair Display',serif; margin-bottom:16px; font-size:1.1rem; color:#1a1a1a;">
                 <i class="fas fa-id-card" style="color:#c9a84c;"></i> Informations personnelles
@@ -71,7 +71,7 @@
             </div>
         </div>
 
-        <!-- ===== SECTION 3 : PARAMÈTRES DE LA BOUTIQUE ===== -->
+        <!-- ===== SECTION 3 : PARAMÈTRES DE LA BOUTIQUE (Table boutique) ===== -->
         <div>
             <h3 style="font-family:'Playfair Display',serif; margin-bottom:16px; font-size:1.1rem; color:#1a1a1a;">
                 <i class="fas fa-store" style="color:#c9a84c;"></i> Paramètres de la boutique
@@ -153,6 +153,11 @@
         // ==========================================
         const supabase = window.supabaseClient;
 
+        if (!supabase) {
+            console.error('❌ SupabaseClient non disponible !');
+            alert('❌ Erreur: SupabaseClient non disponible. Veuillez rafraîchir la page.');
+        }
+
         // ==========================================
         // CHARGER LES DONNÉES DEPUIS SUPABASE
         // ==========================================
@@ -166,6 +171,7 @@
 
             try {
                 console.log('📝 Chargement des données pour:', adminSession.email);
+                console.log('🔍 SupabaseClient disponible:', !!supabase);
                 
                 // 1. Charger les infos personnelles (table admins)
                 const { data: adminData, error: adminError } = await supabase
@@ -176,7 +182,7 @@
 
                 if (adminError) {
                     console.error('❌ Erreur chargement admin:', adminError);
-                    showNotification('❌ Erreur de chargement des informations personnelles', 'error');
+                    showNotification('❌ Erreur de chargement: ' + adminError.message, 'error');
                     return;
                 }
 
@@ -191,63 +197,62 @@
                 }
 
                 // 2. Charger les paramètres de la boutique (table boutique)
-                try {
-                    const { data: boutiqueData, error: boutiqueError } = await supabase
+                const { data: boutiqueData, error: boutiqueError } = await supabase
+                    .from('boutique')
+                    .select('*')
+                    .eq('admin_id', adminSession.id)
+                    .maybeSingle();
+
+                if (boutiqueError && boutiqueError.code !== 'PGRST116') {
+                    console.error('❌ Erreur chargement boutique:', boutiqueError);
+                }
+
+                if (boutiqueData) {
+                    // Mettre à jour les champs
+                    document.getElementById('nomBoutique').value = boutiqueData.nom || 'NIKEL';
+                    document.getElementById('adresseBoutique').value = boutiqueData.adresse || '';
+                    document.getElementById('descriptionBoutique').value = boutiqueData.description || '';
+                    document.getElementById('bio').value = boutiqueData.bio || '';
+                    
+                    // Photos
+                    if (boutiqueData.photo_url) {
+                        document.getElementById('boutiquePhoto').innerHTML = 
+                            `<img src="${boutiqueData.photo_url}" style="width:100%;height:100%;object-fit:cover;">`;
+                    }
+                    if (boutiqueData.pro_photo_url) {
+                        document.getElementById('proPhoto').innerHTML = 
+                            `<img src="${boutiqueData.pro_photo_url}" style="width:100%;height:100%;object-fit:cover;">`;
+                    }
+                    console.log('✅ Paramètres boutique chargés');
+                } else {
+                    // ✅ Créer une boutique pour l'admin
+                    console.log('📝 Aucune boutique trouvée, création automatique...');
+                    const { data: newBoutique, error: createError } = await supabase
                         .from('boutique')
-                        .select('*')
-                        .eq('admin_id', adminSession.id)
-                        .maybeSingle();
+                        .insert([{
+                            admin_id: adminSession.id,
+                            nom: 'NIKEL',
+                            adresse: '',
+                            description: '',
+                            bio: ''
+                        }])
+                        .select()
+                        .single();
 
-                    // Si la boutique n'existe pas, on la crée
-                    if (boutiqueError && boutiqueError.code === 'PGRST116') {
-                        console.log('📝 Aucune boutique trouvée, création automatique...');
-                        const { data: newBoutique, error: createError } = await supabase
-                            .from('boutique')
-                            .insert([{
-                                admin_id: adminSession.id,
-                                nom: 'NIKEL',
-                                adresse: '',
-                                description: '',
-                                bio: ''
-                            }])
-                            .select()
-                            .single();
-
-                        if (createError) {
-                            console.error('❌ Erreur création boutique:', createError);
-                        } else if (newBoutique) {
-                            console.log('✅ Boutique créée automatiquement');
-                            // Recharger les données
-                            await loadAdminData();
-                            return;
-                        }
-                    } else if (boutiqueError) {
-                        console.error('❌ Erreur chargement boutique:', boutiqueError);
+                    if (createError) {
+                        console.error('❌ Erreur création boutique:', createError);
+                        showNotification('❌ Erreur création boutique: ' + createError.message, 'error');
+                    } else {
+                        console.log('✅ Boutique créée avec succès !');
+                        showNotification('✅ Paramètres boutique initialisés', 'success');
+                        // Recharger les données
+                        await loadAdminData();
+                        return;
                     }
-
-                    if (boutiqueData) {
-                        document.getElementById('nomBoutique').value = boutiqueData.nom || 'NIKEL';
-                        document.getElementById('adresseBoutique').value = boutiqueData.adresse || '';
-                        document.getElementById('descriptionBoutique').value = boutiqueData.description || '';
-                        document.getElementById('bio').value = boutiqueData.bio || '';
-                        
-                        if (boutiqueData.photo_url) {
-                            document.getElementById('boutiquePhoto').innerHTML = 
-                                `<img src="${boutiqueData.photo_url}" style="width:100%;height:100%;object-fit:cover;">`;
-                        }
-                        if (boutiqueData.pro_photo_url) {
-                            document.getElementById('proPhoto').innerHTML = 
-                                `<img src="${boutiqueData.pro_photo_url}" style="width:100%;height:100%;object-fit:cover;">`;
-                        }
-                        console.log('✅ Paramètres boutique chargés');
-                    }
-                } catch (err) {
-                    console.error('⚠️ Erreur boutique:', err);
-                    // Continuer même si la boutique a une erreur
                 }
 
                 showNotification('✅ Données chargées avec succès', 'success');
-                
+
             } catch (err) {
                 console.error('❌ Erreur chargement:', err);
                 showNotification('❌ Erreur de chargement des données', 'error');
@@ -386,7 +391,6 @@
                 };
                 
                 console.log('📝 Données à sauvegarder:', formData);
-                
                 const success = await saveAllData(formData);
                 
                 if (success) {
