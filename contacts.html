@@ -122,19 +122,22 @@
                 <input type="email" id="email" placeholder="jean@email.com" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
             </div>
 
-            <!-- Téléphone avec indicatif -->
+            <!-- Téléphone avec indicatif et validation -->
             <div class="form-group">
                 <label><i class="fas fa-phone"></i> Téléphone</label>
                 <div style="display:flex; gap:8px;">
-                    <select id="indicatif" style="width:110px; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; flex-shrink:0;" onchange="updatePaysFromIndicatif()">
+                    <select id="indicatif" style="width:110px; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; flex-shrink:0;" onchange="updatePaysFromIndicatif(); updatePhonePlaceholder();">
                         <option value="+229">🇧🇯 +229</option>
                         <option value="+228">🇹🇬 +228</option>
                         <option value="+227">🇳🇪 +227</option>
                         <option value="+226">🇧🇫 +226</option>
                         <option value="+225">🇨🇮 +225</option>
                     </select>
-                    <input type="tel" id="telephone" placeholder="01 23 45 67" required style="flex:1; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+                    <input type="tel" id="telephone" placeholder="01 23 45 67 89" required 
+                           style="flex:1; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; transition:border-color 0.3s;"
+                           maxlength="14" oninput="validatePhone(this)" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'">
                 </div>
+                <small id="phoneHelp" style="color:#888; font-size:0.75rem;">10 chiffres (ex: 01 23 45 67 89)</small>
             </div>
 
             <!-- Ville & Pays (Pays en lecture seule) -->
@@ -223,6 +226,17 @@
         console.log('✅ SupabaseClient disponible dans contacts.html');
 
         // ==========================================
+        // CONFIGURATION DES NUMÉROS DE TÉLÉPHONE
+        // ==========================================
+        const phoneConfig = {
+            '+229': { nbDigits: 10, placeholder: '01 23 45 67 89', help: '10 chiffres (ex: 01 23 45 67 89)' },
+            '+228': { nbDigits: 8, placeholder: '01 23 45 67', help: '8 chiffres (ex: 01 23 45 67)' },
+            '+227': { nbDigits: 8, placeholder: '01 23 45 67', help: '8 chiffres (ex: 01 23 45 67)' },
+            '+226': { nbDigits: 8, placeholder: '01 23 45 67', help: '8 chiffres (ex: 01 23 45 67)' },
+            '+225': { nbDigits: 10, placeholder: '01 23 45 67 89', help: '10 chiffres (ex: 01 23 45 67 89)' }
+        };
+
+        // ==========================================
         // CORRESPONDANCES
         // ==========================================
         const indicatifToPays = {
@@ -269,6 +283,96 @@
                 document.getElementById('paysDisplay').value = paysInfo.nom;
                 updateVilles();
             }
+        }
+
+        // ==========================================
+        // METTRE À JOUR LE PLACEHOLDER DU TÉLÉPHONE
+        // ==========================================
+        function updatePhonePlaceholder() {
+            const indicatif = document.getElementById('indicatif').value;
+            const config = phoneConfig[indicatif];
+            const phoneInput = document.getElementById('telephone');
+            const phoneHelp = document.getElementById('phoneHelp');
+            
+            if (config && phoneInput) {
+                phoneInput.placeholder = config.placeholder;
+                phoneInput.maxLength = config.nbDigits + Math.floor((config.nbDigits - 1) / 2);
+                if (phoneHelp) {
+                    phoneHelp.textContent = config.help;
+                }
+                // Réinitialiser le champ
+                phoneInput.value = '';
+                phoneInput.style.borderColor = '#e8e8e8';
+            }
+        }
+
+        // ==========================================
+        // VALIDER ET FORMATER LE NUMÉRO DE TÉLÉPHONE
+        // ==========================================
+        function validatePhone(input) {
+            // Garder uniquement les chiffres
+            let value = input.value.replace(/\D/g, '');
+            
+            const indicatif = document.getElementById('indicatif').value;
+            const config = phoneConfig[indicatif];
+            
+            if (!config) return;
+            
+            // Limiter le nombre de chiffres
+            if (value.length > config.nbDigits) {
+                value = value.slice(0, config.nbDigits);
+            }
+            
+            // Formater avec des espaces (2 chiffres par groupe)
+            let formatted = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 2 === 0) {
+                    formatted += ' ';
+                }
+                formatted += value[i];
+            }
+            
+            input.value = formatted;
+            
+            // Vérifier si le nombre de chiffres est correct
+            const digits = input.value.replace(/\D/g, '');
+            if (digits.length === config.nbDigits) {
+                input.style.borderColor = '#27ae60'; // Vert = OK
+            } else if (digits.length > 0) {
+                input.style.borderColor = '#f39c12'; // Orange = incomplet
+            } else {
+                input.style.borderColor = '#e8e8e8'; // Gris = vide
+            }
+        }
+
+        // ==========================================
+        // VALIDER AVANT SOUMISSION
+        // ==========================================
+        function validatePhoneBeforeSubmit() {
+            const indicatif = document.getElementById('indicatif').value;
+            const phoneInput = document.getElementById('telephone');
+            const config = phoneConfig[indicatif];
+            
+            if (!config) return true;
+            
+            const digits = phoneInput.value.replace(/\D/g, '');
+            
+            if (digits.length === 0) {
+                showNotification('❌ Veuillez saisir un numéro de téléphone', 'error');
+                phoneInput.style.borderColor = '#e74c3c';
+                phoneInput.focus();
+                return false;
+            }
+            
+            if (digits.length !== config.nbDigits) {
+                showNotification(`❌ Le numéro doit contenir exactement ${config.nbDigits} chiffres`, 'error');
+                phoneInput.style.borderColor = '#e74c3c';
+                phoneInput.focus();
+                return false;
+            }
+            
+            phoneInput.style.borderColor = '#27ae60';
+            return true;
         }
 
         // ==========================================
@@ -494,6 +598,7 @@
             document.getElementById('paysDisplay').value = 'Bénin';
             document.getElementById('contactModal').style.display = 'flex';
             updateVilles();
+            updatePhonePlaceholder();
         }
 
         // ==========================================
@@ -521,6 +626,7 @@
             document.getElementById('statut').value = contact.statut || 'prospect';
             document.getElementById('contactModal').style.display = 'flex';
             updateVilles();
+            updatePhonePlaceholder();
         }
 
         // ==========================================
@@ -536,6 +642,11 @@
         // ==========================================
         async function saveContact(event) {
             event.preventDefault();
+
+            // ✅ Valider le téléphone avant tout
+            if (!validatePhoneBeforeSubmit()) {
+                return;
+            }
 
             const id = document.getElementById('contactId').value;
             const indicatif = document.getElementById('indicatif').value;
@@ -708,6 +819,8 @@
         window.showNotification = showNotification;
         window.updatePaysFromIndicatif = updatePaysFromIndicatif;
         window.updateVilles = updateVilles;
+        window.updatePhonePlaceholder = updatePhonePlaceholder;
+        window.validatePhone = validatePhone;
 
         // ==========================================
         // LANCEMENT
