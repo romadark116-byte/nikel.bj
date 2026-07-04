@@ -1,4 +1,4 @@
-<!-- contacts.html - Mes contacts -->
+<!-- contacts.html - Mes contacts (version corrigée) -->
 <div id="contactsContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
@@ -122,7 +122,7 @@
                 <input type="email" id="email" placeholder="jean@email.com" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
             </div>
 
-            <!-- Téléphone avec indicatif et validation -->
+            <!-- Téléphone avec indicatif -->
             <div class="form-group">
                 <label><i class="fas fa-phone"></i> Téléphone</label>
                 <div style="display:flex; gap:8px;">
@@ -140,7 +140,7 @@
                 <small id="phoneHelp" style="color:#888; font-size:0.75rem;">10 chiffres (ex: 01 23 45 67 89)</small>
             </div>
 
-            <!-- Ville & Pays (Pays en lecture seule) -->
+            <!-- Ville & Pays -->
             <div style="display:grid; grid-template-columns:2fr 1fr; gap:12px;">
                 <div class="form-group">
                     <label for="ville"><i class="fas fa-city"></i> Ville</label>
@@ -296,12 +296,10 @@
             
             if (config && phoneInput) {
                 phoneInput.placeholder = config.placeholder;
-                // Supprimer maxlength pour gérer via JavaScript
                 phoneInput.removeAttribute('maxlength');
                 if (phoneHelp) {
                     phoneHelp.textContent = config.help;
                 }
-                // Réinitialiser le champ
                 phoneInput.value = '';
                 phoneInput.style.borderColor = '#e8e8e8';
             }
@@ -311,7 +309,6 @@
         // VALIDER ET FORMATER LE NUMÉRO DE TÉLÉPHONE
         // ==========================================
         function validatePhone(input) {
-            // Garder uniquement les chiffres
             let value = input.value.replace(/\D/g, '');
             
             const indicatif = document.getElementById('indicatif').value;
@@ -319,12 +316,10 @@
             
             if (!config) return;
             
-            // ✅ BLOQUER LES CHIFFRES SUPPLÉMENTAIRES
             if (value.length > config.nbDigits) {
                 value = value.slice(0, config.nbDigits);
             }
             
-            // Formater avec des espaces (2 chiffres par groupe)
             let formatted = '';
             for (let i = 0; i < value.length; i++) {
                 if (i > 0 && i % 2 === 0) {
@@ -335,7 +330,6 @@
             
             input.value = formatted;
             
-            // Vérifier si le nombre de chiffres est correct
             const digits = input.value.replace(/\D/g, '');
             if (digits.length === config.nbDigits) {
                 input.style.borderColor = '#27ae60';
@@ -377,13 +371,12 @@
         }
 
         // ==========================================
-        // METTRE À JOUR LES VILLES SELON LE PAYS
+        // METTRE À JOUR LES VILLES
         // ==========================================
         function updateVilles() {
             const paysCode = document.getElementById('pays').value;
             const villes = villesParPays[paysCode] || ['Cotonou', 'Porto-Novo', 'Parakou', 'Abomey-Calavi', 'Djougou'];
             const villeSelect = document.getElementById('ville');
-            
             villeSelect.innerHTML = villes.map(v => `<option value="${v}">${v}</option>`).join('');
         }
 
@@ -411,7 +404,7 @@
         const itemsPerPage = 10;
 
         // ==========================================
-        // CHARGER LES DONNÉES DEPUIS SUPABASE
+        // CHARGER LES DONNÉES
         // ==========================================
         async function loadContactsData() {
             try {
@@ -603,31 +596,43 @@
         }
 
         // ==========================================
-        // MODAL : MODIFIER
+        // MODAL : MODIFIER (TOUTES LES INFOS SONT CHARGÉES)
         // ==========================================
         function editContact(id) {
             const contact = allContacts.find(c => c.id === id);
             if (!contact) return;
 
+            console.log('📝 Modification du contact:', contact);
+
             document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-edit" style="color:#c9a84c;"></i> Modifier le contact';
             document.getElementById('contactId').value = contact.id;
+            
+            // ✅ Informations personnelles
             document.getElementById('prenom').value = contact.prenom || '';
             document.getElementById('nom').value = contact.nom || '';
             document.getElementById('email').value = contact.email || '';
             
+            // ✅ Téléphone complet avec indicatif
             const phone = contact.telephone || '';
             const indicatif = paysToIndicatif[contact.pays] || '+229';
             const numero = phone.replace(indicatif, '').trim();
             document.getElementById('indicatif').value = indicatif;
             document.getElementById('telephone').value = numero;
             
+            // ✅ Ville et Pays
             document.getElementById('ville').value = contact.ville || 'Cotonou';
             document.getElementById('pays').value = contact.pays || 'BJ';
             document.getElementById('paysDisplay').value = paysLabels[contact.pays] || 'Bénin';
+            
+            // ✅ Statut
             document.getElementById('statut').value = contact.statut || 'prospect';
+            
             document.getElementById('contactModal').style.display = 'flex';
             updateVilles();
             updatePhonePlaceholder();
+            
+            // ✅ Afficher une notification pour informer que les données sont chargées
+            showNotification('📋 Données chargées, vous pouvez les modifier', 'info');
         }
 
         // ==========================================
@@ -644,7 +649,6 @@
         async function saveContact(event) {
             event.preventDefault();
 
-            // ✅ Valider le téléphone avant tout
             if (!validatePhoneBeforeSubmit()) {
                 return;
             }
@@ -748,7 +752,6 @@
         // NOTIFICATION
         // ==========================================
         function showNotification(message, type = 'info') {
-            // Supprimer les anciennes notifications
             document.querySelectorAll('.toast-nikel').forEach(t => t.remove());
             
             const colors = {
@@ -793,11 +796,8 @@
         // ==========================================
         function init() {
             console.log('🚀 Chargement de contacts.html...');
-            
-            // Charger les données
             loadContactsData();
 
-            // Événements
             document.getElementById('contactForm').addEventListener('submit', saveContact);
 
             document.getElementById('contactModal').addEventListener('click', function(e) {
