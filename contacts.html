@@ -168,40 +168,28 @@
 </div>
 
 <!-- ===== SCRIPTS ===== -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     (function() {
         // ==========================================
-        // SUPABASE CONFIG (version locale)
+        // RÉFÉRENCE SUPABASE (initiée dans mon-compte.html)
         // ==========================================
-        const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
-        
-        // ✅ Initialisation locale comme dans profil.html
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        window.supabaseClient = supabaseClient;
+        const supabaseClient = window.supabaseClient;
 
-        console.log('✅ Supabase initialisé dans contacts.html');
-
-        // ==========================================
-        // TEST DE CONNEXION
-        // ==========================================
-        async function testSupabaseConnection() {
-            try {
-                console.log('🔍 Test de connexion à Supabase...');
-                const { data, error } = await supabaseClient
-                    .from('clients')
-                    .select('count');
-                
-                if (error) {
-                    console.error('❌ Erreur test:', error);
-                } else {
-                    console.log('✅ Connexion Supabase réussie');
-                }
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-            }
+        if (!supabaseClient) {
+            console.error('❌ SupabaseClient non disponible !');
+            // Afficher un message d'erreur dans la page
+            document.getElementById('contactsContainer').innerHTML = `
+                <div style="text-align:center; padding:60px; color:red;">
+                    <i class="fas fa-exclamation-circle" style="font-size:3rem;"></i>
+                    <h3>Erreur de connexion</h3>
+                    <p>Impossible de se connecter à la base de données.</p>
+                    <p style="font-size:0.9rem; color:#888;">Veuillez rafraîchir la page.</p>
+                </div>
+            `;
+            return;
         }
+
+        console.log('✅ SupabaseClient disponible dans contacts.html');
 
         // ==========================================
         // VARIABLES GLOBALES
@@ -262,7 +250,7 @@
                 }
 
                 if (data && data.length > 0) {
-                    console.log(`✅ ${data.length} contacts trouvés dans Supabase`);
+                    console.log(`✅ ${data.length} contacts chargés depuis Supabase`);
                     allContacts = data.map(c => ({
                         ...c,
                         statut: c.statut || 'prospect'
@@ -600,11 +588,7 @@
         // ==========================================
         function init() {
             console.log('🚀 Chargement de contacts.html...');
-            
-            // Tester la connexion d'abord
-            testSupabaseConnection().then(() => {
-                loadContactsData();
-            });
+            loadContactsData();
 
             document.getElementById('contactForm').addEventListener('submit', saveContact);
 
