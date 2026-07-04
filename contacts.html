@@ -135,7 +135,7 @@
                     </select>
                     <input type="tel" id="telephone" placeholder="01 23 45 67 89" required 
                            style="flex:1; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; transition:border-color 0.3s;"
-                           maxlength="14" oninput="validatePhone(this)" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'">
+                           oninput="validatePhone(this)" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'">
                 </div>
                 <small id="phoneHelp" style="color:#888; font-size:0.75rem;">10 chiffres (ex: 01 23 45 67 89)</small>
             </div>
@@ -296,7 +296,8 @@
             
             if (config && phoneInput) {
                 phoneInput.placeholder = config.placeholder;
-                phoneInput.maxLength = config.nbDigits + Math.floor((config.nbDigits - 1) / 2);
+                // Supprimer maxlength pour gérer via JavaScript
+                phoneInput.removeAttribute('maxlength');
                 if (phoneHelp) {
                     phoneHelp.textContent = config.help;
                 }
@@ -318,7 +319,7 @@
             
             if (!config) return;
             
-            // Limiter le nombre de chiffres
+            // ✅ BLOQUER LES CHIFFRES SUPPLÉMENTAIRES
             if (value.length > config.nbDigits) {
                 value = value.slice(0, config.nbDigits);
             }
@@ -337,11 +338,11 @@
             // Vérifier si le nombre de chiffres est correct
             const digits = input.value.replace(/\D/g, '');
             if (digits.length === config.nbDigits) {
-                input.style.borderColor = '#27ae60'; // Vert = OK
+                input.style.borderColor = '#27ae60';
             } else if (digits.length > 0) {
-                input.style.borderColor = '#f39c12'; // Orange = incomplet
+                input.style.borderColor = '#f39c12';
             } else {
-                input.style.borderColor = '#e8e8e8'; // Gris = vide
+                input.style.borderColor = '#e8e8e8';
             }
         }
 
@@ -589,247 +590,4 @@
         // MODAL : AJOUTER
         // ==========================================
         function openAddModal() {
-            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus" style="color:#c9a84c;"></i> Ajouter un contact';
-            document.getElementById('contactId').value = '';
-            document.getElementById('contactForm').reset();
-            document.getElementById('statut').value = 'prospect';
-            document.getElementById('indicatif').value = '+229';
-            document.getElementById('pays').value = 'BJ';
-            document.getElementById('paysDisplay').value = 'Bénin';
-            document.getElementById('contactModal').style.display = 'flex';
-            updateVilles();
-            updatePhonePlaceholder();
-        }
-
-        // ==========================================
-        // MODAL : MODIFIER
-        // ==========================================
-        function editContact(id) {
-            const contact = allContacts.find(c => c.id === id);
-            if (!contact) return;
-
-            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-edit" style="color:#c9a84c;"></i> Modifier le contact';
-            document.getElementById('contactId').value = contact.id;
-            document.getElementById('prenom').value = contact.prenom || '';
-            document.getElementById('nom').value = contact.nom || '';
-            document.getElementById('email').value = contact.email || '';
-            
-            const phone = contact.telephone || '';
-            const indicatif = paysToIndicatif[contact.pays] || '+229';
-            const numero = phone.replace(indicatif, '').trim();
-            document.getElementById('indicatif').value = indicatif;
-            document.getElementById('telephone').value = numero;
-            
-            document.getElementById('ville').value = contact.ville || 'Cotonou';
-            document.getElementById('pays').value = contact.pays || 'BJ';
-            document.getElementById('paysDisplay').value = paysLabels[contact.pays] || 'Bénin';
-            document.getElementById('statut').value = contact.statut || 'prospect';
-            document.getElementById('contactModal').style.display = 'flex';
-            updateVilles();
-            updatePhonePlaceholder();
-        }
-
-        // ==========================================
-        // MODAL : FERMER
-        // ==========================================
-        function closeModal() {
-            document.getElementById('contactModal').style.display = 'none';
-            document.getElementById('contactForm').reset();
-        }
-
-        // ==========================================
-        // SAUVEGARDER CONTACT
-        // ==========================================
-        async function saveContact(event) {
-            event.preventDefault();
-
-            // ✅ Valider le téléphone avant tout
-            if (!validatePhoneBeforeSubmit()) {
-                return;
-            }
-
-            const id = document.getElementById('contactId').value;
-            const indicatif = document.getElementById('indicatif').value;
-            const telephone = document.getElementById('telephone').value.trim();
-            const paysCode = document.getElementById('pays').value;
-            
-            const contactData = {
-                prenom: document.getElementById('prenom').value.trim(),
-                nom: document.getElementById('nom').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                telephone: indicatif + ' ' + telephone,
-                ville: document.getElementById('ville').value,
-                pays: paysCode,
-                statut: document.getElementById('statut').value,
-                date_clic: new Date().toISOString()
-            };
-
-            try {
-                if (id) {
-                    const { error } = await supabaseClient
-                        .from('clients')
-                        .update(contactData)
-                        .eq('id', parseInt(id));
-
-                    if (error) {
-                        console.error('❌ Erreur mise à jour:', error);
-                        showNotification('❌ Erreur lors de la modification', 'error');
-                        return;
-                    }
-
-                    const index = allContacts.findIndex(c => c.id === parseInt(id));
-                    if (index !== -1) {
-                        allContacts[index] = { ...allContacts[index], ...contactData };
-                    }
-                    showNotification('✅ Contact modifié avec succès !', 'success');
-                } else {
-                    const { data, error } = await supabaseClient
-                        .from('clients')
-                        .insert([contactData])
-                        .select();
-
-                    if (error) {
-                        console.error('❌ Erreur insertion:', error);
-                        showNotification('❌ Erreur lors de l\'ajout', 'error');
-                        return;
-                    }
-
-                    if (data && data.length > 0) {
-                        allContacts.push(data[0]);
-                    }
-                    showNotification('✅ Contact ajouté avec succès !', 'success');
-                }
-
-                closeModal();
-                filteredContacts = [...allContacts];
-                renderTable();
-                updateStats();
-                updatePaginationInfo();
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                showNotification('❌ Une erreur est survenue', 'error');
-            }
-        }
-
-        // ==========================================
-        // SUPPRIMER CONTACT
-        // ==========================================
-        async function deleteContact(id) {
-            if (!confirm('Voulez-vous vraiment supprimer ce contact ?')) return;
-
-            try {
-                const { error } = await supabaseClient
-                    .from('clients')
-                    .delete()
-                    .eq('id', id);
-
-                if (error) {
-                    console.error('❌ Erreur suppression:', error);
-                    showNotification('❌ Erreur lors de la suppression', 'error');
-                    return;
-                }
-
-                allContacts = allContacts.filter(c => c.id !== id);
-                filteredContacts = [...allContacts];
-                renderTable();
-                updateStats();
-                updatePaginationInfo();
-                showNotification('🗑️ Contact supprimé', 'info');
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                showNotification('❌ Une erreur est survenue', 'error');
-            }
-        }
-
-        // ==========================================
-        // NOTIFICATION
-        // ==========================================
-        function showNotification(message, type = 'info') {
-            // Supprimer les anciennes notifications
-            document.querySelectorAll('.toast-nikel').forEach(t => t.remove());
-            
-            const colors = {
-                success: '#27ae60',
-                error: '#e74c3c',
-                info: '#c9a84c'
-            };
-
-            const toast = document.createElement('div');
-            toast.className = 'toast-nikel';
-            toast.style.cssText = `
-                position: fixed;
-                bottom: 30px;
-                right: 30px;
-                background: #1a1a1a;
-                color: white;
-                padding: 16px 24px;
-                border-radius: 14px;
-                font-weight: 500;
-                box-shadow: 0 8px 40px rgba(0,0,0,0.25);
-                z-index: 9999;
-                max-width: 400px;
-                font-size: 0.95rem;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                animation: slideUp 0.5s ease;
-                border-left: 4px solid ${colors[type] || colors.info};
-            `;
-            toast.innerHTML = `<span>${message}</span>`;
-            document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(20px)';
-                toast.style.transition = 'all 0.4s ease';
-                setTimeout(() => toast.remove(), 400);
-            }, 3000);
-        }
-
-        // ==========================================
-        // INITIALISATION
-        // ==========================================
-        function init() {
-            console.log('🚀 Chargement de contacts.html...');
-            
-            // Charger les données
-            loadContactsData();
-
-            // Événements
-            document.getElementById('contactForm').addEventListener('submit', saveContact);
-
-            document.getElementById('contactModal').addEventListener('click', function(e) {
-                if (e.target === this) closeModal();
-            });
-        }
-
-        // ==========================================
-        // EXPOSER LES FONCTIONS
-        // ==========================================
-        window.applyFilters = applyFilters;
-        window.resetFilters = resetFilters;
-        window.previousPage = previousPage;
-        window.nextPage = nextPage;
-        window.openAddModal = openAddModal;
-        window.editContact = editContact;
-        window.deleteContact = deleteContact;
-        window.closeModal = closeModal;
-        window.saveContact = saveContact;
-        window.showNotification = showNotification;
-        window.updatePaysFromIndicatif = updatePaysFromIndicatif;
-        window.updateVilles = updateVilles;
-        window.updatePhonePlaceholder = updatePhonePlaceholder;
-        window.validatePhone = validatePhone;
-
-        // ==========================================
-        // LANCEMENT
-        // ==========================================
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
-        } else {
-            init();
-        }
-
-    })();
-</script>
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus
