@@ -1,4 +1,4 @@
-<!-- contacts.html - Mes contacts (version corrigée) -->
+<!-- contacts.html - Mes contacts -->
 <div id="contactsContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
@@ -596,7 +596,7 @@
         }
 
         // ==========================================
-        // MODAL : MODIFIER (TOUTES LES INFOS SONT CHARGÉES)
+        // MODAL : MODIFIER (avec indicatif stocké en base)
         // ==========================================
         function editContact(id) {
             const contact = allContacts.find(c => c.id === id);
@@ -612,10 +612,18 @@
             document.getElementById('nom').value = contact.nom || '';
             document.getElementById('email').value = contact.email || '';
             
-            // ✅ Téléphone complet avec indicatif
+            // ✅ Téléphone : utiliser l'indicatif stocké en base
+            const indicatif = contact.indicatif || paysToIndicatif[contact.pays] || '+229';
             const phone = contact.telephone || '';
-            const indicatif = paysToIndicatif[contact.pays] || '+229';
-            const numero = phone.replace(indicatif, '').trim();
+            // Extraire le numéro sans l'indicatif
+            let numero = phone;
+            for (const ind of Object.keys(phoneConfig)) {
+                if (phone.startsWith(ind)) {
+                    numero = phone.replace(ind, '').trim();
+                    break;
+                }
+            }
+            
             document.getElementById('indicatif').value = indicatif;
             document.getElementById('telephone').value = numero;
             
@@ -631,7 +639,6 @@
             updateVilles();
             updatePhonePlaceholder();
             
-            // ✅ Afficher une notification pour informer que les données sont chargées
             showNotification('📋 Données chargées, vous pouvez les modifier', 'info');
         }
 
@@ -658,11 +665,15 @@
             const telephone = document.getElementById('telephone').value.trim();
             const paysCode = document.getElementById('pays').value;
             
+            // ✅ Construire le numéro complet avec l'indicatif
+            const fullPhone = indicatif + ' ' + telephone;
+            
             const contactData = {
                 prenom: document.getElementById('prenom').value.trim(),
                 nom: document.getElementById('nom').value.trim(),
                 email: document.getElementById('email').value.trim(),
-                telephone: indicatif + ' ' + telephone,
+                telephone: fullPhone,
+                indicatif: indicatif,
                 ville: document.getElementById('ville').value,
                 pays: paysCode,
                 statut: document.getElementById('statut').value,
