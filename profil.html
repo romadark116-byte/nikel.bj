@@ -26,7 +26,7 @@
             </div>
         </div>
 
-        <!-- ===== SECTION 2 : INFORMATIONS PERSONNELLES (Table admins) ===== -->
+        <!-- ===== SECTION 2 : INFORMATIONS PERSONNELLES ===== -->
         <div>
             <h3 style="font-family:'Playfair Display',serif; margin-bottom:16px; font-size:1.1rem; color:#1a1a1a;">
                 <i class="fas fa-id-card" style="color:#c9a84c;"></i> Informations personnelles
@@ -66,24 +66,22 @@
             </div>
             <div class="form-group">
                 <label for="email" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-envelope" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Email</label>
-                <input type="email" id="email" name="email" required readonly style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#e8e8e8; font-family:inherit; cursor:not-allowed;" title="L'email ne peut pas être modifié">
+                <input type="email" id="email" name="email" required readonly style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#e8e8e8; font-family:inherit; cursor:not-allowed; color:#888;" title="L'email ne peut pas être modifié">
                 <small style="color:#888; font-size:0.8rem;">L'email est utilisé pour la connexion et ne peut pas être modifié.</small>
             </div>
         </div>
 
-        <!-- ===== SECTION 3 : PARAMÈTRES DE LA BOUTIQUE (Table boutique) ===== -->
+        <!-- ===== SECTION 3 : PARAMÈTRES DE LA BOUTIQUE ===== -->
         <div>
             <h3 style="font-family:'Playfair Display',serif; margin-bottom:16px; font-size:1.1rem; color:#1a1a1a;">
                 <i class="fas fa-store" style="color:#c9a84c;"></i> Paramètres de la boutique
             </h3>
             
-            <!-- Nom de la boutique -->
             <div class="form-group">
                 <label for="nomBoutique" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-tag" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Nom de la boutique</label>
                 <input type="text" id="nomBoutique" name="nomBoutique" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
             </div>
 
-            <!-- Adresse de la boutique -->
             <div class="form-group">
                 <label for="adresseBoutique" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-map-marker-alt" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Adresse de la boutique</label>
                 <input type="text" id="adresseBoutique" name="adresseBoutique" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
@@ -106,7 +104,6 @@
                 </div>
             </div>
 
-            <!-- Description de la boutique -->
             <div class="form-group">
                 <label for="descriptionBoutique" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-align-left" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Description de la boutique</label>
                 <textarea id="descriptionBoutique" name="descriptionBoutique" rows="4" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit; resize:vertical;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'"></textarea>
@@ -129,7 +126,6 @@
                 </div>
             </div>
 
-            <!-- Description Pro (Bio) -->
             <div class="form-group">
                 <label for="bio" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-align-left" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Description Pro (Bio)</label>
                 <textarea id="bio" name="bio" rows="4" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit; resize:vertical;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'"></textarea>
@@ -169,6 +165,8 @@
             }
 
             try {
+                console.log('📝 Chargement des données pour:', adminSession.email);
+                
                 // 1. Charger les infos personnelles (table admins)
                 const { data: adminData, error: adminError } = await supabase
                     .from('admins')
@@ -176,7 +174,11 @@
                     .eq('email', adminSession.email)
                     .single();
 
-                if (adminError) throw adminError;
+                if (adminError) {
+                    console.error('❌ Erreur chargement admin:', adminError);
+                    showNotification('❌ Erreur de chargement des informations personnelles', 'error');
+                    return;
+                }
 
                 if (adminData) {
                     document.getElementById('prenom').value = adminData.prenom || '';
@@ -185,37 +187,66 @@
                     document.getElementById('pays').value = adminData.pays || 'FR';
                     document.getElementById('telephone').value = adminData.telephone || '';
                     document.getElementById('email').value = adminData.email || '';
+                    console.log('✅ Infos personnelles chargées');
                 }
 
                 // 2. Charger les paramètres de la boutique (table boutique)
-                const { data: boutiqueData, error: boutiqueError } = await supabase
-                    .from('boutique')
-                    .select('*')
-                    .eq('admin_id', adminSession.id)
-                    .single();
+                try {
+                    const { data: boutiqueData, error: boutiqueError } = await supabase
+                        .from('boutique')
+                        .select('*')
+                        .eq('admin_id', adminSession.id)
+                        .maybeSingle();
 
-                if (boutiqueError && boutiqueError.code !== 'PGRST116') {
-                    console.warn('⚠️ Erreur chargement boutique:', boutiqueError);
+                    // Si la boutique n'existe pas, on la crée
+                    if (boutiqueError && boutiqueError.code === 'PGRST116') {
+                        console.log('📝 Aucune boutique trouvée, création automatique...');
+                        const { data: newBoutique, error: createError } = await supabase
+                            .from('boutique')
+                            .insert([{
+                                admin_id: adminSession.id,
+                                nom: 'NIKEL',
+                                adresse: '',
+                                description: '',
+                                bio: ''
+                            }])
+                            .select()
+                            .single();
+
+                        if (createError) {
+                            console.error('❌ Erreur création boutique:', createError);
+                        } else if (newBoutique) {
+                            console.log('✅ Boutique créée automatiquement');
+                            // Recharger les données
+                            await loadAdminData();
+                            return;
+                        }
+                    } else if (boutiqueError) {
+                        console.error('❌ Erreur chargement boutique:', boutiqueError);
+                    }
+
+                    if (boutiqueData) {
+                        document.getElementById('nomBoutique').value = boutiqueData.nom || 'NIKEL';
+                        document.getElementById('adresseBoutique').value = boutiqueData.adresse || '';
+                        document.getElementById('descriptionBoutique').value = boutiqueData.description || '';
+                        document.getElementById('bio').value = boutiqueData.bio || '';
+                        
+                        if (boutiqueData.photo_url) {
+                            document.getElementById('boutiquePhoto').innerHTML = 
+                                `<img src="${boutiqueData.photo_url}" style="width:100%;height:100%;object-fit:cover;">`;
+                        }
+                        if (boutiqueData.pro_photo_url) {
+                            document.getElementById('proPhoto').innerHTML = 
+                                `<img src="${boutiqueData.pro_photo_url}" style="width:100%;height:100%;object-fit:cover;">`;
+                        }
+                        console.log('✅ Paramètres boutique chargés');
+                    }
+                } catch (err) {
+                    console.error('⚠️ Erreur boutique:', err);
+                    // Continuer même si la boutique a une erreur
                 }
 
-                if (boutiqueData) {
-                    document.getElementById('nomBoutique').value = boutiqueData.nom || 'NIKEL';
-                    document.getElementById('adresseBoutique').value = boutiqueData.adresse || '';
-                    document.getElementById('descriptionBoutique').value = boutiqueData.description || '';
-                    document.getElementById('bio').value = boutiqueData.bio || '';
-                    
-                    // Photos
-                    if (boutiqueData.photo_url) {
-                        document.getElementById('boutiquePhoto').innerHTML = 
-                            `<img src="${boutiqueData.photo_url}" style="width:100%;height:100%;object-fit:cover;">`;
-                    }
-                    if (boutiqueData.pro_photo_url) {
-                        document.getElementById('proPhoto').innerHTML = 
-                            `<img src="${boutiqueData.pro_photo_url}" style="width:100%;height:100%;object-fit:cover;">`;
-                    }
-                }
-
-                console.log('✅ Données chargées depuis Supabase');
+                showNotification('✅ Données chargées avec succès', 'success');
                 
             } catch (err) {
                 console.error('❌ Erreur chargement:', err);
@@ -234,6 +265,8 @@
             }
 
             try {
+                console.log('📝 Sauvegarde des données...');
+                
                 // 1. Mettre à jour les infos personnelles (table admins)
                 const { error: adminError } = await supabase
                     .from('admins')
@@ -247,6 +280,7 @@
                     .eq('email', adminSession.email);
 
                 if (adminError) throw adminError;
+                console.log('✅ Infos personnelles sauvegardées');
 
                 // 2. Mettre à jour les paramètres de la boutique (table boutique)
                 const boutiqueData = {
@@ -262,7 +296,11 @@
                     .from('boutique')
                     .select('id')
                     .eq('admin_id', adminSession.id)
-                    .single();
+                    .maybeSingle();
+
+                if (checkError && checkError.code !== 'PGRST116') {
+                    console.warn('⚠️ Erreur vérification boutique:', checkError);
+                }
 
                 let boutiqueError;
                 if (existing) {
@@ -272,6 +310,7 @@
                         .update(boutiqueData)
                         .eq('admin_id', adminSession.id);
                     boutiqueError = error;
+                    if (!boutiqueError) console.log('✅ Boutique mise à jour');
                 } else {
                     // Création
                     const { error } = await supabase
@@ -281,11 +320,12 @@
                             ...boutiqueData
                         }]);
                     boutiqueError = error;
+                    if (!boutiqueError) console.log('✅ Boutique créée');
                 }
 
                 if (boutiqueError) throw boutiqueError;
 
-                console.log('✅ Données sauvegardées dans Supabase');
+                console.log('✅ Toutes les données sauvegardées avec succès');
                 
                 // Mettre à jour la session locale
                 const updatedAdmin = JSON.parse(localStorage.getItem('nikel_admin'));
@@ -298,13 +338,13 @@
                 
             } catch (err) {
                 console.error('❌ Erreur sauvegarde:', err);
-                showNotification('❌ Erreur lors de la sauvegarde: ' + err.message, 'error');
+                showNotification('❌ Erreur lors de la sauvegarde: ' + (err.message || 'Erreur inconnue'), 'error');
                 return false;
             }
         }
 
         // ==========================================
-        // GESTION DES PHOTOS (Base64 temporaire)
+        // GESTION DES PHOTOS
         // ==========================================
         function setupPhotoUpload(inputId, displayId, storageKey) {
             const input = document.getElementById(inputId);
@@ -317,7 +357,6 @@
                         const reader = new FileReader();
                         reader.onload = function(event) {
                             display.innerHTML = '<img src="' + event.target.result + '" style="width:100%;height:100%;object-fit:cover;">';
-                            // Sauvegarde en localStorage (temporaire)
                             localStorage.setItem(storageKey, event.target.result);
                         };
                         reader.readAsDataURL(file);
