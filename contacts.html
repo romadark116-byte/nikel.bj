@@ -126,7 +126,7 @@
             <div class="form-group">
                 <label><i class="fas fa-phone"></i> Téléphone</label>
                 <div style="display:flex; gap:8px;">
-                    <select id="indicatif" style="width:100px; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; flex-shrink:0;">
+                    <select id="indicatif" style="width:110px; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; flex-shrink:0;" onchange="updatePaysFromIndicatif()">
                         <option value="+229">🇧🇯 +229</option>
                         <option value="+228">🇹🇬 +228</option>
                         <option value="+227">🇳🇪 +227</option>
@@ -137,8 +137,8 @@
                 </div>
             </div>
 
-            <!-- Ville & Pays -->
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <!-- Ville & Pays (Pays en lecture seule, généré par l'indicatif) -->
+            <div style="display:grid; grid-template-columns:2fr 1fr; gap:12px;">
                 <div class="form-group">
                     <label for="ville"><i class="fas fa-city"></i> Ville</label>
                     <select id="ville" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
@@ -171,13 +171,9 @@
                 </div>
                 <div class="form-group">
                     <label for="pays"><i class="fas fa-globe"></i> Pays</label>
-                    <select id="pays" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;" onchange="updateVilles()">
-                        <option value="BJ">🇧🇯 Bénin</option>
-                        <option value="TG">🇹🇬 Togo</option>
-                        <option value="NE">🇳🇪 Niger</option>
-                        <option value="BF">🇧🇫 Burkina Faso</option>
-                        <option value="CI">🇨🇮 Côte d'Ivoire</option>
-                    </select>
+                    <input type="text" id="paysDisplay" value="Bénin" readonly style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f0f0f0; color:#666; cursor:not-allowed; font-family:inherit;">
+                    <input type="hidden" id="pays" value="BJ">
+                    <small style="color:#888; font-size:0.75rem;">🔒 Généré automatiquement</small>
                 </div>
             </div>
 
@@ -207,7 +203,7 @@
 <script>
     (function() {
         // ==========================================
-        // RÉFÉRENCE SUPABASE (initiée dans mon-compte.html)
+        // RÉFÉRENCE SUPABASE
         // ==========================================
         const supabaseClient = window.supabaseClient;
 
@@ -227,8 +223,32 @@
         console.log('✅ SupabaseClient disponible dans contacts.html');
 
         // ==========================================
-        // DONNÉES DES VILLES PAR PAYS
+        // CORRESPONDANCES
         // ==========================================
+        const indicatifToPays = {
+            '+229': { code: 'BJ', nom: 'Bénin' },
+            '+228': { code: 'TG', nom: 'Togo' },
+            '+227': { code: 'NE', nom: 'Niger' },
+            '+226': { code: 'BF', nom: 'Burkina Faso' },
+            '+225': { code: 'CI', nom: "Côte d'Ivoire" }
+        };
+
+        const paysToIndicatif = {
+            'BJ': '+229',
+            'TG': '+228',
+            'NE': '+227',
+            'BF': '+226',
+            'CI': '+225'
+        };
+
+        const paysLabels = {
+            'BJ': 'Bénin',
+            'TG': 'Togo',
+            'NE': 'Niger',
+            'BF': 'Burkina Faso',
+            'CI': "Côte d'Ivoire"
+        };
+
         const villesParPays = {
             'BJ': ['Cotonou', 'Porto-Novo', 'Parakou', 'Abomey-Calavi', 'Djougou'],
             'TG': ['Lomé', 'Kara', 'Sokodé', 'Atakpamé', 'Palimé'],
@@ -238,52 +258,26 @@
         };
 
         // ==========================================
-        // PAYS VERS LIBELLÉ
+        // METTRE À JOUR LE PAYS SELON L'INDICATIF
         // ==========================================
-        function getPaysLabel(code) {
-            const pays = {
-                'BJ': 'Bénin', 'TG': 'Togo', 'NE': 'Niger',
-                'BF': 'Burkina Faso', 'CI': "Côte d'Ivoire"
-            };
-            return pays[code] || code;
-        }
-
-        // ==========================================
-        // INDICATIF VERS PAYS
-        // ==========================================
-        function getPaysFromIndicatif(indicatif) {
-            const map = {
-                '+229': 'BJ',
-                '+228': 'TG',
-                '+227': 'NE',
-                '+226': 'BF',
-                '+225': 'CI'
-            };
-            return map[indicatif] || 'BJ';
-        }
-
-        // ==========================================
-        // INDICATIF PAR DÉFAUT
-        // ==========================================
-        function getIndicatifFromPays(pays) {
-            const map = {
-                'BJ': '+229',
-                'TG': '+228',
-                'NE': '+227',
-                'BF': '+226',
-                'CI': '+225'
-            };
-            return map[pays] || '+229';
+        function updatePaysFromIndicatif() {
+            const indicatif = document.getElementById('indicatif').value;
+            const paysInfo = indicatifToPays[indicatif];
+            
+            if (paysInfo) {
+                document.getElementById('pays').value = paysInfo.code;
+                document.getElementById('paysDisplay').value = paysInfo.nom;
+                updateVilles();
+            }
         }
 
         // ==========================================
         // METTRE À JOUR LES VILLES SELON LE PAYS
         // ==========================================
         function updateVilles() {
-            const paysSelect = document.getElementById('pays');
+            const paysCode = document.getElementById('pays').value;
+            const villes = villesParPays[paysCode] || ['Cotonou', 'Porto-Novo', 'Parakou', 'Abomey-Calavi', 'Djougou'];
             const villeSelect = document.getElementById('ville');
-            const pays = paysSelect.value;
-            const villes = villesParPays[pays] || ['Cotonou', 'Porto-Novo', 'Parakou', 'Abomey-Calavi', 'Djougou'];
             
             villeSelect.innerHTML = villes.map(v => `<option value="${v}">${v}</option>`).join('');
         }
@@ -391,7 +385,7 @@
                     <td style="padding:12px; color:#888;">${contact.email || '—'}</td>
                     <td style="padding:12px;">${contact.telephone || '—'}</td>
                     <td style="padding:12px;">${contact.ville || '—'}</td>
-                    <td style="padding:12px;">${getPaysLabel(contact.pays)}</td>
+                    <td style="padding:12px;">${paysLabels[contact.pays] || contact.pays || '—'}</td>
                     <td style="padding:12px; text-align:center;">${getStatutBadge(contact.statut)}</td>
                     <td style="padding:12px; text-align:center;">
                         <button onclick="editContact(${contact.id})" style="padding:6px 12px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Modifier">
@@ -497,6 +491,9 @@
             document.getElementById('contactId').value = '';
             document.getElementById('contactForm').reset();
             document.getElementById('statut').value = 'prospect';
+            document.getElementById('indicatif').value = '+229';
+            document.getElementById('pays').value = 'BJ';
+            document.getElementById('paysDisplay').value = 'Bénin';
             document.getElementById('contactModal').style.display = 'flex';
             updateVilles();
         }
@@ -516,13 +513,14 @@
             
             // Gérer le téléphone avec indicatif
             const phone = contact.telephone || '';
-            const indicatif = getIndicatifFromPays(contact.pays || 'BJ');
+            const indicatif = paysToIndicatif[contact.pays] || '+229';
             const numero = phone.replace(indicatif, '').trim();
             document.getElementById('indicatif').value = indicatif;
             document.getElementById('telephone').value = numero;
             
             document.getElementById('ville').value = contact.ville || 'Cotonou';
             document.getElementById('pays').value = contact.pays || 'BJ';
+            document.getElementById('paysDisplay').value = paysLabels[contact.pays] || 'Bénin';
             document.getElementById('statut').value = contact.statut || 'prospect';
             document.getElementById('contactModal').style.display = 'flex';
             updateVilles();
@@ -545,6 +543,7 @@
             const id = document.getElementById('contactId').value;
             const indicatif = document.getElementById('indicatif').value;
             const telephone = document.getElementById('telephone').value.trim();
+            const paysCode = document.getElementById('pays').value;
             
             const contactData = {
                 prenom: document.getElementById('prenom').value.trim(),
@@ -552,7 +551,7 @@
                 email: document.getElementById('email').value.trim(),
                 telephone: indicatif + ' ' + telephone,
                 ville: document.getElementById('ville').value,
-                pays: document.getElementById('pays').value,
+                pays: paysCode,
                 statut: document.getElementById('statut').value,
                 date_clic: new Date().toISOString()
             };
@@ -693,9 +692,6 @@
             document.getElementById('contactModal').addEventListener('click', function(e) {
                 if (e.target === this) closeModal();
             });
-
-            // Mettre à jour les villes quand le pays change
-            document.getElementById('pays').addEventListener('change', updateVilles);
         }
 
         // ==========================================
@@ -711,6 +707,7 @@
         window.closeModal = closeModal;
         window.saveContact = saveContact;
         window.showNotification = showNotification;
+        window.updatePaysFromIndicatif = updatePaysFromIndicatif;
         window.updateVilles = updateVilles;
 
         // ==========================================
