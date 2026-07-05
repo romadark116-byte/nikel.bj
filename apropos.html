@@ -121,6 +121,134 @@
             to { transform: rotate(360deg); }
         }
 
+        /* ==========================================
+           GALERIE D'IMAGES - STYLES
+           ========================================== */
+        .gallery-container {
+            position: relative;
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--off-white);
+            aspect-ratio: 16/10;
+        }
+
+        .gallery-slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .gallery-slide.active {
+            display: block;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .gallery-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(1.02); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Boutons de navigation */
+        .gallery-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            backdrop-filter: blur(4px);
+        }
+
+        .gallery-btn:hover {
+            background: var(--gold);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .gallery-btn.prev {
+            left: 16px;
+        }
+
+        .gallery-btn.next {
+            right: 16px;
+        }
+
+        /* Indicateurs (dots) */
+        .gallery-dots {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .gallery-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            border: 2px solid rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .gallery-dot.active {
+            background: var(--gold);
+            border-color: var(--gold);
+            transform: scale(1.2);
+        }
+
+        .gallery-dot:hover {
+            background: rgba(255,255,255,0.8);
+        }
+
+        /* Conteneur principal de la section about */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: start;
+        }
+
+        .about-text {
+            padding-right: 20px;
+        }
+
+        .about-image {
+            width: 100%;
+        }
+
+        @media (max-width: 992px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            .about-text {
+                padding-right: 0;
+            }
+            .gallery-container {
+                aspect-ratio: 16/9;
+            }
+        }
+
         @media (max-width: 768px) {
             .founder-grid {
                 grid-template-columns: 1fr;
@@ -131,6 +259,24 @@
             }
             .founder-section {
                 padding: 24px;
+            }
+            .gallery-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 0.9rem;
+            }
+            .gallery-btn.prev {
+                left: 8px;
+            }
+            .gallery-btn.next {
+                right: 8px;
+            }
+            .gallery-dots {
+                gap: 6px;
+            }
+            .gallery-dot {
+                width: 8px;
+                height: 8px;
             }
         }
     </style>
@@ -203,7 +349,6 @@
                                  id="founderImage"
                                  onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Fleury+HAMIDOU&size=400&background=c9a84c&color=fff&font-size=0.5'">
                             <div class="social-overlay">
-                                <!-- Liens réseaux sociaux directement dans le HTML -->
                                 <a href="https://www.instagram.com/nikel_officiel/" target="_blank" title="Instagram">
                                     <i class="fab fa-instagram"></i>
                                 </a>
@@ -246,7 +391,7 @@
         </div>
     </section>
 
-    <!-- ===== SECTION HISTOIRE ET VALEURS ===== -->
+    <!-- ===== SECTION HISTOIRE ET VALEURS AVEC GALERIE ===== -->
     <section class="section">
         <div class="container about-grid">
             <div class="about-text animate-fade-up">
@@ -262,11 +407,41 @@
                     Découvrir nos produits <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
+
+            <!-- ===== GALERIE D'IMAGES ===== -->
             <div class="about-image animate-slide-left">
-                <img src="https://images.unsplash.com/photo-1523381294911-8d3cead13475?w=600&h=400&fit=crop" alt="Notre équipe">
-                <div style="margin-top:20px; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                    <img src="https://images.unsplash.com/photo-1560343090-f0409e92791a?w=300&h=200&fit=crop" alt="Atelier" style="border-radius:12px;">
-                    <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=300&h=200&fit=crop" alt="Création" style="border-radius:12px;">
+                <div class="gallery-container" id="galleryContainer">
+                    <!-- Slide 1 -->
+                    <div class="gallery-slide active">
+                        <img src="https://images.unsplash.com/photo-1523381294911-8d3cead13475?w=800&h=500&fit=crop" alt="Notre boutique - Vue principale">
+                    </div>
+                    <!-- Slide 2 -->
+                    <div class="gallery-slide">
+                        <img src="https://images.unsplash.com/photo-1560343090-f0409e92791a?w=800&h=500&fit=crop" alt="Notre atelier - Création">
+                    </div>
+                    <!-- Slide 3 -->
+                    <div class="gallery-slide">
+                        <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=800&h=500&fit=crop" alt="Nos collections - Showroom">
+                    </div>
+                    <!-- Slide 4 -->
+                    <div class="gallery-slide">
+                        <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=800&h=500&fit=crop" alt="Notre boutique - Intérieur">
+                    </div>
+                    <!-- Slide 5 -->
+                    <div class="gallery-slide">
+                        <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&h=500&fit=crop" alt="Collection NIKEL - Présentation">
+                    </div>
+
+                    <!-- Boutons de navigation -->
+                    <button class="gallery-btn prev" onclick="changeSlide(-1)" aria-label="Image précédente">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="gallery-btn next" onclick="changeSlide(1)" aria-label="Image suivante">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+
+                    <!-- Indicateurs (dots) -->
+                    <div class="gallery-dots" id="galleryDots"></div>
                 </div>
             </div>
         </div>
@@ -374,13 +549,79 @@
     <script src="script.js"></script>
     <script>
         // ==========================================
-        // CHARGER LES DONNÉES DU FONDATEUR DEPUIS SUPABASE (OPTION 2)
-        // AVEC LA TABLE admin_profiles
+        // GALERIE D'IMAGES - LOGIQUE
+        // ==========================================
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.gallery-slide');
+        const dots = document.getElementById('galleryDots');
+
+        // Créer les dots
+        slides.forEach((_, index) => {
+            const dot = document.createElement('span');
+            dot.className = `gallery-dot ${index === 0 ? 'active' : ''}`;
+            dot.onclick = () => goToSlide(index);
+            dots.appendChild(dot);
+        });
+
+        // Fonction pour changer de slide
+        function changeSlide(direction) {
+            const totalSlides = slides.length;
+            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+            updateGallery();
+        }
+
+        // Fonction pour aller à un slide spécifique
+        function goToSlide(index) {
+            currentSlide = index;
+            updateGallery();
+        }
+
+        // Mettre à jour la galerie
+        function updateGallery() {
+            // Mettre à jour les slides
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlide);
+            });
+
+            // Mettre à jour les dots
+            const dotElements = document.querySelectorAll('.gallery-dot');
+            dotElements.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        // Défilement automatique toutes les 4 secondes
+        let autoSlideInterval = setInterval(() => changeSlide(1), 4000);
+
+        // Pause au survol
+        const galleryContainer = document.getElementById('galleryContainer');
+        galleryContainer.addEventListener('mouseenter', () => {
+            clearInterval(autoSlideInterval);
+        });
+        galleryContainer.addEventListener('mouseleave', () => {
+            autoSlideInterval = setInterval(() => changeSlide(1), 4000);
+        });
+
+        // Navigation au clavier
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                changeSlide(-1);
+                clearInterval(autoSlideInterval);
+                autoSlideInterval = setInterval(() => changeSlide(1), 4000);
+            } else if (e.key === 'ArrowRight') {
+                changeSlide(1);
+                clearInterval(autoSlideInterval);
+                autoSlideInterval = setInterval(() => changeSlide(1), 4000);
+            }
+        });
+
+        // ==========================================
+        // CHARGER LES DONNÉES DU FONDATEUR DEPUIS SUPABASE
         // ==========================================
         document.addEventListener('DOMContentLoaded', async function() {
             // Configuration Supabase
-            const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co"; // Remplacez par votre URL
-            const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp"; // Remplacez par votre clé anon
+            const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
+            const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
 
             // Références DOM
             const loadingIndicator = document.getElementById('loadingIndicator');
@@ -396,13 +637,11 @@
             ];
 
             try {
-                // Créer le client Supabase
                 const { createClient } = supabase;
                 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
                 console.log('🔄 Chargement des données du fondateur...');
 
-                // Récupérer l'admin avec ses informations de profil
                 const { data: admin, error } = await supabaseClient
                     .from('admins')
                     .select(`
@@ -425,7 +664,7 @@
                             updated_at
                         )
                     `)
-                    .eq('id', 1) // Changez l'ID si nécessaire
+                    .eq('id', 1)
                     .single();
 
                 if (error) {
@@ -439,29 +678,19 @@
                 }
 
                 console.log('✅ Données chargées avec succès');
-                console.log('📊 Admin:', admin);
-                console.log('📊 Profil:', admin.admin_profiles);
 
                 // --- METTRE À JOUR LA PHOTO ---
-                // PRIORITÉ: photo_url de la table admins
                 let photoUrl = admin.photo_url;
                 
-                // Si photo_url est vide ou null, utiliser l'avatar
                 if (!photoUrl || photoUrl.trim() === '') {
                     const fullName = `${admin.prenom || ''} ${admin.nom || ''}`.trim();
                     photoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName || 'Fondateur')}&size=400&background=c9a84c&color=fff&font-size=0.5`;
-                    console.log('📸 Pas de photo, utilisation de l\'avatar:', photoUrl);
-                } else {
-                    console.log('📸 Photo chargée depuis la base:', photoUrl);
                 }
 
-                // Appliquer la photo avec un cache-buster pour éviter le cache
                 const cacheBuster = new Date().getTime();
                 imageEl.src = `${photoUrl}${photoUrl.includes('?') ? '&' : '?'}_=${cacheBuster}`;
                 
-                // Gestionnaire d'erreur pour l'image
                 imageEl.onerror = function() {
-                    console.warn('⚠️ Échec du chargement de la photo, utilisation de l\'avatar');
                     const fullName = `${admin.prenom || ''} ${admin.nom || ''}`.trim();
                     this.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName || 'Fondateur')}&size=400&background=c9a84c&color=fff&font-size=0.5&_=${cacheBuster}`;
                 };
@@ -474,75 +703,46 @@
                 } else if (admin.prenom) {
                     nameEl.textContent = admin.prenom;
                 }
-                console.log('👤 Nom mis à jour:', nameEl.textContent);
 
-                // --- METTRE À JOUR LE TITRE (depuis admin_profiles) ---
+                // --- METTRE À JOUR LES AUTRES CHAMPS ---
                 const profile = admin.admin_profiles || {};
                 if (profile.titre && profile.titre.trim() !== '') {
                     titleEl.textContent = profile.titre;
-                    console.log('📌 Titre mis à jour:', profile.titre);
-                } else {
-                    console.log('📌 Titre par défaut utilisé');
                 }
 
-                // --- METTRE À JOUR LA SIGNATURE (depuis admin_profiles) ---
                 if (profile.signature && profile.signature.trim() !== '') {
                     signatureEl.textContent = `✨ ${profile.signature}`;
-                    console.log('✍️ Signature mise à jour:', profile.signature);
-                } else {
-                    console.log('✍️ Signature par défaut utilisée');
                 }
 
-                // --- METTRE À JOUR LA DESCRIPTION / BIO (depuis admin_profiles) ---
                 if (profile.description) {
-                    console.log('📝 Description brute:', profile.description);
-                    
                     try {
                         let description = profile.description;
                         
-                        // Si c'est une chaîne JSON, la parser
                         if (typeof description === 'string' && description.trim().startsWith('[')) {
                             description = JSON.parse(description);
-                            console.log('📝 Description parsée (JSON):', description);
                         }
                         
                         if (Array.isArray(description)) {
-                            // Si c'est un tableau de paragraphes
                             description.forEach((text, index) => {
                                 if (bioEls[index]) {
                                     bioEls[index].innerHTML = text;
-                                    console.log(`📝 Bio ${index + 1} mise à jour`);
                                 }
                             });
                         } else if (typeof description === 'string') {
-                            // Si c'est un texte simple
                             if (bioEls[0]) {
                                 bioEls[0].innerHTML = description;
-                                console.log('📝 Bio unique mise à jour');
-                            }
-                        } else if (typeof description === 'object') {
-                            // Si c'est un objet, essayer d'en faire quelque chose
-                            const text = description.text || description.content || JSON.stringify(description);
-                            if (bioEls[0]) {
-                                bioEls[0].innerHTML = text;
-                                console.log('📝 Bio depuis objet mise à jour');
                             }
                         }
                     } catch (e) {
-                        console.warn('⚠️ Erreur de parsing de la description:', e);
                         if (bioEls[0]) {
                             bioEls[0].innerHTML = profile.description;
                         }
                     }
-                } else {
-                    console.log('📝 Aucune description, utilisation des valeurs par défaut');
                 }
 
-                // --- METTRE À JOUR L'ATTRIBUT ALT DE L'IMAGE ---
                 const fullName = `${admin.prenom || ''} ${admin.nom || ''}`.trim();
                 imageEl.alt = `${fullName || 'Fondateur'} - Fondateur de ${admin.boutique_nom || 'NIKEL'}`;
 
-                // --- AFFICHER LE CONTENU ---
                 loadingIndicator.style.display = 'none';
                 founderContent.style.display = 'block';
 
@@ -551,7 +751,6 @@
             } catch (error) {
                 console.error('❌ Erreur générale:', error);
                 
-                // En cas d'erreur, utiliser les données par défaut
                 loadingIndicator.innerHTML = `
                     <i class="fas fa-exclamation-circle" style="color: var(--gold);"></i>
                     <span>Impossible de charger les données. Affichage des valeurs par défaut.</span>
@@ -560,7 +759,6 @@
                 setTimeout(() => {
                     loadingIndicator.style.display = 'none';
                     founderContent.style.display = 'block';
-                    // Les valeurs par défaut sont déjà dans le HTML
                 }, 1500);
             }
         });
