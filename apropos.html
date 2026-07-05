@@ -344,7 +344,8 @@
     <script src="script.js"></script>
     <script>
         // ==========================================
-        // CHARGER LES DONNÉES DU FONDATEUR DEPUIS SUPABASE
+        // CHARGER LES DONNÉES DU FONDATEUR DEPUIS SUPABASE (OPTION 2)
+        // AVEC LA TABLE admin_profiles
         // ==========================================
         document.addEventListener('DOMContentLoaded', async function() {
             // Configuration Supabase
@@ -356,92 +357,155 @@
             const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
             try {
-                // Récupérer l'admin (fondateur) - par exemple avec l'ID 1
+                // Récupérer l'admin avec ses informations de profil
+                // On utilise une jointure avec la table admin_profiles
                 const { data: admin, error } = await supabaseClient
                     .from('admins')
-                    .select('*')
+                    .select(`
+                        id,
+                        prenom,
+                        nom,
+                        email,
+                        telephone,
+                        boutique_nom,
+                        ville,
+                        pays,
+                        photo_url,
+                        created_at,
+                        admin_profiles (
+                            id,
+                            titre,
+                            signature,
+                            description,
+                            created_at,
+                            updated_at
+                        )
+                    `)
                     .eq('id', 1) // Ou .eq('email', 'fondateur@nikel.com')
                     .single();
 
                 if (error) {
-                    console.error('Erreur lors du chargement des données:', error);
-                    // Utiliser les données par défaut
+                    console.error('❌ Erreur lors du chargement des données:', error);
                     loadDefaultData();
                     return;
                 }
 
                 if (admin) {
-                    // Mettre à jour l'image avec la photo_url de la base de données
+                    console.log('✅ Données du fondateur chargées depuis Supabase');
+                    console.log('📊 Admin:', admin);
+
+                    // Extraire les données du profil (si elles existent)
+                    const profile = admin.admin_profiles || {};
+
+                    // Mettre à jour l'image avec la photo_url
                     const imageEl = document.getElementById('founderImage');
                     if (admin.photo_url) {
                         imageEl.src = admin.photo_url;
                         // Vérifier si l'image charge correctement
                         imageEl.onerror = function() {
-                            this.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(admin.nom || 'Fleury HAMIDOU') + '&size=400&background=c9a84c&color=fff&font-size=0.5';
+                            const fullName = `${admin.prenom || ''} ${admin.nom || ''}`.trim();
+                            this.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName || 'Fleury HAMIDOU')}&size=400&background=c9a84c&color=fff&font-size=0.5`;
                         };
                     } else {
                         // Fallback si pas de photo_url
-                        imageEl.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(admin.nom || 'Fleury HAMIDOU') + '&size=400&background=c9a84c&color=fff&font-size=0.5';
+                        const fullName = `${admin.prenom || ''} ${admin.nom || ''}`.trim();
+                        imageEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName || 'Fleury HAMIDOU')}&size=400&background=c9a84c&color=fff&font-size=0.5`;
                     }
 
-                    // Mettre à jour le nom
+                    // Mettre à jour le nom complet (prénom + nom)
                     const nameEl = document.getElementById('founderName');
-                    if (admin.nom) {
+                    if (admin.prenom && admin.nom) {
+                        nameEl.textContent = `${admin.prenom} ${admin.nom.toUpperCase()}`;
+                    } else if (admin.nom) {
                         nameEl.textContent = admin.nom;
+                    } else if (admin.prenom) {
+                        nameEl.textContent = admin.prenom;
                     }
 
-                    // Mettre à jour le titre
+                    // Mettre à jour le titre depuis admin_profiles
                     const titleEl = document.getElementById('founderTitle');
-                    if (admin.titre) {
-                        titleEl.textContent = admin.titre;
+                    if (profile.titre) {
+                        titleEl.textContent = profile.titre;
                     }
 
-                    // Mettre à jour la signature
+                    // Mettre à jour la signature depuis admin_profiles
                     const signatureEl = document.getElementById('founderSignature');
-                    if (admin.signature) {
-                        signatureEl.textContent = '✨ ' + admin.signature;
+                    if (profile.signature) {
+                        signatureEl.textContent = `✨ ${profile.signature}`;
                     }
 
-                    // Mettre à jour la description / bio
-                    if (admin.description) {
-                        // Si la description est un tableau ou du texte
-                        if (typeof admin.description === 'string') {
-                            // Si c'est un texte simple, on le met dans le premier bio
-                            const bio1 = document.getElementById('founderBio1');
-                            if (bio1) bio1.innerHTML = admin.description;
-                        } else if (Array.isArray(admin.description)) {
-                            // Si c'est un tableau de paragraphes
-                            const bios = [
-                                document.getElementById('founderBio1'),
-                                document.getElementById('founderBio2'),
-                                document.getElementById('founderBio3')
-                            ];
-                            admin.description.forEach((text, index) => {
-                                if (bios[index]) {
-                                    bios[index].innerHTML = text;
+                    // Mettre à jour la description / bio depuis admin_profiles
+                    if (profile.description) {
+                        try {
+                            // Essayer de parser si c'est du JSON
+                            let description = profile.description;
+                            
+                            // Si c'est une chaîne JSON, la parser
+                            if (typeof description === 'string' && description.startsWith('[')) {
+                                description = JSON.parse(description);
+                            }
+                            
+                            if (Array.isArray(description)) {
+                                // Si c'est un tableau de paragraphes
+                                const bios = [
+                                    document.getElementById('founderBio1'),
+                                    document.getElementById('founderBio2'),
+                                    document.getElementById('founderBio3')
+                                ];
+                                description.forEach((text, index) => {
+                                    if (bios[index]) {
+                                        bios[index].innerHTML = text;
+                                    }
+                                });
+                            } else if (typeof description === 'string') {
+                                // Si c'est un texte simple
+                                const bio1 = document.getElementById('founderBio1');
+                                if (bio1) bio1.innerHTML = description;
+                            } else if (typeof description === 'object') {
+                                // Si c'est un objet avec des propriétés
+                                const bio1 = document.getElementById('founderBio1');
+                                if (bio1 && description.text) {
+                                    bio1.innerHTML = description.text;
                                 }
-                            });
+                            }
+                        } catch (e) {
+                            // En cas d'erreur de parsing, utiliser comme texte simple
+                            console.warn('⚠️ Erreur de parsing de la description, utilisation comme texte simple:', e);
+                            const bio1 = document.getElementById('founderBio1');
+                            if (bio1) bio1.innerHTML = profile.description;
                         }
                     }
 
                     // Mettre à jour l'attribut alt de l'image
-                    if (imageEl && admin.nom) {
-                        imageEl.alt = admin.nom + ' - Fondateur de NIKEL';
+                    if (imageEl) {
+                        const fullName = `${admin.prenom || ''} ${admin.nom || ''}`.trim();
+                        imageEl.alt = `${fullName || 'Fondateur'} - Fondateur de ${admin.boutique_nom || 'NIKEL'}`;
                     }
 
-                    console.log('✅ Données du fondateur chargées depuis Supabase');
+                    // Optionnel : Afficher des informations supplémentaires dans la console
+                    console.log('📝 Profil chargé:', {
+                        nom: `${admin.prenom} ${admin.nom}`,
+                        titre: profile.titre || 'Non défini',
+                        signature: profile.signature || 'Non défini',
+                        description: profile.description ? '✅' : '❌'
+                    });
+
                 } else {
-                    console.warn('Aucun administrateur trouvé, utilisation des données par défaut');
+                    console.warn('⚠️ Aucun administrateur trouvé avec l\'ID 1, utilisation des données par défaut');
                     loadDefaultData();
                 }
 
             } catch (error) {
-                console.error('Erreur de connexion à Supabase:', error);
+                console.error('❌ Erreur de connexion à Supabase:', error);
                 loadDefaultData();
             }
 
-            // Fonction de fallback avec les données par défaut
+            // ==========================================
+            // FONCTION DE FALLBACK AVEC DONNÉES PAR DÉFAUT
+            // ==========================================
             function loadDefaultData() {
+                console.log('📋 Chargement des données par défaut');
+                
                 const defaultData = {
                     name: 'Fleury HAMIDOU',
                     title: '👑 Fondateur & CEO',
@@ -474,6 +538,29 @@
                 defaultData.bio.forEach((text, index) => {
                     if (bios[index]) {
                         bios[index].innerHTML = text;
+                    }
+                });
+            }
+        });
+
+        // ==========================================
+        // FONCTION DE RECHERCHE (pour la barre de recherche)
+        // ==========================================
+        function handleSearch() {
+            const input = document.getElementById('searchInput');
+            const query = input.value.trim();
+            if (query) {
+                window.location.href = `boutique.html?search=${encodeURIComponent(query)}`;
+            }
+        }
+
+        // Ajouter la recherche avec la touche Entrée
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        handleSearch();
                     }
                 });
             }
