@@ -180,497 +180,505 @@
 </div>
 
 <!-- ===== SCRIPTS ===== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-    (function() {
-        // ==========================================
-        // RÉFÉRENCE SUPABASE
-        // ==========================================
-        const supabaseClient = window.supabaseClient;
+    // ==========================================
+    // RÉFÉRENCE SUPABASE
+    // ==========================================
+    const supabaseClient = window.supabaseClient;
 
-        if (!supabaseClient) {
-            console.error('❌ SupabaseClient non disponible !');
-            document.getElementById('articlesContainer').innerHTML = `
-                <div style="text-align:center; padding:60px; color:red;">
-                    <i class="fas fa-exclamation-circle" style="font-size:3rem;"></i>
-                    <h3>Erreur de connexion</h3>
-                    <p>Impossible de se connecter à la base de données.</p>
-                    <p style="font-size:0.9rem; color:#888;">Veuillez rafraîchir la page.</p>
-                </div>
+    if (!supabaseClient) {
+        console.error('❌ SupabaseClient non disponible !');
+        document.getElementById('articlesContainer').innerHTML = `
+            <div style="text-align:center; padding:60px; color:red;">
+                <i class="fas fa-exclamation-circle" style="font-size:3rem;"></i>
+                <h3>Erreur de connexion</h3>
+                <p>Impossible de se connecter à la base de données.</p>
+                <p style="font-size:0.9rem; color:#888;">Veuillez rafraîchir la page.</p>
+            </div>
+        `;
+        return;
+    }
+
+    console.log('✅ SupabaseClient disponible dans articles.html');
+
+    // ==========================================
+    // VARIABLES GLOBALES
+    // ==========================================
+    let allArticles = [];
+    let filteredArticles = [];
+    let currentArticlePage = 1;
+    const articlesPerPage = 10;
+
+    // ==========================================
+    // DONNÉES DE TEST
+    // ==========================================
+    function getTestArticles() {
+        return [
+            { id: 1, nom: 'NIKEL Sport Blanc', categorie: 'sport', prix: 79.00, oldPrice: 99.00, stock: 15, description: 'T-shirt technique en maille respirante', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=100&h=100&fit=crop', statut: 'stock' },
+            { id: 2, nom: 'NIKEL Essential Bleu', categorie: 'vêtements', prix: 89.00, oldPrice: null, stock: 25, description: 'T-shirt premium en coton bio', image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=100&h=100&fit=crop', statut: 'stock' },
+            { id: 3, nom: 'Sac NOMAD', categorie: 'accessoires', prix: 59.00, oldPrice: null, stock: 0, description: 'Sac en cuir véritable', image: 'https://images.unsplash.com/photo-1547949003-9792a18a2601?w=100&h=100&fit=crop', statut: 'rupture' },
+            { id: 4, nom: 'Montre EDGE', categorie: 'accessoires', prix: 149.00, oldPrice: 199.00, stock: 8, description: 'Montre connectée avec GPS', image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100&h=100&fit=crop', statut: 'soldes' },
+            { id: 5, nom: 'NIKEL Urban Gris', categorie: 'vêtements', prix: 99.00, oldPrice: null, stock: 12, description: 'Sweat-shirt urbain', image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=100&h=100&fit=crop', statut: 'stock' }
+        ];
+    }
+
+    // ==========================================
+    // FORMATER LE PRIX
+    // ==========================================
+    function formatPrice(price) {
+        return price.toFixed(2).replace('.', ',') + ' FCFA';
+    }
+
+    // ==========================================
+    // AFFICHER LE STATUT AVEC COULEUR
+    // ==========================================
+    function getArticleStatutBadge(statut) {
+        const statuts = {
+            'stock': { bg: '#27ae60', icon: 'fa-check', text: 'En stock' },
+            'rupture': { bg: '#f39c12', icon: 'fa-times', text: 'Rupture' },
+            'soldes': { bg: '#e74c3c', icon: 'fa-fire', text: 'En solde' }
+        };
+        const s = statuts[statut] || statuts['stock'];
+        return `<span style="background:${s.bg}; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+            <i class="fas ${s.icon}"></i> ${s.text}
+        </span>`;
+    }
+
+    // ==========================================
+    // RENDU DU TABLEAU
+    // ==========================================
+    function renderArticleTable() {
+        const tbody = document.getElementById('articlesTableBody');
+        
+        if (filteredArticles.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" style="text-align:center; padding:40px; color:#888;">
+                        <i class="fas fa-box-open" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
+                        Aucun article trouvé.
+                    </td>
+                </tr>
             `;
             return;
         }
 
-        console.log('✅ SupabaseClient disponible dans articles.html');
+        const startIndex = (currentArticlePage - 1) * articlesPerPage;
+        const endIndex = Math.min(startIndex + articlesPerPage, filteredArticles.length);
+        const pageItems = filteredArticles.slice(startIndex, endIndex);
 
-        // ==========================================
-        // VARIABLES GLOBALES
-        // ==========================================
-        let allArticles = [];
-        let filteredArticles = [];
-        let currentArticlePage = 1;
-        const articlesPerPage = 10;
+        tbody.innerHTML = pageItems.map(article => `
+            <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
+                <td style="padding:12px; font-weight:600; color:#1a1a1a;">#${article.id}</td>
+                <td style="padding:12px;">
+                    <img src="${article.image || 'https://via.placeholder.com/50x50/1a1a1a/FFFFFF?text=NIKEL'}" 
+                         alt="${article.nom}" 
+                         style="width:50px; height:50px; object-fit:cover; border-radius:8px;"
+                         onerror="this.src='https://via.placeholder.com/50x50/1a1a1a/FFFFFF?text=NIKEL'">
+                </td>
+                <td style="padding:12px; font-weight:500;">${article.nom}</td>
+                <td style="padding:12px; color:#888;">${article.categorie || '—'}</td>
+                <td style="padding:12px; font-weight:700; color:#c9a84c;">
+                    ${formatPrice(article.prix)}
+                    ${article.oldPrice ? `<span style="font-size:0.8rem; color:#999; text-decoration:line-through; display:block;">${formatPrice(article.oldPrice)}</span>` : ''}
+                </td>
+                <td style="padding:12px; text-align:center; font-weight:600;">${article.stock || 0}</td>
+                <td style="padding:12px;">${getArticleStatutBadge(article.statut)}</td>
+                <td style="padding:12px; text-align:center;">
+                    <button onclick="editArticle(${article.id})" style="padding:6px 12px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Modifier">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button onclick="deleteArticle(${article.id})" style="padding:6px 12px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Supprimer">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    }
 
-        // ==========================================
-        // DONNÉES DE TEST
-        // ==========================================
-        function getTestArticles() {
-            return [
-                { id: 1, nom: 'NIKEL Sport Blanc', categorie: 'sport', prix: 79.00, oldPrice: 99.00, stock: 15, description: 'T-shirt technique en maille respirante', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=100&h=100&fit=crop', statut: 'stock' },
-                { id: 2, nom: 'NIKEL Essential Bleu', categorie: 'vêtements', prix: 89.00, oldPrice: null, stock: 25, description: 'T-shirt premium en coton bio', image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=100&h=100&fit=crop', statut: 'stock' },
-                { id: 3, nom: 'Sac NOMAD', categorie: 'accessoires', prix: 59.00, oldPrice: null, stock: 0, description: 'Sac en cuir véritable', image: 'https://images.unsplash.com/photo-1547949003-9792a18a2601?w=100&h=100&fit=crop', statut: 'rupture' },
-                { id: 4, nom: 'Montre EDGE', categorie: 'accessoires', prix: 149.00, oldPrice: 199.00, stock: 8, description: 'Montre connectée avec GPS', image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100&h=100&fit=crop', statut: 'soldes' },
-                { id: 5, nom: 'NIKEL Urban Gris', categorie: 'vêtements', prix: 99.00, oldPrice: null, stock: 12, description: 'Sweat-shirt urbain', image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=100&h=100&fit=crop', statut: 'stock' }
-            ];
+    // ==========================================
+    // METTRE À JOUR LES STATISTIQUES
+    // ==========================================
+    function updateArticleStats() {
+        const total = allArticles.length;
+        const stock = allArticles.filter(a => a.statut === 'stock' || (a.stock > 0 && a.statut !== 'soldes')).length;
+        const rupture = allArticles.filter(a => a.statut === 'rupture' || a.stock === 0).length;
+        const soldes = allArticles.filter(a => a.statut === 'soldes' || (a.oldPrice && a.oldPrice > a.prix)).length;
+
+        document.getElementById('totalArticles').textContent = total;
+        document.getElementById('totalStock').textContent = stock;
+        document.getElementById('totalRupture').textContent = rupture;
+        document.getElementById('totalSoldes').textContent = soldes;
+    }
+
+    // ==========================================
+    // METTRE À JOUR LES INFOS DE PAGINATION
+    // ==========================================
+    function updateArticlePaginationInfo() {
+        const total = filteredArticles.length;
+        const start = (currentArticlePage - 1) * articlesPerPage + 1;
+        const end = Math.min(currentArticlePage * articlesPerPage, total);
+        const totalPages = Math.ceil(total / articlesPerPage);
+
+        document.getElementById('paginationInfo').textContent = 
+            `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
+        document.getElementById('articlePageInfo').textContent = `Page ${currentArticlePage} sur ${totalPages || 1}`;
+
+        document.getElementById('prevArticlePage').disabled = currentArticlePage <= 1;
+        document.getElementById('nextArticlePage').disabled = currentArticlePage >= totalPages;
+    }
+
+    // ==========================================
+    // PAGINATION
+    // ==========================================
+    function previousArticlePage() {
+        if (currentArticlePage > 1) {
+            currentArticlePage--;
+            renderArticleTable();
+            updateArticlePaginationInfo();
         }
+    }
 
-        // ==========================================
-        // FORMATER LE PRIX
-        // ==========================================
-        function formatPrice(price) {
-            return price.toFixed(2).replace('.', ',') + ' FCFA';
+    function nextArticlePage() {
+        const totalPages = Math.ceil(filteredArticles.length / articlesPerPage);
+        if (currentArticlePage < totalPages) {
+            currentArticlePage++;
+            renderArticleTable();
+            updateArticlePaginationInfo();
         }
+    }
 
-        // ==========================================
-        // AFFICHER LE STATUT AVEC COULEUR
-        // ==========================================
-        function getArticleStatutBadge(statut) {
-            const statuts = {
-                'stock': { bg: '#27ae60', icon: 'fa-check', text: 'En stock' },
-                'rupture': { bg: '#f39c12', icon: 'fa-times', text: 'Rupture' },
-                'soldes': { bg: '#e74c3c', icon: 'fa-fire', text: 'En solde' }
-            };
-            const s = statuts[statut] || statuts['stock'];
-            return `<span style="background:${s.bg}; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-                <i class="fas ${s.icon}"></i> ${s.text}
-            </span>`;
-        }
+    // ==========================================
+    // FILTRES
+    // ==========================================
+    function applyArticleFilters() {
+        const searchTerm = document.getElementById('searchInputArticles').value.toLowerCase().trim();
+        const categorie = document.getElementById('filterCategorie').value;
+        const statut = document.getElementById('filterStatutArticle').value;
 
-        // ==========================================
-        // RENDU DU TABLEAU
-        // ==========================================
-        function renderArticleTable() {
-            const tbody = document.getElementById('articlesTableBody');
+        filteredArticles = allArticles.filter(article => {
+            let matchSearch = true;
+            if (searchTerm) {
+                matchSearch = article.nom.toLowerCase().includes(searchTerm) ||
+                              (article.description && article.description.toLowerCase().includes(searchTerm));
+            }
+
+            let matchCategorie = true;
+            if (categorie !== 'all') {
+                matchCategorie = article.categorie === categorie;
+            }
+
+            let matchStatut = true;
+            if (statut !== 'all') {
+                if (statut === 'stock') matchStatut = article.statut === 'stock' || (article.stock > 0 && article.statut !== 'soldes');
+                else if (statut === 'rupture') matchStatut = article.statut === 'rupture' || article.stock === 0;
+                else if (statut === 'soldes') matchStatut = article.statut === 'soldes' || (article.oldPrice && article.oldPrice > article.prix);
+            }
+
+            return matchSearch && matchCategorie && matchStatut;
+        });
+
+        currentArticlePage = 1;
+        renderArticleTable();
+        updateArticlePaginationInfo();
+    }
+
+    function resetArticleFilters() {
+        document.getElementById('searchInputArticles').value = '';
+        document.getElementById('filterCategorie').value = 'all';
+        document.getElementById('filterStatutArticle').value = 'all';
+        filteredArticles = [...allArticles];
+        currentArticlePage = 1;
+        renderArticleTable();
+        updateArticlePaginationInfo();
+    }
+
+    // ==========================================
+    // CHARGER LES ARTICLES DEPUIS SUPABASE
+    // ==========================================
+    async function loadArticlesData() {
+        try {
+            console.log('📝 Chargement des articles depuis Supabase...');
             
-            if (filteredArticles.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="8" style="text-align:center; padding:40px; color:#888;">
-                            <i class="fas fa-box-open" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
-                            Aucun article trouvé.
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
+            const { data, error } = await supabaseClient
+                .from('produits')
+                .select('*')
+                .order('id', { ascending: true });
 
-            const startIndex = (currentArticlePage - 1) * articlesPerPage;
-            const endIndex = Math.min(startIndex + articlesPerPage, filteredArticles.length);
-            const pageItems = filteredArticles.slice(startIndex, endIndex);
-
-            tbody.innerHTML = pageItems.map(article => `
-                <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
-                    <td style="padding:12px; font-weight:600; color:#1a1a1a;">#${article.id}</td>
-                    <td style="padding:12px;">
-                        <img src="${article.image || 'https://via.placeholder.com/50x50/1a1a1a/FFFFFF?text=NIKEL'}" 
-                             alt="${article.nom}" 
-                             style="width:50px; height:50px; object-fit:cover; border-radius:8px;"
-                             onerror="this.src='https://via.placeholder.com/50x50/1a1a1a/FFFFFF?text=NIKEL'">
-                    </td>
-                    <td style="padding:12px; font-weight:500;">${article.nom}</td>
-                    <td style="padding:12px; color:#888;">${article.categorie || '—'}</td>
-                    <td style="padding:12px; font-weight:700; color:#c9a84c;">
-                        ${formatPrice(article.prix)}
-                        ${article.oldPrice ? `<span style="font-size:0.8rem; color:#999; text-decoration:line-through; display:block;">${formatPrice(article.oldPrice)}</span>` : ''}
-                    </td>
-                    <td style="padding:12px; text-align:center; font-weight:600;">${article.stock || 0}</td>
-                    <td style="padding:12px;">${getArticleStatutBadge(article.statut)}</td>
-                    <td style="padding:12px; text-align:center;">
-                        <button onclick="editArticle(${article.id})" style="padding:6px 12px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Modifier">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button onclick="deleteArticle(${article.id})" style="padding:6px 12px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Supprimer">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // ==========================================
-        // METTRE À JOUR LES STATISTIQUES
-        // ==========================================
-        function updateArticleStats() {
-            const total = allArticles.length;
-            const stock = allArticles.filter(a => a.statut === 'stock' || (a.stock > 0 && a.statut !== 'soldes')).length;
-            const rupture = allArticles.filter(a => a.statut === 'rupture' || a.stock === 0).length;
-            const soldes = allArticles.filter(a => a.statut === 'soldes' || (a.oldPrice && a.oldPrice > a.prix)).length;
-
-            document.getElementById('totalArticles').textContent = total;
-            document.getElementById('totalStock').textContent = stock;
-            document.getElementById('totalRupture').textContent = rupture;
-            document.getElementById('totalSoldes').textContent = soldes;
-        }
-
-        // ==========================================
-        // METTRE À JOUR LES INFOS DE PAGINATION
-        // ==========================================
-        function updateArticlePaginationInfo() {
-            const total = filteredArticles.length;
-            const start = (currentArticlePage - 1) * articlesPerPage + 1;
-            const end = Math.min(currentArticlePage * articlesPerPage, total);
-            const totalPages = Math.ceil(total / articlesPerPage);
-
-            document.getElementById('paginationInfo').textContent = 
-                `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
-            document.getElementById('articlePageInfo').textContent = `Page ${currentArticlePage} sur ${totalPages || 1}`;
-
-            document.getElementById('prevArticlePage').disabled = currentArticlePage <= 1;
-            document.getElementById('nextArticlePage').disabled = currentArticlePage >= totalPages;
-        }
-
-        // ==========================================
-        // PAGINATION
-        // ==========================================
-        function previousArticlePage() {
-            if (currentArticlePage > 1) {
-                currentArticlePage--;
-                renderArticleTable();
-                updateArticlePaginationInfo();
-            }
-        }
-
-        function nextArticlePage() {
-            const totalPages = Math.ceil(filteredArticles.length / articlesPerPage);
-            if (currentArticlePage < totalPages) {
-                currentArticlePage++;
-                renderArticleTable();
-                updateArticlePaginationInfo();
-            }
-        }
-
-        // ==========================================
-        // FILTRES
-        // ==========================================
-        function applyArticleFilters() {
-            const searchTerm = document.getElementById('searchInputArticles').value.toLowerCase().trim();
-            const categorie = document.getElementById('filterCategorie').value;
-            const statut = document.getElementById('filterStatutArticle').value;
-
-            filteredArticles = allArticles.filter(article => {
-                let matchSearch = true;
-                if (searchTerm) {
-                    matchSearch = article.nom.toLowerCase().includes(searchTerm) ||
-                                  (article.description && article.description.toLowerCase().includes(searchTerm));
-                }
-
-                let matchCategorie = true;
-                if (categorie !== 'all') {
-                    matchCategorie = article.categorie === categorie;
-                }
-
-                let matchStatut = true;
-                if (statut !== 'all') {
-                    if (statut === 'stock') matchStatut = article.statut === 'stock' || (article.stock > 0 && article.statut !== 'soldes');
-                    else if (statut === 'rupture') matchStatut = article.statut === 'rupture' || article.stock === 0;
-                    else if (statut === 'soldes') matchStatut = article.statut === 'soldes' || (article.oldPrice && article.oldPrice > article.prix);
-                }
-
-                return matchSearch && matchCategorie && matchStatut;
-            });
-
-            currentArticlePage = 1;
-            renderArticleTable();
-            updateArticlePaginationInfo();
-        }
-
-        function resetArticleFilters() {
-            document.getElementById('searchInputArticles').value = '';
-            document.getElementById('filterCategorie').value = 'all';
-            document.getElementById('filterStatutArticle').value = 'all';
-            filteredArticles = [...allArticles];
-            currentArticlePage = 1;
-            renderArticleTable();
-            updateArticlePaginationInfo();
-        }
-
-        // ==========================================
-        // CHARGER LES ARTICLES DEPUIS SUPABASE
-        // ==========================================
-        async function loadArticlesData() {
-            try {
-                console.log('📝 Chargement des articles depuis Supabase...');
-                
-                const { data, error } = await supabaseClient
-                    .from('produits')
-                    .select('*')
-                    .order('id', { ascending: true });
-
-                if (error) {
-                    console.error('❌ Erreur chargement:', error);
-                    allArticles = getTestArticles();
-                    filteredArticles = [...allArticles];
-                    renderArticleTable();
-                    updateArticleStats();
-                    updateArticlePaginationInfo();
-                    return;
-                }
-
-                if (data && data.length > 0) {
-                    console.log(`✅ ${data.length} articles chargés depuis Supabase`);
-                    allArticles = data.map(p => ({
-                        id: p.id,
-                        nom: p.nom,
-                        categorie: p.categorie || 'vêtements',
-                        prix: parseFloat(p.prix),
-                        oldPrice: p.prix_original ? parseFloat(p.prix_original) : null,
-                        stock: p.stock || 0,
-                        description: p.description || '',
-                        image: p.image_url || '',
-                        statut: p.stock === 0 ? 'rupture' : 
-                                (p.prix_original && parseFloat(p.prix_original) > parseFloat(p.prix) ? 'soldes' : 'stock')
-                    }));
-                } else {
-                    console.warn('⚠️ Aucun article trouvé dans Supabase, utilisation des données de test');
-                    allArticles = getTestArticles();
-                }
-
-                filteredArticles = [...allArticles];
-                renderArticleTable();
-                updateArticleStats();
-                updateArticlePaginationInfo();
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
+            if (error) {
+                console.error('❌ Erreur chargement:', error);
                 allArticles = getTestArticles();
                 filteredArticles = [...allArticles];
                 renderArticleTable();
                 updateArticleStats();
                 updateArticlePaginationInfo();
+                return;
             }
-        }
 
-        // ==========================================
-        // MODAL : AJOUTER
-        // ==========================================
-        function openAddArticleModal() {
-            document.getElementById('articleModalTitle').innerHTML = '<i class="fas fa-cube" style="color:#c9a84c;"></i> Ajouter un article';
-            document.getElementById('articleId').value = '';
-            document.getElementById('articleForm').reset();
-            document.getElementById('articleModal').style.display = 'flex';
-        }
-
-        // ==========================================
-        // MODAL : MODIFIER
-        // ==========================================
-        function editArticle(id) {
-            const article = allArticles.find(a => a.id === id);
-            if (!article) return;
-
-            document.getElementById('articleModalTitle').innerHTML = '<i class="fas fa-edit" style="color:#c9a84c;"></i> Modifier l\'article';
-            document.getElementById('articleId').value = article.id;
-            document.getElementById('articleNom').value = article.nom || '';
-            document.getElementById('articleCategorie').value = article.categorie || 'vêtements';
-            document.getElementById('articlePrix').value = article.prix || '';
-            document.getElementById('articleOldPrice').value = article.oldPrice || '';
-            document.getElementById('articleStock').value = article.stock || 0;
-            document.getElementById('articleDescription').value = article.description || '';
-            document.getElementById('articleImage').value = article.image || '';
-            document.getElementById('articleModal').style.display = 'flex';
-        }
-
-        // ==========================================
-        // MODAL : FERMER
-        // ==========================================
-        function closeArticleModal() {
-            document.getElementById('articleModal').style.display = 'none';
-            document.getElementById('articleForm').reset();
-        }
-
-        // ==========================================
-        // SAUVEGARDER ARTICLE (AJOUT OU MODIFICATION)
-        // ==========================================
-        async function saveArticle(event) {
-            event.preventDefault();
-
-            const id = document.getElementById('articleId').value;
-            const prix = parseFloat(document.getElementById('articlePrix').value) || 0;
-            const oldPrice = document.getElementById('articleOldPrice').value ? parseFloat(document.getElementById('articleOldPrice').value) : null;
-            const stock = parseInt(document.getElementById('articleStock').value) || 0;
-            
-            let statut = 'stock';
-            if (stock === 0) statut = 'rupture';
-            if (oldPrice && oldPrice > prix) statut = 'soldes';
-
-            const articleData = {
-                nom: document.getElementById('articleNom').value.trim(),
-                categorie: document.getElementById('articleCategorie').value,
-                prix: prix,
-                prix_original: oldPrice,
-                stock: stock,
-                description: document.getElementById('articleDescription').value.trim(),
-                image_url: document.getElementById('articleImage').value.trim()
-            };
-
-            try {
-                if (id) {
-                    // MODIFICATION
-                    const { error } = await supabaseClient
-                        .from('produits')
-                        .update(articleData)
-                        .eq('id', parseInt(id));
-
-                    if (error) {
-                        console.error('❌ Erreur mise à jour:', error);
-                        showNotification('❌ Erreur lors de la modification', 'error');
-                        return;
-                    }
-
-                    const index = allArticles.findIndex(a => a.id === parseInt(id));
-                    if (index !== -1) {
-                        allArticles[index] = { ...allArticles[index], ...articleData };
-                    }
-                    showNotification('✅ Article modifié avec succès !', 'success');
-                } else {
-                    // AJOUT
-                    const { data, error } = await supabaseClient
-                        .from('produits')
-                        .insert([articleData])
-                        .select();
-
-                    if (error) {
-                        console.error('❌ Erreur insertion:', error);
-                        showNotification('❌ Erreur lors de l\'ajout', 'error');
-                        return;
-                    }
-
-                    if (data && data.length > 0) {
-                        allArticles.push(data[0]);
-                    }
-                    showNotification('✅ Article ajouté avec succès !', 'success');
-                }
-
-                closeArticleModal();
-                filteredArticles = [...allArticles];
-                renderArticleTable();
-                updateArticleStats();
-                updateArticlePaginationInfo();
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                showNotification('❌ Une erreur est survenue', 'error');
+            if (data && data.length > 0) {
+                console.log(`✅ ${data.length} articles chargés depuis Supabase`);
+                allArticles = data.map(p => ({
+                    id: p.id,
+                    nom: p.nom,
+                    categorie: p.categorie || 'vêtements',
+                    prix: parseFloat(p.prix),
+                    oldPrice: p.prix_original ? parseFloat(p.prix_original) : null,
+                    stock: p.stock || 0,
+                    description: p.description || '',
+                    image: p.image_url || '',
+                    statut: p.stock === 0 ? 'rupture' : 
+                            (p.prix_original && parseFloat(p.prix_original) > parseFloat(p.prix) ? 'soldes' : 'stock')
+                }));
+            } else {
+                console.warn('⚠️ Aucun article trouvé dans Supabase, utilisation des données de test');
+                allArticles = getTestArticles();
             }
+
+            filteredArticles = [...allArticles];
+            renderArticleTable();
+            updateArticleStats();
+            updateArticlePaginationInfo();
+
+        } catch (err) {
+            console.error('❌ Erreur:', err);
+            allArticles = getTestArticles();
+            filteredArticles = [...allArticles];
+            renderArticleTable();
+            updateArticleStats();
+            updateArticlePaginationInfo();
+        }
+    }
+
+    // ==========================================
+    // MODAL : AJOUTER
+    // ==========================================
+    function openAddArticleModal() {
+        document.getElementById('articleModalTitle').innerHTML = '<i class="fas fa-cube" style="color:#c9a84c;"></i> Ajouter un article';
+        document.getElementById('articleId').value = '';
+        document.getElementById('articleForm').reset();
+        document.getElementById('articleModal').style.display = 'flex';
+    }
+
+    // ==========================================
+    // MODAL : MODIFIER
+    // ==========================================
+    function editArticle(id) {
+        console.log('✏️ Modification de l\'article:', id);
+        const article = allArticles.find(a => a.id === id);
+        if (!article) {
+            console.error('❌ Article non trouvé:', id);
+            showNotification('❌ Article non trouvé', 'error');
+            return;
         }
 
-        // ==========================================
-        // SUPPRIMER ARTICLE
-        // ==========================================
-        async function deleteArticle(id) {
-            if (!confirm('Voulez-vous vraiment supprimer cet article ?')) return;
+        document.getElementById('articleModalTitle').innerHTML = '<i class="fas fa-edit" style="color:#c9a84c;"></i> Modifier l\'article';
+        document.getElementById('articleId').value = article.id;
+        document.getElementById('articleNom').value = article.nom || '';
+        document.getElementById('articleCategorie').value = article.categorie || 'vêtements';
+        document.getElementById('articlePrix').value = article.prix || '';
+        document.getElementById('articleOldPrice').value = article.oldPrice || '';
+        document.getElementById('articleStock').value = article.stock || 0;
+        document.getElementById('articleDescription').value = article.description || '';
+        document.getElementById('articleImage').value = article.image || '';
+        document.getElementById('articleModal').style.display = 'flex';
+    }
 
-            try {
+    // ==========================================
+    // MODAL : FERMER
+    // ==========================================
+    function closeArticleModal() {
+        document.getElementById('articleModal').style.display = 'none';
+        document.getElementById('articleForm').reset();
+    }
+
+    // ==========================================
+    // SAUVEGARDER ARTICLE (AJOUT OU MODIFICATION)
+    // ==========================================
+    async function saveArticle(event) {
+        event.preventDefault();
+
+        const id = document.getElementById('articleId').value;
+        console.log('💾 Sauvegarde article, id:', id);
+        
+        const prix = parseFloat(document.getElementById('articlePrix').value) || 0;
+        const oldPrice = document.getElementById('articleOldPrice').value ? parseFloat(document.getElementById('articleOldPrice').value) : null;
+        const stock = parseInt(document.getElementById('articleStock').value) || 0;
+        
+        let statut = 'stock';
+        if (stock === 0) statut = 'rupture';
+        if (oldPrice && oldPrice > prix) statut = 'soldes';
+
+        const articleData = {
+            nom: document.getElementById('articleNom').value.trim(),
+            categorie: document.getElementById('articleCategorie').value,
+            prix: prix,
+            prix_original: oldPrice,
+            stock: stock,
+            description: document.getElementById('articleDescription').value.trim(),
+            image_url: document.getElementById('articleImage').value.trim()
+        };
+
+        try {
+            if (id) {
+                // MODIFICATION
+                console.log('📝 Mise à jour de l\'article:', id);
                 const { error } = await supabaseClient
                     .from('produits')
-                    .delete()
-                    .eq('id', id);
+                    .update(articleData)
+                    .eq('id', parseInt(id));
 
                 if (error) {
-                    console.error('❌ Erreur suppression:', error);
-                    showNotification('❌ Erreur lors de la suppression', 'error');
+                    console.error('❌ Erreur mise à jour:', error);
+                    showNotification('❌ Erreur lors de la modification', 'error');
                     return;
                 }
 
-                allArticles = allArticles.filter(a => a.id !== id);
-                filteredArticles = [...allArticles];
-                renderArticleTable();
-                updateArticleStats();
-                updateArticlePaginationInfo();
-                showNotification('🗑️ Article supprimé', 'info');
+                const index = allArticles.findIndex(a => a.id === parseInt(id));
+                if (index !== -1) {
+                    allArticles[index] = { ...allArticles[index], ...articleData, statut: statut };
+                }
+                showNotification('✅ Article modifié avec succès !', 'success');
+            } else {
+                // AJOUT
+                console.log('📝 Ajout d\'un nouvel article');
+                const { data, error } = await supabaseClient
+                    .from('produits')
+                    .insert([articleData])
+                    .select();
 
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                showNotification('❌ Une erreur est survenue', 'error');
+                if (error) {
+                    console.error('❌ Erreur insertion:', error);
+                    showNotification('❌ Erreur lors de l\'ajout', 'error');
+                    return;
+                }
+
+                if (data && data.length > 0) {
+                    allArticles.push(data[0]);
+                }
+                showNotification('✅ Article ajouté avec succès !', 'success');
             }
+
+            closeArticleModal();
+            filteredArticles = [...allArticles];
+            renderArticleTable();
+            updateArticleStats();
+            updateArticlePaginationInfo();
+
+        } catch (err) {
+            console.error('❌ Erreur:', err);
+            showNotification('❌ Une erreur est survenue', 'error');
         }
+    }
 
-        // ==========================================
-        // NOTIFICATION
-        // ==========================================
-        function showNotification(message, type = 'info') {
-            document.querySelectorAll('.toast-nikel').forEach(t => t.remove());
-            
-            const colors = {
-                success: '#27ae60',
-                error: '#e74c3c',
-                info: '#c9a84c'
-            };
+    // ==========================================
+    // SUPPRIMER ARTICLE
+    // ==========================================
+    async function deleteArticle(id) {
+        console.log('🗑️ Suppression de l\'article:', id);
+        if (!confirm('Voulez-vous vraiment supprimer cet article ?')) return;
 
-            const toast = document.createElement('div');
-            toast.className = 'toast-nikel';
-            toast.style.cssText = `
-                position: fixed;
-                bottom: 30px;
-                right: 30px;
-                background: #1a1a1a;
-                color: white;
-                padding: 16px 24px;
-                border-radius: 14px;
-                font-weight: 500;
-                box-shadow: 0 8px 40px rgba(0,0,0,0.25);
-                z-index: 9999;
-                max-width: 400px;
-                font-size: 0.95rem;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                animation: slideUp 0.5s ease;
-                border-left: 4px solid ${colors[type] || colors.info};
-            `;
-            toast.innerHTML = `<span>${message}</span>`;
-            document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(20px)';
-                toast.style.transition = 'all 0.4s ease';
-                setTimeout(() => toast.remove(), 400);
-            }, 3000);
+        try {
+            const { error } = await supabaseClient
+                .from('produits')
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                console.error('❌ Erreur suppression:', error);
+                showNotification('❌ Erreur lors de la suppression', 'error');
+                return;
+            }
+
+            allArticles = allArticles.filter(a => a.id !== id);
+            filteredArticles = [...allArticles];
+            renderArticleTable();
+            updateArticleStats();
+            updateArticlePaginationInfo();
+            showNotification('🗑️ Article supprimé', 'info');
+
+        } catch (err) {
+            console.error('❌ Erreur:', err);
+            showNotification('❌ Une erreur est survenue', 'error');
         }
+    }
 
-        // ==========================================
-        // INITIALISATION
-        // ==========================================
-        function init() {
-            console.log('🚀 Chargement de articles.html...');
-            loadArticlesData();
+    // ==========================================
+    // NOTIFICATION
+    // ==========================================
+    function showNotification(message, type = 'info') {
+        document.querySelectorAll('.toast-nikel').forEach(t => t.remove());
+        
+        const colors = {
+            success: '#27ae60',
+            error: '#e74c3c',
+            info: '#c9a84c'
+        };
 
-            document.getElementById('articleForm').addEventListener('submit', saveArticle);
+        const toast = document.createElement('div');
+        toast.className = 'toast-nikel';
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1a1a1a;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 14px;
+            font-weight: 500;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+            z-index: 9999;
+            max-width: 400px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideUp 0.5s ease;
+            border-left: 4px solid ${colors[type] || colors.info};
+        `;
+        toast.innerHTML = `<span>${message}</span>`;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(20px)';
+            toast.style.transition = 'all 0.4s ease';
+            setTimeout(() => toast.remove(), 400);
+        }, 3000);
+    }
 
-            document.getElementById('articleModal').addEventListener('click', function(e) {
-                if (e.target === this) closeArticleModal();
-            });
-        }
+    // ==========================================
+    // INITIALISATION
+    // ==========================================
+    function init() {
+        console.log('🚀 Chargement de articles.html...');
+        loadArticlesData();
 
-        // ==========================================
-        // EXPOSER LES FONCTIONS GLOBALEMENT
-        // ==========================================
-        window.applyArticleFilters = applyArticleFilters;
-        window.resetArticleFilters = resetArticleFilters;
-        window.previousArticlePage = previousArticlePage;
-        window.nextArticlePage = nextArticlePage;
-        window.openAddArticleModal = openAddArticleModal;
-        window.editArticle = editArticle;
-        window.deleteArticle = deleteArticle;
-        window.closeArticleModal = closeArticleModal;
-        window.saveArticle = saveArticle;
-        window.showNotification = showNotification;
+        document.getElementById('articleForm').addEventListener('submit', saveArticle);
 
-        // ==========================================
-        // LANCEMENT
-        // ==========================================
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
-        } else {
-            init();
-        }
+        document.getElementById('articleModal').addEventListener('click', function(e) {
+            if (e.target === this) closeArticleModal();
+        });
+    }
 
-    })();
+    // ==========================================
+    // EXPOSER LES FONCTIONS GLOBALEMENT
+    // ==========================================
+    window.applyArticleFilters = applyArticleFilters;
+    window.resetArticleFilters = resetArticleFilters;
+    window.previousArticlePage = previousArticlePage;
+    window.nextArticlePage = nextArticlePage;
+    window.openAddArticleModal = openAddArticleModal;
+    window.editArticle = editArticle;
+    window.deleteArticle = deleteArticle;
+    window.closeArticleModal = closeArticleModal;
+    window.saveArticle = saveArticle;
+    window.showNotification = showNotification;
+
+    // ==========================================
+    // LANCEMENT
+    // ==========================================
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 </script>
