@@ -174,32 +174,42 @@
                              id="founderImage"
                              onerror="this.src='https://ui-avatars.com/api/?name=Fleury+HAMIDOU&size=400&background=c9a84c&color=fff&font-size=0.5'">
                         <div class="social-overlay">
-                            <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-                            <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                            <!-- Liens réseaux sociaux directement dans le HTML -->
+                            <a href="https://www.instagram.com/nikel_officiel/" target="_blank" title="Instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="https://www.linkedin.com/company/nikel" target="_blank" title="LinkedIn">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="https://twitter.com/nikel_officiel" target="_blank" title="Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="https://www.tiktok.com/@nikel_officiel" target="_blank" title="TikTok">
+                                <i class="fab fa-tiktok"></i>
+                            </a>
                         </div>
                     </div>
 
                     <!-- Informations du fondateur -->
                     <div class="founder-info">
                         <h3 id="founderName">Fleury HAMIDOU</h3>
-                        <span class="title">👑 Fondateur &amp; CEO</span>
+                        <span class="title" id="founderTitle">👑 Fondateur &amp; CEO</span>
                         
-                        <p class="bio" id="founderBio">
+                        <p class="bio" id="founderBio1">
                             Passionné par la mode et le design depuis mon plus jeune âge, j'ai fondé NIKEL en 2020 avec une vision claire : 
                             offrir des pièces qui allient <strong>élégance intemporelle</strong> et <strong>qualité exceptionnelle</strong>.
                         </p>
-                        <p class="bio">
+                        <p class="bio" id="founderBio2">
                             Chaque création NIKEL est le fruit d'un processus minutieux où l'<strong>authenticité</strong> et le <strong>savoir-faire</strong> 
                             sont au cœur de nos préoccupations. Je crois fermement que le style est une forme d'expression personnelle, 
                             et notre mission est de vous offrir les moyens de vous exprimer avec confiance et élégance.
                         </p>
-                        <p class="bio">
+                        <p class="bio" id="founderBio3">
                             Au-delà de la mode, NIKEL est une <strong>philosophie</strong> : celle d'un art de vivre où chaque détail compte, 
                             où la durabilité et l'éthique ne sont pas des options mais des <strong>engagements</strong>.
                         </p>
                         
-                        <div class="signature">✨ Fleury HAMIDOU</div>
+                        <div class="signature" id="founderSignature">✨ Fleury HAMIDOU</div>
                     </div>
                 </div>
             </div>
@@ -295,9 +305,9 @@
                 <h4><i class="fas fa-crown"></i> NIKEL</h4>
                 <p>Le style qui vous ressemble.</p>
                 <div class="socials">
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-tiktok"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="https://www.instagram.com/nikel_officiel/" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@nikel_officiel" target="_blank"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.youtube.com/@nikel_officiel" target="_blank"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
             <div class="footer-col">
@@ -334,43 +344,143 @@
     <script src="script.js"></script>
     <script>
         // ==========================================
-        // CHARGER LES DONNÉES DU FONDATEUR
+        // CHARGER LES DONNÉES DU FONDATEUR DEPUIS SUPABASE
         // ==========================================
-        document.addEventListener('DOMContentLoaded', function() {
-            // Récupérer les données du fondateur depuis localStorage ou Supabase
-            const founderData = {
-                name: 'Fleury HAMIDOU',
-                title: '👑 Fondateur & CEO',
-                bio: [
-                    'Passionné par la mode et le design depuis mon plus jeune âge, j\'ai fondé NIKEL en 2020 avec une vision claire : offrir des pièces qui allient <strong>élégance intemporelle</strong> et <strong>qualité exceptionnelle</strong>.',
-                    'Chaque création NIKEL est le fruit d\'un processus minutieux où l\'<strong>authenticité</strong> et le <strong>savoir-faire</strong> sont au cœur de nos préoccupations. Je crois fermement que le style est une forme d\'expression personnelle, et notre mission est de vous offrir les moyens de vous exprimer avec confiance et élégance.',
-                    'Au-delà de la mode, NIKEL est une <strong>philosophie</strong> : celle d\'un art de vivre où chaque détail compte, où la durabilité et l\'éthique ne sont pas des options mais des <strong>engagements</strong>.'
-                ],
-                image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
-                signature: '✨ Fleury HAMIDOU'
-            };
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Configuration Supabase
+            const SUPABASE_URL = 'https://votre-projet.supabase.co'; // Remplacez par votre URL
+            const SUPABASE_ANON_KEY = 'votre-cle-anon'; // Remplacez par votre clé anon
 
-            // Mettre à jour les éléments
-            const nameEl = document.getElementById('founderName');
-            const titleEl = document.querySelector('.founder-info .title');
-            const bioEls = document.querySelectorAll('.founder-info .bio');
-            const imageEl = document.getElementById('founderImage');
-            const signatureEl = document.querySelector('.founder-info .signature');
+            // Créer le client Supabase
+            const { createClient } = supabase;
+            const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-            if (nameEl) nameEl.textContent = founderData.name;
-            if (titleEl) titleEl.textContent = founderData.title;
-            if (imageEl) imageEl.src = founderData.image;
-            if (signatureEl) signatureEl.textContent = founderData.signature;
+            try {
+                // Récupérer l'admin (fondateur) - par exemple avec l'ID 1
+                const { data: admin, error } = await supabaseClient
+                    .from('admins')
+                    .select('*')
+                    .eq('id', 1) // Ou .eq('email', 'fondateur@nikel.com')
+                    .single();
 
-            // Mettre à jour les bios
-            if (bioEls.length > 0) {
-                founderData.bio.forEach((text, index) => {
-                    if (bioEls[index]) {
-                        bioEls[index].innerHTML = text;
+                if (error) {
+                    console.error('Erreur lors du chargement des données:', error);
+                    // Utiliser les données par défaut
+                    loadDefaultData();
+                    return;
+                }
+
+                if (admin) {
+                    // Mettre à jour l'image avec la photo_url de la base de données
+                    const imageEl = document.getElementById('founderImage');
+                    if (admin.photo_url) {
+                        imageEl.src = admin.photo_url;
+                        // Vérifier si l'image charge correctement
+                        imageEl.onerror = function() {
+                            this.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(admin.nom || 'Fleury HAMIDOU') + '&size=400&background=c9a84c&color=fff&font-size=0.5';
+                        };
+                    } else {
+                        // Fallback si pas de photo_url
+                        imageEl.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(admin.nom || 'Fleury HAMIDOU') + '&size=400&background=c9a84c&color=fff&font-size=0.5';
+                    }
+
+                    // Mettre à jour le nom
+                    const nameEl = document.getElementById('founderName');
+                    if (admin.nom) {
+                        nameEl.textContent = admin.nom;
+                    }
+
+                    // Mettre à jour le titre
+                    const titleEl = document.getElementById('founderTitle');
+                    if (admin.titre) {
+                        titleEl.textContent = admin.titre;
+                    }
+
+                    // Mettre à jour la signature
+                    const signatureEl = document.getElementById('founderSignature');
+                    if (admin.signature) {
+                        signatureEl.textContent = '✨ ' + admin.signature;
+                    }
+
+                    // Mettre à jour la description / bio
+                    if (admin.description) {
+                        // Si la description est un tableau ou du texte
+                        if (typeof admin.description === 'string') {
+                            // Si c'est un texte simple, on le met dans le premier bio
+                            const bio1 = document.getElementById('founderBio1');
+                            if (bio1) bio1.innerHTML = admin.description;
+                        } else if (Array.isArray(admin.description)) {
+                            // Si c'est un tableau de paragraphes
+                            const bios = [
+                                document.getElementById('founderBio1'),
+                                document.getElementById('founderBio2'),
+                                document.getElementById('founderBio3')
+                            ];
+                            admin.description.forEach((text, index) => {
+                                if (bios[index]) {
+                                    bios[index].innerHTML = text;
+                                }
+                            });
+                        }
+                    }
+
+                    // Mettre à jour l'attribut alt de l'image
+                    if (imageEl && admin.nom) {
+                        imageEl.alt = admin.nom + ' - Fondateur de NIKEL';
+                    }
+
+                    console.log('✅ Données du fondateur chargées depuis Supabase');
+                } else {
+                    console.warn('Aucun administrateur trouvé, utilisation des données par défaut');
+                    loadDefaultData();
+                }
+
+            } catch (error) {
+                console.error('Erreur de connexion à Supabase:', error);
+                loadDefaultData();
+            }
+
+            // Fonction de fallback avec les données par défaut
+            function loadDefaultData() {
+                const defaultData = {
+                    name: 'Fleury HAMIDOU',
+                    title: '👑 Fondateur & CEO',
+                    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
+                    bio: [
+                        'Passionné par la mode et le design depuis mon plus jeune âge, j\'ai fondé NIKEL en 2020 avec une vision claire : offrir des pièces qui allient <strong>élégance intemporelle</strong> et <strong>qualité exceptionnelle</strong>.',
+                        'Chaque création NIKEL est le fruit d\'un processus minutieux où l\'<strong>authenticité</strong> et le <strong>savoir-faire</strong> sont au cœur de nos préoccupations. Je crois fermement que le style est une forme d\'expression personnelle, et notre mission est de vous offrir les moyens de vous exprimer avec confiance et élégance.',
+                        'Au-delà de la mode, NIKEL est une <strong>philosophie</strong> : celle d\'un art de vivre où chaque détail compte, où la durabilité et l\'éthique ne sont pas des options mais des <strong>engagements</strong>.'
+                    ],
+                    signature: '✨ Fleury HAMIDOU'
+                };
+
+                const imageEl = document.getElementById('founderImage');
+                if (imageEl) imageEl.src = defaultData.photo;
+
+                const nameEl = document.getElementById('founderName');
+                if (nameEl) nameEl.textContent = defaultData.name;
+
+                const titleEl = document.getElementById('founderTitle');
+                if (titleEl) titleEl.textContent = defaultData.title;
+
+                const signatureEl = document.getElementById('founderSignature');
+                if (signatureEl) signatureEl.textContent = defaultData.signature;
+
+                const bios = [
+                    document.getElementById('founderBio1'),
+                    document.getElementById('founderBio2'),
+                    document.getElementById('founderBio3')
+                ];
+                defaultData.bio.forEach((text, index) => {
+                    if (bios[index]) {
+                        bios[index].innerHTML = text;
                     }
                 });
             }
         });
     </script>
+
+    <!-- Ajouter le SDK Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </body>
 </html>
