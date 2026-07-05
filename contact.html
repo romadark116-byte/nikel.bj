@@ -32,7 +32,7 @@
 
         .contact-item {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             gap: 16px;
             margin-bottom: 24px;
             padding: 16px;
@@ -46,32 +46,46 @@
             transform: translateX(5px);
         }
 
-        .contact-item i {
-            font-size: 1.4rem;
-            color: var(--gold);
-            width: 40px;
-            height: 40px;
+        .contact-item .icon-circle {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            background: rgba(201, 168, 76, 0.12);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(201, 168, 76, 0.1);
-            border-radius: 50%;
             flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .contact-item .icon-circle i {
+            font-size: 1.2rem;
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .contact-item .contact-text {
+            flex: 1;
         }
 
         .contact-item strong {
             display: block;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             color: var(--gray);
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         .contact-item p {
             color: var(--dark-gray);
             font-weight: 500;
             margin: 0;
+            font-size: 1rem;
         }
 
         .contact-info .socials {
@@ -93,6 +107,7 @@
             color: var(--dark-gray);
             transition: all 0.3s;
             font-size: 1.1rem;
+            text-decoration: none;
         }
 
         .contact-info .socials a:hover {
@@ -267,8 +282,10 @@
 
                 <!-- Email (depuis admins) -->
                 <div class="contact-item" id="contactEmail">
-                    <i class="fas fa-envelope"></i>
-                    <div>
+                    <div class="icon-circle">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact-text">
                         <strong>Email</strong>
                         <p id="adminEmail">Chargement...</p>
                     </div>
@@ -276,8 +293,10 @@
 
                 <!-- Téléphone (depuis admins) -->
                 <div class="contact-item" id="contactPhone">
-                    <i class="fas fa-phone"></i>
-                    <div>
+                    <div class="icon-circle">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="contact-text">
                         <strong>Téléphone</strong>
                         <p id="adminPhone">Chargement...</p>
                     </div>
@@ -285,8 +304,10 @@
 
                 <!-- Adresse (depuis boutique) -->
                 <div class="contact-item" id="contactAddress">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <div>
+                    <div class="icon-circle">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="contact-text">
                         <strong>Adresse</strong>
                         <p id="boutiqueAddress">Chargement...</p>
                     </div>
@@ -426,7 +447,6 @@
                 } else if (admin) {
                     console.log('✅ Admin chargé:', admin);
 
-                    // Mettre à jour l'email
                     const emailEl = document.getElementById('adminEmail');
                     if (admin.email) {
                         emailEl.textContent = admin.email;
@@ -434,7 +454,6 @@
                         emailEl.textContent = 'contact@nikel.com';
                     }
 
-                    // Mettre à jour le téléphone
                     const phoneEl = document.getElementById('adminPhone');
                     if (admin.telephone) {
                         phoneEl.textContent = admin.telephone;
@@ -442,7 +461,6 @@
                         phoneEl.textContent = '+33 6 12 34 56 78';
                     }
 
-                    // Mettre à jour le nom de la boutique dans le header
                     if (admin.boutique_nom) {
                         document.querySelector('.logo a').innerHTML = `<i class="fas fa-crown"></i> ${admin.boutique_nom}`;
                     }
@@ -457,7 +475,6 @@
 
                 if (boutiqueError) {
                     console.error('❌ Erreur chargement boutique:', boutiqueError);
-                    // Valeur par défaut
                     document.getElementById('boutiqueAddress').textContent = 'Adresse non renseignée';
                 } else if (boutique) {
                     console.log('✅ Boutique chargée:', boutique);
@@ -470,14 +487,12 @@
                     }
                 }
 
-                // Supprimer les états de chargement
                 document.querySelectorAll('.contact-item').forEach(item => {
                     item.classList.remove('loading');
                 });
 
             } catch (error) {
                 console.error('❌ Erreur générale:', error);
-                // Afficher des valeurs par défaut en cas d'erreur
                 document.getElementById('adminEmail').textContent = 'contact@nikel.com';
                 document.getElementById('adminPhone').textContent = '+33 6 12 34 56 78';
                 document.getElementById('boutiqueAddress').textContent = '123 rue de l\'Élégance, 75001 Paris';
@@ -491,10 +506,8 @@
         // ENVOYER LE FORMULAIRE
         // ==========================================
         document.addEventListener('DOMContentLoaded', function() {
-            // Charger les données de contact
             loadContactData();
 
-            // Gestion du formulaire
             const form = document.getElementById('contactForm');
             form.addEventListener('submit', async function(e) {
                 e.preventDefault();
@@ -504,7 +517,6 @@
                 const subject = document.getElementById('formSubject').value;
                 const message = document.getElementById('formMessage').value.trim();
 
-                // Validation
                 if (!name || !email || !subject || !message) {
                     showToast('Veuillez remplir tous les champs.', 'error');
                     return;
@@ -515,22 +527,15 @@
                     return;
                 }
 
-                // Désactiver le bouton
                 const submitBtn = form.querySelector('button[type="submit"]');
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = 'Envoi en cours... <i class="fas fa-spinner fa-spin"></i>';
 
                 try {
-                    // Ici vous pouvez envoyer les données à votre backend
-                    // ou utiliser un service comme EmailJS, SendGrid, etc.
                     console.log('📨 Message envoyé:', { name, email, subject, message });
-
-                    // Simuler un délai d'envoi
                     await new Promise(resolve => setTimeout(resolve, 1500));
-
                     showToast('✅ Votre message a été envoyé avec succès !', 'success');
                     form.reset();
-
                 } catch (error) {
                     console.error('❌ Erreur d\'envoi:', error);
                     showToast('❌ Une erreur est survenue. Veuillez réessayer.', 'error');
