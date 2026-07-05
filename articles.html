@@ -394,7 +394,7 @@
         }
 
         // ==========================================
-        // CHARGER LES DONNÉES DEPUIS SUPABASE
+        // CHARGER LES ARTICLES DEPUIS SUPABASE
         // ==========================================
         async function loadArticlesData() {
             try {
@@ -407,8 +407,9 @@
 
                 if (error) {
                     console.error('❌ Erreur chargement:', error);
-                    allArticles = [];
-                    filteredArticles = [];
+                    // Utiliser les données de test en cas d'erreur
+                    allArticles = getTestArticles();
+                    filteredArticles = [...allArticles];
                     renderArticleTable();
                     updateArticleStats();
                     updateArticlePaginationInfo();
@@ -430,8 +431,8 @@
                                 (p.prix_original && parseFloat(p.prix_original) > parseFloat(p.prix) ? 'soldes' : 'stock')
                     }));
                 } else {
-                    console.warn('⚠️ Aucun article trouvé dans Supabase');
-                    allArticles = [];
+                    console.warn('⚠️ Aucun article trouvé dans Supabase, utilisation des données de test');
+                    allArticles = getTestArticles();
                 }
 
                 filteredArticles = [...allArticles];
@@ -441,8 +442,8 @@
 
             } catch (err) {
                 console.error('❌ Erreur:', err);
-                allArticles = [];
-                filteredArticles = [];
+                allArticles = getTestArticles();
+                filteredArticles = [...allArticles];
                 renderArticleTable();
                 updateArticleStats();
                 updateArticlePaginationInfo();
@@ -487,7 +488,7 @@
         }
 
         // ==========================================
-        // SAUVEGARDER ARTICLE
+        // SAUVEGARDER ARTICLE (AJOUT OU MODIFICATION)
         // ==========================================
         async function saveArticle(event) {
             event.preventDefault();
@@ -507,14 +508,15 @@
                 prix: prix,
                 prix_original: oldPrice,
                 stock: stock,
-                statut: statut,
                 description: document.getElementById('articleDescription').value.trim(),
                 image_url: document.getElementById('articleImage').value.trim()
             };
 
             try {
                 if (id) {
+                    // ==========================================
                     // MODIFICATION
+                    // ==========================================
                     const { error } = await supabaseClient
                         .from('produits')
                         .update(articleData)
@@ -526,13 +528,16 @@
                         return;
                     }
 
+                    // Mettre à jour dans le tableau local
                     const index = allArticles.findIndex(a => a.id === parseInt(id));
                     if (index !== -1) {
                         allArticles[index] = { ...allArticles[index], ...articleData };
                     }
                     showNotification('✅ Article modifié avec succès !', 'success');
                 } else {
+                    // ==========================================
                     // AJOUT
+                    // ==========================================
                     const { data, error } = await supabaseClient
                         .from('produits')
                         .insert([articleData])
