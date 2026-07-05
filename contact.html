@@ -135,6 +135,11 @@
             font-size: 0.95rem;
         }
 
+        .contact-form label .required {
+            color: #dc3545;
+            margin-left: 4px;
+        }
+
         .contact-form input,
         .contact-form select,
         .contact-form textarea {
@@ -219,6 +224,46 @@
         .btn:disabled {
             opacity: 0.7;
             cursor: not-allowed;
+        }
+
+        /* Success animation */
+        .form-success {
+            display: none;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .form-success.show {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .form-success i {
+            font-size: 4rem;
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+
+        .form-success h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--dark-gray);
+            margin-bottom: 10px;
+        }
+
+        .form-success p {
+            color: var(--gray);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media (max-width: 992px) {
@@ -332,42 +377,54 @@
                 </div>
 
                 <div class="socials">
-                    <a href="https://www.instagram.com/nikel_officiel/" target="_blank"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.tiktok.com/@nikel_officiel" target="_blank"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://www.youtube.com/@nikel_officiel" target="_blank"><i class="fab fa-youtube"></i></a>
-                    <a href="https://twitter.com/nikel_officiel" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/nikel_officiel/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@nikel_officiel" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.youtube.com/@nikel_officiel" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    <a href="https://twitter.com/nikel_officiel" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
                 </div>
             </div>
 
             <!-- ===== FORMULAIRE DE CONTACT ===== -->
-            <form class="contact-form animate-slide-left" id="contactForm" novalidate>
-                <div class="form-group">
-                    <label for="formName">Nom complet</label>
-                    <input type="text" id="formName" required placeholder="Jean Dupont">
+            <div class="contact-form animate-slide-left">
+                <form id="contactForm" novalidate>
+                    <div class="form-group">
+                        <label for="formName">Nom complet <span class="required">*</span></label>
+                        <input type="text" id="formName" required placeholder="Jean Dupont">
+                    </div>
+                    <div class="form-group">
+                        <label for="formEmail">Email <span class="required">*</span></label>
+                        <input type="email" id="formEmail" required placeholder="jean@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="formSubject">Sujet <span class="required">*</span></label>
+                        <select id="formSubject" required>
+                            <option value="">Choisir un sujet</option>
+                            <option value="Demande d'information">Demande d'information</option>
+                            <option value="Problème de commande">Problème de commande</option>
+                            <option value="Retour produit">Retour produit</option>
+                            <option value="Partenariat">Partenariat</option>
+                            <option value="Autre">Autre</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="formMessage">Message <span class="required">*</span></label>
+                        <textarea id="formMessage" rows="5" required placeholder="Votre message..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        Envoyer <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+
+                <!-- Message de succès -->
+                <div class="form-success" id="formSuccess">
+                    <i class="fas fa-check-circle"></i>
+                    <h4>Message envoyé !</h4>
+                    <p>Nous vous répondrons dans les plus brefs délais.</p>
+                    <button class="btn btn-secondary" onclick="resetForm()" style="margin-top:15px;">
+                        <i class="fas fa-arrow-left"></i> Retour au formulaire
+                    </button>
                 </div>
-                <div class="form-group">
-                    <label for="formEmail">Email</label>
-                    <input type="email" id="formEmail" required placeholder="jean@email.com">
-                </div>
-                <div class="form-group">
-                    <label for="formSubject">Sujet</label>
-                    <select id="formSubject" required>
-                        <option value="">Choisir un sujet</option>
-                        <option value="Demande d'information">Demande d'information</option>
-                        <option value="Problème de commande">Problème de commande</option>
-                        <option value="Retour produit">Retour produit</option>
-                        <option value="Partenariat">Partenariat</option>
-                        <option value="Autre">Autre</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="formMessage">Message</label>
-                    <textarea id="formMessage" rows="5" required placeholder="Votre message..."></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary" id="submitBtn">
-                    Envoyer <i class="fas fa-paper-plane"></i>
-                </button>
-            </form>
+            </div>
         </div>
     </section>
 
@@ -418,14 +475,11 @@
     
     <script>
         // ==========================================
-        // CONFIGURATION SUPABASE
+        // CONFIGURATION
         // ==========================================
         const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
 
-        // ==========================================
-        // CONFIGURATION EMAILJS
-        // ==========================================
         const EMAILJS_CONFIG = {
             SERVICE_ID: 'service_issxck6',
             TEMPLATE_ID: 'template_iu6d9ge',
@@ -435,7 +489,7 @@
         let supabaseClient;
 
         // ==========================================
-        // AFFICHER UNE NOTIFICATION (TOAST)
+        // TOAST NOTIFICATION
         // ==========================================
         function showToast(message, type = 'info') {
             const existingToasts = document.querySelectorAll('.toast');
@@ -454,35 +508,21 @@
         }
 
         // ==========================================
-        // OUVRIR LE CLIENT MAIL (mailto)
+        // OPEN MAILTO (FALLBACK)
         // ==========================================
         function openMailTo(formData) {
             const subject = encodeURIComponent(formData.subject);
             const body = encodeURIComponent(
                 `Nom: ${formData.name}\n` +
                 `Email: ${formData.email}\n\n` +
-                `Message:\n${formData.message}`
+                `${formData.message}`
             );
             const mailtoLink = `mailto:${formData.to_email}?subject=${subject}&body=${body}`;
             window.open(mailtoLink, '_blank');
         }
 
         // ==========================================
-        // OUVRIR GMAIL
-        // ==========================================
-        function openGmail(formData) {
-            const subject = encodeURIComponent(formData.subject);
-            const body = encodeURIComponent(
-                `Nom: ${formData.name}\n` +
-                `Email: ${formData.email}\n\n` +
-                `Message:\n${formData.message}`
-            );
-            const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${formData.to_email}&su=${subject}&body=${body}`;
-            window.open(gmailLink, '_blank');
-        }
-
-        // ==========================================
-        // ENVOYER AVEC EMAILJS
+        // SEND EMAIL WITH EMAILJS
         // ==========================================
         async function sendEmailWithEmailJS(formData) {
             try {
@@ -510,7 +550,6 @@
 
             } catch (error) {
                 console.error('❌ Erreur EmailJS:', error);
-                // Afficher plus de détails sur l'erreur
                 if (error.text) {
                     console.error('📝 Détail erreur:', error.text);
                 }
@@ -519,7 +558,7 @@
         }
 
         // ==========================================
-        // CHARGER LES DONNÉES DE CONTACT
+        // LOAD CONTACT DATA
         // ==========================================
         async function loadContactData() {
             try {
@@ -597,7 +636,26 @@
         }
 
         // ==========================================
-        // GÉRER LA SOUMISSION DU FORMULAIRE
+        // SHOW SUCCESS MESSAGE
+        // ==========================================
+        function showSuccessMessage() {
+            document.getElementById('contactForm').style.display = 'none';
+            document.getElementById('formSuccess').classList.add('show');
+        }
+
+        // ==========================================
+        // RESET FORM
+        // ==========================================
+        function resetForm() {
+            document.getElementById('contactForm').reset();
+            document.getElementById('contactForm').style.display = 'block';
+            document.getElementById('formSuccess').classList.remove('show');
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('submitBtn').innerHTML = 'Envoyer <i class="fas fa-paper-plane"></i>';
+        }
+
+        // ==========================================
+        // FORM SUBMISSION
         // ==========================================
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Page Contact - Initialisation...');
@@ -645,33 +703,41 @@
                 submitBtn.innerHTML = '<span class="btn-spinner"></span> Envoi en cours...';
 
                 try {
-                    // TENTATIVE 1 : EmailJS
                     const result = await sendEmailWithEmailJS(formData);
 
                     if (result.success) {
+                        showSuccessMessage();
                         showToast('✅ Votre message a été envoyé avec succès !', 'success');
-                        form.reset();
                         return;
                     }
 
-                    // TENTATIVE 2 : mailto (ouvre le client mail par défaut)
-                    console.log('📧 Tentative avec mailto...');
-                    openMailTo(formData);
-                    showToast('📧 Votre client mail s\'ouvre. Complétez et envoyez.', 'info');
-                    form.reset();
+                    const useMailto = confirm(
+                        '❌ L\'envoi automatique a échoué.\n\n' +
+                        'Souhaitez-vous ouvrir votre client mail pour envoyer le message manuellement ?'
+                    );
+                    
+                    if (useMailto) {
+                        openMailTo(formData);
+                        showToast('📧 Votre client mail s\'ouvre.', 'info');
+                        showSuccessMessage();
+                    } else {
+                        showToast('❌ Envoi annulé. Veuillez réessayer.', 'error');
+                    }
 
                 } catch (error) {
                     console.error('❌ Erreur:', error);
                     showToast('❌ Une erreur est survenue. Veuillez réessayer.', 'error');
                 } finally {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = 'Envoyer <i class="fas fa-paper-plane"></i>';
+                    if (!document.getElementById('formSuccess').classList.contains('show')) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = 'Envoyer <i class="fas fa-paper-plane"></i>';
+                    }
                 }
             });
         });
 
         // ==========================================
-        // RECHERCHE
+        // SEARCH
         // ==========================================
         function handleSearch() {
             const input = document.getElementById('searchInput');
