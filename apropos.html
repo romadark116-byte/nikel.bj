@@ -100,6 +100,27 @@
             font-style: italic;
         }
 
+        /* Indicateur de chargement */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            color: var(--gray);
+        }
+
+        .loading-spinner i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+            margin-right: 12px;
+            color: var(--gold);
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
         @media (max-width: 768px) {
             .founder-grid {
                 grid-template-columns: 1fr;
@@ -166,50 +187,59 @@
     <section class="section">
         <div class="container">
             <div class="founder-section">
-                <div class="founder-grid">
-                    <!-- Photo du fondateur -->
-                    <div class="founder-photo">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" 
-                             alt="Fleury HAMIDOU - Fondateur de NIKEL"
-                             id="founderImage"
-                             onerror="this.src='https://ui-avatars.com/api/?name=Fleury+HAMIDOU&size=400&background=c9a84c&color=fff&font-size=0.5'">
-                        <div class="social-overlay">
-                            <!-- Liens réseaux sociaux directement dans le HTML -->
-                            <a href="https://www.instagram.com/nikel_officiel/" target="_blank" title="Instagram">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="https://www.linkedin.com/company/nikel" target="_blank" title="LinkedIn">
-                                <i class="fab fa-linkedin-in"></i>
-                            </a>
-                            <a href="https://twitter.com/nikel_officiel" target="_blank" title="Twitter">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a href="https://www.tiktok.com/@nikel_officiel" target="_blank" title="TikTok">
-                                <i class="fab fa-tiktok"></i>
-                            </a>
-                        </div>
-                    </div>
+                <!-- Indicateur de chargement -->
+                <div id="loadingIndicator" class="loading-spinner">
+                    <i class="fas fa-spinner"></i>
+                    <span>Chargement des informations...</span>
+                </div>
 
-                    <!-- Informations du fondateur -->
-                    <div class="founder-info">
-                        <h3 id="founderName">Fleury HAMIDOU</h3>
-                        <span class="title" id="founderTitle">👑 Fondateur &amp; CEO</span>
-                        
-                        <p class="bio" id="founderBio1">
-                            Passionné par la mode et le design depuis mon plus jeune âge, j'ai fondé NIKEL en 2020 avec une vision claire : 
-                            offrir des pièces qui allient <strong>élégance intemporelle</strong> et <strong>qualité exceptionnelle</strong>.
-                        </p>
-                        <p class="bio" id="founderBio2">
-                            Chaque création NIKEL est le fruit d'un processus minutieux où l'<strong>authenticité</strong> et le <strong>savoir-faire</strong> 
-                            sont au cœur de nos préoccupations. Je crois fermement que le style est une forme d'expression personnelle, 
-                            et notre mission est de vous offrir les moyens de vous exprimer avec confiance et élégance.
-                        </p>
-                        <p class="bio" id="founderBio3">
-                            Au-delà de la mode, NIKEL est une <strong>philosophie</strong> : celle d'un art de vivre où chaque détail compte, 
-                            où la durabilité et l'éthique ne sont pas des options mais des <strong>engagements</strong>.
-                        </p>
-                        
-                        <div class="signature" id="founderSignature">✨ Fleury HAMIDOU</div>
+                <!-- Contenu du fondateur (caché par défaut) -->
+                <div id="founderContent" style="display: none;">
+                    <div class="founder-grid">
+                        <!-- Photo du fondateur -->
+                        <div class="founder-photo">
+                            <img src="" 
+                                 alt="Fondateur de NIKEL"
+                                 id="founderImage"
+                                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Fleury+HAMIDOU&size=400&background=c9a84c&color=fff&font-size=0.5'">
+                            <div class="social-overlay">
+                                <!-- Liens réseaux sociaux directement dans le HTML -->
+                                <a href="https://www.instagram.com/nikel_officiel/" target="_blank" title="Instagram">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="https://www.linkedin.com/company/nikel" target="_blank" title="LinkedIn">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="https://twitter.com/nikel_officiel" target="_blank" title="Twitter">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="https://www.tiktok.com/@nikel_officiel" target="_blank" title="TikTok">
+                                    <i class="fab fa-tiktok"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Informations du fondateur -->
+                        <div class="founder-info">
+                            <h3 id="founderName">Fleury HAMIDOU</h3>
+                            <span class="title" id="founderTitle">👑 Fondateur &amp; CEO</span>
+                            
+                            <p class="bio" id="founderBio1">
+                                Passionné par la mode et le design depuis mon plus jeune âge, j'ai fondé NIKEL en 2020 avec une vision claire : 
+                                offrir des pièces qui allient <strong>élégance intemporelle</strong> et <strong>qualité exceptionnelle</strong>.
+                            </p>
+                            <p class="bio" id="founderBio2">
+                                Chaque création NIKEL est le fruit d'un processus minutieux où l'<strong>authenticité</strong> et le <strong>savoir-faire</strong> 
+                                sont au cœur de nos préoccupations. Je crois fermement que le style est une forme d'expression personnelle, 
+                                et notre mission est de vous offrir les moyens de vous exprimer avec confiance et élégance.
+                            </p>
+                            <p class="bio" id="founderBio3">
+                                Au-delà de la mode, NIKEL est une <strong>philosophie</strong> : celle d'un art de vivre où chaque détail compte, 
+                                où la durabilité et l'éthique ne sont pas des options mais des <strong>engagements</strong>.
+                            </p>
+                            
+                            <div class="signature" id="founderSignature">✨ Fleury HAMIDOU</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -352,13 +382,27 @@
             const SUPABASE_URL = 'https://votre-projet.supabase.co'; // Remplacez par votre URL
             const SUPABASE_ANON_KEY = 'votre-cle-anon'; // Remplacez par votre clé anon
 
-            // Créer le client Supabase
-            const { createClient } = supabase;
-            const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            // Références DOM
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const founderContent = document.getElementById('founderContent');
+            const imageEl = document.getElementById('founderImage');
+            const nameEl = document.getElementById('founderName');
+            const titleEl = document.getElementById('founderTitle');
+            const signatureEl = document.getElementById('founderSignature');
+            const bioEls = [
+                document.getElementById('founderBio1'),
+                document.getElementById('founderBio2'),
+                document.getElementById('founderBio3')
+            ];
 
             try {
+                // Créer le client Supabase
+                const { createClient } = supabase;
+                const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+                console.log('🔄 Chargement des données du fondateur...');
+
                 // Récupérer l'admin avec ses informations de profil
-                // On utilise une jointure avec la table admin_profiles
                 const { data: admin, error } = await supabaseClient
                     .from('admins')
                     .select(`
@@ -381,170 +425,148 @@
                             updated_at
                         )
                     `)
-                    .eq('id', 1) // Ou .eq('email', 'fondateur@nikel.com')
+                    .eq('id', 1) // Changez l'ID si nécessaire
                     .single();
 
                 if (error) {
-                    console.error('❌ Erreur lors du chargement des données:', error);
-                    loadDefaultData();
-                    return;
+                    console.error('❌ Erreur Supabase:', error);
+                    throw error;
                 }
 
-                if (admin) {
-                    console.log('✅ Données du fondateur chargées depuis Supabase');
-                    console.log('📊 Admin:', admin);
-
-                    // Extraire les données du profil (si elles existent)
-                    const profile = admin.admin_profiles || {};
-
-                    // Mettre à jour l'image avec la photo_url
-                    const imageEl = document.getElementById('founderImage');
-                    if (admin.photo_url) {
-                        imageEl.src = admin.photo_url;
-                        // Vérifier si l'image charge correctement
-                        imageEl.onerror = function() {
-                            const fullName = `${admin.prenom || ''} ${admin.nom || ''}`.trim();
-                            this.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName || 'Fleury HAMIDOU')}&size=400&background=c9a84c&color=fff&font-size=0.5`;
-                        };
-                    } else {
-                        // Fallback si pas de photo_url
-                        const fullName = `${admin.prenom || ''} ${admin.nom || ''}`.trim();
-                        imageEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName || 'Fleury HAMIDOU')}&size=400&background=c9a84c&color=fff&font-size=0.5`;
-                    }
-
-                    // Mettre à jour le nom complet (prénom + nom)
-                    const nameEl = document.getElementById('founderName');
-                    if (admin.prenom && admin.nom) {
-                        nameEl.textContent = `${admin.prenom} ${admin.nom.toUpperCase()}`;
-                    } else if (admin.nom) {
-                        nameEl.textContent = admin.nom;
-                    } else if (admin.prenom) {
-                        nameEl.textContent = admin.prenom;
-                    }
-
-                    // Mettre à jour le titre depuis admin_profiles
-                    const titleEl = document.getElementById('founderTitle');
-                    if (profile.titre) {
-                        titleEl.textContent = profile.titre;
-                    }
-
-                    // Mettre à jour la signature depuis admin_profiles
-                    const signatureEl = document.getElementById('founderSignature');
-                    if (profile.signature) {
-                        signatureEl.textContent = `✨ ${profile.signature}`;
-                    }
-
-                    // Mettre à jour la description / bio depuis admin_profiles
-                    if (profile.description) {
-                        try {
-                            // Essayer de parser si c'est du JSON
-                            let description = profile.description;
-                            
-                            // Si c'est une chaîne JSON, la parser
-                            if (typeof description === 'string' && description.startsWith('[')) {
-                                description = JSON.parse(description);
-                            }
-                            
-                            if (Array.isArray(description)) {
-                                // Si c'est un tableau de paragraphes
-                                const bios = [
-                                    document.getElementById('founderBio1'),
-                                    document.getElementById('founderBio2'),
-                                    document.getElementById('founderBio3')
-                                ];
-                                description.forEach((text, index) => {
-                                    if (bios[index]) {
-                                        bios[index].innerHTML = text;
-                                    }
-                                });
-                            } else if (typeof description === 'string') {
-                                // Si c'est un texte simple
-                                const bio1 = document.getElementById('founderBio1');
-                                if (bio1) bio1.innerHTML = description;
-                            } else if (typeof description === 'object') {
-                                // Si c'est un objet avec des propriétés
-                                const bio1 = document.getElementById('founderBio1');
-                                if (bio1 && description.text) {
-                                    bio1.innerHTML = description.text;
-                                }
-                            }
-                        } catch (e) {
-                            // En cas d'erreur de parsing, utiliser comme texte simple
-                            console.warn('⚠️ Erreur de parsing de la description, utilisation comme texte simple:', e);
-                            const bio1 = document.getElementById('founderBio1');
-                            if (bio1) bio1.innerHTML = profile.description;
-                        }
-                    }
-
-                    // Mettre à jour l'attribut alt de l'image
-                    if (imageEl) {
-                        const fullName = `${admin.prenom || ''} ${admin.nom || ''}`.trim();
-                        imageEl.alt = `${fullName || 'Fondateur'} - Fondateur de ${admin.boutique_nom || 'NIKEL'}`;
-                    }
-
-                    // Optionnel : Afficher des informations supplémentaires dans la console
-                    console.log('📝 Profil chargé:', {
-                        nom: `${admin.prenom} ${admin.nom}`,
-                        titre: profile.titre || 'Non défini',
-                        signature: profile.signature || 'Non défini',
-                        description: profile.description ? '✅' : '❌'
-                    });
-
-                } else {
-                    console.warn('⚠️ Aucun administrateur trouvé avec l\'ID 1, utilisation des données par défaut');
-                    loadDefaultData();
+                if (!admin) {
+                    console.warn('⚠️ Aucun administrateur trouvé');
+                    throw new Error('Aucun administrateur trouvé');
                 }
 
-            } catch (error) {
-                console.error('❌ Erreur de connexion à Supabase:', error);
-                loadDefaultData();
-            }
+                console.log('✅ Données chargées avec succès');
+                console.log('📊 Admin:', admin);
+                console.log('📊 Profil:', admin.admin_profiles);
 
-            // ==========================================
-            // FONCTION DE FALLBACK AVEC DONNÉES PAR DÉFAUT
-            // ==========================================
-            function loadDefaultData() {
-                console.log('📋 Chargement des données par défaut');
+                // --- METTRE À JOUR LA PHOTO ---
+                // PRIORITÉ: photo_url de la table admins
+                let photoUrl = admin.photo_url;
                 
-                const defaultData = {
-                    name: 'Fleury HAMIDOU',
-                    title: '👑 Fondateur & CEO',
-                    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
-                    bio: [
-                        'Passionné par la mode et le design depuis mon plus jeune âge, j\'ai fondé NIKEL en 2020 avec une vision claire : offrir des pièces qui allient <strong>élégance intemporelle</strong> et <strong>qualité exceptionnelle</strong>.',
-                        'Chaque création NIKEL est le fruit d\'un processus minutieux où l\'<strong>authenticité</strong> et le <strong>savoir-faire</strong> sont au cœur de nos préoccupations. Je crois fermement que le style est une forme d\'expression personnelle, et notre mission est de vous offrir les moyens de vous exprimer avec confiance et élégance.',
-                        'Au-delà de la mode, NIKEL est une <strong>philosophie</strong> : celle d\'un art de vivre où chaque détail compte, où la durabilité et l\'éthique ne sont pas des options mais des <strong>engagements</strong>.'
-                    ],
-                    signature: '✨ Fleury HAMIDOU'
+                // Si photo_url est vide ou null, utiliser l'avatar
+                if (!photoUrl || photoUrl.trim() === '') {
+                    const fullName = `${admin.prenom || ''} ${admin.nom || ''}`.trim();
+                    photoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName || 'Fondateur')}&size=400&background=c9a84c&color=fff&font-size=0.5`;
+                    console.log('📸 Pas de photo, utilisation de l\'avatar:', photoUrl);
+                } else {
+                    console.log('📸 Photo chargée depuis la base:', photoUrl);
+                }
+
+                // Appliquer la photo avec un cache-buster pour éviter le cache
+                const cacheBuster = new Date().getTime();
+                imageEl.src = `${photoUrl}${photoUrl.includes('?') ? '&' : '?'}_=${cacheBuster}`;
+                
+                // Gestionnaire d'erreur pour l'image
+                imageEl.onerror = function() {
+                    console.warn('⚠️ Échec du chargement de la photo, utilisation de l\'avatar');
+                    const fullName = `${admin.prenom || ''} ${admin.nom || ''}`.trim();
+                    this.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName || 'Fondateur')}&size=400&background=c9a84c&color=fff&font-size=0.5&_=${cacheBuster}`;
                 };
 
-                const imageEl = document.getElementById('founderImage');
-                if (imageEl) imageEl.src = defaultData.photo;
+                // --- METTRE À JOUR LE NOM ---
+                if (admin.prenom && admin.nom) {
+                    nameEl.textContent = `${admin.prenom} ${admin.nom.toUpperCase()}`;
+                } else if (admin.nom) {
+                    nameEl.textContent = admin.nom;
+                } else if (admin.prenom) {
+                    nameEl.textContent = admin.prenom;
+                }
+                console.log('👤 Nom mis à jour:', nameEl.textContent);
 
-                const nameEl = document.getElementById('founderName');
-                if (nameEl) nameEl.textContent = defaultData.name;
+                // --- METTRE À JOUR LE TITRE (depuis admin_profiles) ---
+                const profile = admin.admin_profiles || {};
+                if (profile.titre && profile.titre.trim() !== '') {
+                    titleEl.textContent = profile.titre;
+                    console.log('📌 Titre mis à jour:', profile.titre);
+                } else {
+                    console.log('📌 Titre par défaut utilisé');
+                }
 
-                const titleEl = document.getElementById('founderTitle');
-                if (titleEl) titleEl.textContent = defaultData.title;
+                // --- METTRE À JOUR LA SIGNATURE (depuis admin_profiles) ---
+                if (profile.signature && profile.signature.trim() !== '') {
+                    signatureEl.textContent = `✨ ${profile.signature}`;
+                    console.log('✍️ Signature mise à jour:', profile.signature);
+                } else {
+                    console.log('✍️ Signature par défaut utilisée');
+                }
 
-                const signatureEl = document.getElementById('founderSignature');
-                if (signatureEl) signatureEl.textContent = defaultData.signature;
-
-                const bios = [
-                    document.getElementById('founderBio1'),
-                    document.getElementById('founderBio2'),
-                    document.getElementById('founderBio3')
-                ];
-                defaultData.bio.forEach((text, index) => {
-                    if (bios[index]) {
-                        bios[index].innerHTML = text;
+                // --- METTRE À JOUR LA DESCRIPTION / BIO (depuis admin_profiles) ---
+                if (profile.description) {
+                    console.log('📝 Description brute:', profile.description);
+                    
+                    try {
+                        let description = profile.description;
+                        
+                        // Si c'est une chaîne JSON, la parser
+                        if (typeof description === 'string' && description.trim().startsWith('[')) {
+                            description = JSON.parse(description);
+                            console.log('📝 Description parsée (JSON):', description);
+                        }
+                        
+                        if (Array.isArray(description)) {
+                            // Si c'est un tableau de paragraphes
+                            description.forEach((text, index) => {
+                                if (bioEls[index]) {
+                                    bioEls[index].innerHTML = text;
+                                    console.log(`📝 Bio ${index + 1} mise à jour`);
+                                }
+                            });
+                        } else if (typeof description === 'string') {
+                            // Si c'est un texte simple
+                            if (bioEls[0]) {
+                                bioEls[0].innerHTML = description;
+                                console.log('📝 Bio unique mise à jour');
+                            }
+                        } else if (typeof description === 'object') {
+                            // Si c'est un objet, essayer d'en faire quelque chose
+                            const text = description.text || description.content || JSON.stringify(description);
+                            if (bioEls[0]) {
+                                bioEls[0].innerHTML = text;
+                                console.log('📝 Bio depuis objet mise à jour');
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('⚠️ Erreur de parsing de la description:', e);
+                        if (bioEls[0]) {
+                            bioEls[0].innerHTML = profile.description;
+                        }
                     }
-                });
+                } else {
+                    console.log('📝 Aucune description, utilisation des valeurs par défaut');
+                }
+
+                // --- METTRE À JOUR L'ATTRIBUT ALT DE L'IMAGE ---
+                const fullName = `${admin.prenom || ''} ${admin.nom || ''}`.trim();
+                imageEl.alt = `${fullName || 'Fondateur'} - Fondateur de ${admin.boutique_nom || 'NIKEL'}`;
+
+                // --- AFFICHER LE CONTENU ---
+                loadingIndicator.style.display = 'none';
+                founderContent.style.display = 'block';
+
+                console.log('✅ Affichage terminé');
+
+            } catch (error) {
+                console.error('❌ Erreur générale:', error);
+                
+                // En cas d'erreur, utiliser les données par défaut
+                loadingIndicator.innerHTML = `
+                    <i class="fas fa-exclamation-circle" style="color: var(--gold);"></i>
+                    <span>Impossible de charger les données. Affichage des valeurs par défaut.</span>
+                `;
+                
+                setTimeout(() => {
+                    loadingIndicator.style.display = 'none';
+                    founderContent.style.display = 'block';
+                    // Les valeurs par défaut sont déjà dans le HTML
+                }, 1500);
             }
         });
 
         // ==========================================
-        // FONCTION DE RECHERCHE (pour la barre de recherche)
+        // FONCTION DE RECHERCHE
         // ==========================================
         function handleSearch() {
             const input = document.getElementById('searchInput');
@@ -554,7 +576,6 @@
             }
         }
 
-        // Ajouter la recherche avec la touche Entrée
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
