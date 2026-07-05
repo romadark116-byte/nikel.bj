@@ -407,7 +407,6 @@
 
                 if (error) {
                     console.error('❌ Erreur chargement:', error);
-                    // Utiliser les données de test en cas d'erreur
                     allArticles = getTestArticles();
                     filteredArticles = [...allArticles];
                     renderArticleTable();
@@ -514,9 +513,7 @@
 
             try {
                 if (id) {
-                    // ==========================================
                     // MODIFICATION
-                    // ==========================================
                     const { error } = await supabaseClient
                         .from('produits')
                         .update(articleData)
@@ -528,16 +525,13 @@
                         return;
                     }
 
-                    // Mettre à jour dans le tableau local
                     const index = allArticles.findIndex(a => a.id === parseInt(id));
                     if (index !== -1) {
                         allArticles[index] = { ...allArticles[index], ...articleData };
                     }
                     showNotification('✅ Article modifié avec succès !', 'success');
                 } else {
-                    // ==========================================
                     // AJOUT
-                    // ==========================================
                     const { data, error } = await supabaseClient
                         .from('produits')
                         .insert([articleData])
@@ -656,7 +650,7 @@
         }
 
         // ==========================================
-        // EXPOSER LES FONCTIONS
+        // EXPOSER LES FONCTIONS GLOBALEMENT
         // ==========================================
         window.applyArticleFilters = applyArticleFilters;
         window.resetArticleFilters = resetArticleFilters;
