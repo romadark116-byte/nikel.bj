@@ -266,6 +266,47 @@
             }
         }
 
+        /* Tooltip pour l'état de l'envoi */
+        .sending-status {
+            display: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .sending-status.show {
+            display: block;
+        }
+
+        .sending-status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .sending-status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .sending-status .retry-btn {
+            margin-top: 8px;
+            padding: 6px 16px;
+            border: none;
+            border-radius: 6px;
+            background: var(--gold);
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .sending-status .retry-btn:hover {
+            background: var(--accent-dark);
+        }
+
         @media (max-width: 992px) {
             .contact-wrapper {
                 grid-template-columns: 1fr;
@@ -487,6 +528,8 @@
         };
 
         let supabaseClient;
+        let isSending = false;
+        let lastFormData = null;
 
         // ==========================================
         // TOAST NOTIFICATION
@@ -508,21 +551,7 @@
         }
 
         // ==========================================
-        // OPEN MAILTO (FALLBACK)
-        // ==========================================
-        function openMailTo(formData) {
-            const subject = encodeURIComponent(formData.subject);
-            const body = encodeURIComponent(
-                `Nom: ${formData.name}\n` +
-                `Email: ${formData.email}\n\n` +
-                `${formData.message}`
-            );
-            const mailtoLink = `mailto:${formData.to_email}?subject=${subject}&body=${body}`;
-            window.open(mailtoLink, '_blank');
-        }
-
-        // ==========================================
-        // SEND EMAIL WITH EMAILJS
+        // SEND EMAIL WITH EMAILJS (ENVOI DIRECT)
         // ==========================================
         async function sendEmailWithEmailJS(formData) {
             try {
@@ -555,6 +584,32 @@
                 }
                 return { success: false, error: error.message || error.text || 'Erreur inconnue' };
             }
+        }
+
+        // ==========================================
+        // ENVOI AVEC TENTATIVES MULTIPLES
+        // ==========================================
+        async function sendWithRetry(formData, maxRetries = 2) {
+            let lastError = null;
+            
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                console.log(`📤 Tentative ${attempt}/${maxRetries}...`);
+                
+                const result = await sendEmailWithEmailJS(formData);
+                
+                if (result.success) {
+                    return result;
+                }
+                
+                lastError = result.error;
+                
+                // Attendre avant de réessayer
+                if (attempt < maxRetries) {
+                    await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+                }
+            }
+            
+            return { success: false, error: lastError };
         }
 
         // ==========================================
@@ -652,10 +707,11 @@
             document.getElementById('formSuccess').classList.remove('show');
             document.getElementById('submitBtn').disabled = false;
             document.getElementById('submitBtn').innerHTML = 'Envoyer <i class="fas fa-paper-plane"></i>';
+            isSending = false;
         }
 
         // ==========================================
-        // FORM SUBMISSION
+        // FORM SUBMISSION (ENVOI DIRECT SANS OUVRIR GMAIL)
         // ==========================================
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Page Contact - Initialisation...');
@@ -672,6 +728,12 @@
 
             form.addEventListener('submit', async function(e) {
                 e.preventDefault();
+
+                // Éviter les doubles soumissions
+                if (isSending) {
+                    showToast('Envoi en cours, veuillez patienter...', 'info');
+                    return;
+                }
 
                 const name = document.getElementById('formName').value.trim();
                 const email = document.getElementById('formEmail').value.trim();
@@ -699,11 +761,16 @@
                     to_email: toEmail
                 };
 
+                lastFormData = formData;
+                isSending = true;
+
+                // Désactiver le bouton
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<span class="btn-spinner"></span> Envoi en cours...';
 
                 try {
-                    const result = await sendEmailWithEmailJS(formData);
+                    // Tentative d'envoi avec EmailJS (2 tentatives max)
+                    const result = await sendWithRetry(formData, 2);
 
                     if (result.success) {
                         showSuccessMessage();
@@ -711,26 +778,27 @@
                         return;
                     }
 
-                    const useMailto = confirm(
-                        '❌ L\'envoi automatique a échoué.\n\n' +
-                        'Souhaitez-vous ouvrir votre client mail pour envoyer le message manuellement ?'
-                    );
+                    // Si l'envoi échoue, proposer de réessayer
+                    showToast('❌ L\'envoi a échoué. Voulez-vous réessayer ?', 'error');
                     
-                    if (useMailto) {
-                        openMailTo(formData);
-                        showToast('📧 Votre client mail s\'ouvre.', 'info');
-                        showSuccessMessage();
-                    } else {
-                        showToast('❌ Envoi annulé. Veuillez réessayer.', 'error');
-                    }
+                    // Réactiver le bouton pour réessayer
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '🔄 Réessayer <i class="fas fa-redo"></i>';
+                    
+                    // Attacher un gestionnaire pour réessayer
+                    submitBtn.onclick = function() {
+                        form.dispatchEvent(new Event('submit'));
+                    };
 
                 } catch (error) {
                     console.error('❌ Erreur:', error);
                     showToast('❌ Une erreur est survenue. Veuillez réessayer.', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Envoyer <i class="fas fa-paper-plane"></i>';
                 } finally {
+                    // Si le formulaire n'a pas été réinitialisé par le succès
                     if (!document.getElementById('formSuccess').classList.contains('show')) {
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = 'Envoyer <i class="fas fa-paper-plane"></i>';
+                        isSending = false;
                     }
                 }
             });
