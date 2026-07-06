@@ -68,6 +68,20 @@
             box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.2);
         }
 
+        /* Placeholder pour miniatures manquantes */
+        .product-gallery .thumbnails .thumb-placeholder {
+            border-radius: 12px;
+            border: 2px dashed #ddd;
+            background: #f8f8f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+            font-size: 1.5rem;
+            height: 80px;
+            cursor: default;
+        }
+
         .product-info h1 {
             font-family: 'Playfair Display', serif;
             font-size: 2.2rem;
@@ -252,7 +266,8 @@
             .product-gallery .main-image {
                 height: 300px;
             }
-            .product-gallery .thumbnails .thumb {
+            .product-gallery .thumbnails .thumb,
+            .product-gallery .thumbnails .thumb-placeholder {
                 height: 60px;
             }
             .product-info h1 {
@@ -429,13 +444,13 @@
         // CONSTRUIRE L'URL COMPLÈTE DE L'IMAGE
         // ==========================================
         function getImageUrl(url) {
-            if (!url) return 'https://via.placeholder.com/600x600/1a1a1a/FFFFFF?text=NIKEL';
+            if (!url) return null;
             if (url.startsWith('http')) return url;
             return `${SUPABASE_URL}/storage/v1/object/public/produits/${url}`;
         }
 
         // ==========================================
-        // CHARGER LE PRODUIT ET SES IMAGES
+        // CHARGER LE PRODUIT
         // ==========================================
         async function loadProduct() {
             const container = document.getElementById('productDetail');
@@ -458,15 +473,14 @@
             try {
                 console.log('🔄 Chargement du produit:', productId);
 
-                // 1. Charger le produit
-                const { data: product, error: productError } = await supabaseClient
+                const { data: product, error } = await supabaseClient
                     .from('produits')
                     .select('*')
                     .eq('id', productId)
                     .single();
 
-                if (productError || !product) {
-                    console.error('❌ Erreur produit:', productError);
+                if (error || !product) {
+                    console.error('❌ Erreur:', error);
                     container.innerHTML = `
                         <div style="grid-column:1/-1;text-align:center;padding:60px 20px;">
                             <i class="fas fa-exclamation-triangle" style="font-size:3rem;color:#e74c3c;"></i>
@@ -481,58 +495,7 @@
                 }
 
                 console.log('📦 Produit chargé:', product);
-
-                // 2. Charger les images supplémentaires
-                let images = [];
-                try {
-                    const { data: imagesData, error: imagesError } = await supabaseClient
-                        .from('produits_images')
-                        .select('*')
-                        .eq('produit_id', productId)
-                        .order('ordre', { ascending: true });
-
-                    if (!imagesError && imagesData && imagesData.length > 0) {
-                        images = imagesData;
-                        console.log('🖼️ Images supplémentaires chargées:', images);
-                    }
-                } catch (e) {
-                    console.warn('⚠️ Aucune image supplémentaire trouvée');
-                }
-
-                // 3. Construire la liste complète des images
-                const allImages = [];
-                
-                // Image principale (depuis produit.image_url)
-                if (product.image_url) {
-                    allImages.push({
-                        image_url: product.image_url,
-                        est_principale: true,
-                        ordre: 0
-                    });
-                }
-
-                // Images supplémentaires
-                images.forEach(img => {
-                    allImages.push({
-                        image_url: img.image_url,
-                        est_principale: false,
-                        ordre: img.ordre || allImages.length
-                    });
-                });
-
-                // Si pas d'images du tout
-                if (allImages.length === 0) {
-                    allImages.push({
-                        image_url: 'https://via.placeholder.com/600x600/1a1a1a/FFFFFF?text=NIKEL',
-                        est_principale: true,
-                        ordre: 0
-                    });
-                }
-
-                console.log('🖼️ Toutes les images:', allImages);
-
-                // 4. Afficher le produit
-                displayProduct(product, allImages);
+                displayProduct(product);
 
             } catch (err) {
                 console.error('❌ Erreur:', err);
@@ -549,16 +512,24 @@
         // ==========================================
         // AFFICHER LE PRODUIT
         // ==========================================
-        function displayProduct(product, images) {
+        function displayProduct(product) {
             const container = document.getElementById('productDetail');
 
             const prixOriginal = product.prix_original && product.prix_original > product.prix ? product.prix_original : null;
             const promo = product.promo || 0;
-            const imagePrincipale = images.find(img => img.est_principale) || images[0];
-            const mainImageUrl = getImageUrl(imagePrincipale.image_url);
+            
+            // 🖼️ Récupérer les miniatures depuis les colonnes mini1, mini2, mini3, mini4
+            const thumbnails = [
+                product.mini1,
+                product.mini2,
+                product.mini3,
+                product.mini4
+            ].filter(url => url && url.trim() !== '');
 
-            // Générer les miniatures (max 4)
-            const thumbnails = images.slice(0, 4);
+            // Image principale
+            const mainImageUrl = product.image_url 
+                ? getImageUrl(product.image_url) 
+                : (thumbnails.length > 0 ? getImageUrl(thumbnails[0]) : 'https://via.placeholder.com/600x600/1a1a1a/FFFFFF?text=NIKEL');
 
             container.innerHTML = `
                 <!-- ===== GALERIE ===== -->
@@ -572,11 +543,18 @@
                     
                     <div class="thumbnails">
                         ${thumbnails.map((img, index) => `
-                            <img src="${getImageUrl(img.image_url)}" 
+                            <img src="${getImageUrl(img)}" 
                                  alt="${product.nom} - vue ${index + 1}"
                                  class="thumb ${index === 0 ? 'active' : ''}"
-                                 onclick="changeMainImage('${getImageUrl(img.image_url)}', this)"
-                                 onerror="this.src='https://via.placeholder.com/150x150/1a1a1a/FFFFFF?text=NIKEL'">
+                                 onclick="changeMainImage('${getImageUrl(img)}', this)"
+                                 onerror="this.style.display='none'">
+                        `).join('')}
+                        
+                        <!-- Si moins de 4 miniatures, ajouter des placeholders -->
+                        ${Array.from({ length: Math.max(0, 4 - thumbnails.length) }).map(() => `
+                            <div class="thumb-placeholder">
+                                <i class="fas fa-plus"></i>
+                            </div>
                         `).join('')}
                     </div>
                 </div>
@@ -660,7 +638,6 @@
                 mainImage.src = imageUrl;
             }
             
-            // Mettre à jour les miniatures
             document.querySelectorAll('.thumb').forEach(thumb => {
                 thumb.classList.remove('active');
             });
@@ -823,7 +800,6 @@
             loadProduct();
             updateBadge();
 
-            // Recherche avec Entrée
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('keypress', function(e) {
