@@ -244,14 +244,7 @@
         // ==========================================
         // AFFICHER LE STATUT AVEC COULEUR
         // ==========================================
-        function getArticleStatutBadge(article) {
-            // Si l'article est en solde, afficher un badge spécial
-            if (isOnSale(article)) {
-                return `<span style="background:#e74c3c; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-                    <i class="fas fa-fire"></i> En solde
-                </span>`;
-            }
-
+        function getArticleStatutBadge(statut) {
             const statuts = {
                 'En stock': { bg: '#27ae60', icon: 'fa-check', text: 'En stock' },
                 'Rupture de stock': { bg: '#f39c12', icon: 'fa-times', text: 'Rupture de stock' },
@@ -260,7 +253,7 @@
                 'Épuisé': { bg: '#e74c3c', icon: 'fa-ban', text: 'Épuisé' },
                 'Bientôt disponible': { bg: '#1abc9c', icon: 'fa-arrow-right', text: 'Bientôt disponible' }
             };
-            const s = statuts[article.statut] || statuts['En stock'];
+            const s = statuts[statut] || statuts['En stock'];
             return `<span style="background:${s.bg}; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
                 <i class="fas ${s.icon}"></i> ${s.text}
             </span>`;
@@ -304,7 +297,7 @@
                         ${article.prix_original ? `<span style="font-size:0.8rem; color:#999; text-decoration:line-through; display:block;">${formatPrice(article.prix_original)}</span>` : ''}
                     </td>
                     <td style="padding:12px; text-align:center; font-weight:600;">${article.stock || 0}</td>
-                    <td style="padding:12px;">${getArticleStatutBadge(article)}</td>
+                    <td style="padding:12px;">${getArticleStatutBadge(article.statut || 'En stock')}</td>
                     <td style="padding:12px; text-align:center;">
                         <button onclick="editArticle('${article.id}')" style="padding:6px 12px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Modifier">
                             <i class="fas fa-edit"></i>
@@ -333,7 +326,7 @@
                 a.statut === 'Rupture de stock' || a.statut === 'Épuisé'
             ).length;
             
-            // 🔥 En solde : prix_original > prix (automatique !)
+            // 🔥 En solde : UNIQUEMENT LE COMPTEUR (prix_original > prix) - N'AFFECTE PAS LE STATUT
             const soldes = allArticles.filter(a => 
                 a.prix_original && parseFloat(a.prix_original) > parseFloat(a.prix)
             ).length;
@@ -404,8 +397,10 @@
                 let matchStatut = true;
                 if (statut !== 'all') {
                     if (statut === 'soldes') {
+                        // Filtre "En solde" : basé sur le prix
                         matchStatut = isOnSale(article);
                     } else {
+                        // Filtre normal : basé sur le statut
                         matchStatut = article.statut === statut;
                     }
                 }
