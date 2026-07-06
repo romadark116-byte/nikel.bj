@@ -232,6 +232,23 @@
             text-decoration: underline;
         }
 
+        /* Spinner pour le bouton */
+        .btn-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
         @media (max-width: 768px) {
             .checkout-wrapper {
                 flex-direction: column;
@@ -561,7 +578,6 @@
         // ==========================================
         function loadCart() {
             try {
-                // Utiliser la même clé que dans panier.html
                 cart = JSON.parse(localStorage.getItem('nikel_cart')) || [];
                 console.log(`🛒 ${cart.length} articles dans le panier`);
             } catch(e) {
@@ -597,13 +613,11 @@
                 return;
             }
 
-            // Mettre à jour le badge
             if (badge) {
                 const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
                 badge.textContent = totalItems;
             }
 
-            // 🔥 Récupérer les images depuis Supabase (comme dans panier.html)
             const cartItems = cart.map(item => {
                 const product = products.find(p => p.id === item.id);
                 return {
@@ -654,6 +668,126 @@
         }
 
         // ==========================================
+        // ENREGISTRER LE CLIENT DANS SUPABASE
+        // ==========================================
+        async function saveClientToSupabase(clientData) {
+            try {
+                console.log('💾 Enregistrement du client dans Supabase...', clientData);
+
+                // Vérifier si le client existe déjà avec cet email
+                const { data: existingClient, error: checkError } = await supabaseClient
+                    .from('clients')
+                    .select('id')
+                    .eq('email', clientData.email)
+                    .maybeSingle();
+
+                if (checkError) {
+                    console.error('❌ Erreur vérification client:', checkError);
+                }
+
+                if (existingClient) {
+                    // Mettre à jour le client existant
+                    const { error: updateError } = await supabaseClient
+                        .from('clients')
+                        .update({
+                            prenom: clientData.prenom,
+                            nom: clientData.nom,
+                            telephone: clientData.telephone,
+                            ville: clientData.ville,
+                            pays: clientData.pays,
+                            updated_at: new Date().toISOString()
+                        })
+                        .eq('id', existingClient.id);
+
+                    if (updateError) {
+                        console.error('❌ Erreur mise à jour client:', updateError);
+                        return { success: false, error: updateError };
+                    }
+
+                    console.log('✅ Client mis à jour avec succès');
+                    return { success: true, client: existingClient, action: 'updated' };
+                } else {
+                    // Créer un nouveau client
+                    const { data: newClient, error: insertError } = await supabaseClient
+                        .from('clients')
+                        .insert([{
+                            prenom: clientData.prenom,
+                            nom: clientData.nom,
+                            email: clientData.email,
+                            telephone: clientData.telephone,
+                            ville: clientData.ville,
+                            pays: clientData.pays,
+                            created_at: new Date().toISOString()
+                        }])
+                        .select()
+                        .single();
+
+                    if (insertError) {
+                        console.error('❌ Erreur insertion client:', insertError);
+                        return { success: false, error: insertError };
+                    }
+
+                    console.log('✅ Nouveau client enregistré avec succès');
+                    return { success: true, client: newClient, action: 'created' };
+                }
+
+            } catch (error) {
+                console.error('❌ Erreur:', error);
+                return { success: false, error: error };
+            }
+        }
+
+        // ==========================================
+        // VALIDER LA COMMANDE
+        // ==========================================
+        async function validateOrder() {
+            const prenom = document.getElementById('prenom').value.trim();
+            const nom = document.getElementById('nom').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const indicatif = document.getElementById('indicatif').value;
+            const telephone = document.getElementById('telephone').value.trim();
+            const pays = document.getElementById('paysDisplay').textContent;
+            const ville = document.getElementById('ville').value;
+
+            // Validation des champs
+            if (!prenom || !nom || !email || !telephone || !ville) {
+                alert('Veuillez remplir tous les champs.');
+                return false;
+            }
+            if (!email.includes('@')) {
+                alert('Veuillez entrer un email valide.');
+                return false;
+            }
+
+            const config = phoneConfig[indicatif];
+            const digits = telephone.replace(/\D/g, '');
+            if (config && digits.length !== config.nbDigits) {
+                alert(`Le numéro doit contenir exactement ${config.nbDigits} chiffres.`);
+                return false;
+            }
+
+            // Préparer les données du client
+            const clientData = {
+                prenom: prenom,
+                nom: nom,
+                email: email,
+                telephone: `${indicatif} ${telephone}`,
+                ville: ville,
+                pays: pays
+            };
+
+            // Enregistrer le client dans Supabase
+            const result = await saveClientToSupabase(clientData);
+
+            if (!result.success) {
+                alert('❌ Erreur lors de l\'enregistrement de vos informations. Veuillez réessayer.');
+                return false;
+            }
+
+            return { success: true, client: result.client, action: result.action };
+        }
+
+        // ==========================================
         // RECHERCHE
         // ==========================================
         function handleSearch() {
@@ -671,17 +805,12 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🛒 Page de paiement chargée');
             
-            // Charger les produits depuis Supabase
-            loadProducts().then(() => {
-                renderCartItems();
-            });
+            loadProducts();
 
-            // Configurer le téléphone par défaut
             document.getElementById('indicatif').value = '+229';
             updatePhonePlaceholder();
             updatePaysFromIndicatif();
 
-            // Recherche avec Entrée
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('keypress', function(e) {
@@ -691,7 +820,6 @@
                 });
             }
 
-            // Écouter les changements du panier dans localStorage
             window.addEventListener('storage', function(e) {
                 if (e.key === 'nikel_cart') {
                     console.log('🔄 Panier modifié, mise à jour...');
@@ -701,67 +829,75 @@
         });
 
         // ==========================================
-        // BOUTON WHATSAPP
+        // BOUTON WHATSAPP + ENREGISTREMENT CLIENT
         // ==========================================
-        document.getElementById('confirmOrderBtn').addEventListener('click', function() {
-            const prenom = document.getElementById('prenom').value.trim();
-            const nom = document.getElementById('nom').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const indicatif = document.getElementById('indicatif').value;
-            const telephone = document.getElementById('telephone').value.trim();
-            const pays = document.getElementById('paysDisplay').textContent;
-            const ville = document.getElementById('ville').value;
-
-            if (!prenom || !nom || !email || !telephone || !ville) {
-                alert('Veuillez remplir tous les champs.');
-                return;
-            }
-            if (!email.includes('@')) {
-                alert('Veuillez entrer un email valide.');
-                return;
-            }
-
-            const config = phoneConfig[indicatif];
-            const digits = telephone.replace(/\D/g, '');
-            if (config && digits.length !== config.nbDigits) {
-                alert(`Le numéro doit contenir exactement ${config.nbDigits} chiffres.`);
-                return;
-            }
-
-            let cart = JSON.parse(localStorage.getItem('nikel_cart')) || [];
+        document.getElementById('confirmOrderBtn').addEventListener('click', async function() {
+            const btn = this;
             
-            let message = `🛍️ *NOUVELLE COMMANDE NIKEL*\n\n`;
-            message += `👤 *Client :* ${prenom} ${nom}\n`;
-            message += `📧 *Email :* ${email}\n`;
-            message += `📱 *Téléphone :* ${indicatif} ${telephone}\n`;
-            message += `📍 *Ville :* ${ville}\n`;
-            message += `🌍 *Pays :* ${pays}\n\n`;
-            message += `📦 *Articles commandés :*\n`;
-            message += `───────────────────\n`;
+            // Désactiver le bouton
+            btn.disabled = true;
+            btn.innerHTML = '<span class="btn-spinner"></span> Enregistrement en cours...';
 
-            let total = 0;
-            if (cart && cart.length > 0) {
-                cart.forEach((item, index) => {
-                    const prix = parseFloat(item.price || 0);
-                    const quantite = parseInt(item.quantity || 1);
-                    const itemTotal = prix * quantite;
-                    total += itemTotal;
-                    const nom = item.name || 'Produit';
-                    message += `${index + 1}. ${nom} × ${quantite} = ${itemTotal.toFixed(2)} FCFA\n`;
-                });
+            try {
+                // 1. Enregistrer le client
+                const result = await validateOrder();
+
+                if (!result || !result.success) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fab fa-whatsapp"></i> Finalisez votre achat sur WhatsApp';
+                    return;
+                }
+
+                console.log('✅ Client enregistré:', result);
+
+                // 2. Récupérer le panier
+                let cart = JSON.parse(localStorage.getItem('nikel_cart')) || [];
+                
+                // 3. Construire le message WhatsApp
+                let message = `🛍️ *NOUVELLE COMMANDE NIKEL*\n\n`;
+                message += `👤 *Client :* ${result.client.prenom} ${result.client.nom}\n`;
+                message += `📧 *Email :* ${result.client.email}\n`;
+                message += `📱 *Téléphone :* ${result.client.telephone}\n`;
+                message += `📍 *Ville :* ${result.client.ville}\n`;
+                message += `🌍 *Pays :* ${result.client.pays}\n\n`;
+                message += `📦 *Articles commandés :*\n`;
+                message += `───────────────────\n`;
+
+                let total = 0;
+                if (cart && cart.length > 0) {
+                    cart.forEach((item, index) => {
+                        const prix = parseFloat(item.price || 0);
+                        const quantite = parseInt(item.quantity || 1);
+                        const itemTotal = prix * quantite;
+                        total += itemTotal;
+                        const nom = item.name || 'Produit';
+                        message += `${index + 1}. ${nom} × ${quantite} = ${itemTotal.toFixed(2)} FCFA\n`;
+                    });
+                }
+
+                message += `───────────────────\n`;
+                message += `💰 *Total :* ${total.toFixed(2)} FCFA\n\n`;
+                message += `📅 *Date :* ${new Date().toLocaleString('fr-FR')}\n\n`;
+                message += `---\n`;
+                message += `📲 *Contactez-moi sur WhatsApp pour finaliser la commande.*`;
+
+                const encodedMessage = encodeURIComponent(message);
+                const phoneNumber = '2290155555555';
+                const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+
+                // Ouvrir WhatsApp
+                window.open(whatsappUrl, '_blank');
+
+                // Réactiver le bouton
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fab fa-whatsapp"></i> Finalisez votre achat sur WhatsApp';
+
+            } catch (error) {
+                console.error('❌ Erreur:', error);
+                alert('Une erreur est survenue. Veuillez réessayer.');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fab fa-whatsapp"></i> Finalisez votre achat sur WhatsApp';
             }
-
-            message += `───────────────────\n`;
-            message += `💰 *Total :* ${total.toFixed(2)} FCFA\n\n`;
-            message += `📅 *Date :* ${new Date().toLocaleString('fr-FR')}\n\n`;
-            message += `---\n`;
-            message += `📲 *Contactez-moi sur WhatsApp pour finaliser la commande.*`;
-
-            const encodedMessage = encodeURIComponent(message);
-            const phoneNumber = '2290191647681';
-            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-
-            window.open(whatsappUrl, '_blank');
         });
     </script>
 </body>
