@@ -205,23 +205,70 @@
             box-shadow: 0 6px 25px rgba(201, 168, 76, 0.4);
         }
 
-        .product-actions .btn-wishlist {
+        /* ===== BOUTON FAVORIS ===== */
+        .btn-wishlist {
             width: 56px;
             height: 56px;
             border-radius: 50%;
             border: 2px solid var(--light-gray);
             background: var(--white);
             cursor: pointer;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: var(--gray);
+            position: relative;
+            flex-shrink: 0;
         }
 
-        .product-actions .btn-wishlist:hover {
-            border-color: var(--gold);
-            color: var(--gold);
+        .btn-wishlist:hover {
+            border-color: #e74c3c;
+            color: #e74c3c;
+            transform: scale(1.05);
+        }
+
+        .btn-wishlist.active {
+            border-color: #e74c3c;
+            background: #fff5f5;
+            color: #e74c3c;
+        }
+
+        .btn-wishlist.active i {
+            font-weight: 900;
+        }
+
+        .btn-wishlist .wishlist-tooltip {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a1a;
+            color: white;
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .btn-wishlist:hover .wishlist-tooltip {
+            opacity: 1;
+        }
+
+        /* Animation coeur */
+        @keyframes heartBounce {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.3); }
+            50% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+
+        .btn-wishlist.bounce i {
+            animation: heartBounce 0.4s ease;
         }
 
         .product-features {
@@ -333,39 +380,6 @@
         </div>
     </section>
 
-    <!-- Avis clients -->
-    <section class="section" style="background:var(--off-white);">
-        <div class="container">
-            <h2 class="section-title">Avis clients <span class="highlight">★</span></h2>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:24px;">
-                <div style="background:var(--white); padding:24px; border-radius:12px; box-shadow:var(--shadow);">
-                    <div style="color:var(--gold);">★★★★★</div>
-                    <p style="font-style:italic; margin:8px 0;">"Confortables et stylées, je les adore !"</p>
-                    <p style="font-weight:600;">Marie L.</p>
-                    <p style="font-size:0.85rem; color:var(--gray);">12 juin 2026</p>
-                </div>
-                <div style="background:var(--white); padding:24px; border-radius:12px; box-shadow:var(--shadow);">
-                    <div style="color:var(--gold);">★★★★★</div>
-                    <p style="font-style:italic; margin:8px 0;">"La qualité est exceptionnelle, elles sont superbes."</p>
-                    <p style="font-weight:600;">Thomas K.</p>
-                    <p style="font-size:0.85rem; color:var(--gray);">8 juin 2026</p>
-                </div>
-                <div style="background:var(--white); padding:24px; border-radius:12px; box-shadow:var(--shadow);">
-                    <div style="color:var(--gold);">★★★★☆</div>
-                    <p style="font-style:italic; margin:8px 0;">"Très belles, mais taille un peu grand."</p>
-                    <p style="font-weight:600;">Sophie M.</p>
-                    <p style="font-size:0.85rem; color:var(--gray);">5 juin 2026</p>
-                </div>
-            </div>
-
-            <div style="text-align:center; margin-top:30px;">
-                <button class="btn btn-secondary" onclick="showNotification('📝 Fonctionnalité d\'avis en développement')">
-                    <i class="fas fa-pen"></i> Donnez votre avis
-                </button>
-            </div>
-        </div>
-    </section>
-
     <footer class="footer">
         <div class="container footer-grid">
             <div class="footer-col">
@@ -412,37 +426,160 @@
     <!-- SCRIPTS                                    -->
     <!-- ========================================== -->
 
-    <!-- 1️⃣ Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- 2️⃣ Configuration Supabase -->
     <script>
         const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
         
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         window.supabaseClient = supabaseClient;
-        
-        console.log('✅ Supabase initialisé');
-    </script>
 
-    <!-- 3️⃣ Code produit -->
-    <script>
         // ==========================================
-        // RÉCUPÉRER L'ID DEPUIS L'URL
+        // RÉCUPÉRER L'ID DU CLIENT (temporaire)
+        // ==========================================
+        // 🔥 Pour le moment, on utilise un ID fixe pour tester
+        // Plus tard, on utilisera l'ID du client connecté
+        let currentClientId = 1; // ← BIGINT (nombre)
+
+        // ==========================================
+        // FONCTIONS
         // ==========================================
         function getProductId() {
             const params = new URLSearchParams(window.location.search);
             return params.get('id');
         }
 
-        // ==========================================
-        // CONSTRUIRE L'URL COMPLÈTE DE L'IMAGE
-        // ==========================================
         function getImageUrl(url) {
             if (!url) return null;
             if (url.startsWith('http')) return url;
             return `${SUPABASE_URL}/storage/v1/object/public/produits/${url}`;
+        }
+
+        // ==========================================
+        // VÉRIFIER SI LE PRODUIT EST EN FAVORIS
+        // ==========================================
+        async function isProductFavorited(productId, clientId) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('favoris')
+                    .select('id')
+                    .eq('client_id', clientId)
+                    .eq('produit_id', productId)
+                    .maybeSingle();
+
+                if (error) {
+                    console.error('❌ Erreur vérification favoris:', error);
+                    return false;
+                }
+
+                return !!data;
+            } catch (e) {
+                console.error('❌ Erreur:', e);
+                return false;
+            }
+        }
+
+        // ==========================================
+        // AJOUTER AUX FAVORIS
+        // ==========================================
+        async function addToFavorites(productId, clientId) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('favoris')
+                    .insert({
+                        client_id: clientId,
+                        produit_id: productId
+                    })
+                    .select()
+                    .single();
+
+                if (error) {
+                    console.error('❌ Erreur ajout favoris:', error);
+                    return { success: false, error };
+                }
+
+                console.log('✅ Ajouté aux favoris:', data);
+                return { success: true, data };
+            } catch (e) {
+                console.error('❌ Erreur:', e);
+                return { success: false, error: e };
+            }
+        }
+
+        // ==========================================
+        // RETIRER DES FAVORIS
+        // ==========================================
+        async function removeFromFavorites(productId, clientId) {
+            try {
+                const { error } = await supabaseClient
+                    .from('favoris')
+                    .delete()
+                    .eq('client_id', clientId)
+                    .eq('produit_id', productId);
+
+                if (error) {
+                    console.error('❌ Erreur suppression favoris:', error);
+                    return { success: false, error };
+                }
+
+                console.log('✅ Retiré des favoris');
+                return { success: true };
+            } catch (e) {
+                console.error('❌ Erreur:', e);
+                return { success: false, error: e };
+            }
+        }
+
+        // ==========================================
+        // TOGGLE FAVORIS
+        // ==========================================
+        async function toggleFavorites(productId, clientId, button) {
+            if (!clientId) {
+                showNotification('🔑 Connectez-vous pour ajouter aux favoris', 'info');
+                return;
+            }
+
+            if (!productId) {
+                showNotification('❌ Produit non trouvé', 'error');
+                return;
+            }
+
+            // Désactiver le bouton temporairement
+            button.disabled = true;
+            button.style.opacity = '0.6';
+
+            try {
+                const isFav = await isProductFavorited(productId, clientId);
+
+                if (isFav) {
+                    const result = await removeFromFavorites(productId, clientId);
+                    if (result.success) {
+                        button.classList.remove('active');
+                        button.innerHTML = `<i class="far fa-heart"></i><span class="wishlist-tooltip">Ajouter aux favoris</span>`;
+                        showNotification('💔 Retiré des favoris', 'info');
+                    } else {
+                        showNotification('❌ Erreur, veuillez réessayer', 'error');
+                    }
+                } else {
+                    const result = await addToFavorites(productId, clientId);
+                    if (result.success) {
+                        button.classList.add('active');
+                        button.classList.add('bounce');
+                        button.innerHTML = `<i class="fas fa-heart"></i><span class="wishlist-tooltip">Retirer des favoris</span>`;
+                        setTimeout(() => button.classList.remove('bounce'), 400);
+                        showNotification('❤️ Ajouté aux favoris !', 'success');
+                    } else {
+                        showNotification('❌ Erreur, veuillez réessayer', 'error');
+                    }
+                }
+            } catch (e) {
+                console.error('❌ Erreur:', e);
+                showNotification('❌ Une erreur est survenue', 'error');
+            } finally {
+                button.disabled = false;
+                button.style.opacity = '1';
+            }
         }
 
         // ==========================================
@@ -467,8 +604,6 @@
             }
 
             try {
-                console.log('🔄 Chargement du produit:', productId);
-
                 const { data: product, error } = await supabaseClient
                     .from('produits')
                     .select('*')
@@ -490,8 +625,114 @@
                     return;
                 }
 
-                console.log('📦 Produit chargé:', product);
-                displayProduct(product);
+                // Vérifier si le produit est en favoris
+                const isFav = await isProductFavorited(productId, currentClientId);
+
+                // Récupérer les miniatures
+                const thumbnails = [product.mini1, product.mini2, product.mini3, product.mini4]
+                    .filter(url => url && url.trim() !== '');
+
+                // Image principale
+                const mainImageUrl = product.image_url 
+                    ? getImageUrl(product.image_url) 
+                    : 'https://via.placeholder.com/600x600/1a1a1a/FFFFFF?text=NIKEL';
+
+                container.innerHTML = `
+                    <!-- ===== GALERIE ===== -->
+                    <div class="product-gallery">
+                        <img src="${mainImageUrl}" 
+                             alt="${product.nom}"
+                             class="main-image"
+                             id="mainImage"
+                             onerror="this.src='https://via.placeholder.com/600x600/1a1a1a/FFFFFF?text=Image'">
+                        ${product.promo > 0 ? `<span class="badge-promo">-${product.promo}%</span>` : ''}
+                        
+                        ${thumbnails.length > 0 ? `
+                            <div class="thumbnails">
+                                ${thumbnails.map((img, index) => `
+                                    <img src="${getImageUrl(img)}" 
+                                         alt="${product.nom} - vue ${index + 1}"
+                                         class="thumb ${index === 0 ? 'active' : ''}"
+                                         onclick="changeMainImage('${getImageUrl(img)}', this)"
+                                         onerror="this.style.display='none'">
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <!-- ===== INFOS ===== -->
+                    <div class="product-info">
+                        <p style="color:#999;font-size:0.9rem;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px 0;">
+                            ${product.categorie || 'Collection'}
+                        </p>
+                        <h1>${product.nom}</h1>
+                        
+                        <div class="rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="reviews">(4.8/5 · 127 avis)</span>
+                        </div>
+
+                        <div class="prices">
+                            <span class="current-price">${product.prix.toFixed(2)} FCFA</span>
+                            ${product.prix_original && product.prix_original > product.prix 
+                                ? `<span class="old-price">${product.prix_original.toFixed(2)} FCFA</span>` 
+                                : ''}
+                        </div>
+
+                        <p class="description">${product.description || 'Aucune description disponible pour ce produit.'}</p>
+                        
+                        <div class="stock-badge ${product.stock > 0 ? 'in-stock' : 'out-of-stock'}">
+                            <p>
+                                ${product.stock > 0 
+                                    ? `<i class="fas fa-check-circle"></i> En stock (${product.stock} disponibles)` 
+                                    : `<i class="fas fa-times-circle"></i> Rupture de stock`}
+                            </p>
+                        </div>
+
+                        <div class="quantity-selector">
+                            <span style="font-weight:600;">Quantité :</span>
+                            <div class="qty-control">
+                                <button onclick="changeQuantity(-1)"><i class="fas fa-minus"></i></button>
+                                <span class="qty-display" id="quantityDisplay">1</span>
+                                <button onclick="changeQuantity(1)"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="product-actions">
+                            <button class="btn-add-cart" onclick="addToCart('${product.id}')">
+                                <i class="fas fa-shopping-bag"></i> Ajouter au panier
+                            </button>
+                            <button class="btn-wishlist ${isFav ? 'active' : ''}" 
+                                    id="wishlistBtn"
+                                    onclick="toggleFavorites('${product.id}', '${currentClientId}', this)">
+                                <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
+                                <span class="wishlist-tooltip">${isFav ? 'Retirer des favoris' : 'Ajouter aux favoris'}</span>
+                            </button>
+                        </div>
+
+                        <div class="product-features">
+                            <span><i class="fas fa-truck"></i> Livraison offerte</span>
+                            <span><i class="fas fa-rotate-left"></i> Retour 30 jours</span>
+                            <span><i class="fas fa-lock"></i> Paiement sécurisé</span>
+                            <span><i class="fas fa-tag"></i> Garantie 2 ans</span>
+                        </div>
+
+                        <a href="boutique.html" class="back-link">
+                            <i class="fas fa-arrow-left"></i> Retour à la boutique
+                        </a>
+                    </div>
+                `;
+
+                // Stocker les infos du produit pour le panier
+                window.currentProduct = {
+                    id: product.id,
+                    name: product.nom,
+                    price: product.prix,
+                    image: mainImageUrl
+                };
+
+                window.currentQuantity = 1;
+                document.getElementById('quantityDisplay').textContent = '1';
 
             } catch (err) {
                 console.error('❌ Erreur:', err);
@@ -506,142 +747,14 @@
         }
 
         // ==========================================
-        // AFFICHER LE PRODUIT
-        // ==========================================
-        function displayProduct(product) {
-            const container = document.getElementById('productDetail');
-
-            const prixOriginal = product.prix_original && product.prix_original > product.prix ? product.prix_original : null;
-            const promo = product.promo || 0;
-            
-            // 🖼️ Image principale
-            const mainImageUrl = product.image_url 
-                ? getImageUrl(product.image_url) 
-                : 'https://via.placeholder.com/600x600/1a1a1a/FFFFFF?text=NIKEL';
-
-            // 🖼️ Miniatures : mini1, mini2, mini3, mini4
-            const thumbnails = [];
-            if (product.mini1) thumbnails.push(product.mini1);
-            if (product.mini2 && product.mini2.trim() !== '') thumbnails.push(product.mini2);
-            if (product.mini3 && product.mini3.trim() !== '') thumbnails.push(product.mini3);
-            if (product.mini4 && product.mini4.trim() !== '') thumbnails.push(product.mini4);
-
-            // Si pas de miniatures du tout, utiliser image_url comme miniature
-            if (thumbnails.length === 0 && product.image_url) {
-                thumbnails.push(product.image_url);
-            }
-
-            // 🔥 mini1 s'affiche toujours (thumbnails.length > 0)
-            const hasThumbnails = thumbnails.length > 0;
-
-            container.innerHTML = `
-                <!-- ===== GALERIE ===== -->
-                <div class="product-gallery">
-                    <img src="${mainImageUrl}" 
-                         alt="${product.nom}"
-                         class="main-image"
-                         id="mainImage"
-                         onerror="this.src='https://via.placeholder.com/600x600/1a1a1a/FFFFFF?text=Image'">
-                    ${promo > 0 ? `<span class="badge-promo">-${promo}%</span>` : ''}
-                    
-                    ${hasThumbnails ? `
-                        <div class="thumbnails">
-                            ${thumbnails.map((img, index) => `
-                                <img src="${getImageUrl(img)}" 
-                                     alt="${product.nom} - vue ${index + 1}"
-                                     class="thumb ${index === 0 ? 'active' : ''}"
-                                     onclick="changeMainImage('${getImageUrl(img)}', this)"
-                                     onerror="this.style.display='none'">
-                            `).join('')}
-                        </div>
-                    ` : ''}
-                </div>
-
-                <!-- ===== INFOS ===== -->
-                <div class="product-info">
-                    <p style="color:#999;font-size:0.9rem;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px 0;">
-                        ${product.categorie || 'Collection'}
-                    </p>
-                    <h1>${product.nom}</h1>
-                    
-                    <div class="rating">
-                        <span class="stars">★★★★★</span>
-                        <span class="reviews">(4.8/5 · 127 avis)</span>
-                    </div>
-
-                    <div class="prices">
-                        <span class="current-price">${product.prix.toFixed(2)} FCFA</span>
-                        ${prixOriginal ? `<span class="old-price">${prixOriginal.toFixed(2)} FCFA</span>` : ''}
-                    </div>
-
-                    <p class="description">${product.description || 'Aucune description disponible pour ce produit.'}</p>
-                    
-                    <div class="stock-badge ${product.stock > 0 ? 'in-stock' : 'out-of-stock'}">
-                        <p>
-                            ${product.stock > 0 
-                                ? `<i class="fas fa-check-circle"></i> En stock (${product.stock} disponibles)` 
-                                : `<i class="fas fa-times-circle"></i> Rupture de stock`}
-                        </p>
-                    </div>
-
-                    <div class="quantity-selector">
-                        <span style="font-weight:600;">Quantité :</span>
-                        <div class="qty-control">
-                            <button onclick="changeQuantity(-1)"><i class="fas fa-minus"></i></button>
-                            <span class="qty-display" id="quantityDisplay">1</span>
-                            <button onclick="changeQuantity(1)"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-
-                    <div class="product-actions">
-                        <button class="btn-add-cart" onclick="addToCart('${product.id}')">
-                            <i class="fas fa-shopping-bag"></i> Ajouter au panier
-                        </button>
-                        <button class="btn-wishlist" onclick="addToWishlist()">
-                            <i class="fas fa-heart"></i>
-                        </button>
-                    </div>
-
-                    <div class="product-features">
-                        <span><i class="fas fa-truck"></i> Livraison offerte</span>
-                        <span><i class="fas fa-rotate-left"></i> Retour 30 jours</span>
-                        <span><i class="fas fa-lock"></i> Paiement sécurisé</span>
-                        <span><i class="fas fa-tag"></i> Garantie 2 ans</span>
-                    </div>
-
-                    <a href="boutique.html" class="back-link">
-                        <i class="fas fa-arrow-left"></i> Retour à la boutique
-                    </a>
-                </div>
-            `;
-
-            // Stocker les infos du produit pour le panier
-            window.currentProduct = {
-                id: product.id,
-                name: product.nom,
-                price: product.prix,
-                image: mainImageUrl
-            };
-
-            window.currentQuantity = 1;
-            document.getElementById('quantityDisplay').textContent = '1';
-        }
-
-        // ==========================================
         // CHANGER L'IMAGE PRINCIPALE
         // ==========================================
         function changeMainImage(imageUrl, element) {
             const mainImage = document.getElementById('mainImage');
-            if (mainImage) {
-                mainImage.src = imageUrl;
-            }
+            if (mainImage) mainImage.src = imageUrl;
             
-            document.querySelectorAll('.thumb').forEach(thumb => {
-                thumb.classList.remove('active');
-            });
-            if (element) {
-                element.classList.add('active');
-            }
+            document.querySelectorAll('.thumb').forEach(thumb => thumb.classList.remove('active'));
+            if (element) element.classList.add('active');
         }
 
         // ==========================================
@@ -650,7 +763,6 @@
         function changeQuantity(delta) {
             const display = document.getElementById('quantityDisplay');
             if (!display) return;
-            
             let qty = parseInt(display.textContent) || 1;
             qty = Math.max(1, qty + delta);
             display.textContent = qty;
@@ -688,16 +800,6 @@
             updateBadge();
             
             showNotification(`✅ ${product.name} ajouté au panier ! (${quantity})`, 'success');
-        }
-
-        // ==========================================
-        // WISHLIST
-        // ==========================================
-        function addToWishlist() {
-            const product = window.currentProduct;
-            if (product) {
-                showNotification(`❤️ ${product.name} ajouté à vos favoris !`, 'success');
-            }
         }
 
         // ==========================================
@@ -771,20 +873,7 @@
         }
 
         // ==========================================
-        // MENU MOBILE
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', function() {
-            const menuToggle = document.getElementById('menuToggle');
-            const nav = document.querySelector('.nav');
-            if (menuToggle && nav) {
-                menuToggle.addEventListener('click', function() {
-                    nav.classList.toggle('open');
-                });
-            }
-        });
-
-        // ==========================================
-        // LANCEMENT
+        // INITIALISATION
         // ==========================================
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 NIKEL - Page produit');
@@ -805,7 +894,7 @@
         window.changeMainImage = changeMainImage;
         window.changeQuantity = changeQuantity;
         window.addToCart = addToCart;
-        window.addToWishlist = addToWishlist;
+        window.toggleFavorites = toggleFavorites;
         window.showNotification = showNotification;
     </script>
 </body>
