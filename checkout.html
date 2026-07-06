@@ -45,13 +45,27 @@
 
         .cart-item-checkout {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 12px;
             padding: 12px 0;
             border-bottom: 1px solid var(--light-gray);
         }
 
         .cart-item-checkout:last-child {
             border-bottom: none;
+        }
+
+        .cart-item-checkout .item-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: #f0f0f0;
+        }
+
+        .cart-item-checkout .item-info {
+            flex: 1;
         }
 
         .cart-item-checkout .item-row {
@@ -78,7 +92,6 @@
             margin-top: 4px;
         }
 
-        /* ===== STYLES POUR LE FORMULAIRE ===== */
         .form-group label {
             font-size: 0.85rem;
             font-weight: 600;
@@ -330,48 +343,20 @@
                         </h3>
                         
                         <div id="checkoutItems" style="margin-bottom:20px; flex:1;">
-                            <!-- Exemple d'article avec sous-total -->
-                            <div class="cart-item-checkout">
-                                <div class="item-row">
-                                    <span class="item-name">Sac NOMAD</span>
-                                    <span class="item-total">354,00 FCFA</span>
-                                </div>
-                                <div class="item-details">
-                                    <span>Prix unitaire : 59,00 FCFA</span>
-                                    <span>Quantité : 6</span>
-                                </div>
-                            </div>
-
-                            <div class="cart-item-checkout">
-                                <div class="item-row">
-                                    <span class="item-name">Montre EDGE</span>
-                                    <span class="item-total">149,00 FCFA</span>
-                                </div>
-                                <div class="item-details">
-                                    <span>Prix unitaire : 149,00 FCFA</span>
-                                    <span>Quantité : 1</span>
-                                </div>
-                            </div>
-
-                            <div class="cart-item-checkout">
-                                <div class="item-row">
-                                    <span class="item-name">NIKEL Urban Gris</span>
-                                    <span class="item-total">99,00 FCFA</span>
-                                </div>
-                                <div class="item-details">
-                                    <span>Prix unitaire : 99,00 FCFA</span>
-                                    <span>Quantité : 1</span>
-                                </div>
+                            <!-- Les articles seront chargés dynamiquement -->
+                            <div style="text-align:center; padding:20px; color:#888;">
+                                <i class="fas fa-spinner fa-spin" style="font-size:1.5rem;"></i>
+                                <p style="margin-top:8px;">Chargement du panier...</p>
                             </div>
                         </div>
 
                         <div style="border-top:2px solid var(--light-gray); padding-top:16px; margin-top:auto;">
                             <div style="display:none;">
-                                <span id="subtotal">602,00 FCFA</span>
+                                <span id="subtotal">0 FCFA</span>
                             </div>
                             <div style="display:flex; justify-content:space-between; padding:8px 0; font-size:1.2rem; font-weight:700; border-top:2px solid var(--light-gray); margin-top:8px; padding-top:16px;">
                                 <span>Total</span>
-                                <span id="checkoutTotal" style="color:var(--accent-dark);">602,00 FCFA</span>
+                                <span id="checkoutTotal" style="color:var(--accent-dark);">0 FCFA</span>
                             </div>
                         </div>
 
@@ -529,6 +514,96 @@
         }
 
         // ==========================================
+        // CHARGER LE PANIER
+        // ==========================================
+        function loadCartItems() {
+            try {
+                console.log('🔍 Recherche du panier...');
+                
+                // Récupérer le panier depuis window.panier
+                let cart = [];
+                
+                if (window.panier && Array.isArray(window.panier) && window.panier.length > 0) {
+                    cart = window.panier;
+                    console.log('📦 Panier trouvé dans window.panier:', cart);
+                } else {
+                    try {
+                        const data = localStorage.getItem('panier');
+                        if (data) {
+                            const parsed = JSON.parse(data);
+                            if (parsed && parsed.length > 0) {
+                                cart = parsed;
+                                console.log('📦 Panier trouvé dans localStorage:', cart);
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('⚠️ Erreur lecture localStorage:', e);
+                    }
+                }
+
+                const container = document.getElementById('checkoutItems');
+                const totalSpan = document.getElementById('checkoutTotal');
+                const confirmBtn = document.getElementById('confirmOrderBtn');
+                
+                if (!cart || cart.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align:center; padding:30px; color:#888;">
+                            <i class="fas fa-shopping-bag" style="font-size:2rem; display:block; margin-bottom:10px; color:#ddd;"></i>
+                            <p>Votre panier est vide</p>
+                            <a href="boutique.html" style="color:var(--gold); text-decoration:underline;">Découvrir nos produits</a>
+                        </div>
+                    `;
+                    totalSpan.textContent = '0 FCFA';
+                    if (confirmBtn) confirmBtn.disabled = true;
+                    return;
+                }
+
+                let html = '';
+                let total = 0;
+
+                cart.forEach((item, index) => {
+                    // Récupérer les données
+                    const nom = item.nom || item.name || 'Produit';
+                    const prix = parseFloat(item.prix || item.price || 0);
+                    const quantite = parseInt(item.quantite || item.quantity || 1);
+                    const image = item.image || item.image_url || item.photo || '';
+                    const itemTotal = prix * quantite;
+                    total += itemTotal;
+
+                    html += `
+                        <div class="cart-item-checkout">
+                            <img src="${image}" alt="${nom}" class="item-image" onerror="this.src='https://via.placeholder.com/60x60/1a1a1a/FFFFFF?text=NIKEL'">
+                            <div class="item-info">
+                                <div class="item-row">
+                                    <span class="item-name">${nom}</span>
+                                    <span class="item-total">${itemTotal.toFixed(2)} FCFA</span>
+                                </div>
+                                <div class="item-details">
+                                    <span>Prix unitaire : ${prix.toFixed(2)} FCFA</span>
+                                    <span>Quantité : ${quantite}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+                totalSpan.textContent = total.toFixed(2) + ' FCFA';
+                if (confirmBtn) confirmBtn.disabled = false;
+
+                // Mettre à jour le badge du panier
+                const badge = document.querySelector('.panier-icon .badge');
+                if (badge) {
+                    const totalItems = cart.reduce((sum, item) => sum + (parseInt(item.quantite || item.quantity || 1)), 0);
+                    badge.textContent = totalItems;
+                }
+
+            } catch (error) {
+                console.error('❌ Erreur chargement panier:', error);
+            }
+        }
+
+        // ==========================================
         // RECHERCHE
         // ==========================================
         function handleSearch() {
@@ -543,6 +618,11 @@
         // INITIALISATION
         // ==========================================
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Page de paiement chargée');
+            
+            // Charger le panier
+            loadCartItems();
+
             // Configurer le téléphone par défaut
             document.getElementById('indicatif').value = '+229';
             updatePhonePlaceholder();
@@ -588,6 +668,9 @@
                 return;
             }
 
+            // Récupérer le panier
+            let cart = window.panier || JSON.parse(localStorage.getItem('panier') || '[]');
+            
             // Construire le message WhatsApp
             let message = `🛍️ *NOUVELLE COMMANDE NIKEL*\n\n`;
             message += `👤 *Client :* ${prenom} ${nom}\n`;
@@ -598,19 +681,20 @@
             message += `📦 *Articles commandés :*\n`;
             message += `───────────────────\n`;
 
-            // Articles (exemples)
-            const articles = [
-                { nom: 'Sac NOMAD', prix: 59.00, qte: 6 },
-                { nom: 'Montre EDGE', prix: 149.00, qte: 1 },
-                { nom: 'NIKEL Urban Gris', prix: 99.00, qte: 1 }
-            ];
-
             let total = 0;
-            articles.forEach((item, index) => {
-                const itemTotal = item.prix * item.qte;
-                total += itemTotal;
-                message += `${index + 1}. ${item.nom} × ${item.qte} = ${itemTotal.toFixed(2)} FCFA\n`;
-            });
+            if (cart && cart.length > 0) {
+                cart.forEach((item, index) => {
+                    const prix = parseFloat(item.prix || item.price || 0);
+                    const quantite = parseInt(item.quantite || item.quantity || 1);
+                    const itemTotal = prix * quantite;
+                    total += itemTotal;
+                    const nom = item.nom || item.name || 'Produit';
+                    message += `${index + 1}. ${nom} × ${quantite} = ${itemTotal.toFixed(2)} FCFA\n`;
+                });
+            } else {
+                // Fallback si le panier est vide
+                message += `1. Aucun article dans le panier\n`;
+            }
 
             message += `───────────────────\n`;
             message += `💰 *Total :* ${total.toFixed(2)} FCFA\n\n`;
