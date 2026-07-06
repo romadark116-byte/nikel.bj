@@ -68,20 +68,6 @@
             box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.2);
         }
 
-        /* Placeholder pour miniatures manquantes */
-        .product-gallery .thumbnails .thumb-placeholder {
-            border-radius: 12px;
-            border: 2px dashed #ddd;
-            background: #f8f8f8;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ccc;
-            font-size: 1.5rem;
-            height: 80px;
-            cursor: default;
-        }
-
         .product-info h1 {
             font-family: 'Playfair Display', serif;
             font-size: 2.2rem;
@@ -266,8 +252,7 @@
             .product-gallery .main-image {
                 height: 300px;
             }
-            .product-gallery .thumbnails .thumb,
-            .product-gallery .thumbnails .thumb-placeholder {
+            .product-gallery .thumbnails .thumb {
                 height: 60px;
             }
             .product-info h1 {
@@ -311,7 +296,7 @@
                            style="padding:8px 16px; border:2px solid var(--light-gray); border-radius:50px; font-size:0.9rem; outline:none; transition:all 0.3s; width:160px; background:var(--off-white);"
                            onfocus="this.style.width='220px'; this.style.borderColor='var(--gold)'" 
                            onblur="this.style.width='160px'; this.style.borderColor='var(--light-gray)'">
-                    <button onclick="handleSearch()" style="background:linear-gradient(135deg, var(--gold), var(--accent-dark)); border:none; border-radius:50%; width:38px; height:38px; color:white; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; justify-content:center;">
+                    <button onclick="handleSearch()" style="background:linear-gradient(135deg, var(--gold), var(--accent-dark)); border:none; border-radius:50px; width:38px; height:38px; color:white; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; justify-content:center;">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
@@ -518,18 +503,30 @@
             const prixOriginal = product.prix_original && product.prix_original > product.prix ? product.prix_original : null;
             const promo = product.promo || 0;
             
-            // 🖼️ Récupérer les miniatures depuis les colonnes mini1, mini2, mini3, mini4
-            const thumbnails = [
-                product.mini1,
-                product.mini2,
-                product.mini3,
-                product.mini4
-            ].filter(url => url && url.trim() !== '');
+            // 🖼️ Récupérer les miniatures
+            // mini1 est toujours l'image principale (image_url)
+            // mini2, mini3, mini4 sont les miniatures supplémentaires
+            const mainImageUrl = product.image_url ? getImageUrl(product.image_url) : 'https://via.placeholder.com/600x600/1a1a1a/FFFFFF?text=NIKEL';
+            
+            // Construire la liste des miniatures (uniquement celles qui existent)
+            const thumbnails = [];
+            // mini1 = image principale
+            if (product.image_url) {
+                thumbnails.push(product.image_url);
+            }
+            // mini2, mini3, mini4 si elles existent
+            if (product.mini2 && product.mini2.trim() !== '') {
+                thumbnails.push(product.mini2);
+            }
+            if (product.mini3 && product.mini3.trim() !== '') {
+                thumbnails.push(product.mini3);
+            }
+            if (product.mini4 && product.mini4.trim() !== '') {
+                thumbnails.push(product.mini4);
+            }
 
-            // Image principale
-            const mainImageUrl = product.image_url 
-                ? getImageUrl(product.image_url) 
-                : (thumbnails.length > 0 ? getImageUrl(thumbnails[0]) : 'https://via.placeholder.com/600x600/1a1a1a/FFFFFF?text=NIKEL');
+            // Si une seule image, on affiche juste la grande, pas de miniatures
+            const hasThumbnails = thumbnails.length > 1;
 
             container.innerHTML = `
                 <!-- ===== GALERIE ===== -->
@@ -541,22 +538,17 @@
                          onerror="this.src='https://via.placeholder.com/600x600/1a1a1a/FFFFFF?text=Image'">
                     ${promo > 0 ? `<span class="badge-promo">-${promo}%</span>` : ''}
                     
-                    <div class="thumbnails">
-                        ${thumbnails.map((img, index) => `
-                            <img src="${getImageUrl(img)}" 
-                                 alt="${product.nom} - vue ${index + 1}"
-                                 class="thumb ${index === 0 ? 'active' : ''}"
-                                 onclick="changeMainImage('${getImageUrl(img)}', this)"
-                                 onerror="this.style.display='none'">
-                        `).join('')}
-                        
-                        <!-- Si moins de 4 miniatures, ajouter des placeholders -->
-                        ${Array.from({ length: Math.max(0, 4 - thumbnails.length) }).map(() => `
-                            <div class="thumb-placeholder">
-                                <i class="fas fa-plus"></i>
-                            </div>
-                        `).join('')}
-                    </div>
+                    ${hasThumbnails ? `
+                        <div class="thumbnails">
+                            ${thumbnails.map((img, index) => `
+                                <img src="${getImageUrl(img)}" 
+                                     alt="${product.nom} - vue ${index + 1}"
+                                     class="thumb ${index === 0 ? 'active' : ''}"
+                                     onclick="changeMainImage('${getImageUrl(img)}', this)"
+                                     onerror="this.style.display='none'">
+                            `).join('')}
+                        </div>
+                    ` : ''}
                 </div>
 
                 <!-- ===== INFOS ===== -->
