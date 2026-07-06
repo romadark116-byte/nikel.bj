@@ -171,41 +171,11 @@
             pointer-events: none;
         }
 
-        /* Toast notification */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 16px 24px;
-            border-radius: 12px;
-            color: white;
-            font-weight: 500;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            z-index: 1000;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.5s ease;
-            max-width: 400px;
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
         }
 
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .toast-success {
-            background: #28a745;
-        }
-
-        .toast-error {
-            background: #dc3545;
-        }
-
-        .toast-info {
-            background: #17a2b8;
-        }
-
-        /* Spinner bouton */
         .btn-spinner {
             display: inline-block;
             width: 16px;
@@ -221,44 +191,81 @@
             to { transform: rotate(360deg); }
         }
 
-        .btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-
-        /* Success animation */
-        .form-success {
+        /* ===== PAGE DE SUCCÈS ===== */
+        .success-page {
             display: none;
             text-align: center;
-            padding: 30px 20px;
+            padding: 60px 20px;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            animation: fadeInUp 0.6s ease;
         }
 
-        .form-success.show {
+        .success-page.show {
             display: block;
-            animation: fadeInUp 0.5s ease;
         }
 
-        .form-success i {
+        .success-page .success-icon {
             font-size: 4rem;
             color: #28a745;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
-        .form-success h4 {
+        .success-page h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
+            font-size: 2rem;
             color: var(--dark-gray);
             margin-bottom: 10px;
         }
 
-        .form-success p {
+        .success-page p {
             color: var(--gray);
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .success-page .success-message {
+            background: #f8f6f0;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px auto;
+            max-width: 500px;
+            text-align: left;
+            border-left: 4px solid var(--gold);
+        }
+
+        .success-page .success-message strong {
+            color: var(--dark-gray);
+        }
+
+        .success-page .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .success-page .btn-group .btn {
+            min-width: 180px;
+        }
+
+        .btn-secondary {
+            background: var(--off-white);
+            color: var(--dark-gray);
+            border: 2px solid var(--light-gray);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-gray);
+            transform: translateY(-2px);
         }
 
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
@@ -266,45 +273,9 @@
             }
         }
 
-        /* Tooltip pour l'état de l'envoi */
-        .sending-status {
+        /* Masquer le formulaire */
+        .contact-form-wrapper.hidden {
             display: none;
-            padding: 10px 16px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            text-align: center;
-        }
-
-        .sending-status.show {
-            display: block;
-        }
-
-        .sending-status.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .sending-status.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .sending-status .retry-btn {
-            margin-top: 8px;
-            padding: 6px 16px;
-            border: none;
-            border-radius: 6px;
-            background: var(--gold);
-            color: white;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .sending-status .retry-btn:hover {
-            background: var(--accent-dark);
         }
 
         @media (max-width: 992px) {
@@ -322,10 +293,8 @@
             .contact-item {
                 padding: 12px;
             }
-            .toast {
-                left: 20px;
-                right: 20px;
-                bottom: 20px;
+            .success-page .btn-group .btn {
+                min-width: 140px;
             }
         }
     </style>
@@ -425,45 +394,66 @@
                 </div>
             </div>
 
-            <!-- ===== FORMULAIRE DE CONTACT ===== -->
+            <!-- ===== FORMULAIRE + PAGE DE SUCCÈS ===== -->
             <div class="contact-form animate-slide-left">
-                <form id="contactForm" novalidate>
-                    <div class="form-group">
-                        <label for="formName">Nom complet <span class="required">*</span></label>
-                        <input type="text" id="formName" required placeholder="Jean Dupont">
-                    </div>
-                    <div class="form-group">
-                        <label for="formEmail">Email <span class="required">*</span></label>
-                        <input type="email" id="formEmail" required placeholder="jean@email.com">
-                    </div>
-                    <div class="form-group">
-                        <label for="formSubject">Sujet <span class="required">*</span></label>
-                        <select id="formSubject" required>
-                            <option value="">Choisir un sujet</option>
-                            <option value="Demande d'information">Demande d'information</option>
-                            <option value="Problème de commande">Problème de commande</option>
-                            <option value="Retour produit">Retour produit</option>
-                            <option value="Partenariat">Partenariat</option>
-                            <option value="Autre">Autre</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="formMessage">Message <span class="required">*</span></label>
-                        <textarea id="formMessage" rows="5" required placeholder="Votre message..."></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary" id="submitBtn">
-                        Envoyer <i class="fas fa-paper-plane"></i>
-                    </button>
-                </form>
+                <!-- Formulaire -->
+                <div id="contactFormWrapper" class="contact-form-wrapper">
+                    <form id="contactForm" novalidate>
+                        <div class="form-group">
+                            <label for="formName">Nom complet <span class="required">*</span></label>
+                            <input type="text" id="formName" required placeholder="Saississez votre nom et prénom">
+                        </div>
+                        <div class="form-group">
+                            <label for="formEmail">Email <span class="required">*</span></label>
+                            <input type="email" id="formEmail" required placeholder="Saississez votre adresse email valide">
+                        </div>
+                        <div class="form-group">
+                            <label for="formSubject">Sujet <span class="required">*</span></label>
+                            <select id="formSubject" required>
+                                <option value="">Choisissez un sujet</option>
+                                <option value="Demande d'information">Demande d'information</option>
+                                <option value="Problème de commande">Problème de commande</option>
+                                <option value="Retour produit">Retour produit</option>
+                                <option value="Partenariat">Partenariat</option>
+                                <option value="Autre">Autre</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="formMessage">Message <span class="required">*</span></label>
+                            <textarea id="formMessage" rows="5" required placeholder="Votre message..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            Envoyer <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
 
-                <!-- Message de succès -->
-                <div class="form-success" id="formSuccess">
-                    <i class="fas fa-check-circle"></i>
-                    <h4>Message envoyé !</h4>
-                    <p>Nous vous répondrons dans les plus brefs délais.</p>
-                    <button class="btn btn-secondary" onclick="resetForm()" style="margin-top:15px;">
-                        <i class="fas fa-arrow-left"></i> Retour au formulaire
-                    </button>
+                <!-- Page de succès -->
+                <div class="success-page" id="successPage">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h2>Message envoyé !</h2>
+                    <p>Votre message a bien été pris en compte.</p>
+                    <p style="font-size: 0.95rem; color: var(--gray);">
+                        Nous vous répondrons dans les plus brefs délais.
+                    </p>
+
+                    <div class="success-message">
+                        <p style="margin: 0; font-size: 0.9rem;">
+                            <strong>📧 Un email a été ouvert</strong><br>
+                            Il ne vous reste plus qu'à cliquer sur <strong>"Envoyer"</strong> dans Gmail pour finaliser l'envoi.
+                        </p>
+                    </div>
+
+                    <div class="btn-group">
+                        <a href="index.html" class="btn btn-primary">
+                            <i class="fas fa-home"></i> Retour à l'accueil
+                        </a>
+                        <button onclick="resetForm()" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Envoyer un autre message
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -512,7 +502,6 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     
     <script>
         // ==========================================
@@ -521,95 +510,59 @@
         const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
 
-        const EMAILJS_CONFIG = {
-            SERVICE_ID: 'service_issxck6',
-            TEMPLATE_ID: 'template_iu6d9ge',
-            PUBLIC_KEY: 'user_jfWgXl5mH7CJmkoQc'
-        };
-
         let supabaseClient;
-        let isSending = false;
-        let lastFormData = null;
 
         // ==========================================
-        // TOAST NOTIFICATION
+        // OUVRIR GMAIL AVEC LE MESSAGE PRÉ-REMPLI
         // ==========================================
-        function showToast(message, type = 'info') {
-            const existingToasts = document.querySelectorAll('.toast');
-            existingToasts.forEach(toast => toast.remove());
+        function openGmail(formData) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('fr-FR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            const timeStr = now.toLocaleTimeString('fr-FR', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
 
-            const toast = document.createElement('div');
-            toast.className = `toast toast-${type}`;
-            toast.textContent = message;
-            document.body.appendChild(toast);
+            const subject = encodeURIComponent(`Nouveau message de ${formData.name}`);
+            const body = encodeURIComponent(
+                `A message by ${formData.name} has been received. Kindly respond at your earliest convenience.\n\n` +
+                `─────────────────────────────────────────────\n` +
+                `👤  ${formData.name}\n` +
+                `📧  ${formData.email}\n` +
+                `📌  ${formData.subject}\n` +
+                `📅  ${dateStr} à ${timeStr}\n` +
+                `─────────────────────────────────────────────\n\n` +
+                `${formData.message}\n\n` +
+                `─────────────────────────────────────────────\n` +
+                `Cet email a été envoyé depuis le site NIKEL.`
+            );
 
-            setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 500);
-            }, 5000);
+            const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${formData.to_email}&su=${subject}&body=${body}`;
+            window.open(gmailLink, '_blank');
         }
 
         // ==========================================
-        // SEND EMAIL WITH EMAILJS (ENVOI DIRECT)
+        // AFFICHER LA PAGE DE SUCCÈS
         // ==========================================
-        async function sendEmailWithEmailJS(formData) {
-            try {
-                if (typeof emailjs === 'undefined') {
-                    console.warn('⚠️ EmailJS non chargé');
-                    return { success: false, error: 'EmailJS non chargé' };
-                }
-
-                emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
-
-                const response = await emailjs.send(
-                    EMAILJS_CONFIG.SERVICE_ID,
-                    EMAILJS_CONFIG.TEMPLATE_ID,
-                    {
-                        from_name: formData.name,
-                        from_email: formData.email,
-                        subject: formData.subject,
-                        message: formData.message,
-                        to_email: formData.to_email
-                    }
-                );
-
-                console.log('✅ Email envoyé avec succès:', response);
-                return { success: true, response };
-
-            } catch (error) {
-                console.error('❌ Erreur EmailJS:', error);
-                if (error.text) {
-                    console.error('📝 Détail erreur:', error.text);
-                }
-                return { success: false, error: error.message || error.text || 'Erreur inconnue' };
-            }
+        function showSuccessPage() {
+            document.getElementById('contactFormWrapper').classList.add('hidden');
+            document.getElementById('successPage').classList.add('show');
         }
 
         // ==========================================
-        // ENVOI AVEC TENTATIVES MULTIPLES
+        // RÉINITIALISER LE FORMULAIRE
         // ==========================================
-        async function sendWithRetry(formData, maxRetries = 2) {
-            let lastError = null;
-            
-            for (let attempt = 1; attempt <= maxRetries; attempt++) {
-                console.log(`📤 Tentative ${attempt}/${maxRetries}...`);
-                
-                const result = await sendEmailWithEmailJS(formData);
-                
-                if (result.success) {
-                    return result;
-                }
-                
-                lastError = result.error;
-                
-                // Attendre avant de réessayer
-                if (attempt < maxRetries) {
-                    await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-                }
-            }
-            
-            return { success: false, error: lastError };
+        function resetForm() {
+            document.getElementById('contactForm').reset();
+            document.getElementById('contactFormWrapper').classList.remove('hidden');
+            document.getElementById('successPage').classList.remove('show');
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('submitBtn').innerHTML = 'Envoyer <i class="fas fa-paper-plane"></i>';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // ==========================================
@@ -691,27 +644,7 @@
         }
 
         // ==========================================
-        // SHOW SUCCESS MESSAGE
-        // ==========================================
-        function showSuccessMessage() {
-            document.getElementById('contactForm').style.display = 'none';
-            document.getElementById('formSuccess').classList.add('show');
-        }
-
-        // ==========================================
-        // RESET FORM
-        // ==========================================
-        function resetForm() {
-            document.getElementById('contactForm').reset();
-            document.getElementById('contactForm').style.display = 'block';
-            document.getElementById('formSuccess').classList.remove('show');
-            document.getElementById('submitBtn').disabled = false;
-            document.getElementById('submitBtn').innerHTML = 'Envoyer <i class="fas fa-paper-plane"></i>';
-            isSending = false;
-        }
-
-        // ==========================================
-        // FORM SUBMISSION (ENVOI DIRECT SANS OUVRIR GMAIL)
+        // FORM SUBMISSION
         // ==========================================
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Page Contact - Initialisation...');
@@ -726,30 +659,26 @@
                 return;
             }
 
-            form.addEventListener('submit', async function(e) {
+            form.addEventListener('submit', function(e) {
                 e.preventDefault();
-
-                // Éviter les doubles soumissions
-                if (isSending) {
-                    showToast('Envoi en cours, veuillez patienter...', 'info');
-                    return;
-                }
 
                 const name = document.getElementById('formName').value.trim();
                 const email = document.getElementById('formEmail').value.trim();
                 const subject = document.getElementById('formSubject').value;
                 const message = document.getElementById('formMessage').value.trim();
 
-                // Validation
-                if (!name) { showToast('Veuillez entrer votre nom.', 'error'); return; }
-                if (!email) { showToast('Veuillez entrer votre email.', 'error'); return; }
-                if (!subject) { showToast('Veuillez choisir un sujet.', 'error'); return; }
-                if (!message) { showToast('Veuillez écrire votre message.', 'error'); return; }
-                if (!email.includes('@')) { showToast('Email invalide.', 'error'); return; }
+                if (!name || !email || !subject || !message) {
+                    alert('Veuillez remplir tous les champs.');
+                    return;
+                }
+                if (!email.includes('@')) {
+                    alert('Veuillez entrer un email valide.');
+                    return;
+                }
 
                 const toEmail = document.getElementById('adminEmail').textContent;
-                if (toEmail === 'Chargement...' || toEmail === 'contact@nikel.com') {
-                    showToast('L\'email de destination n\'est pas disponible.', 'error');
+                if (toEmail === 'Chargement...') {
+                    alert('L\'email de destination n\'est pas disponible.');
                     return;
                 }
 
@@ -761,46 +690,18 @@
                     to_email: toEmail
                 };
 
-                lastFormData = formData;
-                isSending = true;
-
-                // Désactiver le bouton
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<span class="btn-spinner"></span> Envoi en cours...';
+                submitBtn.innerHTML = '<span class="btn-spinner"></span> Ouverture de Gmail...';
 
-                try {
-                    // Tentative d'envoi avec EmailJS (2 tentatives max)
-                    const result = await sendWithRetry(formData, 2);
+                // Ouvrir Gmail
+                openGmail(formData);
 
-                    if (result.success) {
-                        showSuccessMessage();
-                        showToast('✅ Votre message a été envoyé avec succès !', 'success');
-                        return;
-                    }
-
-                    // Si l'envoi échoue, proposer de réessayer
-                    showToast('❌ L\'envoi a échoué. Voulez-vous réessayer ?', 'error');
-                    
-                    // Réactiver le bouton pour réessayer
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = '🔄 Réessayer <i class="fas fa-redo"></i>';
-                    
-                    // Attacher un gestionnaire pour réessayer
-                    submitBtn.onclick = function() {
-                        form.dispatchEvent(new Event('submit'));
-                    };
-
-                } catch (error) {
-                    console.error('❌ Erreur:', error);
-                    showToast('❌ Une erreur est survenue. Veuillez réessayer.', 'error');
+                // Afficher la page de succès
+                setTimeout(() => {
+                    showSuccessPage();
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = 'Envoyer <i class="fas fa-paper-plane"></i>';
-                } finally {
-                    // Si le formulaire n'a pas été réinitialisé par le succès
-                    if (!document.getElementById('formSuccess').classList.contains('show')) {
-                        isSending = false;
-                    }
-                }
+                }, 600);
             });
         });
 
