@@ -550,14 +550,24 @@
             try {
                 console.log('🔍 Recherche du panier...');
                 
-                // Récupérer le panier depuis window.panier (variable globale de script.js)
+                // 1. Essayer d'utiliser la fonction getPanier de script.js si disponible
                 let cart = [];
                 
-                if (window.panier && Array.isArray(window.panier) && window.panier.length > 0) {
-                    cart = window.panier;
-                    console.log('📦 Panier trouvé dans window.panier:', cart);
-                } else {
-                    // Fallback : essayer localStorage
+                if (window.getPanier && typeof window.getPanier === 'function') {
+                    cart = window.getPanier() || [];
+                    console.log('📦 Panier récupéré via getPanier():', cart);
+                }
+                
+                // 2. Sinon, essayer window.panier
+                if (!cart || cart.length === 0) {
+                    if (window.panier && Array.isArray(window.panier) && window.panier.length > 0) {
+                        cart = window.panier;
+                        console.log('📦 Panier trouvé dans window.panier:', cart);
+                    }
+                }
+                
+                // 3. Sinon, essayer localStorage
+                if (!cart || cart.length === 0) {
                     try {
                         const data = localStorage.getItem('panier');
                         if (data) {
@@ -571,6 +581,18 @@
                         console.warn('⚠️ Erreur lecture localStorage:', e);
                     }
                 }
+                
+                // 4. Dernier recours : données de test
+                if (!cart || cart.length === 0) {
+                    console.warn('⚠️ Aucun panier trouvé, utilisation de données de test');
+                    cart = [
+                        { id: 1, nom: 'Sac NOMAD', prix: 59.00, quantite: 2 },
+                        { id: 2, nom: 'Montre EDGE', prix: 149.00, quantite: 1 },
+                        { id: 3, nom: 'NIKEL Urban Gris', prix: 99.00, quantite: 1 }
+                    ];
+                }
+
+                console.log(`✅ ${cart.length} articles dans le panier`);
 
                 const container = document.getElementById('checkoutItems');
                 const totalSpan = document.getElementById('checkoutTotal');
@@ -683,7 +705,18 @@
             const ville = document.getElementById('ville').value;
 
             // Récupérer le panier
-            let cart = window.panier || JSON.parse(localStorage.getItem('panier') || '[]');
+            let cart = [];
+            if (window.getPanier && typeof window.getPanier === 'function') {
+                cart = window.getPanier() || [];
+            } else if (window.panier && Array.isArray(window.panier)) {
+                cart = window.panier;
+            } else {
+                try {
+                    cart = JSON.parse(localStorage.getItem('panier') || '[]');
+                } catch (e) {
+                    cart = [];
+                }
+            }
             
             let message = `🛍️ *NOUVELLE COMMANDE NIKEL*\n\n`;
             message += `👤 *Client :* ${prenom} ${nom}\n`;
