@@ -312,6 +312,7 @@
                             <i class="fas fa-user" style="color:var(--gold);"></i> Vos coordonnées
                         </h3>
                         <form id="checkoutForm">
+                            <!-- Prénom & Nom -->
                             <div class="grid-2-col">
                                 <div class="form-group">
                                     <label>Prénom</label>
@@ -323,11 +324,13 @@
                                 </div>
                             </div>
 
+                            <!-- Email -->
                             <div class="form-group" style="margin-top:12px;">
                                 <label>Email</label>
                                 <input type="email" id="email" required placeholder="Saisissez votre adresse e-mail">
                             </div>
 
+                            <!-- Téléphone avec indicatif -->
                             <div class="form-group" style="margin-top:12px;">
                                 <label>Téléphone (WhatsApp)</label>
                                 <div class="phone-group">
@@ -343,6 +346,7 @@
                                 <small id="phoneHelp" style="display:block; color:#888; font-size:0.8rem; margin-top:4px;">10 chiffres (ex: 01 23 45 67 89)</small>
                             </div>
 
+                            <!-- Pays & Ville sur la même ligne -->
                             <div class="grid-2-col" style="margin-top:12px;">
                                 <div class="form-group">
                                     <label>Pays</label>
@@ -460,6 +464,7 @@
         const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
 
         let supabaseClient;
+        let allProducts = [];
 
         // ==========================================
         // CONFIGURATION TÉLÉPHONE
@@ -532,7 +537,36 @@
         }
 
         // ==========================================
-        // CHARGER LE PANIER (avec images comme dans panier.js)
+        // CHARGER LES PRODUITS DEPUIS SUPABASE
+        // ==========================================
+        async function loadAllProducts() {
+            try {
+                if (!supabaseClient) {
+                    const { createClient } = supabase;
+                    supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                }
+
+                const { data, error } = await supabaseClient
+                    .from('produits')
+                    .select('*');
+
+                if (error) {
+                    console.error('❌ Erreur chargement produits:', error);
+                    return [];
+                }
+
+                allProducts = data || [];
+                console.log('✅ Produits chargés:', allProducts.length);
+                return allProducts;
+
+            } catch (error) {
+                console.error('❌ Erreur:', error);
+                return [];
+            }
+        }
+
+        // ==========================================
+        // CHARGER LE PANIER
         // ==========================================
         async function loadCartItems() {
             try {
@@ -541,12 +575,16 @@
                 let cart = [];
                 if (window.panier && Array.isArray(window.panier) && window.panier.length > 0) {
                     cart = window.panier;
+                    console.log('📦 Panier trouvé dans window.panier:', cart);
                 } else {
                     try {
                         const data = localStorage.getItem('panier');
                         if (data) {
                             const parsed = JSON.parse(data);
-                            if (parsed && parsed.length > 0) cart = parsed;
+                            if (parsed && parsed.length > 0) {
+                                cart = parsed;
+                                console.log('📦 Panier trouvé dans localStorage:', cart);
+                            }
                         }
                     } catch (e) {}
                 }
@@ -568,35 +606,14 @@
                     return;
                 }
 
-                // Initialiser Supabase si besoin
-                if (!supabaseClient) {
-                    const { createClient } = supabase;
-                    supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                }
-
-                // Récupérer les IDs des produits
-                const productIds = cart.map(item => item.id).filter(id => id);
-                console.log('🆔 IDs des produits:', productIds);
-
-                // Récupérer les produits depuis Supabase
-                let products = [];
-                if (productIds.length > 0) {
-                    const { data, error } = await supabaseClient
-                        .from('produits')
-                        .select('id, nom, image_url, prix, categorie')
-                        .in('id', productIds);
-
-                    if (error) {
-                        console.error('❌ Erreur récupération produits:', error);
-                    } else {
-                        products = data || [];
-                        console.log('📦 Produits récupérés:', products);
-                    }
+                // S'assurer que les produits sont chargés
+                if (allProducts.length === 0) {
+                    await loadAllProducts();
                 }
 
                 // 🔥 Comme dans panier.js : récupérer les images
                 const cartItems = cart.map(item => {
-                    const product = products.find(p => p.id === item.id);
+                    const product = allProducts.find(p => p.id === item.id);
                     return {
                         ...item,
                         image: product ? product.image_url : 'https://via.placeholder.com/100x100/1a1a1a/FFFFFF?text=NIKEL',
@@ -616,7 +633,7 @@
                     const itemTotal = prix * quantite;
                     total += itemTotal;
 
-                    // 🔥 Utiliser l'image récupérée comme dans panier.js
+                    // 🔥 Utiliser l'image récupérée
                     let imageUrl = item.image || 'https://via.placeholder.com/60x60/1a1a1a/FFFFFF?text=NIKEL';
                     
                     // Si l'URL est un chemin relatif, construire l'URL complète
@@ -679,14 +696,18 @@
         // ==========================================
         // INITIALISATION
         // ==========================================
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             console.log('🚀 Page de paiement chargée');
             
+            // Initialiser Supabase et charger les produits
             const { createClient } = supabase;
             supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            await loadAllProducts();
             
-            loadCartItems();
+            // Charger le panier
+            await loadCartItems();
 
+            // Configurer le téléphone par défaut
             document.getElementById('indicatif').value = '+229';
             updatePhonePlaceholder();
             updatePaysFromIndicatif();
