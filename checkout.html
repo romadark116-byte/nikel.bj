@@ -45,13 +45,28 @@
 
         .cart-item-checkout {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 14px;
             padding: 12px 0;
             border-bottom: 1px solid var(--light-gray);
         }
 
         .cart-item-checkout:last-child {
             border-bottom: none;
+        }
+
+        .cart-item-checkout .item-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: #f0f0f0;
+        }
+
+        .cart-item-checkout .item-info {
+            flex: 1;
+            min-width: 0;
         }
 
         .cart-item-checkout .item-row {
@@ -63,22 +78,23 @@
         .cart-item-checkout .item-name {
             font-weight: 600;
             color: var(--dark-gray);
+            font-size: 0.95rem;
         }
 
         .cart-item-checkout .item-total {
             font-weight: 700;
             color: var(--accent-dark);
+            font-size: 0.95rem;
         }
 
         .cart-item-checkout .item-details {
             display: flex;
             justify-content: space-between;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--gray);
             margin-top: 4px;
         }
 
-        /* ===== STYLES POUR LE FORMULAIRE ===== */
         .form-group label {
             font-size: 0.85rem;
             font-weight: 600;
@@ -181,6 +197,39 @@
         .pays-display i {
             color: var(--gold);
             font-size: 1rem;
+        }
+
+        .loading-cart {
+            text-align: center;
+            padding: 30px;
+            color: #888;
+        }
+
+        .loading-cart i {
+            font-size: 1.5rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .cart-empty {
+            text-align: center;
+            padding: 30px;
+            color: #888;
+        }
+
+        .cart-empty i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 10px;
+            color: #ddd;
+        }
+
+        .cart-empty a {
+            color: var(--gold);
+            text-decoration: underline;
         }
 
         @media (max-width: 768px) {
@@ -330,52 +379,23 @@
                         </h3>
                         
                         <div id="checkoutItems" style="margin-bottom:20px; flex:1;">
-                            <!-- Exemple d'article avec sous-total -->
-                            <div class="cart-item-checkout">
-                                <div class="item-row">
-                                    <span class="item-name">Sac NOMAD</span>
-                                    <span class="item-total">354,00 FCFA</span>
-                                </div>
-                                <div class="item-details">
-                                    <span>Prix unitaire : 59,00 FCFA</span>
-                                    <span>Quantité : 6</span>
-                                </div>
-                            </div>
-
-                            <div class="cart-item-checkout">
-                                <div class="item-row">
-                                    <span class="item-name">Montre EDGE</span>
-                                    <span class="item-total">149,00 FCFA</span>
-                                </div>
-                                <div class="item-details">
-                                    <span>Prix unitaire : 149,00 FCFA</span>
-                                    <span>Quantité : 1</span>
-                                </div>
-                            </div>
-
-                            <div class="cart-item-checkout">
-                                <div class="item-row">
-                                    <span class="item-name">NIKEL Urban Gris</span>
-                                    <span class="item-total">99,00 FCFA</span>
-                                </div>
-                                <div class="item-details">
-                                    <span>Prix unitaire : 99,00 FCFA</span>
-                                    <span>Quantité : 1</span>
-                                </div>
+                            <div class="loading-cart">
+                                <i class="fas fa-spinner"></i>
+                                <p style="margin-top:8px;">Chargement du panier...</p>
                             </div>
                         </div>
 
                         <div style="border-top:2px solid var(--light-gray); padding-top:16px; margin-top:auto;">
                             <div style="display:none;">
-                                <span id="subtotal">602,00 FCFA</span>
+                                <span id="subtotal">0 FCFA</span>
                             </div>
                             <div style="display:flex; justify-content:space-between; padding:8px 0; font-size:1.2rem; font-weight:700; border-top:2px solid var(--light-gray); margin-top:8px; padding-top:16px;">
                                 <span>Total</span>
-                                <span id="checkoutTotal" style="color:var(--accent-dark);">602,00 FCFA</span>
+                                <span id="checkoutTotal" style="color:var(--accent-dark);">0 FCFA</span>
                             </div>
                         </div>
 
-                        <button class="btn btn-primary" id="confirmOrderBtn" style="width:100%; justify-content:center; margin-top:20px; padding:14px; font-size:1rem; border:none; border-radius:8px; background:linear-gradient(135deg, var(--gold), var(--accent-dark)); color:white; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:10px;">
+                        <button class="btn btn-primary" id="confirmOrderBtn" style="width:100%; justify-content:center; margin-top:20px; padding:14px; font-size:1rem; border:none; border-radius:8px; background:linear-gradient(135deg, var(--gold), var(--accent-dark)); color:white; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:10px;" disabled>
                             <i class="fab fa-whatsapp"></i> Finalisez votre achat sur WhatsApp
                         </button>
                         <a href="panier.html" style="display:block; text-align:center; margin-top:12px; color:var(--gray); text-decoration:none;">
@@ -438,8 +458,17 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // ==========================================
+        // CONFIGURATION SUPABASE
+        // ==========================================
+        const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
+
+        let supabaseClient;
+        let productsCache = {};
+
         // ==========================================
         // CONFIGURATION TÉLÉPHONE (5 PAYS)
         // ==========================================
@@ -529,6 +558,186 @@
         }
 
         // ==========================================
+        // RÉCUPÉRER LES PRODUITS DEPUIS SUPABASE
+        // ==========================================
+        async function getProductsFromSupabase(productIds) {
+            try {
+                if (!supabaseClient) {
+                    const { createClient } = supabase;
+                    supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                }
+
+                // Vérifier le cache
+                const uncachedIds = productIds.filter(id => !productsCache[id]);
+                
+                if (uncachedIds.length === 0) {
+                    const results = {};
+                    productIds.forEach(id => {
+                        if (productsCache[id]) {
+                            results[id] = productsCache[id];
+                        }
+                    });
+                    return results;
+                }
+
+                console.log('📥 Récupération des produits depuis Supabase:', uncachedIds);
+
+                const { data, error } = await supabaseClient
+                    .from('produits')
+                    .select('id, nom, image_url, prix')
+                    .in('id', uncachedIds);
+
+                if (error) {
+                    console.error('❌ Erreur récupération produits:', error);
+                    return {};
+                }
+
+                if (data) {
+                    data.forEach(product => {
+                        productsCache[product.id] = product;
+                    });
+                }
+
+                const results = {};
+                productIds.forEach(id => {
+                    if (productsCache[id]) {
+                        results[id] = productsCache[id];
+                    }
+                });
+
+                return results;
+
+            } catch (error) {
+                console.error('❌ Erreur:', error);
+                return {};
+            }
+        }
+
+        // ==========================================
+        // CHARGER LE PANIER
+        // ==========================================
+        async function loadCartItems() {
+            try {
+                console.log('🔍 Recherche du panier...');
+                
+                let cart = [];
+                let storageSource = 'aucun';
+
+                if (window.panier && Array.isArray(window.panier) && window.panier.length > 0) {
+                    cart = window.panier;
+                    storageSource = 'window.panier';
+                    console.log('📦 Panier trouvé dans window.panier:', cart);
+                } else {
+                    try {
+                        const data = localStorage.getItem('panier');
+                        if (data) {
+                            const parsed = JSON.parse(data);
+                            if (parsed && parsed.length > 0) {
+                                cart = parsed;
+                                storageSource = 'localStorage';
+                                console.log('📦 Panier trouvé dans localStorage:', cart);
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('⚠️ Erreur lecture localStorage:', e);
+                    }
+                }
+
+                const container = document.getElementById('checkoutItems');
+                const totalSpan = document.getElementById('checkoutTotal');
+                const confirmBtn = document.getElementById('confirmOrderBtn');
+                
+                if (!cart || cart.length === 0) {
+                    container.innerHTML = `
+                        <div class="cart-empty">
+                            <i class="fas fa-shopping-bag"></i>
+                            <p>Votre panier est vide</p>
+                            <a href="boutique.html">Découvrir nos produits</a>
+                        </div>
+                    `;
+                    totalSpan.textContent = '0 FCFA';
+                    confirmBtn.disabled = true;
+                    return;
+                }
+
+                // Récupérer les IDs des produits
+                const productIds = cart.map(item => item.id).filter(id => id);
+                console.log('🆔 IDs des produits:', productIds);
+
+                let productsData = {};
+                if (productIds.length > 0) {
+                    productsData = await getProductsFromSupabase(productIds);
+                    console.log('📦 Produits récupérés:', productsData);
+                }
+
+                let html = '';
+                let total = 0;
+
+                cart.forEach((item, index) => {
+                    const produitId = item.id;
+                    const productInfo = productsData[produitId] || {};
+                    
+                    const nom = productInfo.nom || item.nom || item.name || 'Produit';
+                    const prix = parseFloat(productInfo.prix || item.prix || item.price || 0);
+                    const quantite = parseInt(item.quantite || item.quantity || 1);
+                    const itemTotal = prix * quantite;
+                    total += itemTotal;
+
+                    // Récupérer l'image depuis Supabase
+                    let imageUrl = productInfo.image_url || item.image || item.image_url || '';
+                    
+                    if (imageUrl) {
+                        if (!imageUrl.startsWith('http')) {
+                            imageUrl = `${SUPABASE_URL}/storage/v1/object/public/produits/${imageUrl}`;
+                        }
+                    }
+
+                    console.log(`🖼️ Image pour ${nom}:`, imageUrl || 'Aucune image');
+
+                    html += `
+                        <div class="cart-item-checkout">
+                            <img src="${imageUrl || 'https://via.placeholder.com/60x60/1a1a1a/FFFFFF?text=NIKEL'}" 
+                                 alt="${nom}" 
+                                 class="item-image" 
+                                 onerror="this.style.display='none'">
+                            <div class="item-info">
+                                <div class="item-row">
+                                    <span class="item-name">${nom}</span>
+                                    <span class="item-total">${itemTotal.toFixed(2)} FCFA</span>
+                                </div>
+                                <div class="item-details">
+                                    <span>Prix unitaire : ${prix.toFixed(2)} FCFA</span>
+                                    <span>Quantité : ${quantite}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+                totalSpan.textContent = total.toFixed(2) + ' FCFA';
+                confirmBtn.disabled = false;
+
+                // Mettre à jour le badge du panier
+                const badge = document.querySelector('.panier-icon .badge');
+                if (badge) {
+                    const totalItems = cart.reduce((sum, item) => sum + (parseInt(item.quantite || item.quantity || 1)), 0);
+                    badge.textContent = totalItems;
+                }
+
+            } catch (error) {
+                console.error('❌ Erreur chargement panier:', error);
+                document.getElementById('checkoutItems').innerHTML = `
+                    <div class="cart-empty">
+                        <i class="fas fa-exclamation-circle" style="color:#e74c3c;"></i>
+                        <p>Erreur lors du chargement du panier</p>
+                        <a href="panier.html" style="color:var(--gold); text-decoration:underline;">Retour au panier</a>
+                    </div>
+                `;
+            }
+        }
+
+        // ==========================================
         // RECHERCHE
         // ==========================================
         function handleSearch() {
@@ -543,6 +752,15 @@
         // INITIALISATION
         // ==========================================
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Page de paiement chargée');
+            
+            // Initialiser Supabase
+            const { createClient } = supabase;
+            supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            
+            // Charger le panier
+            loadCartItems();
+
             // Configurer le téléphone par défaut
             document.getElementById('indicatif').value = '+229';
             updatePhonePlaceholder();
@@ -588,6 +806,9 @@
                 return;
             }
 
+            // Récupérer le panier
+            let cart = window.panier || JSON.parse(localStorage.getItem('panier') || '[]');
+            
             // Construire le message WhatsApp
             let message = `🛍️ *NOUVELLE COMMANDE NIKEL*\n\n`;
             message += `👤 *Client :* ${prenom} ${nom}\n`;
@@ -598,19 +819,17 @@
             message += `📦 *Articles commandés :*\n`;
             message += `───────────────────\n`;
 
-            // Articles (exemples)
-            const articles = [
-                { nom: 'Sac NOMAD', prix: 59.00, qte: 6 },
-                { nom: 'Montre EDGE', prix: 149.00, qte: 1 },
-                { nom: 'NIKEL Urban Gris', prix: 99.00, qte: 1 }
-            ];
-
             let total = 0;
-            articles.forEach((item, index) => {
-                const itemTotal = item.prix * item.qte;
-                total += itemTotal;
-                message += `${index + 1}. ${item.nom} × ${item.qte} = ${itemTotal.toFixed(2)} FCFA\n`;
-            });
+            if (cart && cart.length > 0) {
+                cart.forEach((item, index) => {
+                    const prix = parseFloat(item.prix || item.price || 0);
+                    const quantite = parseInt(item.quantite || item.quantity || 1);
+                    const itemTotal = prix * quantite;
+                    total += itemTotal;
+                    const nom = item.nom || item.name || 'Produit';
+                    message += `${index + 1}. ${nom} × ${quantite} = ${itemTotal.toFixed(2)} FCFA\n`;
+                });
+            }
 
             message += `───────────────────\n`;
             message += `💰 *Total :* ${total.toFixed(2)} FCFA\n\n`;
