@@ -246,6 +246,10 @@
         }
 
         @media (max-width: 768px) {
+            #productDetail {
+                grid-template-columns: 1fr !important;
+                gap: 30px !important;
+            }
             .product-detail {
                 padding: 20px 0;
             }
@@ -503,29 +507,23 @@
             const prixOriginal = product.prix_original && product.prix_original > product.prix ? product.prix_original : null;
             const promo = product.promo || 0;
             
-            // 🖼️ Récupérer les miniatures
-            // mini1 est toujours l'image principale (image_url)
-            // mini2, mini3, mini4 sont les miniatures supplémentaires
-            const mainImageUrl = product.image_url ? getImageUrl(product.image_url) : 'https://via.placeholder.com/600x600/1a1a1a/FFFFFF?text=NIKEL';
-            
-            // Construire la liste des miniatures (uniquement celles qui existent)
+            // 🖼️ Image principale
+            const mainImageUrl = product.image_url 
+                ? getImageUrl(product.image_url) 
+                : 'https://via.placeholder.com/600x600/1a1a1a/FFFFFF?text=NIKEL';
+
+            // 🖼️ Miniatures : mini1, mini2, mini3, mini4
             const thumbnails = [];
-            // mini1 = image principale
-            if (product.image_url) {
+            if (product.mini1) thumbnails.push(product.mini1);
+            if (product.mini2 && product.mini2.trim() !== '') thumbnails.push(product.mini2);
+            if (product.mini3 && product.mini3.trim() !== '') thumbnails.push(product.mini3);
+            if (product.mini4 && product.mini4.trim() !== '') thumbnails.push(product.mini4);
+
+            // Si pas de mini1, utiliser image_url
+            if (thumbnails.length === 0 && product.image_url) {
                 thumbnails.push(product.image_url);
             }
-            // mini2, mini3, mini4 si elles existent
-            if (product.mini2 && product.mini2.trim() !== '') {
-                thumbnails.push(product.mini2);
-            }
-            if (product.mini3 && product.mini3.trim() !== '') {
-                thumbnails.push(product.mini3);
-            }
-            if (product.mini4 && product.mini4.trim() !== '') {
-                thumbnails.push(product.mini4);
-            }
 
-            // Si une seule image, on affiche juste la grande, pas de miniatures
             const hasThumbnails = thumbnails.length > 1;
 
             container.innerHTML = `
@@ -728,9 +726,9 @@
         // ==========================================
         function showNotification(message, type = 'info') {
             const colors = {
-                success: 'var(--gold)',
+                success: '#27ae60',
                 error: '#e74c3c',
-                info: 'var(--primary)'
+                info: '#c9a84c'
             };
 
             const toast = document.createElement('div');
@@ -738,7 +736,7 @@
                 position: fixed;
                 bottom: 30px;
                 right: 30px;
-                background: var(--primary);
+                background: #1a1a1a;
                 color: white;
                 padding: 16px 24px;
                 border-radius: 14px;
@@ -746,23 +744,16 @@
                 box-shadow: 0 8px 40px rgba(0,0,0,0.25);
                 z-index: 9999;
                 max-width: 400px;
-                border-left: 4px solid ${colors[type] || colors.info};
                 font-size: 0.95rem;
                 display: flex;
                 align-items: center;
                 gap: 12px;
-                animation: slideUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                animation: slideUp 0.5s ease;
+                border-left: 4px solid ${colors[type] || colors.info};
             `;
-            
-            toast.innerHTML = `
-                <span style="font-size:1.2rem;">
-                    ${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}
-                </span>
-                <span>${message}</span>
-            `;
-            
+            toast.innerHTML = `<span>${message}</span>`;
             document.body.appendChild(toast);
-            
+
             setTimeout(() => {
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateY(20px)';
