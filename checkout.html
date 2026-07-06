@@ -546,58 +546,61 @@
         }
 
         // ==========================================
-        // CHARGER LE PANIER
+        // CHARGER LE PANIER DEPUIS LA VARIABLE GLOBALE
         // ==========================================
         function loadCartItems() {
             try {
                 console.log('🔍 Recherche du panier...');
                 
-                // 1. Essayer localStorage
-                let cart = null;
-                let storageSource = 'localStorage';
-                
-                try {
-                    const data = localStorage.getItem('panier');
-                    if (data) {
-                        cart = JSON.parse(data);
-                        console.log('📦 Panier trouvé dans localStorage:', cart);
-                    }
-                } catch (e) {
-                    console.warn('⚠️ Erreur lecture localStorage:', e);
+                let cart = [];
+                let storageSource = 'aucun';
+
+                // 1. Essayer window.panier (variable globale de script.js)
+                if (window.panier && Array.isArray(window.panier) && window.panier.length > 0) {
+                    cart = window.panier;
+                    storageSource = 'window.panier (global)';
+                    console.log('📦 Panier trouvé dans window.panier:', cart);
                 }
 
-                // 2. Si pas dans localStorage, essayer sessionStorage
-                if (!cart || cart.length === 0) {
+                // 2. Si pas dans window.panier, essayer localStorage
+                if (cart.length === 0) {
+                    try {
+                        const data = localStorage.getItem('panier');
+                        if (data) {
+                            const parsed = JSON.parse(data);
+                            if (parsed && parsed.length > 0) {
+                                cart = parsed;
+                                storageSource = 'localStorage';
+                                console.log('📦 Panier trouvé dans localStorage:', cart);
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('⚠️ Erreur lecture localStorage:', e);
+                    }
+                }
+
+                // 3. Si toujours rien, essayer sessionStorage
+                if (cart.length === 0) {
                     try {
                         const data = sessionStorage.getItem('panier');
                         if (data) {
-                            cart = JSON.parse(data);
-                            storageSource = 'sessionStorage';
-                            console.log('📦 Panier trouvé dans sessionStorage:', cart);
+                            const parsed = JSON.parse(data);
+                            if (parsed && parsed.length > 0) {
+                                cart = parsed;
+                                storageSource = 'sessionStorage';
+                                console.log('📦 Panier trouvé dans sessionStorage:', cart);
+                            }
                         }
                     } catch (e) {
                         console.warn('⚠️ Erreur lecture sessionStorage:', e);
                     }
                 }
 
-                // 3. Si toujours rien, essayer d'utiliser window.panier (variable globale)
-                if (!cart || cart.length === 0) {
-                    if (window.panier && Array.isArray(window.panier)) {
-                        cart = window.panier;
-                        storageSource = 'window.panier';
-                        console.log('📦 Panier trouvé dans window.panier:', cart);
-                    }
-                }
-
-                // 4. Dernier recours : données de test
-                if (!cart || cart.length === 0) {
-                    console.warn('⚠️ Aucun panier trouvé, utilisation de données de test');
-                    cart = [
-                        { id: 1, nom: 'Sac NOMAD', prix: 59.00, quantite: 2 },
-                        { id: 2, nom: 'Montre EDGE', prix: 149.00, quantite: 1 },
-                        { id: 3, nom: 'NIKEL Urban Gris', prix: 99.00, quantite: 1 }
-                    ];
-                    storageSource = 'données de test';
+                // 4. Dernier recours : essayer d'utiliser window.panierItems (autre nom possible)
+                if (cart.length === 0 && window.panierItems && Array.isArray(window.panierItems) && window.panierItems.length > 0) {
+                    cart = window.panierItems;
+                    storageSource = 'window.panierItems (global)';
+                    console.log('📦 Panier trouvé dans window.panierItems:', cart);
                 }
 
                 console.log(`✅ Panier chargé depuis ${storageSource} (${cart.length} articles)`);
@@ -623,14 +626,13 @@
                 let total = 0;
 
                 cart.forEach((item, index) => {
-                    // Support pour les deux formats: 'prix' ou 'price'
-                    const price = parseFloat(item.prix || item.price || 0);
-                    const quantity = parseInt(item.quantite || item.quantity || 1);
+                    // Support pour les différents formats
+                    const price = parseFloat(item.prix || item.price || item.prix_unitaire || 0);
+                    const quantity = parseInt(item.quantite || item.quantity || item.qte || 1);
                     const itemTotal = price * quantity;
                     total += itemTotal;
 
-                    // Support pour 'nom' ou 'name'
-                    const nom = item.nom || item.name || 'Produit ' + (index + 1);
+                    const nom = item.nom || item.name || item.produit_nom || 'Produit ' + (index + 1);
 
                     html += `
                         <div class="cart-item-checkout">
@@ -650,7 +652,7 @@
                 totalSpan.textContent = total.toFixed(2) + ' FCFA';
                 if (confirmBtn) confirmBtn.disabled = false;
 
-                // Mettre à jour le badge du panier dans le header
+                // Mettre à jour le badge du panier
                 updateCartBadge(cart);
 
             } catch (error) {
@@ -671,11 +673,11 @@
         function updateCartBadge(cart) {
             try {
                 if (!cart) {
-                    cart = JSON.parse(localStorage.getItem('panier') || '[]');
+                    cart = window.panier || JSON.parse(localStorage.getItem('panier') || '[]');
                 }
                 const badge = document.querySelector('.panier-icon .badge');
                 if (badge && cart) {
-                    const totalItems = cart.reduce((sum, item) => sum + (parseInt(item.quantite || item.quantity || 1)), 0);
+                    const totalItems = cart.reduce((sum, item) => sum + (parseInt(item.quantite || item.quantity || item.qte || 1)), 0);
                     badge.textContent = totalItems;
                 }
             } catch (e) {
@@ -729,13 +731,7 @@
             const ville = document.getElementById('ville').value;
 
             // Récupérer le panier
-            let cart = JSON.parse(localStorage.getItem('panier') || '[]');
-            if (!cart || cart.length === 0) {
-                cart = JSON.parse(sessionStorage.getItem('panier') || '[]');
-            }
-            if (!cart || cart.length === 0 && window.panier) {
-                cart = window.panier;
-            }
+            let cart = window.panier || JSON.parse(localStorage.getItem('panier') || '[]');
             
             let message = `🛍️ *NOUVELLE COMMANDE NIKEL*\n\n`;
             message += `👤 *Client :* ${prenom} ${nom}\n`;
@@ -749,11 +745,11 @@
             let total = 0;
             if (cart && cart.length > 0) {
                 cart.forEach((item, index) => {
-                    const price = parseFloat(item.prix || item.price || 0);
-                    const quantity = parseInt(item.quantite || item.quantity || 1);
+                    const price = parseFloat(item.prix || item.price || item.prix_unitaire || 0);
+                    const quantity = parseInt(item.quantite || item.quantity || item.qte || 1);
                     const itemTotal = price * quantity;
                     total += itemTotal;
-                    const nom = item.nom || item.name || 'Produit';
+                    const nom = item.nom || item.name || item.produit_nom || 'Produit';
                     message += `${index + 1}. ${nom} × ${quantity} = ${itemTotal.toFixed(2)} FCFA\n`;
                 });
             }
