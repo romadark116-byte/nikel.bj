@@ -459,8 +459,9 @@
         const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
 
-        let supabaseClient;
-        let allProducts = [];
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let products = [];
+        let cart = [];
 
         // ==========================================
         // CONFIGURATION TÉLÉPHONE
@@ -535,179 +536,121 @@
         // ==========================================
         // CHARGER LES PRODUITS DEPUIS SUPABASE
         // ==========================================
-        async function loadAllProducts() {
+        async function loadProducts() {
             try {
-                if (!supabaseClient) {
-                    const { createClient } = supabase;
-                    supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                }
-
                 const { data, error } = await supabaseClient
                     .from('produits')
                     .select('*');
 
                 if (error) {
-                    console.error('❌ Erreur chargement produits:', error);
-                    return [];
+                    console.error('❌ Erreur:', error);
+                    return;
                 }
 
-                allProducts = data || [];
-                console.log('✅ Produits chargés:', allProducts.length);
-                return allProducts;
+                products = data;
+                console.log(`✅ ${products.length} produits chargés`);
+                renderCartItems();
 
-            } catch (error) {
-                console.error('❌ Erreur:', error);
-                return [];
+            } catch (err) {
+                console.error('❌ Erreur:', err);
             }
-        }
-
-        // ==========================================
-        // RÉCUPÉRER LE PANIER (comme dans panier.html)
-        // ==========================================
-        function getPanier() {
-            // 1. Essayer window.panier
-            if (window.panier && Array.isArray(window.panier) && window.panier.length > 0) {
-                console.log('📦 Panier trouvé dans window.panier:', window.panier);
-                return window.panier;
-            }
-            
-            // 2. Essayer localStorage
-            try {
-                const data = localStorage.getItem('panier');
-                if (data) {
-                    const parsed = JSON.parse(data);
-                    if (parsed && parsed.length > 0) {
-                        console.log('📦 Panier trouvé dans localStorage:', parsed);
-                        return parsed;
-                    }
-                }
-            } catch (e) {}
-            
-            // 3. Essayer sessionStorage
-            try {
-                const data = sessionStorage.getItem('panier');
-                if (data) {
-                    const parsed = JSON.parse(data);
-                    if (parsed && parsed.length > 0) {
-                        console.log('📦 Panier trouvé dans sessionStorage:', parsed);
-                        return parsed;
-                    }
-                }
-            } catch (e) {}
-            
-            // 4. Essayer window.cart
-            if (window.cart && Array.isArray(window.cart) && window.cart.length > 0) {
-                console.log('📦 Panier trouvé dans window.cart:', window.cart);
-                return window.cart;
-            }
-            
-            console.warn('⚠️ Aucun panier trouvé');
-            return [];
         }
 
         // ==========================================
         // CHARGER LE PANIER
         // ==========================================
-        async function loadCartItems() {
+        function loadCart() {
             try {
-                console.log('🔍 Chargement du panier...');
-                
-                // Récupérer le panier avec la fonction getPanier
-                let cart = getPanier();
+                // Utiliser la même clé que dans panier.html
+                cart = JSON.parse(localStorage.getItem('nikel_cart')) || [];
+                console.log(`🛒 ${cart.length} articles dans le panier`);
+            } catch(e) {
+                cart = [];
+            }
+            return cart;
+        }
 
-                const container = document.getElementById('checkoutItems');
-                const totalSpan = document.getElementById('checkoutTotal');
-                const confirmBtn = document.getElementById('confirmOrderBtn');
-                const badge = document.querySelector('.panier-icon .badge');
-                
-                if (!cart || cart.length === 0) {
-                    container.innerHTML = `
-                        <div class="cart-empty">
-                            <i class="fas fa-shopping-bag"></i>
-                            <p>Votre panier est vide</p>
-                            <a href="boutique.html">Découvrir nos produits</a>
-                        </div>
-                    `;
-                    totalSpan.textContent = '0 FCFA';
-                    if (confirmBtn) confirmBtn.disabled = true;
-                    if (badge) badge.textContent = '0';
-                    return;
-                }
+        // ==========================================
+        // AFFICHER LE PANIER
+        // ==========================================
+        function renderCartItems() {
+            const container = document.getElementById('checkoutItems');
+            if (!container) return;
 
-                // Mettre à jour le badge
-                if (badge) {
-                    const totalItems = cart.reduce((sum, item) => sum + (parseInt(item.quantite || item.quantity || 1)), 0);
-                    badge.textContent = totalItems;
-                }
+            loadCart();
 
-                // S'assurer que les produits sont chargés
-                if (allProducts.length === 0) {
-                    await loadAllProducts();
-                }
+            const totalSpan = document.getElementById('checkoutTotal');
+            const confirmBtn = document.getElementById('confirmOrderBtn');
+            const badge = document.querySelector('.panier-icon .badge');
 
-                // 🔥 Comme dans panier.js : récupérer les images
-                const cartItems = cart.map(item => {
-                    const product = allProducts.find(p => p.id === item.id);
-                    return {
-                        ...item,
-                        image: product ? product.image_url : 'https://via.placeholder.com/100x100/1a1a1a/FFFFFF?text=NIKEL',
-                        category: product ? product.categorie : 'Collection'
-                    };
-                });
-
-                console.log('🛒 Cart items avec images:', cartItems);
-
-                let html = '';
-                let total = 0;
-
-                cartItems.forEach((item, index) => {
-                    const nom = item.nom || item.name || 'Produit';
-                    const prix = parseFloat(item.prix || item.price || 0);
-                    const quantite = parseInt(item.quantite || item.quantity || 1);
-                    const itemTotal = prix * quantite;
-                    total += itemTotal;
-
-                    // 🔥 Utiliser l'image récupérée
-                    let imageUrl = item.image || 'https://via.placeholder.com/60x60/1a1a1a/FFFFFF?text=NIKEL';
-                    
-                    // Si l'URL est un chemin relatif, construire l'URL complète
-                    if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('https')) {
-                        imageUrl = `${SUPABASE_URL}/storage/v1/object/public/produits/${imageUrl}`;
-                    }
-
-                    html += `
-                        <div class="cart-item-checkout">
-                            <img src="${imageUrl}" 
-                                 alt="${nom}" 
-                                 class="item-image" 
-                                 onerror="this.src='https://via.placeholder.com/60x60/1a1a1a/FFFFFF?text=NIKEL'">
-                            <div class="item-info">
-                                <div class="item-row">
-                                    <span class="item-name">${nom}</span>
-                                    <span class="item-total">${itemTotal.toFixed(2)} FCFA</span>
-                                </div>
-                                <div class="item-details">
-                                    <span>Prix unitaire : ${prix.toFixed(2)} FCFA</span>
-                                    <span>Quantité : ${quantite}</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                container.innerHTML = html;
-                totalSpan.textContent = total.toFixed(2) + ' FCFA';
-                if (confirmBtn) confirmBtn.disabled = false;
-
-            } catch (error) {
-                console.error('❌ Erreur chargement panier:', error);
-                document.getElementById('checkoutItems').innerHTML = `
+            if (cart.length === 0) {
+                container.innerHTML = `
                     <div class="cart-empty">
-                        <i class="fas fa-exclamation-circle" style="color:#e74c3c;"></i>
-                        <p>Erreur lors du chargement du panier</p>
+                        <i class="fas fa-shopping-bag"></i>
+                        <p>Votre panier est vide</p>
+                        <a href="boutique.html">Découvrir nos produits</a>
                     </div>
                 `;
+                if (totalSpan) totalSpan.textContent = '0 FCFA';
+                if (confirmBtn) confirmBtn.disabled = true;
+                if (badge) badge.textContent = '0';
+                return;
             }
+
+            // Mettre à jour le badge
+            if (badge) {
+                const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                badge.textContent = totalItems;
+            }
+
+            // 🔥 Récupérer les images depuis Supabase (comme dans panier.html)
+            const cartItems = cart.map(item => {
+                const product = products.find(p => p.id === item.id);
+                return {
+                    ...item,
+                    image: product ? product.image_url : 'https://via.placeholder.com/100x100/1a1a1a/FFFFFF?text=NIKEL',
+                    category: product ? product.categorie : 'Collection'
+                };
+            });
+
+            let html = '';
+            let total = 0;
+
+            cartItems.forEach((item) => {
+                const nom = item.name || 'Produit';
+                const prix = parseFloat(item.price || 0);
+                const quantite = parseInt(item.quantity || 1);
+                const itemTotal = prix * quantite;
+                total += itemTotal;
+
+                let imageUrl = item.image || 'https://via.placeholder.com/60x60/1a1a1a/FFFFFF?text=NIKEL';
+                if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('https')) {
+                    imageUrl = `${SUPABASE_URL}/storage/v1/object/public/produits/${imageUrl}`;
+                }
+
+                html += `
+                    <div class="cart-item-checkout">
+                        <img src="${imageUrl}" 
+                             alt="${nom}" 
+                             class="item-image" 
+                             onerror="this.src='https://via.placeholder.com/60x60/1a1a1a/FFFFFF?text=NIKEL'">
+                        <div class="item-info">
+                            <div class="item-row">
+                                <span class="item-name">${nom}</span>
+                                <span class="item-total">${itemTotal.toFixed(2)} FCFA</span>
+                            </div>
+                            <div class="item-details">
+                                <span>Prix unitaire : ${prix.toFixed(2)} FCFA</span>
+                                <span>Quantité : ${quantite}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            if (totalSpan) totalSpan.textContent = total.toFixed(2) + ' FCFA';
+            if (confirmBtn) confirmBtn.disabled = false;
         }
 
         // ==========================================
@@ -715,8 +658,9 @@
         // ==========================================
         function handleSearch() {
             const input = document.getElementById('searchInput');
+            if (!input) return;
             const query = input.value.trim();
-            if (query) {
+            if (query.length > 0) {
                 window.location.href = `boutique.html?search=${encodeURIComponent(query)}`;
             }
         }
@@ -724,22 +668,20 @@
         // ==========================================
         // INITIALISATION
         // ==========================================
-        document.addEventListener('DOMContentLoaded', async function() {
-            console.log('🚀 Page de paiement chargée');
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🛒 Page de paiement chargée');
             
-            // Initialiser Supabase et charger les produits
-            const { createClient } = supabase;
-            supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            await loadAllProducts();
-            
-            // Charger le panier
-            await loadCartItems();
+            // Charger les produits depuis Supabase
+            loadProducts().then(() => {
+                renderCartItems();
+            });
 
             // Configurer le téléphone par défaut
             document.getElementById('indicatif').value = '+229';
             updatePhonePlaceholder();
             updatePaysFromIndicatif();
 
+            // Recherche avec Entrée
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('keypress', function(e) {
@@ -748,6 +690,14 @@
                     }
                 });
             }
+
+            // Écouter les changements du panier dans localStorage
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'nikel_cart') {
+                    console.log('🔄 Panier modifié, mise à jour...');
+                    renderCartItems();
+                }
+            });
         });
 
         // ==========================================
@@ -778,7 +728,7 @@
                 return;
             }
 
-            let cart = getPanier();
+            let cart = JSON.parse(localStorage.getItem('nikel_cart')) || [];
             
             let message = `🛍️ *NOUVELLE COMMANDE NIKEL*\n\n`;
             message += `👤 *Client :* ${prenom} ${nom}\n`;
@@ -792,11 +742,11 @@
             let total = 0;
             if (cart && cart.length > 0) {
                 cart.forEach((item, index) => {
-                    const prix = parseFloat(item.prix || item.price || 0);
-                    const quantite = parseInt(item.quantite || item.quantity || 1);
+                    const prix = parseFloat(item.price || 0);
+                    const quantite = parseInt(item.quantity || 1);
                     const itemTotal = prix * quantite;
                     total += itemTotal;
-                    const nom = item.nom || item.name || 'Produit';
+                    const nom = item.name || 'Produit';
                     message += `${index + 1}. ${nom} × ${quantite} = ${itemTotal.toFixed(2)} FCFA\n`;
                 });
             }
