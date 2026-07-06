@@ -213,6 +213,24 @@
             gap: 12px;
         }
 
+        .panier-vide {
+            text-align: center;
+            padding: 30px;
+            color: #888;
+        }
+
+        .panier-vide i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 10px;
+            color: #ddd;
+        }
+
+        .panier-vide a {
+            color: var(--gold);
+            text-decoration: underline;
+        }
+
         @media (max-width: 768px) {
             .checkout-wrapper {
                 flex-direction: column;
@@ -532,35 +550,58 @@
         // ==========================================
         function loadCartItems() {
             try {
-                const cart = JSON.parse(localStorage.getItem('panier') || '[]');
-                const container = document.getElementById('checkoutItems');
+                // Récupérer le panier du localStorage
+                let cart = JSON.parse(localStorage.getItem('panier') || '[]');
                 
-                if (cart.length === 0) {
+                // Si le panier est vide ou n'existe pas, essayer de récupérer depuis sessionStorage
+                if (!cart || cart.length === 0) {
+                    cart = JSON.parse(sessionStorage.getItem('panier') || '[]');
+                }
+                
+                // Si toujours vide, essayer depuis le cookie
+                if (!cart || cart.length === 0) {
+                    const cookieCart = document.cookie.split('; ').find(row => row.startsWith('panier='));
+                    if (cookieCart) {
+                        try {
+                            cart = JSON.parse(decodeURIComponent(cookieCart.split('=')[1]));
+                        } catch (e) {
+                            cart = [];
+                        }
+                    }
+                }
+
+                console.log('📦 Panier chargé:', cart);
+
+                const container = document.getElementById('checkoutItems');
+                const confirmBtn = document.getElementById('confirmOrderBtn');
+                const totalSpan = document.getElementById('checkoutTotal');
+                
+                if (!cart || cart.length === 0) {
                     container.innerHTML = `
-                        <div style="text-align:center; padding:30px; color:#888;">
-                            <i class="fas fa-shopping-bag" style="font-size:2rem; display:block; margin-bottom:10px; color:#ddd;"></i>
+                        <div class="panier-vide">
+                            <i class="fas fa-shopping-bag"></i>
                             <p>Votre panier est vide</p>
-                            <a href="boutique.html" style="color:var(--gold); text-decoration:underline;">Découvrir nos produits</a>
+                            <a href="boutique.html">Découvrir nos produits</a>
                         </div>
                     `;
-                    document.getElementById('checkoutTotal').textContent = '0 FCFA';
-                    document.getElementById('confirmOrderBtn').disabled = true;
+                    totalSpan.textContent = '0 FCFA';
+                    if (confirmBtn) confirmBtn.disabled = true;
                     return;
                 }
 
                 let html = '';
                 let total = 0;
 
-                cart.forEach(item => {
-                    const price = item.prix || 0;
-                    const quantity = item.quantite || 1;
+                cart.forEach((item, index) => {
+                    const price = parseFloat(item.prix) || 0;
+                    const quantity = parseInt(item.quantite) || 1;
                     const itemTotal = price * quantity;
                     total += itemTotal;
 
                     html += `
                         <div class="cart-item-checkout">
                             <div class="item-row">
-                                <span class="item-name">${item.nom || 'Produit'}</span>
+                                <span class="item-name">${item.nom || 'Produit ' + (index + 1)}</span>
                                 <span class="item-total">${itemTotal.toFixed(2)} FCFA</span>
                             </div>
                             <div class="item-details">
@@ -572,11 +613,18 @@
                 });
 
                 container.innerHTML = html;
-                document.getElementById('checkoutTotal').textContent = total.toFixed(2) + ' FCFA';
-                document.getElementById('confirmOrderBtn').disabled = false;
+                totalSpan.textContent = total.toFixed(2) + ' FCFA';
+                if (confirmBtn) confirmBtn.disabled = false;
 
             } catch (error) {
-                console.error('Erreur chargement panier:', error);
+                console.error('❌ Erreur chargement panier:', error);
+                document.getElementById('checkoutItems').innerHTML = `
+                    <div class="panier-vide">
+                        <i class="fas fa-exclamation-circle" style="color:#e74c3c;"></i>
+                        <p>Erreur lors du chargement du panier</p>
+                        <a href="panier.html">Retour au panier</a>
+                    </div>
+                `;
             }
         }
 
@@ -625,7 +673,11 @@
             const pays = document.getElementById('paysDisplay').textContent;
             const ville = document.getElementById('ville').value;
 
-            const cart = JSON.parse(localStorage.getItem('panier') || '[]');
+            // Récupérer le panier
+            let cart = JSON.parse(localStorage.getItem('panier') || '[]');
+            if (!cart || cart.length === 0) {
+                cart = JSON.parse(sessionStorage.getItem('panier') || '[]');
+            }
             
             let message = `🛍️ *NOUVELLE COMMANDE NIKEL*\n\n`;
             message += `👤 *Client :* ${prenom} ${nom}\n`;
@@ -637,13 +689,15 @@
             message += `───────────────────\n`;
 
             let total = 0;
-            cart.forEach((item, index) => {
-                const price = item.prix || 0;
-                const quantity = item.quantite || 1;
-                const itemTotal = price * quantity;
-                total += itemTotal;
-                message += `${index + 1}. ${item.nom || 'Produit'} × ${quantity} = ${itemTotal.toFixed(2)} FCFA\n`;
-            });
+            if (cart && cart.length > 0) {
+                cart.forEach((item, index) => {
+                    const price = parseFloat(item.prix) || 0;
+                    const quantity = parseInt(item.quantite) || 1;
+                    const itemTotal = price * quantity;
+                    total += itemTotal;
+                    message += `${index + 1}. ${item.nom || 'Produit'} × ${quantity} = ${itemTotal.toFixed(2)} FCFA\n`;
+                });
+            }
 
             message += `───────────────────\n`;
             message += `💰 *Total :* ${total.toFixed(2)} FCFA\n\n`;
@@ -673,12 +727,17 @@
         // INITIALISATION
         // ==========================================
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Page de paiement chargée');
+            
+            // Charger le panier
             loadCartItems();
 
+            // Configurer le téléphone
             document.getElementById('indicatif').value = '+229';
             updatePhonePlaceholder();
             updatePaysFromIndicatif();
 
+            // Recherche avec Entrée
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('keypress', function(e) {
@@ -688,15 +747,26 @@
                 });
             }
 
+            // Mettre à jour le badge du panier
             function updateCartBadge() {
-                const cart = JSON.parse(localStorage.getItem('panier') || '[]');
+                let cart = JSON.parse(localStorage.getItem('panier') || '[]');
+                if (!cart || cart.length === 0) {
+                    cart = JSON.parse(sessionStorage.getItem('panier') || '[]');
+                }
                 const badge = document.querySelector('.panier-icon .badge');
-                if (badge) {
-                    const totalItems = cart.reduce((sum, item) => sum + (item.quantite || 1), 0);
+                if (badge && cart) {
+                    const totalItems = cart.reduce((sum, item) => sum + (parseInt(item.quantite) || 1), 0);
                     badge.textContent = totalItems;
                 }
             }
             updateCartBadge();
+
+            // Recharger le panier si le localStorage change
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'panier') {
+                    loadCartItems();
+                }
+            });
         });
     </script>
 </body>
