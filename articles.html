@@ -211,19 +211,6 @@
         const articlesPerPage = 10;
 
         // ==========================================
-        // DONNÉES DE TEST
-        // ==========================================
-        function getTestArticles() {
-            return [
-                { id: 1, nom: 'NIKEL Sport Blanc', categorie: 'sport', prix: 79.00, oldPrice: 99.00, stock: 15, description: 'T-shirt technique en maille respirante', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=100&h=100&fit=crop', statut: 'stock' },
-                { id: 2, nom: 'NIKEL Essential Bleu', categorie: 'vêtements', prix: 89.00, oldPrice: null, stock: 25, description: 'T-shirt premium en coton bio', image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=100&h=100&fit=crop', statut: 'stock' },
-                { id: 3, nom: 'Sac NOMAD', categorie: 'accessoires', prix: 59.00, oldPrice: null, stock: 0, description: 'Sac en cuir véritable', image: 'https://images.unsplash.com/photo-1547949003-9792a18a2601?w=100&h=100&fit=crop', statut: 'rupture' },
-                { id: 4, nom: 'Montre EDGE', categorie: 'accessoires', prix: 149.00, oldPrice: 199.00, stock: 8, description: 'Montre connectée avec GPS', image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100&h=100&fit=crop', statut: 'soldes' },
-                { id: 5, nom: 'NIKEL Urban Gris', categorie: 'vêtements', prix: 99.00, oldPrice: null, stock: 12, description: 'Sweat-shirt urbain', image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=100&h=100&fit=crop', statut: 'stock' }
-            ];
-        }
-
-        // ==========================================
         // FORMATER LE PRIX
         // ==========================================
         function formatPrice(price) {
@@ -271,7 +258,7 @@
                 <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
                     <td style="padding:12px; font-weight:600; color:#1a1a1a;">#${article.id}</td>
                     <td style="padding:12px;">
-                        <img src="${article.image || 'https://via.placeholder.com/50x50/1a1a1a/FFFFFF?text=NIKEL'}" 
+                        <img src="${article.image_url || 'https://via.placeholder.com/50x50/1a1a1a/FFFFFF?text=NIKEL'}" 
                              alt="${article.nom}" 
                              style="width:50px; height:50px; object-fit:cover; border-radius:8px;"
                              onerror="this.src='https://via.placeholder.com/50x50/1a1a1a/FFFFFF?text=NIKEL'">
@@ -280,15 +267,15 @@
                     <td style="padding:12px; color:#888;">${article.categorie || '—'}</td>
                     <td style="padding:12px; font-weight:700; color:#c9a84c;">
                         ${formatPrice(article.prix)}
-                        ${article.oldPrice ? `<span style="font-size:0.8rem; color:#999; text-decoration:line-through; display:block;">${formatPrice(article.oldPrice)}</span>` : ''}
+                        ${article.prix_original ? `<span style="font-size:0.8rem; color:#999; text-decoration:line-through; display:block;">${formatPrice(article.prix_original)}</span>` : ''}
                     </td>
                     <td style="padding:12px; text-align:center; font-weight:600;">${article.stock || 0}</td>
-                    <td style="padding:12px;">${getArticleStatutBadge(article.statut)}</td>
+                    <td style="padding:12px;">${getArticleStatutBadge(article.statut || 'stock')}</td>
                     <td style="padding:12px; text-align:center;">
-                        <button onclick="editArticle(${article.id})" style="padding:6px 12px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Modifier">
+                        <button onclick="editArticle('${article.id}')" style="padding:6px 12px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Modifier">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button onclick="deleteArticle(${article.id})" style="padding:6px 12px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Supprimer">
+                        <button onclick="deleteArticle('${article.id}')" style="padding:6px 12px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Supprimer">
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     </td>
@@ -303,7 +290,7 @@
             const total = allArticles.length;
             const stock = allArticles.filter(a => a.statut === 'stock' || (a.stock > 0 && a.statut !== 'soldes')).length;
             const rupture = allArticles.filter(a => a.statut === 'rupture' || a.stock === 0).length;
-            const soldes = allArticles.filter(a => a.statut === 'soldes' || (a.oldPrice && a.oldPrice > a.prix)).length;
+            const soldes = allArticles.filter(a => a.statut === 'soldes' || (a.prix_original && a.prix_original > a.prix)).length;
 
             document.getElementById('totalArticles').textContent = total;
             document.getElementById('totalStock').textContent = stock;
@@ -372,7 +359,7 @@
                 if (statut !== 'all') {
                     if (statut === 'stock') matchStatut = article.statut === 'stock' || (article.stock > 0 && article.statut !== 'soldes');
                     else if (statut === 'rupture') matchStatut = article.statut === 'rupture' || article.stock === 0;
-                    else if (statut === 'soldes') matchStatut = article.statut === 'soldes' || (article.oldPrice && article.oldPrice > article.prix);
+                    else if (statut === 'soldes') matchStatut = article.statut === 'soldes' || (article.prix_original && article.prix_original > article.prix);
                 }
 
                 return matchSearch && matchCategorie && matchStatut;
@@ -403,35 +390,26 @@
                 const { data, error } = await supabaseClient
                     .from('produits')
                     .select('*')
-                    .order('id', { ascending: true });
+                    .order('created_at', { ascending: false });
 
                 if (error) {
                     console.error('❌ Erreur chargement:', error);
-                    allArticles = getTestArticles();
-                    filteredArticles = [...allArticles];
-                    renderArticleTable();
-                    updateArticleStats();
-                    updateArticlePaginationInfo();
+                    showNotification('❌ Erreur de chargement des articles', 'error');
                     return;
                 }
 
                 if (data && data.length > 0) {
                     console.log(`✅ ${data.length} articles chargés depuis Supabase`);
+                    
+                    // Ajouter le statut calculé
                     allArticles = data.map(p => ({
-                        id: p.id,
-                        nom: p.nom,
-                        categorie: p.categorie || 'vêtements',
-                        prix: parseFloat(p.prix),
-                        oldPrice: p.prix_original ? parseFloat(p.prix_original) : null,
-                        stock: p.stock || 0,
-                        description: p.description || '',
-                        image: p.image_url || '',
+                        ...p,
                         statut: p.stock === 0 ? 'rupture' : 
                                 (p.prix_original && parseFloat(p.prix_original) > parseFloat(p.prix) ? 'soldes' : 'stock')
                     }));
                 } else {
-                    console.warn('⚠️ Aucun article trouvé dans Supabase, utilisation des données de test');
-                    allArticles = getTestArticles();
+                    console.warn('⚠️ Aucun article trouvé dans Supabase');
+                    allArticles = [];
                 }
 
                 filteredArticles = [...allArticles];
@@ -441,11 +419,7 @@
 
             } catch (err) {
                 console.error('❌ Erreur:', err);
-                allArticles = getTestArticles();
-                filteredArticles = [...allArticles];
-                renderArticleTable();
-                updateArticleStats();
-                updateArticlePaginationInfo();
+                showNotification('❌ Erreur de chargement des articles', 'error');
             }
         }
 
@@ -463,18 +437,22 @@
         // MODAL : MODIFIER
         // ==========================================
         function editArticle(id) {
+            console.log('✏️ Modification de l\'article:', id);
             const article = allArticles.find(a => a.id === id);
-            if (!article) return;
+            if (!article) {
+                showNotification('❌ Article non trouvé', 'error');
+                return;
+            }
 
             document.getElementById('articleModalTitle').innerHTML = '<i class="fas fa-edit" style="color:#c9a84c;"></i> Modifier l\'article';
             document.getElementById('articleId').value = article.id;
             document.getElementById('articleNom').value = article.nom || '';
             document.getElementById('articleCategorie').value = article.categorie || 'vêtements';
             document.getElementById('articlePrix').value = article.prix || '';
-            document.getElementById('articleOldPrice').value = article.oldPrice || '';
+            document.getElementById('articleOldPrice').value = article.prix_original || '';
             document.getElementById('articleStock').value = article.stock || 0;
             document.getElementById('articleDescription').value = article.description || '';
-            document.getElementById('articleImage').value = article.image || '';
+            document.getElementById('articleImage').value = article.image_url || '';
             document.getElementById('articleModal').style.display = 'flex';
         }
 
@@ -496,10 +474,6 @@
             const prix = parseFloat(document.getElementById('articlePrix').value) || 0;
             const oldPrice = document.getElementById('articleOldPrice').value ? parseFloat(document.getElementById('articleOldPrice').value) : null;
             const stock = parseInt(document.getElementById('articleStock').value) || 0;
-            
-            let statut = 'stock';
-            if (stock === 0) statut = 'rupture';
-            if (oldPrice && oldPrice > prix) statut = 'soldes';
 
             const articleData = {
                 nom: document.getElementById('articleNom').value.trim(),
@@ -514,10 +488,11 @@
             try {
                 if (id) {
                     // MODIFICATION
+                    console.log('📝 Mise à jour de l\'article:', id);
                     const { error } = await supabaseClient
                         .from('produits')
                         .update(articleData)
-                        .eq('id', parseInt(id));
+                        .eq('id', id);
 
                     if (error) {
                         console.error('❌ Erreur mise à jour:', error);
@@ -525,13 +500,10 @@
                         return;
                     }
 
-                    const index = allArticles.findIndex(a => a.id === parseInt(id));
-                    if (index !== -1) {
-                        allArticles[index] = { ...allArticles[index], ...articleData };
-                    }
                     showNotification('✅ Article modifié avec succès !', 'success');
                 } else {
                     // AJOUT
+                    console.log('📝 Ajout d\'un nouvel article');
                     const { data, error } = await supabaseClient
                         .from('produits')
                         .insert([articleData])
@@ -544,7 +516,13 @@
                     }
 
                     if (data && data.length > 0) {
-                        allArticles.push(data[0]);
+                        // Ajouter le statut calculé
+                        const newArticle = {
+                            ...data[0],
+                            statut: data[0].stock === 0 ? 'rupture' : 
+                                    (data[0].prix_original && parseFloat(data[0].prix_original) > parseFloat(data[0].prix) ? 'soldes' : 'stock')
+                        };
+                        allArticles.unshift(newArticle);
                     }
                     showNotification('✅ Article ajouté avec succès !', 'success');
                 }
@@ -568,6 +546,7 @@
             if (!confirm('Voulez-vous vraiment supprimer cet article ?')) return;
 
             try {
+                console.log('🗑️ Suppression de l\'article:', id);
                 const { error } = await supabaseClient
                     .from('produits')
                     .delete()
@@ -584,7 +563,7 @@
                 renderArticleTable();
                 updateArticleStats();
                 updateArticlePaginationInfo();
-                showNotification('🗑️ Article supprimé', 'info');
+                showNotification('🗑️ Article supprimé avec succès', 'success');
 
             } catch (err) {
                 console.error('❌ Erreur:', err);
