@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Correction temporaire en attendant style.css */
         .checkout-wrapper {
             display: flex;
             gap: 30px;
@@ -44,7 +43,6 @@
             flex: 1;
         }
 
-        /* Style des articles du panier */
         .cart-item-checkout {
             display: flex;
             flex-direction: column;
@@ -80,6 +78,141 @@
             margin-top: 4px;
         }
 
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            background: var(--white);
+            transition: border-color 0.3s;
+            font-family: inherit;
+            height: 44px;
+            box-sizing: border-box;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.1);
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .phone-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .phone-group select {
+            width: 100px;
+            flex-shrink: 0;
+            height: 44px;
+            padding: 10px 10px;
+            font-size: 0.9rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            background: var(--white);
+            cursor: pointer;
+            transition: border-color 0.3s;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        .phone-group select:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.1);
+        }
+
+        .phone-group input {
+            flex: 1;
+            height: 44px;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            background: var(--white);
+            transition: border-color 0.3s;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        .phone-group input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.1);
+        }
+
+        #phoneHelp {
+            display: block;
+            color: #888;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+
+        .btn-whatsapp {
+            width: 100%;
+            justify-content: center;
+            margin-top: 20px;
+            padding: 14px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .btn-whatsapp:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-whatsapp:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .pays-display {
+            background: var(--white);
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: var(--dark-gray);
+            font-weight: 500;
+            border: 2px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 44px;
+            box-sizing: border-box;
+            font-size: 0.9rem;
+        }
+
+        .pays-display i {
+            color: var(--gold);
+            font-size: 1rem;
+        }
+
+        .grid-2-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
         @media (max-width: 768px) {
             .checkout-wrapper {
                 flex-direction: column;
@@ -88,6 +221,15 @@
             .checkout-cart-col {
                 position: static;
                 align-self: stretch;
+            }
+            .phone-group {
+                flex-direction: column;
+            }
+            .phone-group select {
+                width: 100%;
+            }
+            .grid-2-col {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -150,39 +292,59 @@
                         <h3 style="font-family:'Playfair Display',serif; margin-bottom:20px; font-size:1.2rem;">
                             <i class="fas fa-user" style="color:var(--gold);"></i> Vos coordonnées
                         </h3>
-                        <form id="checkoutForm" style="flex:1;">
-                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                        <form id="checkoutForm">
+                            <!-- Prénom & Nom -->
+                            <div class="grid-2-col">
                                 <div class="form-group">
-                                    <label style="font-size:0.85rem;">Prénom</label>
-                                    <input type="text" name="prenom" required placeholder="Saisissez votre prénom" style="padding:10px 14px; font-size:0.9rem; width:100%; border:2px solid var(--light-gray); border-radius:8px;">
+                                    <label>Prénom</label>
+                                    <input type="text" id="prenom" required placeholder="Saisissez votre prénom">
                                 </div>
                                 <div class="form-group">
-                                    <label style="font-size:0.85rem;">Nom</label>
-                                    <input type="text" name="nom" required placeholder="Saisissez votre nom" style="padding:10px 14px; font-size:0.9rem; width:100%; border:2px solid var(--light-gray); border-radius:8px;">
+                                    <label>Nom</label>
+                                    <input type="text" id="nom" required placeholder="Saisissez votre nom">
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label style="font-size:0.85rem;">Email</label>
-                                <input type="email" name="email" required placeholder="Saisissez votre adresse e-mail" style="padding:10px 14px; font-size:0.9rem; width:100%; border:2px solid var(--light-gray); border-radius:8px;">
+
+                            <!-- Email -->
+                            <div class="form-group" style="margin-top:12px;">
+                                <label>Email</label>
+                                <input type="email" id="email" required placeholder="Saisissez votre adresse e-mail">
                             </div>
-                            <div class="form-group">
-                                <label style="font-size:0.85rem;">Téléphone (WhatsApp)</label>
-                                <input type="tel" name="telephone" required placeholder="Saisissez votre numéro WhatsApp" style="padding:10px 14px; font-size:0.9rem; width:100%; border:2px solid var(--light-gray); border-radius:8px;">
+
+                            <!-- Téléphone avec indicatif -->
+                            <div class="form-group" style="margin-top:12px;">
+                                <label>Téléphone (WhatsApp)</label>
+                                <div class="phone-group">
+                                    <select id="indicatif" onchange="updatePhonePlaceholder(); updatePaysFromIndicatif();">
+                                        <option value="+229">🇧🇯 +229</option>
+                                        <option value="+228">🇹🇬 +228</option>
+                                        <option value="+227">🇳🇪 +227</option>
+                                        <option value="+226">🇧🇫 +226</option>
+                                        <option value="+225">🇨🇮 +225</option>
+                                    </select>
+                                    <input type="tel" id="telephone" required placeholder="01 23 45 67 89" oninput="validatePhone(this)">
+                                </div>
+                                <small id="phoneHelp" style="display:block; color:#888; font-size:0.8rem; margin-top:4px;">10 chiffres (ex: 01 23 45 67 89)</small>
                             </div>
-                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+
+                            <!-- Pays & Ville sur la même ligne -->
+                            <div class="grid-2-col" style="margin-top:12px;">
                                 <div class="form-group">
-                                    <label style="font-size:0.85rem;">Ville</label>
-                                    <input type="text" name="ville" required placeholder="Paris" style="padding:10px 14px; font-size:0.9rem; width:100%; border:2px solid var(--light-gray); border-radius:8px;">
+                                    <label>Pays</label>
+                                    <div class="pays-display">
+                                        <i class="fas fa-globe"></i>
+                                        <span id="paysDisplay">Bénin</span>
+                                        <input type="hidden" id="pays" value="BJ">
+                                    </div>
                                 </div>
                                 <div class="form-group">
-                                    <label style="font-size:0.85rem;">Pays</label>
-                                    <select name="pays" required style="padding:10px 14px; font-size:0.9rem; width:100%; border:2px solid var(--light-gray); border-radius:8px; background:white;">
-                                        <option value="BJ">Bénin</option>
-                                        <option value="TG">Togo</option>
-                                        <option value="BF">Burkina Faso</option>
-                                        <option value="CI">Côte d'Ivoire</option>
-                                        <option value="SN">Sénégal</option>
-                                        <option value="FR">France</option>
+                                    <label>Ville</label>
+                                    <select id="ville">
+                                        <option value="Cotonou">Cotonou</option>
+                                        <option value="Porto-Novo">Porto-Novo</option>
+                                        <option value="Parakou">Parakou</option>
+                                        <option value="Abomey-Calavi">Abomey-Calavi</option>
+                                        <option value="Djougou">Djougou</option>
                                     </select>
                                 </div>
                             </div>
@@ -197,60 +359,24 @@
                             <i class="fas fa-shopping-bag" style="color:var(--gold);"></i> Récapitulatif de votre panier
                         </h3>
                         
-                        <!-- ===== ARTICLES AVEC SOUS-TOTAUX ===== -->
                         <div id="checkoutItems" style="margin-bottom:20px; flex:1;">
-                            <!-- Exemple d'article avec sous-total -->
-                            <div class="cart-item-checkout">
-                                <div class="item-row">
-                                    <span class="item-name">Sac NOMAD</span>
-                                    <span class="item-total">354,00 FCFA</span>
-                                </div>
-                                <div class="item-details">
-                                    <span>Prix unitaire : 59,00 FCFA</span>
-                                    <span>Quantité : 6</span>
-                                </div>
-                            </div>
-
-                            <div class="cart-item-checkout">
-                                <div class="item-row">
-                                    <span class="item-name">Montre EDGE</span>
-                                    <span class="item-total">149,00 FCFA</span>
-                                </div>
-                                <div class="item-details">
-                                    <span>Prix unitaire : 149,00 FCFA</span>
-                                    <span>Quantité : 1</span>
-                                </div>
-                            </div>
-
-                            <div class="cart-item-checkout">
-                                <div class="item-row">
-                                    <span class="item-name">NIKEL Urban Gris</span>
-                                    <span class="item-total">99,00 FCFA</span>
-                                </div>
-                                <div class="item-details">
-                                    <span>Prix unitaire : 99,00 FCFA</span>
-                                    <span>Quantité : 1</span>
-                                </div>
+                            <div style="text-align:center; padding:20px; color:#888;">
+                                <i class="fas fa-spinner fa-spin" style="font-size:1.5rem;"></i>
+                                <p style="margin-top:8px;">Chargement du panier...</p>
                             </div>
                         </div>
 
-                        <!-- ===== TOTAL ===== -->
                         <div style="border-top:2px solid var(--light-gray); padding-top:16px; margin-top:auto;">
-                            <!-- Sous-total caché (gardé pour JavaScript) -->
-                            <div style="display:none;">
-                                <span id="subtotal">602,00 FCFA</span>
-                            </div>
-                            
                             <div style="display:flex; justify-content:space-between; padding:8px 0; font-size:1.2rem; font-weight:700; border-top:2px solid var(--light-gray); margin-top:8px; padding-top:16px;">
                                 <span>Total</span>
-                                <span id="checkoutTotal" style="color:var(--accent-dark);">602,00 FCFA</span>
+                                <span id="checkoutTotal" style="color:var(--accent-dark);">0 FCFA</span>
                             </div>
                         </div>
 
-                        <button class="btn btn-primary" id="confirmOrderBtn" style="width:100%; justify-content:center; margin-top:20px; padding:14px; font-size:1rem; border:none; border-radius:8px; background:linear-gradient(135deg, var(--gold), var(--accent-dark)); color:white; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:10px;">
+                        <button class="btn-whatsapp" id="confirmOrderBtn">
                             <i class="fab fa-whatsapp"></i> Finalisez votre achat sur WhatsApp
                         </button>
-                        <a href="panier.html" style="display:block; text-align:center; margin-top:12px; color:var(--gray); text-decoration:none;">
+                        <a href="panier.html" style="display:block; text-align:center; margin-top:12px; color:var(--gray); text-decoration:none; font-size:0.95rem;">
                             <i class="fas fa-arrow-left"></i> Retour au panier
                         </a>
                     </div>
@@ -312,5 +438,266 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // ==========================================
+        // CONFIGURATION TÉLÉPHONE (5 PAYS)
+        // ==========================================
+        const phoneConfig = {
+            '+229': { nbDigits: 10, placeholder: '01 23 45 67 89', help: '10 chiffres (ex: 01 23 45 67 89)', pays: 'BJ', nom: 'Bénin' },
+            '+228': { nbDigits: 8, placeholder: '01 23 45 67', help: '8 chiffres (ex: 01 23 45 67)', pays: 'TG', nom: 'Togo' },
+            '+227': { nbDigits: 8, placeholder: '01 23 45 67', help: '8 chiffres (ex: 01 23 45 67)', pays: 'NE', nom: 'Niger' },
+            '+226': { nbDigits: 8, placeholder: '01 23 45 67', help: '8 chiffres (ex: 01 23 45 67)', pays: 'BF', nom: 'Burkina Faso' },
+            '+225': { nbDigits: 10, placeholder: '01 23 45 67 89', help: '10 chiffres (ex: 01 23 45 67 89)', pays: 'CI', nom: "Côte d'Ivoire" }
+        };
+
+        // ==========================================
+        // VILLES PAR PAYS
+        // ==========================================
+        const villesParPays = {
+            'BJ': ['Cotonou', 'Porto-Novo', 'Parakou', 'Abomey-Calavi', 'Djougou', 'Natitingou', 'Ouidah'],
+            'TG': ['Lomé', 'Kara', 'Sokodé', 'Atakpamé', 'Palimé', 'Tchamba'],
+            'NE': ['Niamey', 'Zinder', 'Maradi', 'Agadez', 'Tahoua'],
+            'BF': ['Ouagadougou', 'Bobo-Dioulasso', 'Koudougou', 'Banfora', 'Ouahigouya', 'Kaya'],
+            'CI': ['Abidjan', 'Yamoussoukro', 'Bouaké', 'San-Pédro', 'Korhogo']
+        };
+
+        // ==========================================
+        // FONCTIONS DE TÉLÉPHONE
+        // ==========================================
+        function updatePhonePlaceholder() {
+            const indicatif = document.getElementById('indicatif').value;
+            const config = phoneConfig[indicatif];
+            const phoneInput = document.getElementById('telephone');
+            const phoneHelp = document.getElementById('phoneHelp');
+            
+            if (config && phoneInput) {
+                phoneInput.placeholder = config.placeholder;
+                if (phoneHelp) {
+                    phoneHelp.textContent = config.help;
+                }
+                phoneInput.value = '';
+                phoneInput.style.borderColor = '#e8e8e8';
+            }
+        }
+
+        function validatePhone(input) {
+            let value = input.value.replace(/\D/g, '');
+            const indicatif = document.getElementById('indicatif').value;
+            const config = phoneConfig[indicatif];
+            
+            if (!config) return;
+            
+            if (value.length > config.nbDigits) {
+                value = value.slice(0, config.nbDigits);
+            }
+            
+            let formatted = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 2 === 0) formatted += ' ';
+                formatted += value[i];
+            }
+            
+            input.value = formatted;
+            
+            const digits = input.value.replace(/\D/g, '');
+            if (digits.length === config.nbDigits) {
+                input.style.borderColor = '#27ae60';
+            } else if (digits.length > 0) {
+                input.style.borderColor = '#f39c12';
+            } else {
+                input.style.borderColor = '#e8e8e8';
+            }
+        }
+
+        function updatePaysFromIndicatif() {
+            const indicatif = document.getElementById('indicatif').value;
+            const config = phoneConfig[indicatif];
+            
+            if (config) {
+                document.getElementById('paysDisplay').textContent = config.nom;
+                document.getElementById('pays').value = config.pays;
+                updateVilles();
+            }
+        }
+
+        function updateVilles() {
+            const paysCode = document.getElementById('pays').value;
+            const villes = villesParPays[paysCode] || ['Cotonou', 'Porto-Novo', 'Parakou', 'Abomey-Calavi', 'Djougou'];
+            const villeSelect = document.getElementById('ville');
+            villeSelect.innerHTML = villes.map(v => `<option value="${v}">${v}</option>`).join('');
+        }
+
+        // ==========================================
+        // CHARGER LE PANIER
+        // ==========================================
+        function loadCartItems() {
+            try {
+                const cart = JSON.parse(localStorage.getItem('panier') || '[]');
+                const container = document.getElementById('checkoutItems');
+                
+                if (cart.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align:center; padding:30px; color:#888;">
+                            <i class="fas fa-shopping-bag" style="font-size:2rem; display:block; margin-bottom:10px; color:#ddd;"></i>
+                            <p>Votre panier est vide</p>
+                            <a href="boutique.html" style="color:var(--gold); text-decoration:underline;">Découvrir nos produits</a>
+                        </div>
+                    `;
+                    document.getElementById('checkoutTotal').textContent = '0 FCFA';
+                    document.getElementById('confirmOrderBtn').disabled = true;
+                    return;
+                }
+
+                let html = '';
+                let total = 0;
+
+                cart.forEach(item => {
+                    const price = item.prix || 0;
+                    const quantity = item.quantite || 1;
+                    const itemTotal = price * quantity;
+                    total += itemTotal;
+
+                    html += `
+                        <div class="cart-item-checkout">
+                            <div class="item-row">
+                                <span class="item-name">${item.nom || 'Produit'}</span>
+                                <span class="item-total">${itemTotal.toFixed(2)} FCFA</span>
+                            </div>
+                            <div class="item-details">
+                                <span>Prix unitaire : ${price.toFixed(2)} FCFA</span>
+                                <span>Quantité : ${quantity}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+                document.getElementById('checkoutTotal').textContent = total.toFixed(2) + ' FCFA';
+                document.getElementById('confirmOrderBtn').disabled = false;
+
+            } catch (error) {
+                console.error('Erreur chargement panier:', error);
+            }
+        }
+
+        // ==========================================
+        // VALIDER LE FORMULAIRE
+        // ==========================================
+        function validateForm() {
+            const prenom = document.getElementById('prenom').value.trim();
+            const nom = document.getElementById('nom').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const telephone = document.getElementById('telephone').value.trim();
+            const ville = document.getElementById('ville').value;
+
+            if (!prenom) { alert('Veuillez saisir votre prénom.'); return false; }
+            if (!nom) { alert('Veuillez saisir votre nom.'); return false; }
+            if (!email) { alert('Veuillez saisir votre email.'); return false; }
+            if (!email.includes('@')) { alert('Email invalide.'); return false; }
+            if (!telephone) { alert('Veuillez saisir votre numéro de téléphone.'); return false; }
+
+            const indicatif = document.getElementById('indicatif').value;
+            const config = phoneConfig[indicatif];
+            const digits = telephone.replace(/\D/g, '');
+            
+            if (config && digits.length !== config.nbDigits) {
+                alert(`Le numéro doit contenir exactement ${config.nbDigits} chiffres.`);
+                document.getElementById('telephone').focus();
+                return false;
+            }
+
+            if (!ville) { alert('Veuillez sélectionner votre ville.'); return false; }
+
+            return true;
+        }
+
+        // ==========================================
+        // FINALISER LA COMMANDE
+        // ==========================================
+        document.getElementById('confirmOrderBtn').addEventListener('click', function() {
+            if (!validateForm()) return;
+
+            const prenom = document.getElementById('prenom').value.trim();
+            const nom = document.getElementById('nom').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const indicatif = document.getElementById('indicatif').value;
+            const telephone = document.getElementById('telephone').value.trim();
+            const pays = document.getElementById('paysDisplay').textContent;
+            const ville = document.getElementById('ville').value;
+
+            const cart = JSON.parse(localStorage.getItem('panier') || '[]');
+            
+            let message = `🛍️ *NOUVELLE COMMANDE NIKEL*\n\n`;
+            message += `👤 *Client :* ${prenom} ${nom}\n`;
+            message += `📧 *Email :* ${email}\n`;
+            message += `📱 *Téléphone :* ${indicatif} ${telephone}\n`;
+            message += `📍 *Ville :* ${ville}\n`;
+            message += `🌍 *Pays :* ${pays}\n\n`;
+            message += `📦 *Articles commandés :*\n`;
+            message += `───────────────────\n`;
+
+            let total = 0;
+            cart.forEach((item, index) => {
+                const price = item.prix || 0;
+                const quantity = item.quantite || 1;
+                const itemTotal = price * quantity;
+                total += itemTotal;
+                message += `${index + 1}. ${item.nom || 'Produit'} × ${quantity} = ${itemTotal.toFixed(2)} FCFA\n`;
+            });
+
+            message += `───────────────────\n`;
+            message += `💰 *Total :* ${total.toFixed(2)} FCFA\n\n`;
+            message += `📅 *Date :* ${new Date().toLocaleString('fr-FR')}\n\n`;
+            message += `---\n`;
+            message += `📲 *Contactez-moi sur WhatsApp pour finaliser la commande.*`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const phoneNumber = '2290155555555';
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+
+            window.open(whatsappUrl, '_blank');
+        });
+
+        // ==========================================
+        // RECHERCHE
+        // ==========================================
+        function handleSearch() {
+            const input = document.getElementById('searchInput');
+            const query = input.value.trim();
+            if (query) {
+                window.location.href = `boutique.html?search=${encodeURIComponent(query)}`;
+            }
+        }
+
+        // ==========================================
+        // INITIALISATION
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCartItems();
+
+            document.getElementById('indicatif').value = '+229';
+            updatePhonePlaceholder();
+            updatePaysFromIndicatif();
+
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        handleSearch();
+                    }
+                });
+            }
+
+            function updateCartBadge() {
+                const cart = JSON.parse(localStorage.getItem('panier') || '[]');
+                const badge = document.querySelector('.panier-icon .badge');
+                if (badge) {
+                    const totalItems = cart.reduce((sum, item) => sum + (item.quantite || 1), 0);
+                    badge.textContent = totalItems;
+                }
+            }
+            updateCartBadge();
+        });
+    </script>
 </body>
 </html>
