@@ -45,13 +45,26 @@
 
         .cart-item-checkout {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 12px;
             padding: 12px 0;
             border-bottom: 1px solid var(--light-gray);
         }
 
         .cart-item-checkout:last-child {
             border-bottom: none;
+        }
+
+        .cart-item-checkout .item-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .cart-item-checkout .item-info {
+            flex: 1;
         }
 
         .cart-item-checkout .item-row {
@@ -229,6 +242,21 @@
             transform: none;
         }
 
+        .loading-cart {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+        }
+
+        .loading-cart i {
+            font-size: 1.5rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         @media (max-width: 768px) {
             .checkout-wrapper {
                 flex-direction: column;
@@ -376,8 +404,8 @@
                         </h3>
                         
                         <div id="checkoutItems" style="margin-bottom:20px; flex:1;">
-                            <div style="text-align:center; padding:20px; color:#888;">
-                                <i class="fas fa-spinner fa-spin" style="font-size:1.5rem;"></i>
+                            <div class="loading-cart">
+                                <i class="fas fa-spinner"></i>
                                 <p style="margin-top:8px;">Chargement du panier...</p>
                             </div>
                         </div>
@@ -389,7 +417,7 @@
                             </div>
                         </div>
 
-                        <button class="btn-whatsapp" id="confirmOrderBtn">
+                        <button class="btn-whatsapp" id="confirmOrderBtn" disabled>
                             <i class="fab fa-whatsapp"></i> Finalisez votre achat sur WhatsApp
                         </button>
                         <a href="panier.html" style="display:block; text-align:center; margin-top:12px; color:var(--gray); text-decoration:none; font-size:0.95rem;">
@@ -550,24 +578,17 @@
             try {
                 console.log('🔍 Recherche du panier...');
                 
-                // 1. Essayer d'utiliser la fonction getPanier de script.js si disponible
                 let cart = [];
                 
-                if (window.getPanier && typeof window.getPanier === 'function') {
-                    cart = window.getPanier() || [];
-                    console.log('📦 Panier récupéré via getPanier():', cart);
-                }
-                
-                // 2. Sinon, essayer window.panier
-                if (!cart || cart.length === 0) {
-                    if (window.panier && Array.isArray(window.panier) && window.panier.length > 0) {
-                        cart = window.panier;
-                        console.log('📦 Panier trouvé dans window.panier:', cart);
-                    }
-                }
-                
-                // 3. Sinon, essayer localStorage
-                if (!cart || cart.length === 0) {
+                // Récupérer depuis window.panier (le plus probable)
+                if (window.panier && Array.isArray(window.panier) && window.panier.length > 0) {
+                    cart = window.panier;
+                    console.log('📦 Panier trouvé dans window.panier:', cart);
+                } else if (window.cart && Array.isArray(window.cart) && window.cart.length > 0) {
+                    cart = window.cart;
+                    console.log('📦 Panier trouvé dans window.cart:', cart);
+                } else {
+                    // Essayer localStorage
                     try {
                         const data = localStorage.getItem('panier');
                         if (data) {
@@ -581,18 +602,6 @@
                         console.warn('⚠️ Erreur lecture localStorage:', e);
                     }
                 }
-                
-                // 4. Dernier recours : données de test
-                if (!cart || cart.length === 0) {
-                    console.warn('⚠️ Aucun panier trouvé, utilisation de données de test');
-                    cart = [
-                        { id: 1, nom: 'Sac NOMAD', prix: 59.00, quantite: 2 },
-                        { id: 2, nom: 'Montre EDGE', prix: 149.00, quantite: 1 },
-                        { id: 3, nom: 'NIKEL Urban Gris', prix: 99.00, quantite: 1 }
-                    ];
-                }
-
-                console.log(`✅ ${cart.length} articles dans le panier`);
 
                 const container = document.getElementById('checkoutItems');
                 const totalSpan = document.getElementById('checkoutTotal');
@@ -607,7 +616,7 @@
                         </div>
                     `;
                     totalSpan.textContent = '0 FCFA';
-                    if (confirmBtn) confirmBtn.disabled = true;
+                    confirmBtn.disabled = true;
                     return;
                 }
 
@@ -615,22 +624,26 @@
                 let total = 0;
 
                 cart.forEach((item, index) => {
-                    const price = parseFloat(item.prix || item.price || 0);
-                    const quantity = parseInt(item.quantite || item.quantity || 1);
-                    const itemTotal = price * quantity;
+                    // Récupérer les données avec plusieurs noms possibles
+                    const nom = item.nom || item.name || item.produit_nom || 'Produit ' + (index + 1);
+                    const prix = parseFloat(item.prix || item.price || item.prix_unitaire || 0);
+                    const quantite = parseInt(item.quantite || item.quantity || item.qte || 1);
+                    const image = item.image || item.image_url || item.photo || '';
+                    const itemTotal = prix * quantite;
                     total += itemTotal;
-
-                    const nom = item.nom || item.name || 'Produit ' + (index + 1);
 
                     html += `
                         <div class="cart-item-checkout">
-                            <div class="item-row">
-                                <span class="item-name">${nom}</span>
-                                <span class="item-total">${itemTotal.toFixed(2)} FCFA</span>
-                            </div>
-                            <div class="item-details">
-                                <span>Prix unitaire : ${price.toFixed(2)} FCFA</span>
-                                <span>Quantité : ${quantity}</span>
+                            ${image ? `<img src="${image}" alt="${nom}" class="item-image" onerror="this.style.display='none'">` : ''}
+                            <div class="item-info">
+                                <div class="item-row">
+                                    <span class="item-name">${nom}</span>
+                                    <span class="item-total">${itemTotal.toFixed(2)} FCFA</span>
+                                </div>
+                                <div class="item-details">
+                                    <span>Prix unitaire : ${prix.toFixed(2)} FCFA</span>
+                                    <span>Quantité : ${quantite}</span>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -638,12 +651,12 @@
 
                 container.innerHTML = html;
                 totalSpan.textContent = total.toFixed(2) + ' FCFA';
-                if (confirmBtn) confirmBtn.disabled = false;
+                confirmBtn.disabled = false;
 
                 // Mettre à jour le badge du panier
                 const badge = document.querySelector('.panier-icon .badge');
                 if (badge) {
-                    const totalItems = cart.reduce((sum, item) => sum + (parseInt(item.quantite || item.quantity || 1)), 0);
+                    const totalItems = cart.reduce((sum, item) => sum + (parseInt(item.quantite || item.quantity || item.qte || 1)), 0);
                     badge.textContent = totalItems;
                 }
 
@@ -705,18 +718,7 @@
             const ville = document.getElementById('ville').value;
 
             // Récupérer le panier
-            let cart = [];
-            if (window.getPanier && typeof window.getPanier === 'function') {
-                cart = window.getPanier() || [];
-            } else if (window.panier && Array.isArray(window.panier)) {
-                cart = window.panier;
-            } else {
-                try {
-                    cart = JSON.parse(localStorage.getItem('panier') || '[]');
-                } catch (e) {
-                    cart = [];
-                }
-            }
+            let cart = window.panier || JSON.parse(localStorage.getItem('panier') || '[]');
             
             let message = `🛍️ *NOUVELLE COMMANDE NIKEL*\n\n`;
             message += `👤 *Client :* ${prenom} ${nom}\n`;
@@ -730,12 +732,12 @@
             let total = 0;
             if (cart && cart.length > 0) {
                 cart.forEach((item, index) => {
-                    const price = parseFloat(item.prix || item.price || 0);
-                    const quantity = parseInt(item.quantite || item.quantity || 1);
-                    const itemTotal = price * quantity;
+                    const prix = parseFloat(item.prix || item.price || 0);
+                    const quantite = parseInt(item.quantite || item.quantity || 1);
+                    const itemTotal = prix * quantite;
                     total += itemTotal;
                     const nom = item.nom || item.name || 'Produit';
-                    message += `${index + 1}. ${nom} × ${quantity} = ${itemTotal.toFixed(2)} FCFA\n`;
+                    message += `${index + 1}. ${nom} × ${quantite} = ${itemTotal.toFixed(2)} FCFA\n`;
                 });
             }
 
