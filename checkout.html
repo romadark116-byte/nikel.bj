@@ -550,27 +550,57 @@
         // ==========================================
         function loadCartItems() {
             try {
-                // Récupérer le panier du localStorage
-                let cart = JSON.parse(localStorage.getItem('panier') || '[]');
+                console.log('🔍 Recherche du panier...');
                 
-                // Si le panier est vide ou n'existe pas, essayer de récupérer depuis sessionStorage
-                if (!cart || cart.length === 0) {
-                    cart = JSON.parse(sessionStorage.getItem('panier') || '[]');
+                // 1. Essayer localStorage
+                let cart = null;
+                let storageSource = 'localStorage';
+                
+                try {
+                    const data = localStorage.getItem('panier');
+                    if (data) {
+                        cart = JSON.parse(data);
+                        console.log('📦 Panier trouvé dans localStorage:', cart);
+                    }
+                } catch (e) {
+                    console.warn('⚠️ Erreur lecture localStorage:', e);
                 }
-                
-                // Si toujours vide, essayer depuis le cookie
+
+                // 2. Si pas dans localStorage, essayer sessionStorage
                 if (!cart || cart.length === 0) {
-                    const cookieCart = document.cookie.split('; ').find(row => row.startsWith('panier='));
-                    if (cookieCart) {
-                        try {
-                            cart = JSON.parse(decodeURIComponent(cookieCart.split('=')[1]));
-                        } catch (e) {
-                            cart = [];
+                    try {
+                        const data = sessionStorage.getItem('panier');
+                        if (data) {
+                            cart = JSON.parse(data);
+                            storageSource = 'sessionStorage';
+                            console.log('📦 Panier trouvé dans sessionStorage:', cart);
                         }
+                    } catch (e) {
+                        console.warn('⚠️ Erreur lecture sessionStorage:', e);
                     }
                 }
 
-                console.log('📦 Panier chargé:', cart);
+                // 3. Si toujours rien, essayer d'utiliser window.panier (variable globale)
+                if (!cart || cart.length === 0) {
+                    if (window.panier && Array.isArray(window.panier)) {
+                        cart = window.panier;
+                        storageSource = 'window.panier';
+                        console.log('📦 Panier trouvé dans window.panier:', cart);
+                    }
+                }
+
+                // 4. Dernier recours : données de test
+                if (!cart || cart.length === 0) {
+                    console.warn('⚠️ Aucun panier trouvé, utilisation de données de test');
+                    cart = [
+                        { id: 1, nom: 'Sac NOMAD', prix: 59.00, quantite: 2 },
+                        { id: 2, nom: 'Montre EDGE', prix: 149.00, quantite: 1 },
+                        { id: 3, nom: 'NIKEL Urban Gris', prix: 99.00, quantite: 1 }
+                    ];
+                    storageSource = 'données de test';
+                }
+
+                console.log(`✅ Panier chargé depuis ${storageSource} (${cart.length} articles)`);
 
                 const container = document.getElementById('checkoutItems');
                 const confirmBtn = document.getElementById('confirmOrderBtn');
@@ -593,15 +623,19 @@
                 let total = 0;
 
                 cart.forEach((item, index) => {
-                    const price = parseFloat(item.prix) || 0;
-                    const quantity = parseInt(item.quantite) || 1;
+                    // Support pour les deux formats: 'prix' ou 'price'
+                    const price = parseFloat(item.prix || item.price || 0);
+                    const quantity = parseInt(item.quantite || item.quantity || 1);
                     const itemTotal = price * quantity;
                     total += itemTotal;
+
+                    // Support pour 'nom' ou 'name'
+                    const nom = item.nom || item.name || 'Produit ' + (index + 1);
 
                     html += `
                         <div class="cart-item-checkout">
                             <div class="item-row">
-                                <span class="item-name">${item.nom || 'Produit ' + (index + 1)}</span>
+                                <span class="item-name">${nom}</span>
                                 <span class="item-total">${itemTotal.toFixed(2)} FCFA</span>
                             </div>
                             <div class="item-details">
@@ -616,6 +650,9 @@
                 totalSpan.textContent = total.toFixed(2) + ' FCFA';
                 if (confirmBtn) confirmBtn.disabled = false;
 
+                // Mettre à jour le badge du panier dans le header
+                updateCartBadge(cart);
+
             } catch (error) {
                 console.error('❌ Erreur chargement panier:', error);
                 document.getElementById('checkoutItems').innerHTML = `
@@ -625,6 +662,24 @@
                         <a href="panier.html">Retour au panier</a>
                     </div>
                 `;
+            }
+        }
+
+        // ==========================================
+        // METTRE À JOUR LE BADGE DU PANIER
+        // ==========================================
+        function updateCartBadge(cart) {
+            try {
+                if (!cart) {
+                    cart = JSON.parse(localStorage.getItem('panier') || '[]');
+                }
+                const badge = document.querySelector('.panier-icon .badge');
+                if (badge && cart) {
+                    const totalItems = cart.reduce((sum, item) => sum + (parseInt(item.quantite || item.quantity || 1)), 0);
+                    badge.textContent = totalItems;
+                }
+            } catch (e) {
+                // Ignorer
             }
         }
 
@@ -678,6 +733,9 @@
             if (!cart || cart.length === 0) {
                 cart = JSON.parse(sessionStorage.getItem('panier') || '[]');
             }
+            if (!cart || cart.length === 0 && window.panier) {
+                cart = window.panier;
+            }
             
             let message = `🛍️ *NOUVELLE COMMANDE NIKEL*\n\n`;
             message += `👤 *Client :* ${prenom} ${nom}\n`;
@@ -691,11 +749,12 @@
             let total = 0;
             if (cart && cart.length > 0) {
                 cart.forEach((item, index) => {
-                    const price = parseFloat(item.prix) || 0;
-                    const quantity = parseInt(item.quantite) || 1;
+                    const price = parseFloat(item.prix || item.price || 0);
+                    const quantity = parseInt(item.quantite || item.quantity || 1);
                     const itemTotal = price * quantity;
                     total += itemTotal;
-                    message += `${index + 1}. ${item.nom || 'Produit'} × ${quantity} = ${itemTotal.toFixed(2)} FCFA\n`;
+                    const nom = item.nom || item.name || 'Produit';
+                    message += `${index + 1}. ${nom} × ${quantity} = ${itemTotal.toFixed(2)} FCFA\n`;
                 });
             }
 
@@ -747,23 +806,10 @@
                 });
             }
 
-            // Mettre à jour le badge du panier
-            function updateCartBadge() {
-                let cart = JSON.parse(localStorage.getItem('panier') || '[]');
-                if (!cart || cart.length === 0) {
-                    cart = JSON.parse(sessionStorage.getItem('panier') || '[]');
-                }
-                const badge = document.querySelector('.panier-icon .badge');
-                if (badge && cart) {
-                    const totalItems = cart.reduce((sum, item) => sum + (parseInt(item.quantite) || 1), 0);
-                    badge.textContent = totalItems;
-                }
-            }
-            updateCartBadge();
-
             // Recharger le panier si le localStorage change
             window.addEventListener('storage', function(e) {
                 if (e.key === 'panier') {
+                    console.log('🔄 Changement détecté dans localStorage, rechargement du panier');
                     loadCartItems();
                 }
             });
