@@ -45,26 +45,13 @@
 
         .cart-item-checkout {
             display: flex;
-            align-items: center;
-            gap: 12px;
+            flex-direction: column;
             padding: 12px 0;
             border-bottom: 1px solid var(--light-gray);
         }
 
         .cart-item-checkout:last-child {
             border-bottom: none;
-        }
-
-        .cart-item-checkout .item-image {
-            width: 60px;
-            height: 60px;
-            border-radius: 8px;
-            object-fit: cover;
-            flex-shrink: 0;
-        }
-
-        .cart-item-checkout .item-info {
-            flex: 1;
         }
 
         .cart-item-checkout .item-row {
@@ -91,6 +78,7 @@
             margin-top: 4px;
         }
 
+        /* ===== STYLES POUR LE FORMULAIRE ===== */
         .form-group label {
             font-size: 0.85rem;
             font-weight: 600;
@@ -193,68 +181,6 @@
         .pays-display i {
             color: var(--gold);
             font-size: 1rem;
-        }
-
-        .panier-vide {
-            text-align: center;
-            padding: 30px;
-            color: #888;
-        }
-
-        .panier-vide i {
-            font-size: 2rem;
-            display: block;
-            margin-bottom: 10px;
-            color: #ddd;
-        }
-
-        .panier-vide a {
-            color: var(--gold);
-            text-decoration: underline;
-        }
-
-        .btn-whatsapp {
-            width: 100%;
-            justify-content: center;
-            margin-top: 20px;
-            padding: 14px;
-            font-size: 1rem;
-            border: none;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #25D366, #128C7E);
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-        }
-
-        .btn-whatsapp:hover {
-            transform: scale(1.02);
-            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3);
-        }
-
-        .btn-whatsapp:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .loading-cart {
-            text-align: center;
-            padding: 20px;
-            color: #888;
-        }
-
-        .loading-cart i {
-            font-size: 1.5rem;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
         }
 
         @media (max-width: 768px) {
@@ -360,11 +286,11 @@
                                 <label>Téléphone (WhatsApp)</label>
                                 <div class="phone-group">
                                     <select id="indicatif" onchange="updatePhonePlaceholder(); updatePaysFromIndicatif();">
-                                        <option value="+229">🇧🇯 +229</option>
-                                        <option value="+228">🇹🇬 +228</option>
-                                        <option value="+227">🇳🇪 +227</option>
-                                        <option value="+226">🇧🇫 +226</option>
-                                        <option value="+225">🇨🇮 +225</option>
+                                        <option value="+229">🇧🇯 +229 (Bénin)</option>
+                                        <option value="+228">🇹🇬 +228 (Togo)</option>
+                                        <option value="+227">🇳🇪 +227 (Niger)</option>
+                                        <option value="+226">🇧🇫 +226 (Burkina Faso)</option>
+                                        <option value="+225">🇨🇮 +225 (Côte d'Ivoire)</option>
                                     </select>
                                     <input type="tel" id="telephone" required placeholder="01 23 45 67 89" oninput="validatePhone(this)">
                                 </div>
@@ -404,28 +330,59 @@
                         </h3>
                         
                         <div id="checkoutItems" style="margin-bottom:20px; flex:1;">
-                            <div class="loading-cart">
-                                <i class="fas fa-spinner"></i>
-                                <p style="margin-top:8px;">Chargement du panier...</p>
+                            <!-- Exemple d'article avec sous-total -->
+                            <div class="cart-item-checkout">
+                                <div class="item-row">
+                                    <span class="item-name">Sac NOMAD</span>
+                                    <span class="item-total">354,00 FCFA</span>
+                                </div>
+                                <div class="item-details">
+                                    <span>Prix unitaire : 59,00 FCFA</span>
+                                    <span>Quantité : 6</span>
+                                </div>
+                            </div>
+
+                            <div class="cart-item-checkout">
+                                <div class="item-row">
+                                    <span class="item-name">Montre EDGE</span>
+                                    <span class="item-total">149,00 FCFA</span>
+                                </div>
+                                <div class="item-details">
+                                    <span>Prix unitaire : 149,00 FCFA</span>
+                                    <span>Quantité : 1</span>
+                                </div>
+                            </div>
+
+                            <div class="cart-item-checkout">
+                                <div class="item-row">
+                                    <span class="item-name">NIKEL Urban Gris</span>
+                                    <span class="item-total">99,00 FCFA</span>
+                                </div>
+                                <div class="item-details">
+                                    <span>Prix unitaire : 99,00 FCFA</span>
+                                    <span>Quantité : 1</span>
+                                </div>
                             </div>
                         </div>
 
                         <div style="border-top:2px solid var(--light-gray); padding-top:16px; margin-top:auto;">
+                            <div style="display:none;">
+                                <span id="subtotal">602,00 FCFA</span>
+                            </div>
                             <div style="display:flex; justify-content:space-between; padding:8px 0; font-size:1.2rem; font-weight:700; border-top:2px solid var(--light-gray); margin-top:8px; padding-top:16px;">
                                 <span>Total</span>
-                                <span id="checkoutTotal" style="color:var(--accent-dark);">0 FCFA</span>
+                                <span id="checkoutTotal" style="color:var(--accent-dark);">602,00 FCFA</span>
                             </div>
                         </div>
 
-                        <button class="btn-whatsapp" id="confirmOrderBtn" disabled>
+                        <button class="btn btn-primary" id="confirmOrderBtn" style="width:100%; justify-content:center; margin-top:20px; padding:14px; font-size:1rem; border:none; border-radius:8px; background:linear-gradient(135deg, var(--gold), var(--accent-dark)); color:white; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:10px;">
                             <i class="fab fa-whatsapp"></i> Finalisez votre achat sur WhatsApp
                         </button>
-                        <a href="panier.html" style="display:block; text-align:center; margin-top:12px; color:var(--gray); text-decoration:none; font-size:0.95rem;">
+                        <a href="panier.html" style="display:block; text-align:center; margin-top:12px; color:var(--gray); text-decoration:none;">
                             <i class="fas fa-arrow-left"></i> Retour au panier
                         </a>
                     </div>
 
-                    <!-- Badge de sécurité -->
                     <div style="background:var(--white); padding:16px 20px; border-radius:16px; box-shadow:var(--shadow); margin-top:16px; text-align:center;">
                         <div style="display:flex; justify-content:center; gap:24px; color:var(--gray); font-size:0.9rem;">
                             <span><i class="fas fa-lock" style="color:var(--gold);"></i> Sécurisé</span>
@@ -572,189 +529,6 @@
         }
 
         // ==========================================
-        // CHARGER LE PANIER
-        // ==========================================
-        function loadCartItems() {
-            try {
-                console.log('🔍 Recherche du panier...');
-                
-                let cart = [];
-                
-                // Récupérer depuis window.panier (le plus probable)
-                if (window.panier && Array.isArray(window.panier) && window.panier.length > 0) {
-                    cart = window.panier;
-                    console.log('📦 Panier trouvé dans window.panier:', cart);
-                } else if (window.cart && Array.isArray(window.cart) && window.cart.length > 0) {
-                    cart = window.cart;
-                    console.log('📦 Panier trouvé dans window.cart:', cart);
-                } else {
-                    // Essayer localStorage
-                    try {
-                        const data = localStorage.getItem('panier');
-                        if (data) {
-                            const parsed = JSON.parse(data);
-                            if (parsed && parsed.length > 0) {
-                                cart = parsed;
-                                console.log('📦 Panier trouvé dans localStorage:', cart);
-                            }
-                        }
-                    } catch (e) {
-                        console.warn('⚠️ Erreur lecture localStorage:', e);
-                    }
-                }
-
-                const container = document.getElementById('checkoutItems');
-                const totalSpan = document.getElementById('checkoutTotal');
-                const confirmBtn = document.getElementById('confirmOrderBtn');
-                
-                if (!cart || cart.length === 0) {
-                    container.innerHTML = `
-                        <div class="panier-vide">
-                            <i class="fas fa-shopping-bag"></i>
-                            <p>Votre panier est vide</p>
-                            <a href="boutique.html">Découvrir nos produits</a>
-                        </div>
-                    `;
-                    totalSpan.textContent = '0 FCFA';
-                    confirmBtn.disabled = true;
-                    return;
-                }
-
-                let html = '';
-                let total = 0;
-
-                cart.forEach((item, index) => {
-                    // Récupérer les données avec plusieurs noms possibles
-                    const nom = item.nom || item.name || item.produit_nom || 'Produit ' + (index + 1);
-                    const prix = parseFloat(item.prix || item.price || item.prix_unitaire || 0);
-                    const quantite = parseInt(item.quantite || item.quantity || item.qte || 1);
-                    const image = item.image || item.image_url || item.photo || '';
-                    const itemTotal = prix * quantite;
-                    total += itemTotal;
-
-                    html += `
-                        <div class="cart-item-checkout">
-                            ${image ? `<img src="${image}" alt="${nom}" class="item-image" onerror="this.style.display='none'">` : ''}
-                            <div class="item-info">
-                                <div class="item-row">
-                                    <span class="item-name">${nom}</span>
-                                    <span class="item-total">${itemTotal.toFixed(2)} FCFA</span>
-                                </div>
-                                <div class="item-details">
-                                    <span>Prix unitaire : ${prix.toFixed(2)} FCFA</span>
-                                    <span>Quantité : ${quantite}</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                container.innerHTML = html;
-                totalSpan.textContent = total.toFixed(2) + ' FCFA';
-                confirmBtn.disabled = false;
-
-                // Mettre à jour le badge du panier
-                const badge = document.querySelector('.panier-icon .badge');
-                if (badge) {
-                    const totalItems = cart.reduce((sum, item) => sum + (parseInt(item.quantite || item.quantity || item.qte || 1)), 0);
-                    badge.textContent = totalItems;
-                }
-
-            } catch (error) {
-                console.error('❌ Erreur chargement panier:', error);
-                document.getElementById('checkoutItems').innerHTML = `
-                    <div class="panier-vide">
-                        <i class="fas fa-exclamation-circle" style="color:#e74c3c;"></i>
-                        <p>Erreur lors du chargement du panier</p>
-                        <a href="panier.html">Retour au panier</a>
-                    </div>
-                `;
-            }
-        }
-
-        // ==========================================
-        // VALIDER LE FORMULAIRE
-        // ==========================================
-        function validateForm() {
-            const prenom = document.getElementById('prenom').value.trim();
-            const nom = document.getElementById('nom').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const telephone = document.getElementById('telephone').value.trim();
-            const ville = document.getElementById('ville').value;
-
-            if (!prenom) { alert('Veuillez saisir votre prénom.'); return false; }
-            if (!nom) { alert('Veuillez saisir votre nom.'); return false; }
-            if (!email) { alert('Veuillez saisir votre email.'); return false; }
-            if (!email.includes('@')) { alert('Email invalide.'); return false; }
-            if (!telephone) { alert('Veuillez saisir votre numéro de téléphone.'); return false; }
-
-            const indicatif = document.getElementById('indicatif').value;
-            const config = phoneConfig[indicatif];
-            const digits = telephone.replace(/\D/g, '');
-            
-            if (config && digits.length !== config.nbDigits) {
-                alert(`Le numéro doit contenir exactement ${config.nbDigits} chiffres.`);
-                document.getElementById('telephone').focus();
-                return false;
-            }
-
-            if (!ville) { alert('Veuillez sélectionner votre ville.'); return false; }
-
-            return true;
-        }
-
-        // ==========================================
-        // FINALISER LA COMMANDE
-        // ==========================================
-        document.getElementById('confirmOrderBtn').addEventListener('click', function() {
-            if (!validateForm()) return;
-
-            const prenom = document.getElementById('prenom').value.trim();
-            const nom = document.getElementById('nom').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const indicatif = document.getElementById('indicatif').value;
-            const telephone = document.getElementById('telephone').value.trim();
-            const pays = document.getElementById('paysDisplay').textContent;
-            const ville = document.getElementById('ville').value;
-
-            // Récupérer le panier
-            let cart = window.panier || JSON.parse(localStorage.getItem('panier') || '[]');
-            
-            let message = `🛍️ *NOUVELLE COMMANDE NIKEL*\n\n`;
-            message += `👤 *Client :* ${prenom} ${nom}\n`;
-            message += `📧 *Email :* ${email}\n`;
-            message += `📱 *Téléphone :* ${indicatif} ${telephone}\n`;
-            message += `📍 *Ville :* ${ville}\n`;
-            message += `🌍 *Pays :* ${pays}\n\n`;
-            message += `📦 *Articles commandés :*\n`;
-            message += `───────────────────\n`;
-
-            let total = 0;
-            if (cart && cart.length > 0) {
-                cart.forEach((item, index) => {
-                    const prix = parseFloat(item.prix || item.price || 0);
-                    const quantite = parseInt(item.quantite || item.quantity || 1);
-                    const itemTotal = prix * quantite;
-                    total += itemTotal;
-                    const nom = item.nom || item.name || 'Produit';
-                    message += `${index + 1}. ${nom} × ${quantite} = ${itemTotal.toFixed(2)} FCFA\n`;
-                });
-            }
-
-            message += `───────────────────\n`;
-            message += `💰 *Total :* ${total.toFixed(2)} FCFA\n\n`;
-            message += `📅 *Date :* ${new Date().toLocaleString('fr-FR')}\n\n`;
-            message += `---\n`;
-            message += `📲 *Contactez-moi sur WhatsApp pour finaliser la commande.*`;
-
-            const encodedMessage = encodeURIComponent(message);
-            const phoneNumber = '2290155555555';
-            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-
-            window.open(whatsappUrl, '_blank');
-        });
-
-        // ==========================================
         // RECHERCHE
         // ==========================================
         function handleSearch() {
@@ -769,12 +543,7 @@
         // INITIALISATION
         // ==========================================
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Page de paiement chargée');
-            
-            // Charger le panier
-            loadCartItems();
-
-            // Configurer le téléphone
+            // Configurer le téléphone par défaut
             document.getElementById('indicatif').value = '+229';
             updatePhonePlaceholder();
             updatePaysFromIndicatif();
@@ -788,14 +557,72 @@
                     }
                 });
             }
+        });
 
-            // Recharger le panier si le localStorage change
-            window.addEventListener('storage', function(e) {
-                if (e.key === 'panier') {
-                    console.log('🔄 Changement détecté, rechargement du panier');
-                    loadCartItems();
-                }
+        // ==========================================
+        // BOUTON VALIDER (pour WhatsApp)
+        // ==========================================
+        document.getElementById('confirmOrderBtn').addEventListener('click', function() {
+            const prenom = document.getElementById('prenom').value.trim();
+            const nom = document.getElementById('nom').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const indicatif = document.getElementById('indicatif').value;
+            const telephone = document.getElementById('telephone').value.trim();
+            const pays = document.getElementById('paysDisplay').textContent;
+            const ville = document.getElementById('ville').value;
+
+            if (!prenom || !nom || !email || !telephone || !ville) {
+                alert('Veuillez remplir tous les champs.');
+                return;
+            }
+
+            if (!email.includes('@')) {
+                alert('Veuillez entrer un email valide.');
+                return;
+            }
+
+            const config = phoneConfig[indicatif];
+            const digits = telephone.replace(/\D/g, '');
+            if (config && digits.length !== config.nbDigits) {
+                alert(`Le numéro doit contenir exactement ${config.nbDigits} chiffres.`);
+                return;
+            }
+
+            // Construire le message WhatsApp
+            let message = `🛍️ *NOUVELLE COMMANDE NIKEL*\n\n`;
+            message += `👤 *Client :* ${prenom} ${nom}\n`;
+            message += `📧 *Email :* ${email}\n`;
+            message += `📱 *Téléphone :* ${indicatif} ${telephone}\n`;
+            message += `📍 *Ville :* ${ville}\n`;
+            message += `🌍 *Pays :* ${pays}\n\n`;
+            message += `📦 *Articles commandés :*\n`;
+            message += `───────────────────\n`;
+
+            // Articles (exemples)
+            const articles = [
+                { nom: 'Sac NOMAD', prix: 59.00, qte: 6 },
+                { nom: 'Montre EDGE', prix: 149.00, qte: 1 },
+                { nom: 'NIKEL Urban Gris', prix: 99.00, qte: 1 }
+            ];
+
+            let total = 0;
+            articles.forEach((item, index) => {
+                const itemTotal = item.prix * item.qte;
+                total += itemTotal;
+                message += `${index + 1}. ${item.nom} × ${item.qte} = ${itemTotal.toFixed(2)} FCFA\n`;
             });
+
+            message += `───────────────────\n`;
+            message += `💰 *Total :* ${total.toFixed(2)} FCFA\n\n`;
+            message += `📅 *Date :* ${new Date().toLocaleString('fr-FR')}\n\n`;
+            message += `---\n`;
+            message += `📲 *Contactez-moi sur WhatsApp pour finaliser la commande.*`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const phoneNumber = '2290155555555';
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+
+            window.open(whatsappUrl, '_blank');
         });
     </script>
 </body>
