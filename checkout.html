@@ -586,6 +586,30 @@
         }
 
         // ==========================================
+        // VIDER LE PANIER
+        // ==========================================
+        function clearCart() {
+            localStorage.removeItem('nikel_cart');
+            cart = [];
+            console.log('🗑️ Panier vidé');
+        }
+
+        // ==========================================
+        // RÉINITIALISER LE FORMULAIRE
+        // ==========================================
+        function resetForm() {
+            document.getElementById('prenom').value = '';
+            document.getElementById('nom').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('telephone').value = '';
+            document.getElementById('ville').value = 'Cotonou';
+            document.getElementById('indicatif').value = '+229';
+            updatePhonePlaceholder();
+            updatePaysFromIndicatif();
+            console.log('🔄 Formulaire réinitialisé');
+        }
+
+        // ==========================================
         // AFFICHER LE PANIER
         // ==========================================
         function renderCartItems() {
@@ -673,7 +697,6 @@
             try {
                 console.log('💾 Enregistrement du client dans Supabase...', clientData);
 
-                // Vérifier si le client existe déjà avec cet email
                 const { data: existingClient, error: checkError } = await supabaseClient
                     .from('clients')
                     .select('id')
@@ -684,17 +707,15 @@
                     console.error('❌ Erreur vérification client:', checkError);
                 }
 
-                // Garder le numéro AVEC les espaces (ex: 01 11 12 44 54)
                 const telephoneAvecEspaces = clientData.telephone;
 
                 if (existingClient) {
-                    // Mettre à jour le client existant
                     const { error: updateError } = await supabaseClient
                         .from('clients')
                         .update({
                             prenom: clientData.prenom,
                             nom: clientData.nom,
-                            telephone: telephoneAvecEspaces,  // ← Garde les espaces (01 11 12 44 54)
+                            telephone: telephoneAvecEspaces,
                             indicatif: clientData.indicatif,
                             ville: clientData.ville,
                             pays: clientData.pays,
@@ -710,14 +731,13 @@
                     console.log('✅ Client mis à jour avec succès');
                     return { success: true, client: existingClient, action: 'updated' };
                 } else {
-                    // Créer un nouveau client
                     const { data: newClient, error: insertError } = await supabaseClient
                         .from('clients')
                         .insert([{
                             prenom: clientData.prenom,
                             nom: clientData.nom,
                             email: clientData.email,
-                            telephone: telephoneAvecEspaces,  // ← Garde les espaces (01 11 12 44 54)
+                            telephone: telephoneAvecEspaces,
                             indicatif: clientData.indicatif,
                             ville: clientData.ville,
                             pays: clientData.pays,
@@ -753,7 +773,6 @@
             const pays = document.getElementById('paysDisplay').textContent;
             const ville = document.getElementById('ville').value;
 
-            // Validation des champs
             if (!prenom || !nom || !email || !telephone || !ville) {
                 alert('Veuillez remplir tous les champs.');
                 return false;
@@ -770,18 +789,16 @@
                 return false;
             }
 
-            // Préparer les données du client
             const clientData = {
                 prenom: prenom,
                 nom: nom,
                 email: email,
-                telephone: telephone,  // ← Garde les espaces (01 11 12 44 54)
+                telephone: telephone,
                 indicatif: indicatif,
                 ville: ville,
                 pays: pays
             };
 
-            // Enregistrer le client dans Supabase
             const result = await saveClientToSupabase(clientData);
 
             if (!result.success) {
@@ -790,6 +807,13 @@
             }
 
             return { success: true, client: result.client, action: result.action };
+        }
+
+        // ==========================================
+        // REDIRIGER VERS LA PAGE DE CONFIRMATION
+        // ==========================================
+        function redirectToConfirmation() {
+            window.location.href = 'confirmation.html';
         }
 
         // ==========================================
@@ -886,10 +910,22 @@
                 const phoneNumber = '2290155555555';
                 const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
+                // Ouvrir WhatsApp
                 window.open(whatsappUrl, '_blank');
 
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fab fa-whatsapp"></i> Finalisez votre achat sur WhatsApp';
+                // 1. Vider le panier
+                clearCart();
+
+                // 2. Réinitialiser le formulaire
+                resetForm();
+
+                // 3. Mettre à jour l'affichage
+                renderCartItems();
+
+                // 4. Rediriger vers la page de confirmation après 1.5s
+                setTimeout(function() {
+                    redirectToConfirmation();
+                }, 1500);
 
             } catch (error) {
                 console.error('❌ Erreur:', error);
