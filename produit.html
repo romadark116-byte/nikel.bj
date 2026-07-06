@@ -8,6 +8,270 @@
     <link rel="stylesheet" href="animations.css">
     <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .product-detail {
+            padding: 40px 0;
+        }
+
+        .product-gallery {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+
+        .product-gallery .main-image {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-gallery .badge-promo {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #e74c3c;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            z-index: 5;
+        }
+
+        .product-gallery .thumbnails {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .product-gallery .thumbnails .thumb {
+            border-radius: 12px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+
+        .product-gallery .thumbnails .thumb:hover {
+            border-color: var(--gold);
+            transform: scale(1.03);
+        }
+
+        .product-gallery .thumbnails .thumb.active {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.2);
+        }
+
+        .product-info h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            margin: 0 0 12px 0;
+        }
+
+        .product-info .prices {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin: 16px 0 20px 0;
+        }
+
+        .product-info .prices .old-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 1.3rem;
+        }
+
+        .product-info .prices .current-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .product-info .rating {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .product-info .rating .stars {
+            color: var(--gold);
+            font-size: 1.1rem;
+        }
+
+        .product-info .rating .reviews {
+            color: var(--gray);
+        }
+
+        .product-info .description {
+            color: var(--gray);
+            margin: 16px 0;
+            line-height: 1.8;
+        }
+
+        .product-info .stock-badge {
+            margin: 16px 0;
+            padding: 12px 16px;
+            border-radius: 8px;
+        }
+
+        .product-info .stock-badge.in-stock {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .product-info .stock-badge.out-of-stock {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .product-info .stock-badge p {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .quantity-selector .qty-control {
+            display: flex;
+            align-items: center;
+            border: 2px solid var(--light-gray);
+            border-radius: 50px;
+            overflow: hidden;
+        }
+
+        .quantity-selector .qty-control button {
+            border: none;
+            background: transparent;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #666;
+            transition: 0.3s;
+        }
+
+        .quantity-selector .qty-control button:hover {
+            background: #f0f0f0;
+        }
+
+        .quantity-selector .qty-control .qty-display {
+            padding: 12px 24px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 16px;
+            margin: 30px 0;
+        }
+
+        .product-actions .btn-add-cart {
+            flex: 1;
+            background: linear-gradient(135deg, var(--gold), var(--accent-dark));
+            border: none;
+            padding: 16px 32px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+        }
+
+        .product-actions .btn-add-cart:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 25px rgba(201, 168, 76, 0.4);
+        }
+
+        .product-actions .btn-wishlist {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 2px solid var(--light-gray);
+            background: var(--white);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-actions .btn-wishlist:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .product-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            border-top: 1px solid var(--light-gray);
+            padding-top: 20px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .product-features span i {
+            color: var(--gold);
+            width: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+
+        .back-link:hover {
+            color: var(--accent-dark);
+        }
+
+        @media (max-width: 768px) {
+            .product-detail {
+                padding: 20px 0;
+            }
+            .product-gallery .main-image {
+                height: 300px;
+            }
+            .product-gallery .thumbnails .thumb {
+                height: 60px;
+            }
+            .product-info h1 {
+                font-size: 1.8rem;
+            }
+            .product-info .prices .current-price {
+                font-size: 1.5rem;
+            }
+            .product-actions {
+                flex-wrap: wrap;
+            }
+            .product-actions .btn-add-cart {
+                min-width: 100%;
+            }
+            .product-features {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -142,7 +406,6 @@
 
     <!-- 2️⃣ Configuration Supabase -->
     <script>
-        // 🔑 TES CLÉS SUPABASE
         const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
         
@@ -163,7 +426,16 @@
         }
 
         // ==========================================
-        // CHARGER LE PRODUIT
+        // CONSTRUIRE L'URL COMPLÈTE DE L'IMAGE
+        // ==========================================
+        function getImageUrl(url) {
+            if (!url) return 'https://via.placeholder.com/600x600/1a1a1a/FFFFFF?text=NIKEL';
+            if (url.startsWith('http')) return url;
+            return `${SUPABASE_URL}/storage/v1/object/public/produits/${url}`;
+        }
+
+        // ==========================================
+        // CHARGER LE PRODUIT ET SES IMAGES
         // ==========================================
         async function loadProduct() {
             const container = document.getElementById('productDetail');
@@ -186,14 +458,15 @@
             try {
                 console.log('🔄 Chargement du produit:', productId);
 
-                const { data, error } = await supabaseClient
+                // 1. Charger le produit
+                const { data: product, error: productError } = await supabaseClient
                     .from('produits')
                     .select('*')
                     .eq('id', productId)
                     .single();
 
-                if (error) {
-                    console.error('❌ Erreur:', error);
+                if (productError || !product) {
+                    console.error('❌ Erreur produit:', productError);
                     container.innerHTML = `
                         <div style="grid-column:1/-1;text-align:center;padding:60px 20px;">
                             <i class="fas fa-exclamation-triangle" style="font-size:3rem;color:#e74c3c;"></i>
@@ -207,8 +480,59 @@
                     return;
                 }
 
-                console.log('📦 Produit chargé:', data);
-                displayProduct(data);
+                console.log('📦 Produit chargé:', product);
+
+                // 2. Charger les images supplémentaires
+                let images = [];
+                try {
+                    const { data: imagesData, error: imagesError } = await supabaseClient
+                        .from('produits_images')
+                        .select('*')
+                        .eq('produit_id', productId)
+                        .order('ordre', { ascending: true });
+
+                    if (!imagesError && imagesData && imagesData.length > 0) {
+                        images = imagesData;
+                        console.log('🖼️ Images supplémentaires chargées:', images);
+                    }
+                } catch (e) {
+                    console.warn('⚠️ Aucune image supplémentaire trouvée');
+                }
+
+                // 3. Construire la liste complète des images
+                const allImages = [];
+                
+                // Image principale (depuis produit.image_url)
+                if (product.image_url) {
+                    allImages.push({
+                        image_url: product.image_url,
+                        est_principale: true,
+                        ordre: 0
+                    });
+                }
+
+                // Images supplémentaires
+                images.forEach(img => {
+                    allImages.push({
+                        image_url: img.image_url,
+                        est_principale: false,
+                        ordre: img.ordre || allImages.length
+                    });
+                });
+
+                // Si pas d'images du tout
+                if (allImages.length === 0) {
+                    allImages.push({
+                        image_url: 'https://via.placeholder.com/600x600/1a1a1a/FFFFFF?text=NIKEL',
+                        est_principale: true,
+                        ordre: 0
+                    });
+                }
+
+                console.log('🖼️ Toutes les images:', allImages);
+
+                // 4. Afficher le produit
+                displayProduct(product, allImages);
 
             } catch (err) {
                 console.error('❌ Erreur:', err);
@@ -225,108 +549,93 @@
         // ==========================================
         // AFFICHER LE PRODUIT
         // ==========================================
-        function displayProduct(product) {
+        function displayProduct(product, images) {
             const container = document.getElementById('productDetail');
 
             const prixOriginal = product.prix_original && product.prix_original > product.prix ? product.prix_original : null;
             const promo = product.promo || 0;
-            const imageUrl = product.image_url || 'https://via.placeholder.com/600x600/1a1a1a/FFFFFF?text=NIKEL';
+            const imagePrincipale = images.find(img => img.est_principale) || images[0];
+            const mainImageUrl = getImageUrl(imagePrincipale.image_url);
+
+            // Générer les miniatures (max 4)
+            const thumbnails = images.slice(0, 4);
 
             container.innerHTML = `
-                <!-- IMAGE -->
-                <div style="position:relative;border-radius:12px;overflow:hidden;background:#f5f5f5;">
-                    <img src="${imageUrl}" 
+                <!-- ===== GALERIE ===== -->
+                <div class="product-gallery">
+                    <img src="${mainImageUrl}" 
                          alt="${product.nom}"
-                         style="width:100%;height:500px;object-fit:cover;"
+                         class="main-image"
+                         id="mainImage"
                          onerror="this.src='https://via.placeholder.com/600x600/1a1a1a/FFFFFF?text=Image'">
-                    ${promo > 0 ? `<span style="position:absolute;top:16px;right:16px;background:#e74c3c;color:white;padding:8px 20px;border-radius:50px;font-weight:bold;font-size:1.1rem;">-${promo}%</span>` : ''}
+                    ${promo > 0 ? `<span class="badge-promo">-${promo}%</span>` : ''}
                     
-                    <!-- Miniatures -->
-                    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:16px;">
-                        <img src="${imageUrl}" 
-                             style="border-radius:12px; cursor:pointer; border:2px solid var(--gold); width:100%; height:80px; object-fit:cover;">
-                        <img src="${imageUrl}" 
-                             style="border-radius:12px; cursor:pointer; border:2px solid transparent; width:100%; height:80px; object-fit:cover;"
-                             onmouseover="this.style.borderColor='var(--gold)'" 
-                             onmouseout="this.style.borderColor='transparent'">
-                        <img src="${imageUrl}" 
-                             style="border-radius:12px; cursor:pointer; border:2px solid transparent; width:100%; height:80px; object-fit:cover;"
-                             onmouseover="this.style.borderColor='var(--gold)'" 
-                             onmouseout="this.style.borderColor='transparent'">
-                        <img src="${imageUrl}" 
-                             style="border-radius:12px; cursor:pointer; border:2px solid transparent; width:100%; height:80px; object-fit:cover;"
-                             onmouseover="this.style.borderColor='var(--gold)'" 
-                             onmouseout="this.style.borderColor='transparent'">
+                    <div class="thumbnails">
+                        ${thumbnails.map((img, index) => `
+                            <img src="${getImageUrl(img.image_url)}" 
+                                 alt="${product.nom} - vue ${index + 1}"
+                                 class="thumb ${index === 0 ? 'active' : ''}"
+                                 onclick="changeMainImage('${getImageUrl(img.image_url)}', this)"
+                                 onerror="this.src='https://via.placeholder.com/150x150/1a1a1a/FFFFFF?text=NIKEL'">
+                        `).join('')}
                     </div>
                 </div>
 
-                <!-- INFOS -->
-                <div>
-                    <p style="color:#999;font-size:0.9rem;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px 0;">${product.categorie || 'Collection'}</p>
-                    <h1 style="font-family:'Playfair Display',serif; font-size:2.2rem;margin:0 0 12px 0;">${product.nom}</h1>
+                <!-- ===== INFOS ===== -->
+                <div class="product-info">
+                    <p style="color:#999;font-size:0.9rem;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px 0;">
+                        ${product.categorie || 'Collection'}
+                    </p>
+                    <h1>${product.nom}</h1>
                     
-                    <div style="display:flex;gap:16px;align-items:center;margin:16px 0 20px 0;">
-                        ${prixOriginal ? `<span style="text-decoration:line-through;color:#999;font-size:1.3rem;">${prixOriginal} FCFA</span>` : ''}
-                        <span style="font-size:2rem;font-weight:700;color:var(--gold);">${product.prix} FCFA</span>
+                    <div class="rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="reviews">(4.8/5 · 127 avis)</span>
                     </div>
 
-                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
-                        <span style="color:var(--gold); font-size:1.1rem;">★★★★★</span>
-                        <span style="color:var(--gray);">(4.8/5 · 127 avis)</span>
+                    <div class="prices">
+                        <span class="current-price">${product.prix.toFixed(2)} FCFA</span>
+                        ${prixOriginal ? `<span class="old-price">${prixOriginal.toFixed(2)} FCFA</span>` : ''}
                     </div>
 
-                    <p style="color:var(--gray); margin:16px 0; line-height:1.8;">${product.description || 'Aucune description disponible pour ce produit.'}</p>
+                    <p class="description">${product.description || 'Aucune description disponible pour ce produit.'}</p>
                     
-                    ${product.stock > 0 ? `
-                        <div style="margin:16px 0;padding:12px 16px;background:#e8f5e9;border-radius:8px;">
-                            <p style="margin:0;color:#2e7d32;font-weight:600;">
-                                <i class="fas fa-check-circle"></i> En stock (${product.stock} disponibles)
-                            </p>
-                        </div>
-                    ` : `
-                        <div style="margin:16px 0;padding:12px 16px;background:#ffebee;border-radius:8px;">
-                            <p style="margin:0;color:#c62828;font-weight:600;">
-                                <i class="fas fa-times-circle"></i> Rupture de stock
-                            </p>
-                        </div>
-                    `}
+                    <div class="stock-badge ${product.stock > 0 ? 'in-stock' : 'out-of-stock'}">
+                        <p>
+                            ${product.stock > 0 
+                                ? `<i class="fas fa-check-circle"></i> En stock (${product.stock} disponibles)` 
+                                : `<i class="fas fa-times-circle"></i> Rupture de stock`}
+                        </p>
+                    </div>
 
-                    <div style="margin:20px 0;">
-                        <p style="font-weight:600;">Quantité :</p>
-                        <div style="display:flex; align-items:center; border:2px solid var(--light-gray); border-radius:50px; overflow:hidden; width:fit-content;">
-                            <button onclick="changeQuantity(-1)" style="border:none;background:transparent;padding:12px 20px;cursor:pointer;font-size:1.2rem;color:#666;transition:0.3s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='transparent'">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            <span id="quantityDisplay" style="padding:12px 24px;font-weight:600;font-size:1.1rem;min-width:50px;text-align:center;">1</span>
-                            <button onclick="changeQuantity(1)" style="border:none;background:transparent;padding:12px 20px;cursor:pointer;font-size:1.2rem;color:#666;transition:0.3s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='transparent'">
-                                <i class="fas fa-plus"></i>
-                            </button>
+                    <div class="quantity-selector">
+                        <span style="font-weight:600;">Quantité :</span>
+                        <div class="qty-control">
+                            <button onclick="changeQuantity(-1)"><i class="fas fa-minus"></i></button>
+                            <span class="qty-display" id="quantityDisplay">1</span>
+                            <button onclick="changeQuantity(1)"><i class="fas fa-plus"></i></button>
                         </div>
                     </div>
 
-                    <div style="display:flex; gap:16px; margin:30px 0;">
-                        <button onclick="addToCart()" style="flex:1;background:linear-gradient(135deg, var(--gold), var(--accent-dark));border:none;padding:16px 32px;border-radius:50px;color:white;font-weight:600;font-size:1rem;cursor:pointer;transition:all 0.3s;box-shadow:0 4px 15px rgba(201,168,76,0.3);" onmouseover="this.style.transform='scale(1.02)';this.style.boxShadow='0 6px 25px rgba(201,168,76,0.4)';" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 15px rgba(201,168,76,0.3)';">
+                    <div class="product-actions">
+                        <button class="btn-add-cart" onclick="addToCart('${product.id}')">
                             <i class="fas fa-shopping-bag"></i> Ajouter au panier
                         </button>
-                        <button onclick="addToWishlist()" style="width:56px; height:56px; border-radius:50%; border:2px solid var(--light-gray); background:var(--white); cursor:pointer; font-size:1.2rem; transition:all 0.3s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--light-gray)';this.style.color='var(--dark-gray)'">
+                        <button class="btn-wishlist" onclick="addToWishlist()">
                             <i class="fas fa-heart"></i>
                         </button>
                     </div>
 
-                    <div style="border-top:1px solid var(--light-gray); padding-top:20px;">
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; color:var(--gray); font-size:0.9rem;">
-                            <span><i class="fas fa-truck" style="color:var(--gold); width:20px;"></i> Livraison offerte</span>
-                            <span><i class="fas fa-rotate-left" style="color:var(--gold); width:20px;"></i> Retour 30 jours</span>
-                            <span><i class="fas fa-lock" style="color:var(--gold); width:20px;"></i> Paiement sécurisé</span>
-                            <span><i class="fas fa-tag" style="color:var(--gold); width:20px;"></i> Garantie 2 ans</span>
-                        </div>
+                    <div class="product-features">
+                        <span><i class="fas fa-truck"></i> Livraison offerte</span>
+                        <span><i class="fas fa-rotate-left"></i> Retour 30 jours</span>
+                        <span><i class="fas fa-lock"></i> Paiement sécurisé</span>
+                        <span><i class="fas fa-tag"></i> Garantie 2 ans</span>
                     </div>
 
-                    <div style="margin-top:20px;">
-                        <a href="boutique.html" style="color:var(--gold);text-decoration:none;font-size:0.95rem;transition:0.3s;" onmouseover="this.style.color='var(--accent-dark)'" onmouseout="this.style.color='var(--gold)'">
-                            <i class="fas fa-arrow-left"></i> Retour à la boutique
-                        </a>
-                    </div>
+                    <a href="boutique.html" class="back-link">
+                        <i class="fas fa-arrow-left"></i> Retour à la boutique
+                    </a>
                 </div>
             `;
 
@@ -335,12 +644,29 @@
                 id: product.id,
                 name: product.nom,
                 price: product.prix,
-                image: product.image_url
+                image: mainImageUrl
             };
 
-            // Réinitialiser la quantité
             window.currentQuantity = 1;
             document.getElementById('quantityDisplay').textContent = '1';
+        }
+
+        // ==========================================
+        // CHANGER L'IMAGE PRINCIPALE
+        // ==========================================
+        function changeMainImage(imageUrl, element) {
+            const mainImage = document.getElementById('mainImage');
+            if (mainImage) {
+                mainImage.src = imageUrl;
+            }
+            
+            // Mettre à jour les miniatures
+            document.querySelectorAll('.thumb').forEach(thumb => {
+                thumb.classList.remove('active');
+            });
+            if (element) {
+                element.classList.add('active');
+            }
         }
 
         // ==========================================
@@ -359,9 +685,9 @@
         // ==========================================
         // AJOUTER AU PANIER
         // ==========================================
-        function addToCart() {
-            const product = window.currentProduct;
+        function addToCart(productId) {
             const quantity = window.currentQuantity || 1;
+            const product = window.currentProduct;
 
             if (!product) {
                 showNotification('❌ Produit non disponible', 'error');
@@ -370,12 +696,12 @@
 
             let cart = JSON.parse(localStorage.getItem('nikel_cart') || '[]');
             
-            const existing = cart.find(item => item.id === product.id);
+            const existing = cart.find(item => item.id === productId);
             if (existing) {
                 existing.quantity += quantity;
             } else {
                 cart.push({
-                    id: product.id,
+                    id: productId,
                     name: product.name,
                     price: product.price,
                     image: product.image,
@@ -409,8 +735,10 @@
                 const cart = JSON.parse(localStorage.getItem('nikel_cart') || '[]');
                 const total = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
                 badge.textContent = total;
+                badge.style.display = total > 0 ? 'flex' : 'none';
             } catch(e) {
                 badge.textContent = '0';
+                badge.style.display = 'none';
             }
         }
 
@@ -494,8 +822,24 @@
             console.log('🚀 NIKEL - Page produit');
             loadProduct();
             updateBadge();
-        });
-    </script>
 
+            // Recherche avec Entrée
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        handleSearch();
+                    }
+                });
+            }
+        });
+
+        // Exposer les fonctions globalement
+        window.changeMainImage = changeMainImage;
+        window.changeQuantity = changeQuantity;
+        window.addToCart = addToCart;
+        window.addToWishlist = addToWishlist;
+        window.showNotification = showNotification;
+    </script>
 </body>
 </html>
