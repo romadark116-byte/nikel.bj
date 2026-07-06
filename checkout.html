@@ -78,8 +78,15 @@
             margin-top: 4px;
         }
 
-        .form-group select,
-        .form-group input {
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .form-group input,
+        .form-group select {
             width: 100%;
             padding: 10px 14px;
             font-size: 0.9rem;
@@ -92,18 +99,11 @@
             box-sizing: border-box;
         }
 
-        .form-group select:focus,
-        .form-group input:focus {
+        .form-group input:focus,
+        .form-group select:focus {
             outline: none;
             border-color: var(--gold);
             box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.1);
-        }
-
-        .form-group label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: block;
-            margin-bottom: 4px;
         }
 
         .phone-group {
@@ -121,7 +121,6 @@
             border-radius: 8px;
             background: var(--white);
             cursor: pointer;
-            transition: border-color 0.3s;
             font-family: inherit;
             box-sizing: border-box;
         }
@@ -140,7 +139,6 @@
             border: 2px solid var(--light-gray);
             border-radius: 8px;
             background: var(--white);
-            transition: border-color 0.3s;
             font-family: inherit;
             box-sizing: border-box;
         }
@@ -156,6 +154,50 @@
             color: #888;
             font-size: 0.8rem;
             margin-top: 4px;
+        }
+
+        .grid-2-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .pays-display {
+            background: var(--white);
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: var(--dark-gray);
+            font-weight: 500;
+            border: 2px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 44px;
+            box-sizing: border-box;
+            font-size: 0.9rem;
+        }
+
+        .pays-display i {
+            color: var(--gold);
+            font-size: 1rem;
+        }
+
+        .panier-vide {
+            text-align: center;
+            padding: 30px;
+            color: #888;
+        }
+
+        .panier-vide i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 10px;
+            color: #ddd;
+        }
+
+        .panier-vide a {
+            color: var(--gold);
+            text-decoration: underline;
         }
 
         .btn-whatsapp {
@@ -185,50 +227,6 @@
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
-        }
-
-        .pays-display {
-            background: var(--white);
-            padding: 10px 14px;
-            border-radius: 8px;
-            color: var(--dark-gray);
-            font-weight: 500;
-            border: 2px solid var(--light-gray);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            height: 44px;
-            box-sizing: border-box;
-            font-size: 0.9rem;
-        }
-
-        .pays-display i {
-            color: var(--gold);
-            font-size: 1rem;
-        }
-
-        .grid-2-col {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .panier-vide {
-            text-align: center;
-            padding: 30px;
-            color: #888;
-        }
-
-        .panier-vide i {
-            font-size: 2rem;
-            display: block;
-            margin-bottom: 10px;
-            color: #ddd;
-        }
-
-        .panier-vide a {
-            color: var(--gold);
-            text-decoration: underline;
         }
 
         @media (max-width: 768px) {
@@ -546,31 +544,26 @@
         }
 
         // ==========================================
-        // CHARGER LE PANIER DEPUIS LA VARIABLE GLOBALE
+        // CHARGER LE PANIER
         // ==========================================
         function loadCartItems() {
             try {
                 console.log('🔍 Recherche du panier...');
                 
+                // Récupérer le panier depuis window.panier (variable globale de script.js)
                 let cart = [];
-                let storageSource = 'aucun';
-
-                // 1. Essayer window.panier (variable globale de script.js)
+                
                 if (window.panier && Array.isArray(window.panier) && window.panier.length > 0) {
                     cart = window.panier;
-                    storageSource = 'window.panier (global)';
                     console.log('📦 Panier trouvé dans window.panier:', cart);
-                }
-
-                // 2. Si pas dans window.panier, essayer localStorage
-                if (cart.length === 0) {
+                } else {
+                    // Fallback : essayer localStorage
                     try {
                         const data = localStorage.getItem('panier');
                         if (data) {
                             const parsed = JSON.parse(data);
                             if (parsed && parsed.length > 0) {
                                 cart = parsed;
-                                storageSource = 'localStorage';
                                 console.log('📦 Panier trouvé dans localStorage:', cart);
                             }
                         }
@@ -579,35 +572,9 @@
                     }
                 }
 
-                // 3. Si toujours rien, essayer sessionStorage
-                if (cart.length === 0) {
-                    try {
-                        const data = sessionStorage.getItem('panier');
-                        if (data) {
-                            const parsed = JSON.parse(data);
-                            if (parsed && parsed.length > 0) {
-                                cart = parsed;
-                                storageSource = 'sessionStorage';
-                                console.log('📦 Panier trouvé dans sessionStorage:', cart);
-                            }
-                        }
-                    } catch (e) {
-                        console.warn('⚠️ Erreur lecture sessionStorage:', e);
-                    }
-                }
-
-                // 4. Dernier recours : essayer d'utiliser window.panierItems (autre nom possible)
-                if (cart.length === 0 && window.panierItems && Array.isArray(window.panierItems) && window.panierItems.length > 0) {
-                    cart = window.panierItems;
-                    storageSource = 'window.panierItems (global)';
-                    console.log('📦 Panier trouvé dans window.panierItems:', cart);
-                }
-
-                console.log(`✅ Panier chargé depuis ${storageSource} (${cart.length} articles)`);
-
                 const container = document.getElementById('checkoutItems');
-                const confirmBtn = document.getElementById('confirmOrderBtn');
                 const totalSpan = document.getElementById('checkoutTotal');
+                const confirmBtn = document.getElementById('confirmOrderBtn');
                 
                 if (!cart || cart.length === 0) {
                     container.innerHTML = `
@@ -626,13 +593,12 @@
                 let total = 0;
 
                 cart.forEach((item, index) => {
-                    // Support pour les différents formats
-                    const price = parseFloat(item.prix || item.price || item.prix_unitaire || 0);
-                    const quantity = parseInt(item.quantite || item.quantity || item.qte || 1);
+                    const price = parseFloat(item.prix || item.price || 0);
+                    const quantity = parseInt(item.quantite || item.quantity || 1);
                     const itemTotal = price * quantity;
                     total += itemTotal;
 
-                    const nom = item.nom || item.name || item.produit_nom || 'Produit ' + (index + 1);
+                    const nom = item.nom || item.name || 'Produit ' + (index + 1);
 
                     html += `
                         <div class="cart-item-checkout">
@@ -653,7 +619,11 @@
                 if (confirmBtn) confirmBtn.disabled = false;
 
                 // Mettre à jour le badge du panier
-                updateCartBadge(cart);
+                const badge = document.querySelector('.panier-icon .badge');
+                if (badge) {
+                    const totalItems = cart.reduce((sum, item) => sum + (parseInt(item.quantite || item.quantity || 1)), 0);
+                    badge.textContent = totalItems;
+                }
 
             } catch (error) {
                 console.error('❌ Erreur chargement panier:', error);
@@ -664,24 +634,6 @@
                         <a href="panier.html">Retour au panier</a>
                     </div>
                 `;
-            }
-        }
-
-        // ==========================================
-        // METTRE À JOUR LE BADGE DU PANIER
-        // ==========================================
-        function updateCartBadge(cart) {
-            try {
-                if (!cart) {
-                    cart = window.panier || JSON.parse(localStorage.getItem('panier') || '[]');
-                }
-                const badge = document.querySelector('.panier-icon .badge');
-                if (badge && cart) {
-                    const totalItems = cart.reduce((sum, item) => sum + (parseInt(item.quantite || item.quantity || item.qte || 1)), 0);
-                    badge.textContent = totalItems;
-                }
-            } catch (e) {
-                // Ignorer
             }
         }
 
@@ -745,11 +697,11 @@
             let total = 0;
             if (cart && cart.length > 0) {
                 cart.forEach((item, index) => {
-                    const price = parseFloat(item.prix || item.price || item.prix_unitaire || 0);
-                    const quantity = parseInt(item.quantite || item.quantity || item.qte || 1);
+                    const price = parseFloat(item.prix || item.price || 0);
+                    const quantity = parseInt(item.quantite || item.quantity || 1);
                     const itemTotal = price * quantity;
                     total += itemTotal;
-                    const nom = item.nom || item.name || item.produit_nom || 'Produit';
+                    const nom = item.nom || item.name || 'Produit';
                     message += `${index + 1}. ${nom} × ${quantity} = ${itemTotal.toFixed(2)} FCFA\n`;
                 });
             }
@@ -805,7 +757,7 @@
             // Recharger le panier si le localStorage change
             window.addEventListener('storage', function(e) {
                 if (e.key === 'panier') {
-                    console.log('🔄 Changement détecté dans localStorage, rechargement du panier');
+                    console.log('🔄 Changement détecté, rechargement du panier');
                     loadCartItems();
                 }
             });
