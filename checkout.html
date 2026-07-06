@@ -312,7 +312,6 @@
                             <i class="fas fa-user" style="color:var(--gold);"></i> Vos coordonnées
                         </h3>
                         <form id="checkoutForm">
-                            <!-- Prénom & Nom -->
                             <div class="grid-2-col">
                                 <div class="form-group">
                                     <label>Prénom</label>
@@ -324,13 +323,11 @@
                                 </div>
                             </div>
 
-                            <!-- Email -->
                             <div class="form-group" style="margin-top:12px;">
                                 <label>Email</label>
                                 <input type="email" id="email" required placeholder="Saisissez votre adresse e-mail">
                             </div>
 
-                            <!-- Téléphone avec indicatif -->
                             <div class="form-group" style="margin-top:12px;">
                                 <label>Téléphone (WhatsApp)</label>
                                 <div class="phone-group">
@@ -346,7 +343,6 @@
                                 <small id="phoneHelp" style="display:block; color:#888; font-size:0.8rem; margin-top:4px;">10 chiffres (ex: 01 23 45 67 89)</small>
                             </div>
 
-                            <!-- Pays & Ville sur la même ligne -->
                             <div class="grid-2-col" style="margin-top:12px;">
                                 <div class="form-group">
                                     <label>Pays</label>
@@ -566,32 +562,63 @@
         }
 
         // ==========================================
+        // RÉCUPÉRER LE PANIER (comme dans panier.html)
+        // ==========================================
+        function getPanier() {
+            // 1. Essayer window.panier
+            if (window.panier && Array.isArray(window.panier) && window.panier.length > 0) {
+                console.log('📦 Panier trouvé dans window.panier:', window.panier);
+                return window.panier;
+            }
+            
+            // 2. Essayer localStorage
+            try {
+                const data = localStorage.getItem('panier');
+                if (data) {
+                    const parsed = JSON.parse(data);
+                    if (parsed && parsed.length > 0) {
+                        console.log('📦 Panier trouvé dans localStorage:', parsed);
+                        return parsed;
+                    }
+                }
+            } catch (e) {}
+            
+            // 3. Essayer sessionStorage
+            try {
+                const data = sessionStorage.getItem('panier');
+                if (data) {
+                    const parsed = JSON.parse(data);
+                    if (parsed && parsed.length > 0) {
+                        console.log('📦 Panier trouvé dans sessionStorage:', parsed);
+                        return parsed;
+                    }
+                }
+            } catch (e) {}
+            
+            // 4. Essayer window.cart
+            if (window.cart && Array.isArray(window.cart) && window.cart.length > 0) {
+                console.log('📦 Panier trouvé dans window.cart:', window.cart);
+                return window.cart;
+            }
+            
+            console.warn('⚠️ Aucun panier trouvé');
+            return [];
+        }
+
+        // ==========================================
         // CHARGER LE PANIER
         // ==========================================
         async function loadCartItems() {
             try {
                 console.log('🔍 Chargement du panier...');
                 
-                let cart = [];
-                if (window.panier && Array.isArray(window.panier) && window.panier.length > 0) {
-                    cart = window.panier;
-                    console.log('📦 Panier trouvé dans window.panier:', cart);
-                } else {
-                    try {
-                        const data = localStorage.getItem('panier');
-                        if (data) {
-                            const parsed = JSON.parse(data);
-                            if (parsed && parsed.length > 0) {
-                                cart = parsed;
-                                console.log('📦 Panier trouvé dans localStorage:', cart);
-                            }
-                        }
-                    } catch (e) {}
-                }
+                // Récupérer le panier avec la fonction getPanier
+                let cart = getPanier();
 
                 const container = document.getElementById('checkoutItems');
                 const totalSpan = document.getElementById('checkoutTotal');
                 const confirmBtn = document.getElementById('confirmOrderBtn');
+                const badge = document.querySelector('.panier-icon .badge');
                 
                 if (!cart || cart.length === 0) {
                     container.innerHTML = `
@@ -602,8 +629,15 @@
                         </div>
                     `;
                     totalSpan.textContent = '0 FCFA';
-                    confirmBtn.disabled = true;
+                    if (confirmBtn) confirmBtn.disabled = true;
+                    if (badge) badge.textContent = '0';
                     return;
+                }
+
+                // Mettre à jour le badge
+                if (badge) {
+                    const totalItems = cart.reduce((sum, item) => sum + (parseInt(item.quantite || item.quantity || 1)), 0);
+                    badge.textContent = totalItems;
                 }
 
                 // S'assurer que les produits sont chargés
@@ -663,13 +697,7 @@
 
                 container.innerHTML = html;
                 totalSpan.textContent = total.toFixed(2) + ' FCFA';
-                confirmBtn.disabled = false;
-
-                const badge = document.querySelector('.panier-icon .badge');
-                if (badge) {
-                    const totalItems = cart.reduce((sum, item) => sum + (parseInt(item.quantite || item.quantity || 1)), 0);
-                    badge.textContent = totalItems;
-                }
+                if (confirmBtn) confirmBtn.disabled = false;
 
             } catch (error) {
                 console.error('❌ Erreur chargement panier:', error);
@@ -750,7 +778,7 @@
                 return;
             }
 
-            let cart = window.panier || JSON.parse(localStorage.getItem('panier') || '[]');
+            let cart = getPanier();
             
             let message = `🛍️ *NOUVELLE COMMANDE NIKEL*\n\n`;
             message += `👤 *Client :* ${prenom} ${nom}\n`;
