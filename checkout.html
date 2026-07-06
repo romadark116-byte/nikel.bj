@@ -684,8 +684,8 @@
                     console.error('❌ Erreur vérification client:', checkError);
                 }
 
-                // Nettoyer le téléphone : enlever l'indicatif, garder uniquement les chiffres
-                const telephonePropre = clientData.telephone.replace(/\D/g, '');
+                // Garder le numéro AVEC les espaces (ex: 01 11 12 44 54)
+                const telephoneAvecEspaces = clientData.telephone;
 
                 if (existingClient) {
                     // Mettre à jour le client existant
@@ -694,8 +694,8 @@
                         .update({
                             prenom: clientData.prenom,
                             nom: clientData.nom,
-                            telephone: telephonePropre,  // ← Seulement le numéro
-                            indicatif: clientData.indicatif, // ← L'indicatif dans sa propre colonne
+                            telephone: telephoneAvecEspaces,  // ← Garde les espaces (01 11 12 44 54)
+                            indicatif: clientData.indicatif,
                             ville: clientData.ville,
                             pays: clientData.pays,
                             updated_at: new Date().toISOString()
@@ -717,8 +717,8 @@
                             prenom: clientData.prenom,
                             nom: clientData.nom,
                             email: clientData.email,
-                            telephone: telephonePropre,  // ← Seulement le numéro
-                            indicatif: clientData.indicatif, // ← L'indicatif dans sa propre colonne
+                            telephone: telephoneAvecEspaces,  // ← Garde les espaces (01 11 12 44 54)
+                            indicatif: clientData.indicatif,
                             ville: clientData.ville,
                             pays: clientData.pays,
                             created_at: new Date().toISOString()
@@ -775,8 +775,8 @@
                 prenom: prenom,
                 nom: nom,
                 email: email,
-                telephone: telephone,  // Le numéro avec les espaces
-                indicatif: indicatif,   // L'indicatif séparé
+                telephone: telephone,  // ← Garde les espaces (01 11 12 44 54)
+                indicatif: indicatif,
                 ville: ville,
                 pays: pays
             };
