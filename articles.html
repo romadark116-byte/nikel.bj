@@ -58,6 +58,7 @@
                 <option value="Précommande">⏳ Précommande</option>
                 <option value="Épuisé">🚫 Épuisé</option>
                 <option value="Bientôt disponible">🔄 Bientôt disponible</option>
+                <option value="soldes">🔥 En solde</option>
             </select>
         </div>
         <button onclick="resetArticleFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
@@ -234,9 +235,23 @@
         }
 
         // ==========================================
+        // DÉTERMINER SI UN ARTICLE EST EN SOLDE
+        // ==========================================
+        function isOnSale(article) {
+            return article.prix_original && parseFloat(article.prix_original) > parseFloat(article.prix);
+        }
+
+        // ==========================================
         // AFFICHER LE STATUT AVEC COULEUR
         // ==========================================
-        function getArticleStatutBadge(statut) {
+        function getArticleStatutBadge(article) {
+            // Si l'article est en solde, afficher un badge spécial
+            if (isOnSale(article)) {
+                return `<span style="background:#e74c3c; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                    <i class="fas fa-fire"></i> En solde
+                </span>`;
+            }
+
             const statuts = {
                 'En stock': { bg: '#27ae60', icon: 'fa-check', text: 'En stock' },
                 'Rupture de stock': { bg: '#f39c12', icon: 'fa-times', text: 'Rupture de stock' },
@@ -245,7 +260,7 @@
                 'Épuisé': { bg: '#e74c3c', icon: 'fa-ban', text: 'Épuisé' },
                 'Bientôt disponible': { bg: '#1abc9c', icon: 'fa-arrow-right', text: 'Bientôt disponible' }
             };
-            const s = statuts[statut] || statuts['En stock'];
+            const s = statuts[article.statut] || statuts['En stock'];
             return `<span style="background:${s.bg}; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
                 <i class="fas ${s.icon}"></i> ${s.text}
             </span>`;
@@ -289,7 +304,7 @@
                         ${article.prix_original ? `<span style="font-size:0.8rem; color:#999; text-decoration:line-through; display:block;">${formatPrice(article.prix_original)}</span>` : ''}
                     </td>
                     <td style="padding:12px; text-align:center; font-weight:600;">${article.stock || 0}</td>
-                    <td style="padding:12px;">${getArticleStatutBadge(article.statut || 'En stock')}</td>
+                    <td style="padding:12px;">${getArticleStatutBadge(article)}</td>
                     <td style="padding:12px; text-align:center;">
                         <button onclick="editArticle('${article.id}')" style="padding:6px 12px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Modifier">
                             <i class="fas fa-edit"></i>
@@ -307,9 +322,21 @@
         // ==========================================
         function updateArticleStats() {
             const total = allArticles.length;
-            const stock = allArticles.filter(a => a.statut === 'En stock' || a.statut === 'Bientôt disponible').length;
-            const rupture = allArticles.filter(a => a.statut === 'Rupture de stock' || a.statut === 'Épuisé').length;
-            const soldes = allArticles.filter(a => a.prix_original && a.prix_original > a.prix).length;
+            
+            // En stock : statut "En stock" ou "Bientôt disponible"
+            const stock = allArticles.filter(a => 
+                a.statut === 'En stock' || a.statut === 'Bientôt disponible'
+            ).length;
+            
+            // Rupture : statut "Rupture de stock" ou "Épuisé"
+            const rupture = allArticles.filter(a => 
+                a.statut === 'Rupture de stock' || a.statut === 'Épuisé'
+            ).length;
+            
+            // 🔥 En solde : prix_original > prix (automatique !)
+            const soldes = allArticles.filter(a => 
+                a.prix_original && parseFloat(a.prix_original) > parseFloat(a.prix)
+            ).length;
 
             document.getElementById('totalArticles').textContent = total;
             document.getElementById('totalStock').textContent = stock;
@@ -376,7 +403,11 @@
 
                 let matchStatut = true;
                 if (statut !== 'all') {
-                    matchStatut = article.statut === statut;
+                    if (statut === 'soldes') {
+                        matchStatut = isOnSale(article);
+                    } else {
+                        matchStatut = article.statut === statut;
+                    }
                 }
 
                 return matchSearch && matchCategorie && matchStatut;
