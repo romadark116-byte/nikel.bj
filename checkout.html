@@ -232,7 +232,6 @@
             text-decoration: underline;
         }
 
-        /* Spinner pour le bouton */
         .btn-spinner {
             display: inline-block;
             width: 16px;
@@ -685,6 +684,9 @@
                     console.error('❌ Erreur vérification client:', checkError);
                 }
 
+                // Nettoyer le téléphone : enlever l'indicatif, garder uniquement les chiffres
+                const telephonePropre = clientData.telephone.replace(/\D/g, '');
+
                 if (existingClient) {
                     // Mettre à jour le client existant
                     const { error: updateError } = await supabaseClient
@@ -692,7 +694,8 @@
                         .update({
                             prenom: clientData.prenom,
                             nom: clientData.nom,
-                            telephone: clientData.telephone,
+                            telephone: telephonePropre,  // ← Seulement le numéro
+                            indicatif: clientData.indicatif, // ← L'indicatif dans sa propre colonne
                             ville: clientData.ville,
                             pays: clientData.pays,
                             updated_at: new Date().toISOString()
@@ -714,7 +717,8 @@
                             prenom: clientData.prenom,
                             nom: clientData.nom,
                             email: clientData.email,
-                            telephone: clientData.telephone,
+                            telephone: telephonePropre,  // ← Seulement le numéro
+                            indicatif: clientData.indicatif, // ← L'indicatif dans sa propre colonne
                             ville: clientData.ville,
                             pays: clientData.pays,
                             created_at: new Date().toISOString()
@@ -771,7 +775,8 @@
                 prenom: prenom,
                 nom: nom,
                 email: email,
-                telephone: `${indicatif} ${telephone}`,
+                telephone: telephone,  // Le numéro avec les espaces
+                indicatif: indicatif,   // L'indicatif séparé
                 ville: ville,
                 pays: pays
             };
@@ -834,12 +839,10 @@
         document.getElementById('confirmOrderBtn').addEventListener('click', async function() {
             const btn = this;
             
-            // Désactiver le bouton
             btn.disabled = true;
             btn.innerHTML = '<span class="btn-spinner"></span> Enregistrement en cours...';
 
             try {
-                // 1. Enregistrer le client
                 const result = await validateOrder();
 
                 if (!result || !result.success) {
@@ -850,14 +853,12 @@
 
                 console.log('✅ Client enregistré:', result);
 
-                // 2. Récupérer le panier
                 let cart = JSON.parse(localStorage.getItem('nikel_cart')) || [];
                 
-                // 3. Construire le message WhatsApp
                 let message = `🛍️ *NOUVELLE COMMANDE NIKEL*\n\n`;
                 message += `👤 *Client :* ${result.client.prenom} ${result.client.nom}\n`;
                 message += `📧 *Email :* ${result.client.email}\n`;
-                message += `📱 *Téléphone :* ${result.client.telephone}\n`;
+                message += `📱 *Téléphone :* ${result.client.indicatif} ${result.client.telephone}\n`;
                 message += `📍 *Ville :* ${result.client.ville}\n`;
                 message += `🌍 *Pays :* ${result.client.pays}\n\n`;
                 message += `📦 *Articles commandés :*\n`;
@@ -885,10 +886,8 @@
                 const phoneNumber = '2290155555555';
                 const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
-                // Ouvrir WhatsApp
                 window.open(whatsappUrl, '_blank');
 
-                // Réactiver le bouton
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fab fa-whatsapp"></i> Finalisez votre achat sur WhatsApp';
 
