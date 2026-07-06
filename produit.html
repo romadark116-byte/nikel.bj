@@ -13,6 +13,13 @@
             padding: 40px 0;
         }
 
+        #productDetail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: start;
+        }
+
         .product-gallery {
             position: relative;
             border-radius: 16px;
@@ -320,7 +327,7 @@
 
     <section class="section product-detail">
         <div class="container">
-            <div id="productDetail" style="display:grid; grid-template-columns:1fr 1fr; gap:50px; align-items:start;">
+            <div id="productDetail">
                 <!-- Contenu chargé par JavaScript -->
             </div>
         </div>
@@ -519,12 +526,13 @@
             if (product.mini3 && product.mini3.trim() !== '') thumbnails.push(product.mini3);
             if (product.mini4 && product.mini4.trim() !== '') thumbnails.push(product.mini4);
 
-            // Si pas de mini1, utiliser image_url
+            // Si pas de miniatures du tout, utiliser image_url comme miniature
             if (thumbnails.length === 0 && product.image_url) {
                 thumbnails.push(product.image_url);
             }
 
-            const hasThumbnails = thumbnails.length > 1;
+            // 🔥 mini1 s'affiche toujours (thumbnails.length > 0)
+            const hasThumbnails = thumbnails.length > 0;
 
             container.innerHTML = `
                 <!-- ===== GALERIE ===== -->
