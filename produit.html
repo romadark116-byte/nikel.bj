@@ -9,125 +9,458 @@
     <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Styles existants... */
+        .product-detail {
+            padding: 40px 0;
+        }
+
+        #productDetail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: start;
+        }
+
+        .product-gallery {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+
+        .product-gallery .main-image {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-gallery .badge-promo {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #e74c3c;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            z-index: 5;
+        }
+
+        .product-gallery .thumbnails {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .product-gallery .thumbnails .thumb {
+            border-radius: 12px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+
+        .product-gallery .thumbnails .thumb:hover {
+            border-color: var(--gold);
+            transform: scale(1.03);
+        }
+
+        .product-gallery .thumbnails .thumb.active {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.2);
+        }
+
+        .product-info h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            margin: 0 0 12px 0;
+        }
+
+        .product-info .prices {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin: 16px 0 20px 0;
+        }
+
+        .product-info .prices .old-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 1.3rem;
+        }
+
+        .product-info .prices .current-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .product-info .rating {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .product-info .rating .stars {
+            color: var(--gold);
+            font-size: 1.1rem;
+        }
+
+        .product-info .rating .reviews {
+            color: var(--gray);
+        }
+
+        .product-info .description {
+            color: var(--gray);
+            margin: 16px 0;
+            line-height: 1.8;
+        }
+
+        .product-info .stock-badge {
+            margin: 16px 0;
+            padding: 12px 16px;
+            border-radius: 8px;
+        }
+
+        .product-info .stock-badge.in-stock {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .product-info .stock-badge.out-of-stock {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .product-info .stock-badge p {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .quantity-selector .qty-control {
+            display: flex;
+            align-items: center;
+            border: 2px solid var(--light-gray);
+            border-radius: 50px;
+            overflow: hidden;
+        }
+
+        .quantity-selector .qty-control button {
+            border: none;
+            background: transparent;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #666;
+            transition: 0.3s;
+        }
+
+        .quantity-selector .qty-control button:hover {
+            background: #f0f0f0;
+        }
+
+        .quantity-selector .qty-control .qty-display {
+            padding: 12px 24px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 16px;
+            margin: 30px 0;
+        }
+
+        .product-actions .btn-add-cart {
+            flex: 1;
+            background: linear-gradient(135deg, var(--gold), var(--accent-dark));
+            border: none;
+            padding: 16px 32px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+        }
+
+        .product-actions .btn-add-cart:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 25px rgba(201, 168, 76, 0.4);
+        }
+
+        .btn-wishlist {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 2px solid var(--light-gray);
+            background: var(--white);
+            cursor: pointer;
+            font-size: 1.3rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .btn-wishlist:hover {
+            border-color: #e74c3c;
+            color: #e74c3c;
+            transform: scale(1.05);
+        }
+
+        .btn-wishlist.active {
+            border-color: #e74c3c;
+            background: #fff5f5;
+            color: #e74c3c;
+        }
+
+        .btn-wishlist.active i {
+            font-weight: 900;
+        }
+
+        .btn-wishlist .wishlist-tooltip {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a1a;
+            color: white;
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .btn-wishlist:hover .wishlist-tooltip {
+            opacity: 1;
+        }
+
+        @keyframes heartBounce {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.3); }
+            50% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+
+        .btn-wishlist.bounce i {
+            animation: heartBounce 0.4s ease;
+        }
+
+        .product-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            border-top: 1px solid var(--light-gray);
+            padding-top: 20px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .product-features span i {
+            color: var(--gold);
+            width: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+
+        .back-link:hover {
+            color: var(--accent-dark);
+        }
 
         /* ========================================== */
-        /* AVIS - NOUVEAUX STYLES                      */
+        /* AVIS CLIENTS - STYLES                      */
         /* ========================================== */
+        .avis-section {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid var(--light-gray);
+        }
+
+        .avis-section .avis-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .avis-section .avis-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            margin: 0;
+        }
+
+        .avis-section .avis-header .avis-stats {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        .avis-section .avis-header .avis-stats .big-star {
+            color: var(--gold);
+            font-size: 1.5rem;
+        }
+
+        .avis-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
         .avis-item {
             background: var(--white);
             padding: 20px 24px;
             border-radius: 12px;
             box-shadow: var(--shadow);
-            position: relative;
         }
 
-        .avis-item .avis-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
-            flex-wrap: wrap;
-        }
-
-        .avis-item .avis-actions button {
-            padding: 4px 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .avis-item .avis-actions .btn-edit-avis {
-            background: #f39c12;
-            color: white;
-        }
-
-        .avis-item .avis-actions .btn-edit-avis:hover {
-            background: #e67e22;
-        }
-
-        .avis-item .avis-actions .btn-delete-avis {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .avis-item .avis-actions .btn-delete-avis:hover {
-            background: #c0392b;
-        }
-
-        .avis-item .avis-badge-user {
-            display: inline-block;
-            padding: 2px 10px;
-            border-radius: 50px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            background: #e8f5e9;
-            color: #2e7d32;
-            margin-left: 8px;
-        }
-
-        .avis-item .avis-pending {
-            color: #f39c12;
-            font-size: 0.7rem;
-            margin: 4px 0 0 0;
-        }
-
-        /* Modal d'édition */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(4px);
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--white);
-            padding: 32px;
-            border-radius: 16px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: slideUp 0.3s ease;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .modal-content h3 {
-            font-family: 'Playfair Display', serif;
-            margin-bottom: 20px;
-        }
-
-        .modal-content .form-group {
-            margin-bottom: 15px;
-        }
-
-        .modal-content .form-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 5px;
+        .avis-item .avis-quote {
+            font-style: italic;
+            margin: 0 0 8px 0;
             color: var(--dark-gray);
         }
 
-        .modal-content .form-group input,
-        .modal-content .form-group textarea,
-        .modal-content .form-group select {
+        .avis-item .avis-nom {
+            font-weight: 600;
+            margin: 0;
+            color: var(--dark-gray);
+        }
+
+        .avis-item .avis-date {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin: 0 0 4px 0;
+        }
+
+        .avis-item .avis-stars-display {
+            color: var(--gold);
+            font-size: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .avis-empty {
+            text-align: center;
+            padding: 30px;
+            color: var(--gray);
+        }
+
+        .avis-empty p {
+            margin: 0;
+        }
+
+        .avis-empty .sub {
+            font-size: 0.9rem;
+        }
+
+        .avis-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--gold), var(--accent-dark));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 8px;
+        }
+
+        .avis-toggle-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+        }
+
+        .avis-toggle-btn i {
+            font-size: 1rem;
+        }
+
+        .avis-form-wrapper {
+            display: none;
+            margin-top: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .avis-form-wrapper.open {
+            display: block;
+            animation: slideDown 0.4s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .avis-form {
+            background: var(--white);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .avis-form h4 {
+            font-size: 1.1rem;
+            margin: 0 0 16px 0;
+        }
+
+        .avis-form .form-group {
+            margin-bottom: 14px;
+        }
+
+        .avis-form .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            color: var(--dark-gray);
+        }
+
+        .avis-form .form-group input,
+        .avis-form .form-group textarea,
+        .avis-form .form-group select {
             width: 100%;
             padding: 10px 14px;
             border: 2px solid var(--light-gray);
@@ -135,80 +468,167 @@
             font-size: 0.95rem;
             transition: border-color 0.3s;
             font-family: inherit;
+            background: var(--white);
+            box-sizing: border-box;
         }
 
-        .modal-content .form-group input:focus,
-        .modal-content .form-group textarea:focus,
-        .modal-content .form-group select:focus {
+        .avis-form .form-group input:focus,
+        .avis-form .form-group textarea:focus,
+        .avis-form .form-group select:focus {
             outline: none;
             border-color: var(--gold);
         }
 
-        .modal-content .form-group textarea {
+        .avis-form .form-group textarea {
             resize: vertical;
             min-height: 80px;
         }
 
-        .modal-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .modal-actions button {
-            flex: 1;
-            padding: 12px;
+        .avis-form .btn-submit-avis {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, var(--gold), var(--accent-dark));
+            color: white;
             border: none;
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            font-size: 0.95rem;
         }
 
-        .modal-actions .btn-save {
-            background: linear-gradient(135deg, var(--gold), var(--accent-dark));
-            color: white;
-        }
-
-        .modal-actions .btn-save:hover {
+        .avis-form .btn-submit-avis:hover {
             transform: scale(1.02);
         }
 
-        .modal-actions .btn-cancel {
-            background: var(--light-gray);
-            color: var(--gray);
+        .avis-form .btn-submit-avis:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
-        .modal-actions .btn-cancel:hover {
-            background: #d4d4d4;
-        }
-
-        .avis-notification {
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 16px;
+        .avis-form .avis-success {
             display: none;
+            text-align: center;
+            padding: 20px;
+            color: #27ae60;
+            background: #e8f5e9;
+            border-radius: 8px;
         }
 
-        .avis-notification.show {
+        .avis-form .avis-success.show {
             display: block;
+            animation: fadeIn 0.5s ease;
         }
 
-        .avis-notification.info {
-            background: #d1ecf1;
-            border: 1px solid #bee5eb;
-            color: #0c5460;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .avis-notification.warning {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
+        .avis-close-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: transparent;
+            color: var(--gray);
+            border: 2px solid var(--light-gray);
+            border-radius: 50px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 12px;
+        }
+
+        .avis-close-btn:hover {
+            border-color: #e74c3c;
+            color: #e74c3c;
+        }
+
+        .avis-actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            #productDetail {
+                grid-template-columns: 1fr !important;
+                gap: 30px !important;
+            }
+            .product-detail {
+                padding: 20px 0;
+            }
+            .product-gallery .main-image {
+                height: 300px;
+            }
+            .product-gallery .thumbnails .thumb {
+                height: 60px;
+            }
+            .product-info h1 {
+                font-size: 1.8rem;
+            }
+            .product-info .prices .current-price {
+                font-size: 1.5rem;
+            }
+            .product-actions {
+                flex-wrap: wrap;
+            }
+            .product-actions .btn-add-cart {
+                min-width: 100%;
+            }
+            .product-features {
+                grid-template-columns: 1fr 1fr;
+            }
+            .avis-section .avis-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .avis-item {
+                padding: 16px 18px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- ... HEADER, HEADER-ACTIONS etc ... -->
+    <header class="header">
+        <div class="container header-grid">
+            <div class="logo">
+                <a href="index.html"><i class="fas fa-crown"></i> NIKEL</a>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="boutique.html">Boutique</a></li>
+                    <li><a href="apropos.html">À propos</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <div class="header-search" style="display:flex; align-items:center; gap:8px;">
+                    <input type="text" 
+                           id="searchInput" 
+                           placeholder="Rechercher..." 
+                           style="padding:8px 16px; border:2px solid var(--light-gray); border-radius:50px; font-size:0.9rem; outline:none; transition:all 0.3s; width:160px; background:var(--off-white);"
+                           onfocus="this.style.width='220px'; this.style.borderColor='var(--gold)'" 
+                           onblur="this.style.width='160px'; this.style.borderColor='var(--light-gray)'">
+                    <button onclick="handleSearch()" style="background:linear-gradient(135deg, var(--gold), var(--accent-dark)); border:none; border-radius:50px; width:38px; height:38px; color:white; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; justify-content:center;">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <a href="panier.html" class="panier-icon">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="badge">0</span>
+                </a>
+                <a href="login.html" style="color:var(--dark-gray); transition:color 0.3s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--dark-gray)'">
+                    <i class="fas fa-user" style="font-size:1.2rem;"></i>
+                </a>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
 
     <section class="section product-detail">
         <div class="container">
@@ -228,12 +648,6 @@
                     </div>
                 </div>
 
-                <!-- Notification -->
-                <div class="avis-notification" id="avisNotification">
-                    <i class="fas fa-info-circle"></i>
-                    <span id="avisNotificationText"></span>
-                </div>
-
                 <div class="avis-container" id="avisContainer">
                     <div style="text-align:center;padding:30px;color:#888;">
                         <i class="fas fa-spinner fa-spin"></i> Chargement des avis...
@@ -241,100 +655,220 @@
                 </div>
 
                 <!-- ===== BOUTON + FORMULAIRE AVIS ===== -->
-                <div id="avisFormSection">
-                    <div class="avis-actions">
-                        <button class="avis-toggle-btn" id="avisToggleBtn">
-                            <i class="fas fa-pen"></i> Donnez votre avis
-                        </button>
-                    </div>
+                <div class="avis-actions">
+                    <button class="avis-toggle-btn" id="avisToggleBtn">
+                        <i class="fas fa-pen"></i> Donnez votre avis
+                    </button>
+                </div>
 
-                    <div class="avis-form-wrapper" id="avisFormWrapper">
-                        <div class="avis-form">
-                            <h4 id="avisFormTitle">✍️ Donnez votre avis</h4>
-                            <input type="hidden" id="editAvisId" value="">
-                            <form id="avisFormSubmit">
-                                <div class="form-group">
-                                    <label>Votre nom</label>
-                                    <input type="text" id="avisNom" placeholder="Votre nom" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Note</label>
-                                    <select id="avisNote" required>
-                                        <option value="5">⭐⭐⭐⭐⭐ - Excellent</option>
-                                        <option value="4">⭐⭐⭐⭐ - Très bien</option>
-                                        <option value="3">⭐⭐⭐ - Bien</option>
-                                        <option value="2">⭐⭐ - Moyen</option>
-                                        <option value="1">⭐ - Mauvais</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Votre commentaire</label>
-                                    <textarea id="avisCommentaire" placeholder="Partagez votre expérience..." required></textarea>
-                                </div>
-                                <button type="submit" class="btn-submit-avis" id="submitAvisBtn">
-                                    <i class="fas fa-pen"></i> Publier mon avis
-                                </button>
-                            </form>
-                            <div class="avis-success" id="avisSuccess">
-                                <i class="fas fa-check-circle" style="font-size:2rem;"></i>
-                                <p style="margin:8px 0 0 0;font-weight:600;">Merci pour votre avis !</p>
-                                <p style="margin:0;font-size:0.9rem;color:#2e7d32;">Il sera publié après validation.</p>
+                <div class="avis-form-wrapper" id="avisFormWrapper">
+                    <div class="avis-form">
+                        <h4>✍️ Donnez votre avis</h4>
+                        <form id="avisFormSubmit">
+                            <div class="form-group">
+                                <label>Votre nom</label>
+                                <input type="text" id="avisNom" placeholder="Votre nom" required>
                             </div>
-                            <button class="avis-close-btn" id="avisCloseBtn">
-                                <i class="fas fa-times"></i> Fermer
+                            <div class="form-group">
+                                <label>Note</label>
+                                <select id="avisNote" required>
+                                    <option value="5">⭐⭐⭐⭐⭐ - Excellent</option>
+                                    <option value="4">⭐⭐⭐⭐ - Très bien</option>
+                                    <option value="3">⭐⭐⭐ - Bien</option>
+                                    <option value="2">⭐⭐ - Moyen</option>
+                                    <option value="1">⭐ - Mauvais</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Votre commentaire</label>
+                                <textarea id="avisCommentaire" placeholder="Partagez votre expérience..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn-submit-avis" id="submitAvisBtn">
+                                <i class="fas fa-pen"></i> Publier mon avis
                             </button>
+                        </form>
+                        <div class="avis-success" id="avisSuccess">
+                            <i class="fas fa-check-circle" style="font-size:2rem;"></i>
+                            <p style="margin:8px 0 0 0;font-weight:600;">Merci pour votre avis !</p>
+                            <p style="margin:0;font-size:0.9rem;color:#2e7d32;">Il sera publié après validation.</p>
                         </div>
+                        <button class="avis-close-btn" id="avisCloseBtn">
+                            <i class="fas fa-times"></i> Fermer
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ===== MODAL D'ÉDITION ===== -->
-    <div class="modal-overlay" id="editModal">
-        <div class="modal-content">
-            <h3>✏️ Modifier mon avis</h3>
-            <div class="form-group">
-                <label>Note</label>
-                <select id="editAvisNote" required>
-                    <option value="5">⭐⭐⭐⭐⭐ - Excellent</option>
-                    <option value="4">⭐⭐⭐⭐ - Très bien</option>
-                    <option value="3">⭐⭐⭐ - Bien</option>
-                    <option value="2">⭐⭐ - Moyen</option>
-                    <option value="1">⭐ - Mauvais</option>
-                </select>
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <h4><i class="fas fa-crown"></i> NIKEL</h4>
+                <p>Le style qui vous ressemble.</p>
+                <div class="socials">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Commentaire</label>
-                <textarea id="editAvisCommentaire" placeholder="Modifiez votre commentaire..." required></textarea>
+            <div class="footer-col">
+                <h5>Liens utiles</h5>
+                <ul>
+                    <li><a href="apropos.html">À propos</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="panier.html">Panier</a></li>
+                </ul>
             </div>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeEditModal()">Annuler</button>
-                <button class="btn-save" id="saveEditAvisBtn">Enregistrer</button>
+            <div class="footer-col">
+                <h5>Nos produits</h5>
+                <ul>
+                    <li><a href="boutique.html">Nouveautés</a></li>
+                    <li><a href="boutique.html">Soldes</a></li>
+                    <li><a href="boutique.html">Accessoires</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5>Newsletter</h5>
+                <p>Recevez nos offres exclusives.</p>
+                <div class="newsletter">
+                    <input type="email" placeholder="votre@email.com">
+                    <button><i class="fas fa-paper-plane"></i></button>
+                </div>
             </div>
         </div>
-    </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 NIKEL — Tous droits réservés.</p>
+        </div>
+    </footer>
 
-    <!-- ... FOOTER ... -->
+    <!-- ========================================== -->
+    <!-- SCRIPTS                                    -->
+    <!-- ========================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-        // ... CONFIGURATION SUPABASE ...
+        const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
+        
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        window.supabaseClient = supabaseClient;
 
         // ==========================================
-        // VARIABLES
+        // RÉCUPÉRER L'ID DU CLIENT (temporaire)
         // ==========================================
-        let currentUserEmail = null; // À définir avec l'email du client connecté
-        let currentUserId = null; // À définir avec l'ID du client connecté
-        let editingAvisId = null;
+        let currentClientId = 1;
 
         // ==========================================
-        // AVIS - CHARGEMENT AVEC GESTION UTILISATEUR
+        // FONCTIONS
+        // ==========================================
+        function getProductId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+
+        function getImageUrl(url) {
+            if (!url) return null;
+            if (url.startsWith('http')) return url;
+            return `${SUPABASE_URL}/storage/v1/object/public/produits/${url}`;
+        }
+
+        // ==========================================
+        // FAVORIS
+        // ==========================================
+        async function isProductFavorited(productId, clientId) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('favoris')
+                    .select('id')
+                    .eq('client_id', clientId)
+                    .eq('produit_id', productId)
+                    .maybeSingle();
+
+                if (error) return false;
+                return !!data;
+            } catch (e) { return false; }
+        }
+
+        async function addToFavorites(productId, clientId) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('favoris')
+                    .insert({ client_id: clientId, produit_id: productId })
+                    .select()
+                    .single();
+
+                if (error) return { success: false, error };
+                return { success: true, data };
+            } catch (e) { return { success: false, error: e }; }
+        }
+
+        async function removeFromFavorites(productId, clientId) {
+            try {
+                const { error } = await supabaseClient
+                    .from('favoris')
+                    .delete()
+                    .eq('client_id', clientId)
+                    .eq('produit_id', productId);
+
+                if (error) return { success: false, error };
+                return { success: true };
+            } catch (e) { return { success: false, error: e }; }
+        }
+
+        async function toggleFavorites(productId, clientId, button) {
+            if (!clientId) {
+                showNotification('🔑 Connectez-vous pour ajouter aux favoris', 'info');
+                return;
+            }
+
+            button.disabled = true;
+            button.style.opacity = '0.6';
+
+            try {
+                const isFav = await isProductFavorited(productId, clientId);
+
+                if (isFav) {
+                    const result = await removeFromFavorites(productId, clientId);
+                    if (result.success) {
+                        button.classList.remove('active');
+                        button.innerHTML = `<i class="far fa-heart"></i><span class="wishlist-tooltip">Ajouter aux favoris</span>`;
+                        showNotification('💔 Retiré des favoris', 'info');
+                    }
+                } else {
+                    const result = await addToFavorites(productId, clientId);
+                    if (result.success) {
+                        button.classList.add('active');
+                        button.classList.add('bounce');
+                        button.innerHTML = `<i class="fas fa-heart"></i><span class="wishlist-tooltip">Retirer des favoris</span>`;
+                        setTimeout(() => button.classList.remove('bounce'), 400);
+                        showNotification('❤️ Ajouté aux favoris !', 'success');
+                    }
+                }
+            } catch (e) {
+                showNotification('❌ Une erreur est survenue', 'error');
+            } finally {
+                button.disabled = false;
+                button.style.opacity = '1';
+            }
+        }
+
+        // ==========================================
+        // AVIS - CHARGEMENT
         // ==========================================
         async function loadAvis(produitId) {
             const container = document.getElementById('avisContainer');
-            if (!container) return;
+            if (!container) {
+                console.error('❌ Container avis non trouvé');
+                return;
+            }
+
+            console.log('🔍 Chargement des avis pour le produit ID:', produitId);
 
             try {
+                // 🔥 Récupérer les avis approuvés pour ce produit
                 const { data: avis, error } = await supabaseClient
                     .from('avis')
                     .select('*')
@@ -348,6 +882,9 @@
                     return;
                 }
 
+                console.log('📊 Avis trouvés:', avis);
+                console.log('📊 Nombre d\'avis:', avis ? avis.length : 0);
+
                 const total = avis ? avis.length : 0;
                 let moyenne = 0;
                 if (total > 0) {
@@ -355,24 +892,10 @@
                     moyenne = (sum / total).toFixed(1);
                 }
 
-                document.getElementById('avisMoyenne').textContent = moyenne;
-                document.getElementById('avisTotal').textContent = total;
-
-                // 🔥 Vérifier si l'utilisateur a déjà un avis
-                const userHasAvis = avis ? avis.some(a => 
-                    (currentUserId && a.client_id === currentUserId) ||
-                    (currentUserEmail && a.client_email === currentUserEmail)
-                ) : false;
-
-                // Afficher la notification
-                const notification = document.getElementById('avisNotification');
-                const notificationText = document.getElementById('avisNotificationText');
-
-                if (userHasAvis) {
-                    notification.className = 'avis-notification show info';
-                    notificationText.innerHTML = '📝 Vous avez déjà laissé un avis pour ce produit. Vous pouvez le modifier ou le supprimer.';
-                } else {
-                    notification.className = 'avis-notification';
+                const statsContainer = document.getElementById('avisStats');
+                if (statsContainer) {
+                    document.getElementById('avisMoyenne').textContent = moyenne;
+                    document.getElementById('avisTotal').textContent = total;
                 }
 
                 if (!avis || avis.length === 0) {
@@ -385,32 +908,16 @@
                     return;
                 }
 
-                container.innerHTML = avis.map(a => {
-                    const isUserAvis = (currentUserId && a.client_id === currentUserId) ||
-                                      (currentUserEmail && a.client_email === currentUserEmail);
+                container.innerHTML = avis.map(a => `
+                    <div class="avis-item">
+                        <p class="avis-quote">"${a.commentaire || ''}"</p>
+                        <p class="avis-nom">${a.client_nom}</p>
+                        <p class="avis-date">${new Date(a.created_at).toLocaleDateString('fr-FR')}</p>
+                        <div class="avis-stars-display">${'★'.repeat(a.note)}${'☆'.repeat(5 - a.note)}</div>
+                    </div>
+                `).join('');
 
-                    return `
-                        <div class="avis-item" data-id="${a.id}">
-                            <p class="avis-quote">"${a.commentaire || ''}"</p>
-                            <p class="avis-nom">
-                                ${a.client_nom}
-                                ${isUserAvis ? '<span class="avis-badge-user">Votre avis</span>' : ''}
-                            </p>
-                            <p class="avis-date">${new Date(a.created_at).toLocaleDateString('fr-FR')}</p>
-                            <div class="avis-stars-display">${'★'.repeat(a.note)}${'☆'.repeat(5 - a.note)}</div>
-                            ${isUserAvis ? `
-                                <div class="avis-actions">
-                                    <button class="btn-edit-avis" onclick="openEditModal('${a.id}')">
-                                        <i class="fas fa-edit"></i> Modifier
-                                    </button>
-                                    <button class="btn-delete-avis" onclick="deleteAvis('${a.id}')">
-                                        <i class="fas fa-trash"></i> Supprimer
-                                    </button>
-                                </div>
-                            ` : ''}
-                        </div>
-                    `;
-                }).join('');
+                console.log('✅ Affichage des avis terminé');
 
             } catch (e) {
                 console.error('❌ Erreur:', e);
@@ -419,116 +926,43 @@
         }
 
         // ==========================================
-        // OUVRIR MODAL D'ÉDITION
+        // TOGGLE FORMULAIRE AVIS
         // ==========================================
-        async function openEditModal(avisId) {
-            try {
-                const { data: avis, error } = await supabaseClient
-                    .from('avis')
-                    .select('*')
-                    .eq('id', avisId)
-                    .single();
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('avisToggleBtn');
+            const closeBtn = document.getElementById('avisCloseBtn');
+            const wrapper = document.getElementById('avisFormWrapper');
 
-                if (error) {
-                    showNotification('❌ Erreur chargement de l\'avis', 'error');
-                    return;
-                }
-
-                editingAvisId = avisId;
-                document.getElementById('editAvisNote').value = avis.note;
-                document.getElementById('editAvisCommentaire').value = avis.commentaire || '';
-                document.getElementById('editModal').classList.add('active');
-
-            } catch (e) {
-                console.error('❌ Erreur:', e);
-                showNotification('❌ Une erreur est survenue', 'error');
-            }
-        }
-
-        // ==========================================
-        // FERMER MODAL D'ÉDITION
-        // ==========================================
-        function closeEditModal() {
-            document.getElementById('editModal').classList.remove('active');
-            editingAvisId = null;
-        }
-
-        // ==========================================
-        // SAUVEGARDER L'AVIS MODIFIÉ
-        // ==========================================
-        document.getElementById('saveEditAvisBtn').addEventListener('click', async function() {
-            if (!editingAvisId) return;
-
-            const note = parseInt(document.getElementById('editAvisNote').value);
-            const commentaire = document.getElementById('editAvisCommentaire').value.trim();
-
-            if (!commentaire) {
-                showNotification('Veuillez écrire un commentaire.', 'error');
-                return;
+            if (toggleBtn && wrapper) {
+                toggleBtn.addEventListener('click', function() {
+                    if (wrapper.style.display === 'block') {
+                        wrapper.style.display = 'none';
+                        this.innerHTML = '<i class="fas fa-pen"></i> Donnez votre avis';
+                    } else {
+                        wrapper.style.display = 'block';
+                        this.innerHTML = '<i class="fas fa-times"></i> Fermer le formulaire';
+                        setTimeout(() => wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+                    }
+                });
             }
 
-            this.disabled = true;
-            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
-
-            try {
-                const { error } = await supabaseClient
-                    .from('avis')
-                    .update({
-                        note: note,
-                        commentaire: commentaire,
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('id', editingAvisId);
-
-                if (error) throw error;
-
-                showNotification('✅ Votre avis a été modifié avec succès !', 'success');
-                closeEditModal();
-                
-                const productId = getProductId();
-                await loadAvis(productId);
-
-            } catch (e) {
-                console.error('❌ Erreur:', e);
-                showNotification('❌ Erreur lors de la modification', 'error');
-            } finally {
-                this.disabled = false;
-                this.innerHTML = 'Enregistrer';
+            if (closeBtn && wrapper) {
+                closeBtn.addEventListener('click', function() {
+                    wrapper.style.display = 'none';
+                    if (toggleBtn) toggleBtn.innerHTML = '<i class="fas fa-pen"></i> Donnez votre avis';
+                });
             }
         });
 
         // ==========================================
-        // SUPPRIMER UN AVIS
-        // ==========================================
-        async function deleteAvis(avisId) {
-            if (!confirm('Voulez-vous vraiment supprimer votre avis ?')) return;
-
-            try {
-                const { error } = await supabaseClient
-                    .from('avis')
-                    .delete()
-                    .eq('id', avisId);
-
-                if (error) throw error;
-
-                showNotification('🗑️ Votre avis a été supprimé.', 'info');
-                
-                const productId = getProductId();
-                await loadAvis(productId);
-
-            } catch (e) {
-                console.error('❌ Erreur:', e);
-                showNotification('❌ Erreur lors de la suppression', 'error');
-            }
-        }
-
-        // ==========================================
-        // SOUMETTRE UN AVIS (AVEC VÉRIFICATION)
+        // SOUMETTRE UN AVIS
         // ==========================================
         document.getElementById('avisFormSubmit')?.addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const produitId = getProductId();
+            
+            // 🔥 Vérifier que l'ID du produit est valide
             if (!produitId) {
                 showNotification('❌ Produit non trouvé', 'error');
                 return;
@@ -543,38 +977,33 @@
                 return;
             }
 
-            // 🔥 Vérifier si l'utilisateur a déjà un avis
-            const { data: existingAvis, error: checkError } = await supabaseClient
-                .from('avis')
-                .select('id')
-                .eq('produit_id', produitId)
-                .eq('client_email', currentUserEmail || nom)
-                .maybeSingle();
-
-            if (existingAvis) {
-                showNotification('⚠️ Vous avez déjà laissé un avis pour ce produit. Vous pouvez le modifier.', 'info');
-                return;
-            }
-
             const btn = document.getElementById('submitAvisBtn');
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
 
             try {
+                console.log('📝 Envoi de l\'avis pour le produit:', produitId);
+
                 const { data, error } = await supabaseClient
                     .from('avis')
                     .insert({
                         produit_id: produitId,
                         client_nom: nom,
-                        client_email: currentUserEmail || nom,
-                        client_id: currentUserId || null,
                         note: note,
                         commentaire: commentaire,
                         est_approuve: false
                     })
                     .select();
 
-                if (error) throw error;
+                if (error) {
+                    console.error('❌ Erreur insertion:', error);
+                    showNotification('❌ Erreur: ' + (error.message || 'Erreur inconnue'), 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-pen"></i> Publier mon avis';
+                    return;
+                }
+
+                console.log('✅ Avis inséré avec succès:', data);
 
                 document.getElementById('avisFormSubmit').style.display = 'none';
                 document.getElementById('avisSuccess').classList.add('show');
@@ -601,26 +1030,290 @@
         });
 
         // ==========================================
-        // FERMER LA MODALE AVEC ÉCHAP
+        // CHARGER LE PRODUIT
         // ==========================================
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeEditModal();
-            }
-        });
+        async function loadProduct() {
+            const container = document.getElementById('productDetail');
+            const productId = getProductId();
 
-        // Fermer en cliquant à l'extérieur
-        document.getElementById('editModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeEditModal();
+            if (!productId) {
+                container.innerHTML = `
+                    <div style="grid-column:1/-1;text-align:center;padding:60px 20px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size:3rem;color:#e74c3c;"></i>
+                        <h2>Produit non spécifié</h2>
+                        <p>Veuillez sélectionner un produit depuis la boutique.</p>
+                        <a href="boutique.html" class="btn btn-primary" style="margin-top:20px;">
+                            <i class="fas fa-arrow-left"></i> Retour à la boutique
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const { data: product, error } = await supabaseClient
+                    .from('produits')
+                    .select('*')
+                    .eq('id', productId)
+                    .single();
+
+                if (error || !product) {
+                    console.error('❌ Erreur:', error);
+                    container.innerHTML = `
+                        <div style="grid-column:1/-1;text-align:center;padding:60px 20px;">
+                            <i class="fas fa-exclamation-triangle" style="font-size:3rem;color:#e74c3c;"></i>
+                            <h2>Produit non trouvé</h2>
+                            <p>Le produit que vous cherchez n'existe pas ou a été supprimé.</p>
+                            <a href="boutique.html" class="btn btn-primary" style="margin-top:20px;">
+                                <i class="fas fa-arrow-left"></i> Retour à la boutique
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const isFav = await isProductFavorited(productId, currentClientId);
+
+                const thumbnails = [product.mini1, product.mini2, product.mini3, product.mini4]
+                    .filter(url => url && url.trim() !== '');
+
+                const mainImageUrl = product.image_url 
+                    ? getImageUrl(product.image_url) 
+                    : 'https://via.placeholder.com/600x600/1a1a1a/FFFFFF?text=NIKEL';
+
+                container.innerHTML = `
+                    <div class="product-gallery">
+                        <img src="${mainImageUrl}" 
+                             alt="${product.nom}"
+                             class="main-image"
+                             id="mainImage"
+                             onerror="this.src='https://via.placeholder.com/600x600/1a1a1a/FFFFFF?text=Image'">
+                        ${product.promo > 0 ? `<span class="badge-promo">-${product.promo}%</span>` : ''}
+                        
+                        ${thumbnails.length > 0 ? `
+                            <div class="thumbnails">
+                                ${thumbnails.map((img, index) => `
+                                    <img src="${getImageUrl(img)}" 
+                                         alt="${product.nom} - vue ${index + 1}"
+                                         class="thumb ${index === 0 ? 'active' : ''}"
+                                         onclick="changeMainImage('${getImageUrl(img)}', this)"
+                                         onerror="this.style.display='none'">
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="product-info">
+                        <p style="color:#999;font-size:0.9rem;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px 0;">
+                            ${product.categorie || 'Collection'}
+                        </p>
+                        <h1>${product.nom}</h1>
+                        
+                        <div class="rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="reviews">(4.8/5 · 127 avis)</span>
+                        </div>
+
+                        <div class="prices">
+                            <span class="current-price">${product.prix.toFixed(2)} FCFA</span>
+                            ${product.prix_original && product.prix_original > product.prix 
+                                ? `<span class="old-price">${product.prix_original.toFixed(2)} FCFA</span>` 
+                                : ''}
+                        </div>
+
+                        <p class="description">${product.description || 'Aucune description disponible pour ce produit.'}</p>
+                        
+                        <div class="stock-badge ${product.stock > 0 ? 'in-stock' : 'out-of-stock'}">
+                            <p>
+                                ${product.stock > 0 
+                                    ? `<i class="fas fa-check-circle"></i> En stock (${product.stock} disponibles)` 
+                                    : `<i class="fas fa-times-circle"></i> Rupture de stock`}
+                            </p>
+                        </div>
+
+                        <div class="quantity-selector">
+                            <span style="font-weight:600;">Quantité :</span>
+                            <div class="qty-control">
+                                <button onclick="changeQuantity(-1)"><i class="fas fa-minus"></i></button>
+                                <span class="qty-display" id="quantityDisplay">1</span>
+                                <button onclick="changeQuantity(1)"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="product-actions">
+                            <button class="btn-add-cart" onclick="addToCart('${product.id}')">
+                                <i class="fas fa-shopping-bag"></i> Ajouter au panier
+                            </button>
+                            <button class="btn-wishlist ${isFav ? 'active' : ''}" 
+                                    onclick="toggleFavorites('${product.id}', '${currentClientId}', this)">
+                                <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
+                                <span class="wishlist-tooltip">${isFav ? 'Retirer des favoris' : 'Ajouter aux favoris'}</span>
+                            </button>
+                        </div>
+
+                        <div class="product-features">
+                            <span><i class="fas fa-truck"></i> Livraison offerte</span>
+                            <span><i class="fas fa-rotate-left"></i> Retour 30 jours</span>
+                            <span><i class="fas fa-lock"></i> Paiement sécurisé</span>
+                            <span><i class="fas fa-tag"></i> Garantie 2 ans</span>
+                        </div>
+
+                        <a href="boutique.html" class="back-link">
+                            <i class="fas fa-arrow-left"></i> Retour à la boutique
+                        </a>
+                    </div>
+                `;
+
+                window.currentProduct = {
+                    id: product.id,
+                    name: product.nom,
+                    price: product.prix,
+                    image: mainImageUrl
+                };
+
+                window.currentQuantity = 1;
+                document.getElementById('quantityDisplay').textContent = '1';
+
+                // 🔥 Charger les avis
+                await loadAvis(productId);
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                container.innerHTML = `
+                    <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:red;">
+                        <i class="fas fa-exclamation-triangle" style="font-size:3rem;"></i>
+                        <h2>Erreur de chargement</h2>
+                        <p>Impossible de charger les informations du produit.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // ==========================================
+        // AUTRES FONCTIONS
+        // ==========================================
+        function changeMainImage(imageUrl, element) {
+            const mainImage = document.getElementById('mainImage');
+            if (mainImage) mainImage.src = imageUrl;
+            document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+            if (element) element.classList.add('active');
+        }
+
+        function changeQuantity(delta) {
+            const display = document.getElementById('quantityDisplay');
+            if (!display) return;
+            let qty = parseInt(display.textContent) || 1;
+            qty = Math.max(1, qty + delta);
+            display.textContent = qty;
+            window.currentQuantity = qty;
+        }
+
+        function addToCart(productId) {
+            const quantity = window.currentQuantity || 1;
+            const product = window.currentProduct;
+            if (!product) {
+                showNotification('❌ Produit non disponible', 'error');
+                return;
+            }
+
+            let cart = JSON.parse(localStorage.getItem('nikel_cart') || '[]');
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                existing.quantity += quantity;
+            } else {
+                cart.push({
+                    id: productId,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
+                    quantity: quantity
+                });
+            }
+
+            localStorage.setItem('nikel_cart', JSON.stringify(cart));
+            updateBadge();
+            showNotification(`✅ ${product.name} ajouté au panier ! (${quantity})`, 'success');
+        }
+
+        function updateBadge() {
+            const badge = document.querySelector('.badge');
+            if (!badge) return;
+            try {
+                const cart = JSON.parse(localStorage.getItem('nikel_cart') || '[]');
+                const total = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                badge.textContent = total;
+                badge.style.display = total > 0 ? 'flex' : 'none';
+            } catch(e) {
+                badge.textContent = '0';
+                badge.style.display = 'none';
+            }
+        }
+
+        function handleSearch() {
+            const input = document.getElementById('searchInput');
+            if (!input) return;
+            const query = input.value.trim();
+            if (query.length > 0) {
+                window.location.href = `boutique.html?search=${encodeURIComponent(query)}`;
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const colors = { success: '#27ae60', error: '#e74c3c', info: '#c9a84c' };
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: #1a1a1a;
+                color: white;
+                padding: 16px 24px;
+                border-radius: 14px;
+                font-weight: 500;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+                z-index: 9999;
+                max-width: 400px;
+                font-size: 0.95rem;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                animation: slideUp 0.5s ease;
+                border-left: 4px solid ${colors[type] || colors.info};
+            `;
+            toast.innerHTML = `<span>${message}</span>`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // ==========================================
+        // INITIALISATION
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 NIKEL - Page produit');
+            loadProduct();
+            updateBadge();
+
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        handleSearch();
+                    }
+                });
             }
         });
 
         // Exposer les fonctions globalement
-        window.openEditModal = openEditModal;
-        window.closeEditModal = closeEditModal;
-        window.deleteAvis = deleteAvis;
-        window.loadAvis = loadAvis;
+        window.changeMainImage = changeMainImage;
+        window.changeQuantity = changeQuantity;
+        window.addToCart = addToCart;
+        window.toggleFavorites = toggleFavorites;
+        window.showNotification = showNotification;
     </script>
 </body>
 </html>
