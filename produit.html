@@ -856,18 +856,23 @@
         }
 
         // ==========================================
-        // AVIS
+        // AVIS - VERSION AVEC LOGS DÉTAILLÉS
         // ==========================================
         async function loadAvis(produitId) {
             const container = document.getElementById('avisContainer');
-            if (!container) return;
+            if (!container) {
+                console.error('❌ Container avis non trouvé');
+                return;
+            }
+
+            console.log('🔍 Chargement des avis pour le produit ID:', produitId);
 
             try {
+                // 🔥 Récupérer tous les avis (sans filtre est_approuve pour le test)
                 const { data: avis, error } = await supabaseClient
                     .from('avis')
                     .select('*')
                     .eq('produit_id', produitId)
-                    .eq('est_approuve', true)
                     .order('created_at', { ascending: false });
 
                 if (error) {
@@ -876,7 +881,10 @@
                     return;
                 }
 
-                const total = avis.length;
+                console.log('📊 Avis trouvés:', avis);
+                console.log('📊 Nombre d\'avis:', avis ? avis.length : 0);
+
+                const total = avis ? avis.length : 0;
                 let moyenne = 0;
                 if (total > 0) {
                     const sum = avis.reduce((acc, a) => acc + a.note, 0);
@@ -896,7 +904,21 @@
                     return;
                 }
 
-                container.innerHTML = avis.map(a => `
+                // Filtrer uniquement les avis approuvés pour l'affichage
+                const avisApprouves = avis.filter(a => a.est_approuve === true);
+                console.log('📊 Avis approuvés:', avisApprouves);
+
+                if (avisApprouves.length === 0) {
+                    container.innerHTML = `
+                        <div class="avis-empty">
+                            <p>Aucun avis approuvé pour ce produit</p>
+                            <p class="sub">Les avis en attente de validation ne sont pas visibles.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = avisApprouves.map(a => `
                     <div class="avis-item">
                         <p class="avis-quote">"${a.commentaire || ''}"</p>
                         <p class="avis-nom">${a.client_nom}</p>
@@ -904,6 +926,8 @@
                         <div class="avis-stars-display">${'★'.repeat(a.note)}${'☆'.repeat(5 - a.note)}</div>
                     </div>
                 `).join('');
+
+                console.log('✅ Affichage des avis terminé');
 
             } catch (e) {
                 console.error('❌ Erreur:', e);
