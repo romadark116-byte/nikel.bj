@@ -856,7 +856,7 @@
         }
 
         // ==========================================
-        // AVIS - VERSION AVEC LOGS DÉTAILLÉS
+        // AVIS - CHARGEMENT
         // ==========================================
         async function loadAvis(produitId) {
             const container = document.getElementById('avisContainer');
@@ -868,11 +868,12 @@
             console.log('🔍 Chargement des avis pour le produit ID:', produitId);
 
             try {
-                // 🔥 Récupérer tous les avis (sans filtre est_approuve pour le test)
+                // 🔥 Récupérer les avis approuvés pour ce produit
                 const { data: avis, error } = await supabaseClient
                     .from('avis')
                     .select('*')
                     .eq('produit_id', produitId)
+                    .eq('est_approuve', true)
                     .order('created_at', { ascending: false });
 
                 if (error) {
@@ -891,8 +892,11 @@
                     moyenne = (sum / total).toFixed(1);
                 }
 
-                document.getElementById('avisMoyenne').textContent = moyenne;
-                document.getElementById('avisTotal').textContent = total;
+                const statsContainer = document.getElementById('avisStats');
+                if (statsContainer) {
+                    document.getElementById('avisMoyenne').textContent = moyenne;
+                    document.getElementById('avisTotal').textContent = total;
+                }
 
                 if (!avis || avis.length === 0) {
                     container.innerHTML = `
@@ -904,21 +908,7 @@
                     return;
                 }
 
-                // Filtrer uniquement les avis approuvés pour l'affichage
-                const avisApprouves = avis.filter(a => a.est_approuve === true);
-                console.log('📊 Avis approuvés:', avisApprouves);
-
-                if (avisApprouves.length === 0) {
-                    container.innerHTML = `
-                        <div class="avis-empty">
-                            <p>Aucun avis approuvé pour ce produit</p>
-                            <p class="sub">Les avis en attente de validation ne sont pas visibles.</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                container.innerHTML = avisApprouves.map(a => `
+                container.innerHTML = avis.map(a => `
                     <div class="avis-item">
                         <p class="avis-quote">"${a.commentaire || ''}"</p>
                         <p class="avis-nom">${a.client_nom}</p>
@@ -971,6 +961,13 @@
             e.preventDefault();
 
             const produitId = getProductId();
+            
+            // 🔥 Vérifier que l'ID du produit est valide
+            if (!produitId) {
+                showNotification('❌ Produit non trouvé', 'error');
+                return;
+            }
+
             const nom = document.getElementById('avisNom').value.trim();
             const note = parseInt(document.getElementById('avisNote').value);
             const commentaire = document.getElementById('avisCommentaire').value.trim();
@@ -985,7 +982,9 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
 
             try {
-                const { error } = await supabaseClient
+                console.log('📝 Envoi de l\'avis pour le produit:', produitId);
+
+                const { data, error } = await supabaseClient
                     .from('avis')
                     .insert({
                         produit_id: produitId,
@@ -993,9 +992,18 @@
                         note: note,
                         commentaire: commentaire,
                         est_approuve: false
-                    });
+                    })
+                    .select();
 
-                if (error) throw error;
+                if (error) {
+                    console.error('❌ Erreur insertion:', error);
+                    showNotification('❌ Erreur: ' + (error.message || 'Erreur inconnue'), 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-pen"></i> Publier mon avis';
+                    return;
+                }
+
+                console.log('✅ Avis inséré avec succès:', data);
 
                 document.getElementById('avisFormSubmit').style.display = 'none';
                 document.getElementById('avisSuccess').classList.add('show');
@@ -1166,7 +1174,7 @@
                 window.currentQuantity = 1;
                 document.getElementById('quantityDisplay').textContent = '1';
 
-                // Charger les avis
+                // 🔥 Charger les avis
                 await loadAvis(productId);
 
             } catch (err) {
