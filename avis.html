@@ -39,20 +39,20 @@
     <!-- ===== FILTRES ===== -->
     <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
         <div style="flex:2; min-width:200px;">
-            <input type="text" id="searchAvis" placeholder="🔍 Rechercher un avis..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onkeyup="applyAvisFilters()">
+            <input type="text" id="searchAvis" placeholder="🔍 Rechercher un avis..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onkeyup="applyAvisFilters()">
         </div>
         <div style="min-width:150px;">
-            <select id="filterNote" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyAvisFilters()">
+            <select id="filterNote" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onchange="applyAvisFilters()">
                 <option value="all">⭐ Toutes les notes</option>
-                <option value="5">⭐⭐⭐⭐⭐ - 5 étoiles</option>
-                <option value="4">⭐⭐⭐⭐ - 4 étoiles</option>
-                <option value="3">⭐⭐⭐ - 3 étoiles</option>
-                <option value="2">⭐⭐ - 2 étoiles</option>
-                <option value="1">⭐ - 1 étoile</option>
+                <option value="5">⭐⭐⭐⭐⭐</option>
+                <option value="4">⭐⭐⭐⭐</option>
+                <option value="3">⭐⭐⭐</option>
+                <option value="2">⭐⭐</option>
+                <option value="1">⭐</option>
             </select>
         </div>
         <div style="min-width:150px;">
-            <select id="filterStatut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyAvisFilters()">
+            <select id="filterStatut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onchange="applyAvisFilters()">
                 <option value="all">📊 Tous les statuts</option>
                 <option value="approuve">✅ Approuvés</option>
                 <option value="en_attente">⏳ En attente</option>
@@ -67,7 +67,7 @@
     <div id="avisList">
         <div style="text-align:center; padding:40px; color:#888;">
             <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
-            Chargement des avis...
+            Chargement...
         </div>
     </div>
 
@@ -94,6 +94,14 @@
 
         if (!supabaseClient) {
             console.error('❌ SupabaseClient non disponible !');
+            document.getElementById('avisContainer').innerHTML = `
+                <div style="text-align:center; padding:60px; color:red;">
+                    <i class="fas fa-exclamation-circle" style="font-size:3rem;"></i>
+                    <h3>Erreur de connexion</h3>
+                    <p>Impossible de se connecter à la base de données.</p>
+                    <p style="font-size:0.9rem; color:#888;">Veuillez rafraîchir la page.</p>
+                </div>
+            `;
             return;
         }
 
@@ -114,7 +122,18 @@
                 const { data: avis, error } = await supabaseClient
                     .from('avis')
                     .select(`
-                        *,
+                        id,
+                        produit_id,
+                        client_nom,
+                        client_email,
+                        note,
+                        commentaire,
+                        est_approuve,
+                        created_at,
+                        updated_at,
+                        reponse_admin,
+                        reponse_date,
+                        reponse_admin_nom,
                         produits (
                             nom
                         )
@@ -464,7 +483,7 @@
         }
 
         // ==========================================
-        // ENREGISTRER LA RÉPONSE (CORRIGÉ)
+        // ENREGISTRER LA RÉPONSE
         // ==========================================
         async function enregistrerReponse(avisId) {
             const textarea = document.getElementById('reponseTextarea');
@@ -479,7 +498,6 @@
             console.log('📝 Contenu de la réponse:', reponse);
 
             try {
-                // Mettre à jour l'avis avec la réponse
                 const { error } = await supabaseClient
                     .from('avis')
                     .update({
@@ -497,7 +515,6 @@
 
                 console.log('✅ Réponse enregistrée avec succès');
 
-                // Mettre à jour localement
                 const avis = allAvis.find(a => a.id === avisId);
                 if (avis) {
                     avis.reponse_admin = reponse;
@@ -505,7 +522,6 @@
                     avis.reponse_admin_nom = 'NIKEL';
                 }
 
-                // Recharger les avis
                 await loadAvisData();
 
                 fermerReponseModal();
