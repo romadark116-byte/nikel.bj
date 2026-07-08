@@ -10,8 +10,11 @@
             <p style="color:#888; font-size:0.95rem;">Gérez et suivez toutes vos commandes en un seul endroit.</p>
         </div>
         <div style="display:flex; gap:8px;">
-            <button onclick="exportCSV()" style="padding:10px 20px; background:#27ae60; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600;">
+            <button onclick="exportCSV()" style="padding:10px 20px; background:#27ae60; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                 <i class="fas fa-file-export"></i> Exporter CSV
+            </button>
+            <button onclick="rafraichirVentes()" style="padding:10px 20px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <i class="fas fa-sync-alt"></i> Rafraîchir
             </button>
         </div>
     </div>
@@ -40,11 +43,11 @@
     <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
 
         <div style="flex:2; min-width:200px;">
-            <input type="text" id="searchVentes" placeholder="🔍 Rechercher par nom, email ou téléphone..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onkeyup="applyVentesFilters()">
+            <input type="text" id="searchVentes" placeholder="🔍 Rechercher par nom, email ou téléphone..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onkeyup="applyVentesFilters()">
         </div>
 
         <div style="min-width:150px;">
-            <select id="filterStatut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onchange="applyVentesFilters()">
+            <select id="filterStatut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s; cursor:pointer;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyVentesFilters()">
                 <option value="all">📊 Tous les statuts</option>
                 <option value="soldé">✅ Soldé</option>
                 <option value="en attente">⏳ En attente</option>
@@ -53,14 +56,14 @@
         </div>
 
         <div style="min-width:150px;">
-            <input type="date" id="dateDebut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onchange="applyVentesFilters()">
+            <input type="date" id="dateDebut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyVentesFilters()">
         </div>
 
         <div style="min-width:150px;">
-            <input type="date" id="dateFin" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onchange="applyVentesFilters()">
+            <input type="date" id="dateFin" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyVentesFilters()">
         </div>
 
-        <button onclick="resetVentesFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; cursor:pointer; color:#888;">
+        <button onclick="resetVentesFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
             <i class="fas fa-undo"></i> Réinitialiser
         </button>
     </div>
@@ -73,16 +76,17 @@
                     <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">#</th>
                     <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Client</th>
                     <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Email</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Téléphone</th>
                     <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Date</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Produits</th>
                     <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Total</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Ville</th>
                     <th style="text-align:center; padding:14px 12px; font-weight:600; color:#1a1a1a;">Statut</th>
                     <th style="text-align:center; padding:14px 12px; font-weight:600; color:#1a1a1a;">Actions</th>
                 </tr>
             </thead>
             <tbody id="ventesTableBody">
                 <tr>
-                    <td colspan="8" style="text-align:center; padding:40px; color:#888;">
+                    <td colspan="9" style="text-align:center; padding:40px; color:#888;">
                         <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
                         Chargement des données...
                     </td>
@@ -95,9 +99,13 @@
     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:12px;">
         <span style="color:#888; font-size:0.9rem;" id="ventesPaginationInfo">Affichage de 0 à 0 sur 0 entrées</span>
         <div style="display:flex; gap:8px;">
-            <button onclick="prevVentesPage()" id="prevVentesPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; color:#888;">◀ Précédent</button>
+            <button onclick="prevVentesPage()" id="prevVentesPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+                <i class="fas fa-chevron-left"></i> Précédent
+            </button>
             <span id="ventesPageInfo" style="display:flex; align-items:center; padding:0 12px; font-weight:600; color:#1a1a1a;">Page 1</span>
-            <button onclick="nextVentesPage()" id="nextVentesPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; color:#888;">Suivant ▶</button>
+            <button onclick="nextVentesPage()" id="nextVentesPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+                Suivant <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
     </div>
 </div>
@@ -112,11 +120,20 @@
         const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
         
-        // ✅ Initialiser Supabase avec window.supabase
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        window.supabaseClient = supabaseClient;
+        let supabaseClient = null;
 
-        console.log('✅ Supabase initialisé dans suivi-ventes.html');
+        // Initialiser Supabase
+        try {
+            if (window.supabase) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                window.supabaseClient = supabaseClient;
+                console.log('✅ Supabase initialisé dans suivi-ventes.html');
+            } else {
+                console.warn('⚠️ Supabase SDK non chargé');
+            }
+        } catch (e) {
+            console.error('❌ Erreur initialisation Supabase:', e);
+        }
 
         // ==========================================
         // VARIABLES
@@ -131,11 +148,11 @@
         // ==========================================
         function getTestData() {
             return [
-                { id: 1, prenom: 'Jean', nom: 'Dupont', email: 'jean@email.com', telephone: '0612345678', ville: 'Paris', pays: 'FR', date_clic: new Date().toISOString(), produits: 'Sac NOMAD x 1, Montre EDGE x 1', total_achat: 398.00, statut: 'soldé' },
-                { id: 2, prenom: 'Fleury', nom: 'HAMIDOU', email: 'f91631072@gmail.com', telephone: '0191647720', ville: 'Parakou', pays: 'BJ', date_clic: new Date(Date.now() - 86400000).toISOString(), produits: 'NIKEL Sport x 2, NIKEL Essential x 1', total_achat: 267.00, statut: 'en attente' },
-                { id: 3, prenom: 'Marie', nom: 'Martin', email: 'marie@email.com', telephone: '0765432109', ville: 'Lyon', pays: 'FR', date_clic: new Date(Date.now() - 172800000).toISOString(), produits: 'Veste BOMBER x 1', total_achat: 159.00, statut: 'annulé' },
-                { id: 4, prenom: 'Amadou', nom: 'Diallo', email: 'amadou@email.com', telephone: '779012345', ville: 'Dakar', pays: 'SN', date_clic: new Date(Date.now() - 259200000).toISOString(), produits: 'Lunettes NOIR x 2, Sac NOMAD x 1', total_achat: 299.00, statut: 'soldé' },
-                { id: 5, prenom: 'Sophie', nom: 'Bernard', email: 'sophie@email.com', telephone: '0612345987', ville: 'Marseille', pays: 'FR', date_clic: new Date(Date.now() - 345600000).toISOString(), produits: 'Montre EDGE x 1', total_achat: 149.00, statut: 'en attente' }
+                { id: 1, prenom: 'Jean', nom: 'Dupont', email: 'jean@email.com', telephone: '0612345678', ville: 'Paris', pays: 'FR', created_at: new Date().toISOString(), total_achat: 398.00, statut: 'soldé' },
+                { id: 2, prenom: 'Fleury', nom: 'HAMIDOU', email: 'f91631072@gmail.com', telephone: '0191647720', ville: 'Parakou', pays: 'BJ', created_at: new Date(Date.now() - 86400000).toISOString(), total_achat: 267.00, statut: 'en attente' },
+                { id: 3, prenom: 'Marie', nom: 'Martin', email: 'marie@email.com', telephone: '0765432109', ville: 'Lyon', pays: 'FR', created_at: new Date(Date.now() - 172800000).toISOString(), total_achat: 159.00, statut: 'annulé' },
+                { id: 4, prenom: 'Amadou', nom: 'Diallo', email: 'amadou@email.com', telephone: '779012345', ville: 'Dakar', pays: 'SN', created_at: new Date(Date.now() - 259200000).toISOString(), total_achat: 299.00, statut: 'soldé' },
+                { id: 5, prenom: 'Sophie', nom: 'Bernard', email: 'sophie@email.com', telephone: '0612345987', ville: 'Marseille', pays: 'FR', created_at: new Date(Date.now() - 345600000).toISOString(), total_achat: 149.00, statut: 'en attente' }
             ];
         }
 
@@ -170,7 +187,7 @@
         function renderVentes() {
             const tbody = document.getElementById('ventesTableBody');
             if (filteredVentes.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:40px; color:#888;">
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:40px; color:#888;">
                     <i class="fas fa-inbox" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
                     Aucune vente trouvée.
                 </td></tr>`;
@@ -181,18 +198,19 @@
             const items = filteredVentes.slice(start, start + perPage);
 
             tbody.innerHTML = items.map(v => `
-                <tr style="border-bottom:1px solid #f0f0f0;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
+                <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
                     <td style="padding:12px; font-weight:600;">#${v.id}</td>
                     <td style="padding:12px; font-weight:500;">${v.prenom || ''} ${v.nom || ''}</td>
                     <td style="padding:12px; color:#888;">${v.email || '—'}</td>
-                    <td style="padding:12px; color:#888; font-size:0.9rem;">${formatDate(v.date_clic)}</td>
-                    <td style="padding:12px; color:#555; font-size:0.9rem; max-width:150px; word-wrap:break-word;">${v.produits || '—'}</td>
+                    <td style="padding:12px; color:#888;">${v.telephone || '—'}</td>
+                    <td style="padding:12px; color:#888; font-size:0.9rem;">${formatDate(v.created_at)}</td>
                     <td style="padding:12px; font-weight:700; color:#c9a84c;">${v.total_achat ? v.total_achat.toFixed(2).replace('.', ',') + ' FCFA' : '—'}</td>
+                    <td style="padding:12px; color:#888;">${v.ville || '—'}</td>
                     <td style="padding:12px; text-align:center;">${getStatutBadge(v.statut)}</td>
                     <td style="padding:12px; text-align:center;">
-                        <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:4px 10px; border:none; border-radius:6px; background:#27ae60; color:white; cursor:pointer; font-size:0.75rem; margin:2px;" title="Soldé">✅</button>
-                        <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:4px 10px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.75rem; margin:2px;" title="En attente">⏳</button>
-                        <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:4px 10px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.75rem; margin:2px;" title="Annulé">❌</button>
+                        <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:4px 10px; border:none; border-radius:6px; background:#27ae60; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
+                        <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:4px 10px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
+                        <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:4px 10px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
                     </td>
                 </tr>
             `).join('');
@@ -208,6 +226,7 @@
             const sold = allVentes.filter(v => v.statut === 'soldé').length;
             const attente = allVentes.filter(v => v.statut === 'en attente').length;
             const annul = allVentes.filter(v => v.statut === 'annulé').length;
+            
             document.getElementById('totalCommandes').textContent = total;
             document.getElementById('totalSoldees').textContent = sold;
             document.getElementById('totalEnAttente').textContent = attente;
@@ -221,14 +240,32 @@
             const total = filteredVentes.length;
             const start = (currentPage - 1) * perPage + 1;
             const end = Math.min(currentPage * perPage, total);
-            document.getElementById('ventesPaginationInfo').textContent = `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
-            document.getElementById('ventesPageInfo').textContent = `Page ${currentPage} sur ${Math.ceil(total / perPage) || 1}`;
+            const totalPages = Math.ceil(total / perPage) || 1;
+
+            document.getElementById('ventesPaginationInfo').textContent = 
+                `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
+            document.getElementById('ventesPageInfo').textContent = `Page ${currentPage} sur ${totalPages}`;
+
             document.getElementById('prevVentesPage').disabled = currentPage <= 1;
-            document.getElementById('nextVentesPage').disabled = currentPage >= Math.ceil(total / perPage);
+            document.getElementById('nextVentesPage').disabled = currentPage >= totalPages;
         }
 
-        function prevVentesPage() { if (currentPage > 1) { currentPage--; renderVentes(); } }
-        function nextVentesPage() { if (currentPage < Math.ceil(filteredVentes.length / perPage)) { currentPage++; renderVentes(); } }
+        function prevVentesPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderVentes();
+                updateVentesPaginationInfo();
+            }
+        }
+
+        function nextVentesPage() {
+            const totalPages = Math.ceil(filteredVentes.length / perPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderVentes();
+                updateVentesPaginationInfo();
+            }
+        }
 
         // ==========================================
         // FILTRES
@@ -240,30 +277,40 @@
             const dateFin = document.getElementById('dateFin').value;
 
             filteredVentes = allVentes.filter(v => {
-                let m = true;
+                let match = true;
+                
+                // Recherche
                 if (search) {
-                    const fullName = (v.prenom + ' ' + v.nom).toLowerCase();
+                    const fullName = `${v.prenom || ''} ${v.nom || ''}`.toLowerCase();
                     const email = (v.email || '').toLowerCase();
                     const phone = (v.telephone || '').toLowerCase();
-                    m = fullName.includes(search) || email.includes(search) || phone.includes(search);
+                    match = fullName.includes(search) || email.includes(search) || phone.includes(search);
                 }
-                if (statut !== 'all') m = m && v.statut === statut;
-                if (dateDebut) {
+                
+                // Statut
+                if (statut !== 'all') {
+                    match = match && v.statut === statut;
+                }
+                
+                // Dates
+                if (dateDebut && match) {
                     const d1 = new Date(dateDebut);
-                    const dV = new Date(v.date_clic);
-                    if (d1 > dV) m = false;
+                    const dV = new Date(v.created_at);
+                    if (d1 > dV) match = false;
                 }
-                if (dateFin && m) {
+                if (dateFin && match) {
                     const d2 = new Date(dateFin);
-                    const dV = new Date(v.date_clic);
+                    const dV = new Date(v.created_at);
                     d2.setHours(23, 59, 59);
-                    if (d2 < dV) m = false;
+                    if (d2 < dV) match = false;
                 }
-                return m;
+                
+                return match;
             });
 
             currentPage = 1;
             renderVentes();
+            updateVentesPaginationInfo();
         }
 
         function resetVentesFilters() {
@@ -274,24 +321,51 @@
             filteredVentes = [...allVentes];
             currentPage = 1;
             renderVentes();
+            updateVentesPaginationInfo();
         }
 
         // ==========================================
         // METTRE À JOUR LE STATUT
         // ==========================================
-        function updateStatut(id, newStatut) {
+        async function updateStatut(id, newStatut) {
+            // Mettre à jour localement
             const v = allVentes.find(item => item.id === id);
             if (!v) return;
 
+            const oldStatut = v.statut;
             v.statut = newStatut;
+            
             const f = filteredVentes.find(item => item.id === id);
             if (f) f.statut = newStatut;
 
             renderVentes();
             updateVentesStats();
 
-            if (window.showNotification) {
-                window.showNotification(`✅ Statut mis à jour : ${newStatut}`, 'success');
+            // Mettre à jour dans Supabase
+            try {
+                if (supabaseClient) {
+                    const { error } = await supabaseClient
+                        .from('clients')
+                        .update({ statut: newStatut })
+                        .eq('id', id);
+
+                    if (error) {
+                        console.error('❌ Erreur mise à jour Supabase:', error);
+                        // Revert local
+                        v.statut = oldStatut;
+                        if (f) f.statut = oldStatut;
+                        renderVentes();
+                        updateVentesStats();
+                        showNotification('❌ Erreur lors de la mise à jour', 'error');
+                        return;
+                    }
+                }
+                
+                showNotification(`✅ Statut mis à jour : ${newStatut}`, 'success');
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                showNotification('❌ Erreur lors de la mise à jour', 'error');
             }
         }
 
@@ -300,20 +374,33 @@
         // ==========================================
         function exportCSV() {
             if (allVentes.length === 0) {
-                alert('Aucune donnée à exporter.');
+                showNotification('❌ Aucune donnée à exporter', 'error');
                 return;
             }
 
-            let csv = 'ID,Client,Email,Date,Produits,Total,Statut\n';
+            let csv = 'ID,Client,Email,Téléphone,Date,Total,Ville,Pays,Statut\n';
             allVentes.forEach(v => {
-                csv += `${v.id},"${v.prenom} ${v.nom}","${v.email}","${formatDate(v.date_clic)}","${v.produits || ''}","${v.total_achat || 0}","${v.statut}"\n`;
+                const client = `${v.prenom || ''} ${v.nom || ''}`.trim();
+                csv += `${v.id},"${client}","${v.email || ''}","${v.telephone || ''}","${formatDate(v.created_at)}","${v.total_achat || 0}","${v.ville || ''}","${v.pays || ''}","${v.statut || ''}"\n`;
             });
 
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = `ventes_${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(link);
             link.click();
+            document.body.removeChild(link);
+            
+            showNotification('✅ Export CSV effectué avec succès', 'success');
+        }
+
+        // ==========================================
+        // RAFRAÎCHIR
+        // ==========================================
+        function rafraichirVentes() {
+            loadVentesData();
+            showNotification('🔄 Données actualisées', 'info');
         }
 
         // ==========================================
@@ -324,20 +411,21 @@
                 console.log('📝 Chargement des données depuis Supabase...');
                 
                 // Vérifier si Supabase est disponible
-                if (!window.supabaseClient) {
+                if (!supabaseClient) {
                     console.warn('⚠️ Supabase non disponible, utilisation des données de test');
                     allVentes = getTestData();
                     filteredVentes = [...allVentes];
                     renderVentes();
                     updateVentesStats();
+                    updateVentesPaginationInfo();
                     return;
                 }
 
                 // Charger les données depuis la table clients
-                const { data, error } = await window.supabaseClient
+                const { data, error } = await supabaseClient
                     .from('clients')
                     .select('*')
-                    .order('date_clic', { ascending: false });
+                    .order('created_at', { ascending: false });
 
                 if (error) {
                     console.error('❌ Erreur chargement:', error);
@@ -346,24 +434,30 @@
                     filteredVentes = [...allVentes];
                     renderVentes();
                     updateVentesStats();
+                    updateVentesPaginationInfo();
                     return;
                 }
 
                 if (data && data.length > 0) {
                     console.log(`✅ ${data.length} clients chargés depuis Supabase`);
+                    
+                    // Si la colonne statut n'existe pas, ajouter un statut par défaut
                     allVentes = data.map(c => ({
                         ...c,
                         statut: c.statut || 'en attente'
                     }));
+                    
                     filteredVentes = [...allVentes];
                     renderVentes();
                     updateVentesStats();
+                    updateVentesPaginationInfo();
                 } else {
                     console.warn('⚠️ Aucune donnée trouvée, utilisation des données de test');
                     allVentes = getTestData();
                     filteredVentes = [...allVentes];
                     renderVentes();
                     updateVentesStats();
+                    updateVentesPaginationInfo();
                 }
 
             } catch (err) {
@@ -372,31 +466,56 @@
                 filteredVentes = [...allVentes];
                 renderVentes();
                 updateVentesStats();
+                updateVentesPaginationInfo();
             }
         }
 
         // ==========================================
-        // TEST DE CONNEXION SUPABASE
+        // NOTIFICATION
         // ==========================================
-        async function testConnection() {
-            try {
-                console.log('🔍 Test de connexion à Supabase...');
-                const { data, error } = await window.supabaseClient
-                    .from('clients')
-                    .select('count');
-                
-                if (error) {
-                    console.error('❌ Erreur de connexion:', error);
-                } else {
-                    console.log('✅ Connexion Supabase réussie');
-                }
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-            }
+        function showNotification(message, type = 'info') {
+            document.querySelectorAll('.toast-nikel').forEach(t => t.remove());
+
+            const colors = {
+                success: '#27ae60',
+                error: '#e74c3c',
+                info: '#c9a84c'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-nikel';
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: #1a1a1a;
+                color: white;
+                padding: 16px 24px;
+                border-radius: 14px;
+                font-weight: 500;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+                z-index: 9999;
+                max-width: 400px;
+                font-size: 0.95rem;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                animation: slideUp 0.5s ease;
+                border-left: 4px solid ${colors[type] || colors.info};
+            `;
+            toast.innerHTML = `<span>${message}</span>`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
         }
 
         // ==========================================
-        // EXPOSER LES FONCTIONS
+        // EXPOSER LES FONCTIONS GLOBALEMENT
         // ==========================================
         window.applyVentesFilters = applyVentesFilters;
         window.resetVentesFilters = resetVentesFilters;
@@ -404,17 +523,22 @@
         window.nextVentesPage = nextVentesPage;
         window.updateStatut = updateStatut;
         window.exportCSV = exportCSV;
+        window.rafraichirVentes = rafraichirVentes;
+        window.showNotification = showNotification;
+        window.loadVentesData = loadVentesData;
 
         // ==========================================
-        // INIT
+        // INITIALISATION
         // ==========================================
-        document.addEventListener('DOMContentLoaded', function() {
+        function init() {
             console.log('🚀 Chargement de suivi-ventes.html...');
-            // Tester la connexion
-            testConnection();
-            // Charger les données
             loadVentesData();
-        });
+        }
 
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
     })();
 </script>
