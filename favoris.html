@@ -1,13 +1,13 @@
-<!-- favoris.html - Mes favoris -->
+<!-- favoris.html - Favoris des clients (Admin) -->
 <div id="favorisContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:24px;">
         <div>
             <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:#1a1a1a; margin-bottom:4px;">
-                <i class="fas fa-heart" style="color:#c9a84c;"></i> Mes favoris
+                <i class="fas fa-heart" style="color:#c9a84c;"></i> Favoris des clients
             </h2>
-            <p style="color:#888; font-size:0.95rem;">Retrouvez tous vos produits préférés en un seul endroit.</p>
+            <p style="color:#888; font-size:0.95rem;">Découvrez les produits les plus appréciés par vos clients.</p>
         </div>
         <button onclick="rafraichirFavoris()" style="padding:10px 20px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:0.9rem; font-weight:600; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
             <i class="fas fa-sync-alt"></i> Rafraîchir
@@ -15,34 +15,47 @@
     </div>
 
     <!-- ===== STATISTIQUES ===== -->
-    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px;">
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
         <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total favoris</p>
             <p style="font-size:1.8rem; font-weight:700; color:#1a1a1a;" id="totalFavoris">0</p>
         </div>
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #e74c3c;">
-            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Produits favoris</p>
-            <p style="font-size:1.8rem; font-weight:700; color:#e74c3c;" id="totalProduits">0</p>
-        </div>
         <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
-            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">En stock</p>
-            <p style="font-size:1.8rem; font-weight:700; color:#27ae60;" id="totalStock">0</p>
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Produits favoris</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#27ae60;" id="totalProduits">0</p>
+        </div>
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Clients actifs</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#f39c12;" id="totalClients">0</p>
+        </div>
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #e74c3c;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Top produit</p>
+            <p style="font-size:1.2rem; font-weight:700; color:#e74c3c; font-size:1rem;" id="topProduit">-</p>
         </div>
     </div>
 
     <!-- ===== BARRE DE RECHERCHE ===== -->
     <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
         <div style="flex:2; min-width:200px;">
-            <input type="text" id="searchFavoris" placeholder="🔍 Rechercher un produit..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onkeyup="applyFavorisFilters()">
+            <input type="text" id="searchFavoris" placeholder="🔍 Rechercher un produit..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onkeyup="applyFavorisFilters()">
         </div>
         <div style="min-width:150px;">
-            <select id="filterFavorisCategorie" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer;" onchange="applyFavorisFilters()">
+            <select id="filterFavorisCategorie" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyFavorisFilters()">
                 <option value="all">📂 Toutes les catégories</option>
                 <option value="vêtements">👕 Vêtements</option>
                 <option value="accessoires">👜 Accessoires</option>
                 <option value="chaussures">👟 Chaussures</option>
                 <option value="sport">🏋️ Sport</option>
                 <option value="électronique">📱 Électronique</option>
+                <option value="luxe">💎 Luxe</option>
+            </select>
+        </div>
+        <div style="min-width:150px;">
+            <select id="filterStock" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyFavorisFilters()">
+                <option value="all">📦 Tous les stocks</option>
+                <option value="stock">✅ En stock</option>
+                <option value="limited">⚠️ Stock limité</option>
+                <option value="rupture">❌ Rupture</option>
             </select>
         </div>
         <button onclick="resetFavorisFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
@@ -51,21 +64,18 @@
     </div>
 
     <!-- ===== GRILLE FAVORIS ===== -->
-    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:20px;" id="favorisGrid">
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:24px;" id="favorisGrid">
         <div style="text-align:center; padding:40px; color:#888; grid-column:1/-1;">
             <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
-            Chargement de vos favoris...
+            Chargement des favoris...
         </div>
     </div>
 
-    <!-- ===== MESSAGE PANIER VIDE ===== -->
+    <!-- ===== MESSAGE AUCUN FAVORI ===== -->
     <div id="emptyFavoris" style="display:none; text-align:center; padding:60px 20px; color:#888;">
         <i class="fas fa-heart" style="font-size:3rem; color:#ddd; display:block; margin-bottom:16px;"></i>
         <h3 style="color:#1a1a1a;">Aucun favori</h3>
-        <p style="color:#888;">Vous n'avez pas encore ajouté de produits à vos favoris.</p>
-        <a href="boutique.html" style="display:inline-block; margin-top:16px; padding:12px 30px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border-radius:50px; text-decoration:none; font-weight:600; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
-            <i class="fas fa-arrow-right"></i> Découvrir la boutique
-        </a>
+        <p style="color:#888;">Aucun client n'a encore ajouté de produits à ses favoris.</p>
     </div>
 
     <!-- ===== PAGINATION ===== -->
@@ -113,12 +123,7 @@
         let allFavoris = [];
         let filteredFavoris = [];
         let currentPage = 1;
-        const perPage = 9;
-
-        // ID du client connecté (à remplacer par l'ID réel du client)
-        // 🔥 Pour le moment, on utilise un ID fixe pour tester
-        // Plus tard, on utilisera l'ID du client connecté
-        const currentClientId = 1; // ← À remplacer par l'ID du client connecté
+        const perPage = 6;
 
         // ==========================================
         // CHARGER LES FAVORIS DEPUIS SUPABASE
@@ -126,13 +131,17 @@
         async function loadFavorisData() {
             try {
                 console.log('📝 Chargement des favoris depuis Supabase...');
-                console.log('👤 Client ID:', currentClientId);
 
-                // 1. Récupérer les favoris du client
+                // 1. Récupérer les favoris avec les infos des clients
                 const { data: favoris, error: favorisError } = await supabaseClient
                     .from('favoris')
-                    .select('produit_id')
-                    .eq('client_id', currentClientId);
+                    .select(`
+                        produit_id,
+                        clients (
+                            prenom,
+                            nom
+                        )
+                    `);
 
                 if (favorisError) {
                     console.error('❌ Erreur chargement favoris:', favorisError);
@@ -151,11 +160,37 @@
                     return;
                 }
 
-                // 2. Récupérer les IDs des produits favoris
-                const productIds = favoris.map(f => f.produit_id);
+                // 2. Grouper les favoris par produit
+                const productMap = {};
+                favoris.forEach(f => {
+                    const productId = f.produit_id;
+                    if (!productMap[productId]) {
+                        productMap[productId] = {
+                            clients: []
+                        };
+                    }
+                    if (f.clients) {
+                        const nomComplet = `${f.clients.prenom || ''} ${f.clients.nom || ''}`.trim();
+                        if (nomComplet) {
+                            productMap[productId].clients.push(nomComplet);
+                        }
+                    }
+                });
+
+                // 3. Récupérer les IDs des produits
+                const productIds = Object.keys(productMap);
                 console.log('🆔 IDs des produits favoris:', productIds);
 
-                // 3. Récupérer les détails des produits
+                if (productIds.length === 0) {
+                    allFavoris = [];
+                    filteredFavoris = [];
+                    renderFavoris();
+                    updateStats();
+                    updatePaginationInfo();
+                    return;
+                }
+
+                // 4. Récupérer les détails des produits
                 const { data: produits, error: produitsError } = await supabaseClient
                     .from('produits')
                     .select('*')
@@ -169,18 +204,26 @@
 
                 console.log('📦 Produits récupérés:', produits);
 
-                // 4. Construire les données des favoris
-                allFavoris = produits.map(p => ({
-                    id: p.id,
-                    produit: p.nom,
-                    categorie: p.categorie || 'non-classé',
-                    prix: parseFloat(p.prix) || 0,
-                    prix_original: p.prix_original ? parseFloat(p.prix_original) : null,
-                    stock: p.stock || 0,
-                    image: p.image_url || 'https://via.placeholder.com/200x200/1a1a1a/FFFFFF?text=NIKEL',
-                    description: p.description || '',
-                    statut: p.statut || 'En stock'
-                }));
+                // 5. Construire les données des favoris
+                allFavoris = produits.map(p => {
+                    const favorisData = productMap[p.id] || { clients: [] };
+                    return {
+                        id: p.id,
+                        produit: p.nom,
+                        categorie: p.categorie || 'non-classé',
+                        prix: parseFloat(p.prix) || 0,
+                        prix_original: p.prix_original ? parseFloat(p.prix_original) : null,
+                        stock: p.stock || 0,
+                        image: p.image_url || 'https://via.placeholder.com/260x260/1a1a1a/FFFFFF?text=NIKEL',
+                        description: p.description || '',
+                        statut: p.statut || 'En stock',
+                        nbFavoris: favorisData.clients.length,
+                        clients: favorisData.clients
+                    };
+                });
+
+                // Trier par nombre de favoris (du plus populaire au moins)
+                allFavoris.sort((a, b) => b.nbFavoris - a.nbFavoris);
 
                 console.log(`✅ ${allFavoris.length} favoris chargés depuis Supabase`);
 
@@ -227,51 +270,98 @@
             const start = (currentPage - 1) * perPage;
             const items = filteredFavoris.slice(start, start + perPage);
 
-            grid.innerHTML = items.map(f => `
-                <div style="background:#f8f8f8; border-radius:12px; overflow:hidden; transition:all 0.3s; position:relative; border:1px solid transparent;" 
+            grid.innerHTML = items.map(f => {
+                // Calcul de la réduction
+                const discount = f.prix_original && f.prix_original > f.prix 
+                    ? Math.round(((f.prix_original - f.prix) / f.prix_original) * 100) 
+                    : null;
+
+                // Déterminer le statut du stock
+                let stockBadge = '';
+                let stockColor = '';
+                if (f.stock === 0) {
+                    stockBadge = 'Rupture';
+                    stockColor = '#e74c3c';
+                } else if (f.stock < 5) {
+                    stockBadge = 'Stock limité';
+                    stockColor = '#f39c12';
+                }
+
+                // Icône de catégorie
+                const categoryIcons = {
+                    'vêtements': '👕',
+                    'accessoires': '👜',
+                    'chaussures': '👟',
+                    'sport': '🏋️',
+                    'électronique': '📱',
+                    'luxe': '💎'
+                };
+                const catIcon = categoryIcons[f.categorie] || '📦';
+
+                return `
+                <div style="background:#ffffff; border-radius:12px; overflow:hidden; transition:all 0.3s; position:relative; border:1px solid #f0f0f0; box-shadow:0 2px 8px rgba(0,0,0,0.04);" 
                      onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 30px rgba(0,0,0,0.12)';this.style.borderColor='#c9a84c'" 
-                     onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none';this.style.borderColor='transparent'">
+                     onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.04)';this.style.borderColor='#f0f0f0'">
+                    
+                    <!-- Badge réduction -->
+                    ${discount ? `<span style="position:absolute;top:10px;left:10px;background:#e74c3c;color:white;padding:4px 12px;border-radius:50px;font-size:0.7rem;font-weight:700;z-index:2;box-shadow:0 2px 8px rgba(231,76,60,0.3);">-${discount}%</span>` : ''}
                     
                     <!-- Badge stock -->
-                    ${f.stock === 0 ? `<span style="position:absolute;top:10px;right:10px;background:#e74c3c;color:white;padding:4px 12px;border-radius:50px;font-size:0.7rem;font-weight:600;z-index:2;">Rupture</span>` : ''}
-                    ${f.stock > 0 && f.stock < 5 ? `<span style="position:absolute;top:10px;right:10px;background:#f39c12;color:white;padding:4px 12px;border-radius:50px;font-size:0.7rem;font-weight:600;z-index:2;">Stock limité</span>` : ''}
-                    ${f.prix_original && f.prix_original > f.prix ? `<span style="position:absolute;top:10px;left:10px;background:#e74c3c;color:white;padding:4px 12px;border-radius:50px;font-size:0.7rem;font-weight:600;z-index:2;">-${Math.round(((f.prix_original - f.prix) / f.prix_original) * 100)}%</span>` : ''}
+                    ${stockBadge ? `<span style="position:absolute;top:10px;right:10px;background:${stockColor};color:white;padding:4px 12px;border-radius:50px;font-size:0.7rem;font-weight:600;z-index:2;box-shadow:0 2px 8px rgba(0,0,0,0.15);">${stockBadge}</span>` : ''}
 
-                    <img src="${f.image}" 
-                         style="width:100%; height:180px; object-fit:cover; cursor:pointer;" 
-                         onclick="window.location.href='produit.html?id=${f.id}'"
-                         onerror="this.src='https://via.placeholder.com/200x200/1a1a1a/FFFFFF?text=NIKEL'">
-                    <div style="padding:16px;">
-                        <h4 style="font-weight:600; font-size:1rem; margin:0 0 4px 0; cursor:pointer;" onclick="window.location.href='produit.html?id=${f.id}'">${f.produit}</h4>
-                        <p style="color:#888; font-size:0.85rem; margin:0 0 8px 0;">${f.categorie}</p>
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <div>
-                                <span style="font-weight:700; color:#c9a84c; font-size:1.1rem;">${f.prix.toLocaleString()} FCFA</span>
-                                ${f.prix_original && f.prix_original > f.prix ? `<span style="text-decoration:line-through; color:#999; font-size:0.8rem; margin-left:8px;">${f.prix_original.toLocaleString()} FCFA</span>` : ''}
+                    <!-- Image -->
+                    <div style="position:relative;overflow:hidden;cursor:pointer;background:#f8f8f8;" onclick="window.location.href='produit.html?id=${f.id}'">
+                        <img src="${f.image}" 
+                             style="width:100%; height:200px; object-fit:cover; transition:transform 0.5s;"
+                             onmouseover="this.style.transform='scale(1.05)'" 
+                             onmouseout="this.style.transform='scale(1)'"
+                             onerror="this.src='https://via.placeholder.com/260x260/1a1a1a/FFFFFF?text=NIKEL'">
+                        ${f.nbFavoris > 0 ? `
+                            <div style="position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,0.7);color:white;padding:4px 12px;border-radius:50px;font-size:0.75rem;display:flex;align-items:center;gap:6px;backdrop-filter:blur(4px);">
+                                <i class="fas fa-heart" style="color:#e74c3c;"></i>
+                                <span>${f.nbFavoris}</span>
                             </div>
-                            <button onclick="removeFromFavorites('${f.id}')" 
-                                    style="background:transparent; border:none; cursor:pointer; font-size:1.2rem; color:#e74c3c; transition:all 0.3s; padding:8px; border-radius:50%;"
-                                    onmouseover="this.style.background='#fff5f5';this.style.transform='scale(1.1)'" 
-                                    onmouseout="this.style.background='transparent';this.style.transform='scale(1)'"
-                                    title="Retirer des favoris">
-                                <i class="fas fa-heart"></i>
-                            </button>
+                        ` : ''}
+                    </div>
+                    
+                    <div style="padding:16px;">
+                        <!-- Catégorie -->
+                        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+                            <span style="font-size:0.85rem;">${catIcon}</span>
+                            <span style="color:#888; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px;">${f.categorie}</span>
                         </div>
-                        ${f.stock > 0 ? `
-                            <button onclick="addToCart('${f.id}', '${f.produit}', ${f.prix}, '${f.image}')" 
-                                    style="width:100%; margin-top:10px; padding:8px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer; transition:all 0.3s; font-size:0.9rem;"
-                                    onmouseover="this.style.transform='scale(1.02)'" 
-                                    onmouseout="this.style.transform='scale(1)'">
-                                <i class="fas fa-shopping-bag"></i> Ajouter au panier
-                            </button>
+                        
+                        <!-- Nom -->
+                        <h4 style="font-weight:600; font-size:1rem; margin:0 0 6px 0; cursor:pointer; color:#1a1a1a;" onclick="window.location.href='produit.html?id=${f.id}'">${f.produit}</h4>
+                        
+                        <!-- Prix -->
+                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                            <span style="font-weight:700; color:#c9a84c; font-size:1.1rem;">${f.prix.toLocaleString()} FCFA</span>
+                            ${f.prix_original && f.prix_original > f.prix ? 
+                                `<span style="text-decoration:line-through; color:#999; font-size:0.8rem;">${f.prix_original.toLocaleString()} FCFA</span>` : ''}
+                        </div>
+
+                        <!-- Clients qui ont aimé -->
+                        ${f.clients && f.clients.length > 0 ? `
+                            <details style="margin-top:8px;">
+                                <summary style="cursor:pointer; font-size:0.8rem; color:#888; font-weight:500; padding:4px 0; border-top:1px solid #f0f0f0; padding-top:10px;">
+                                    👥 ${f.clients.length} client${f.clients.length > 1 ? 's' : ''} ont aimé
+                                </summary>
+                                <div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:4px;">
+                                    ${f.clients.slice(0, 15).map(c => 
+                                        `<span style="background:#f8f8f8; padding:3px 10px; border-radius:50px; font-size:0.75rem; color:#555; border:1px solid #eee;">${c}</span>`
+                                    ).join('')}
+                                    ${f.clients.length > 15 ? `<span style="font-size:0.75rem; color:#888; padding:3px 10px;">+${f.clients.length - 15} autres</span>` : ''}
+                                </div>
+                            </details>
                         ` : `
-                            <button disabled style="width:100%; margin-top:10px; padding:8px; background:#ddd; color:#999; border:none; border-radius:8px; font-weight:600; cursor:not-allowed; font-size:0.9rem;">
-                                <i class="fas fa-times-circle"></i> Rupture de stock
-                            </button>
+                            <div style="margin-top:8px; padding-top:10px; border-top:1px solid #f0f0f0;">
+                                <span style="font-size:0.8rem; color:#999;">Aucun client n'a encore aimé ce produit</span>
+                            </div>
                         `}
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
 
             updatePaginationInfo();
         }
@@ -280,11 +370,22 @@
         // STATISTIQUES
         // ==========================================
         function updateStats() {
-            document.getElementById('totalFavoris').textContent = allFavoris.length;
+            const totalFavoris = allFavoris.reduce((sum, f) => sum + f.nbFavoris, 0);
+            document.getElementById('totalFavoris').textContent = totalFavoris;
             document.getElementById('totalProduits').textContent = allFavoris.length;
             
-            const enStock = allFavoris.filter(f => f.stock > 0).length;
-            document.getElementById('totalStock').textContent = enStock;
+            // Clients uniques
+            const allClients = allFavoris.flatMap(f => f.clients);
+            const uniqueClients = new Set(allClients);
+            document.getElementById('totalClients').textContent = uniqueClients.size;
+
+            // Top produit
+            if (allFavoris.length > 0) {
+                const top = allFavoris[0];
+                document.getElementById('topProduit').textContent = top.nbFavoris > 0 ? `${top.produit} (${top.nbFavoris})` : '-';
+            } else {
+                document.getElementById('topProduit').textContent = '-';
+            }
         }
 
         // ==========================================
@@ -327,16 +428,31 @@
         function applyFavorisFilters() {
             const search = document.getElementById('searchFavoris').value.toLowerCase().trim();
             const cat = document.getElementById('filterFavorisCategorie').value;
+            const stockFilter = document.getElementById('filterStock').value;
 
             filteredFavoris = allFavoris.filter(f => {
                 let match = true;
+                
+                // Recherche
                 if (search) {
                     match = f.produit.toLowerCase().includes(search) ||
                             (f.description && f.description.toLowerCase().includes(search));
                 }
+                
+                // Catégorie
                 if (cat !== 'all') {
                     match = match && f.categorie === cat;
                 }
+                
+                // Stock
+                if (stockFilter === 'stock') {
+                    match = match && f.stock > 5;
+                } else if (stockFilter === 'limited') {
+                    match = match && f.stock > 0 && f.stock <= 5;
+                } else if (stockFilter === 'rupture') {
+                    match = match && f.stock === 0;
+                }
+                
                 return match;
             });
 
@@ -348,86 +464,11 @@
         function resetFavorisFilters() {
             document.getElementById('searchFavoris').value = '';
             document.getElementById('filterFavorisCategorie').value = 'all';
+            document.getElementById('filterStock').value = 'all';
             filteredFavoris = [...allFavoris];
             currentPage = 1;
             renderFavoris();
             updatePaginationInfo();
-        }
-
-        // ==========================================
-        // RETIRER DES FAVORIS
-        // ==========================================
-        async function removeFromFavorites(productId) {
-            if (!confirm('Voulez-vous retirer ce produit de vos favoris ?')) return;
-
-            try {
-                const { error } = await supabaseClient
-                    .from('favoris')
-                    .delete()
-                    .eq('client_id', currentClientId)
-                    .eq('produit_id', productId);
-
-                if (error) {
-                    console.error('❌ Erreur suppression favoris:', error);
-                    showNotification('❌ Erreur lors de la suppression', 'error');
-                    return;
-                }
-
-                // Mettre à jour la liste
-                allFavoris = allFavoris.filter(f => f.id !== productId);
-                filteredFavoris = [...allFavoris];
-                renderFavoris();
-                updateStats();
-                updatePaginationInfo();
-
-                showNotification('💔 Produit retiré des favoris', 'info');
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                showNotification('❌ Une erreur est survenue', 'error');
-            }
-        }
-
-        // ==========================================
-        // AJOUTER AU PANIER
-        // ==========================================
-        function addToCart(productId, productName, price, image) {
-            let cart = JSON.parse(localStorage.getItem('nikel_cart') || '[]');
-            
-            const existing = cart.find(item => item.id === productId);
-            if (existing) {
-                existing.quantity += 1;
-            } else {
-                cart.push({
-                    id: productId,
-                    name: productName,
-                    price: price,
-                    image: image,
-                    quantity: 1
-                });
-            }
-
-            localStorage.setItem('nikel_cart', JSON.stringify(cart));
-            updateBadge();
-            
-            showNotification(`✅ ${productName} ajouté au panier !`, 'success');
-        }
-
-        // ==========================================
-        // BADGE PANIER
-        // ==========================================
-        function updateBadge() {
-            const badge = document.querySelector('.badge');
-            if (!badge) return;
-            try {
-                const cart = JSON.parse(localStorage.getItem('nikel_cart') || '[]');
-                const total = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-                badge.textContent = total;
-                badge.style.display = total > 0 ? 'flex' : 'none';
-            } catch(e) {
-                badge.textContent = '0';
-                badge.style.display = 'none';
-            }
         }
 
         // ==========================================
@@ -489,8 +530,6 @@
         window.resetFavorisFilters = resetFavorisFilters;
         window.prevFavorisPage = prevFavorisPage;
         window.nextFavorisPage = nextFavorisPage;
-        window.removeFromFavorites = removeFromFavorites;
-        window.addToCart = addToCart;
         window.rafraichirFavoris = rafraichirFavoris;
         window.showNotification = showNotification;
 
@@ -498,9 +537,8 @@
         // INITIALISATION
         // ==========================================
         function init() {
-            console.log('🚀 Chargement de favoris.html...');
+            console.log('🚀 Chargement de favoris.html (Admin)...');
             loadFavorisData();
-            updateBadge();
         }
 
         if (document.readyState === 'loading') {
