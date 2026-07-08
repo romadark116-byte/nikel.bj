@@ -1,14 +1,17 @@
-<!-- favoris.html - Favoris des clients -->
+<!-- favoris.html - Mes favoris -->
 <div id="favorisContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:24px;">
         <div>
             <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:#1a1a1a; margin-bottom:4px;">
-                <i class="fas fa-heart" style="color:#c9a84c;"></i> Favoris des clients
+                <i class="fas fa-heart" style="color:#c9a84c;"></i> Mes favoris
             </h2>
-            <p style="color:#888; font-size:0.95rem;">Découvrez les produits les plus appréciés par vos clients.</p>
+            <p style="color:#888; font-size:0.95rem;">Retrouvez tous vos produits préférés en un seul endroit.</p>
         </div>
+        <button onclick="rafraichirFavoris()" style="padding:10px 20px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:0.9rem; font-weight:600; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+            <i class="fas fa-sync-alt"></i> Rafraîchir
+        </button>
     </div>
 
     <!-- ===== STATISTIQUES ===== -->
@@ -17,13 +20,13 @@
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total favoris</p>
             <p style="font-size:1.8rem; font-weight:700; color:#1a1a1a;" id="totalFavoris">0</p>
         </div>
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #e74c3c;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Produits favoris</p>
-            <p style="font-size:1.8rem; font-weight:700; color:#27ae60;" id="totalProduits">0</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#e74c3c;" id="totalProduits">0</p>
         </div>
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
-            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Clients actifs</p>
-            <p style="font-size:1.8rem; font-weight:700; color:#f39c12;" id="totalClients">0</p>
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">En stock</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#27ae60;" id="totalStock">0</p>
         </div>
     </div>
 
@@ -33,7 +36,7 @@
             <input type="text" id="searchFavoris" placeholder="🔍 Rechercher un produit..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onkeyup="applyFavorisFilters()">
         </div>
         <div style="min-width:150px;">
-            <select id="filterFavorisCategorie" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onchange="applyFavorisFilters()">
+            <select id="filterFavorisCategorie" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer;" onchange="applyFavorisFilters()">
                 <option value="all">📂 Toutes les catégories</option>
                 <option value="vêtements">👕 Vêtements</option>
                 <option value="accessoires">👜 Accessoires</option>
@@ -42,24 +45,40 @@
                 <option value="électronique">📱 Électronique</option>
             </select>
         </div>
-        <button onclick="resetFavorisFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; cursor:pointer; color:#888;">Réinitialiser</button>
+        <button onclick="resetFavorisFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+            <i class="fas fa-undo"></i> Réinitialiser
+        </button>
     </div>
 
     <!-- ===== GRILLE FAVORIS ===== -->
     <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:20px;" id="favorisGrid">
         <div style="text-align:center; padding:40px; color:#888; grid-column:1/-1;">
             <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
-            Chargement...
+            Chargement de vos favoris...
         </div>
     </div>
 
+    <!-- ===== MESSAGE PANIER VIDE ===== -->
+    <div id="emptyFavoris" style="display:none; text-align:center; padding:60px 20px; color:#888;">
+        <i class="fas fa-heart" style="font-size:3rem; color:#ddd; display:block; margin-bottom:16px;"></i>
+        <h3 style="color:#1a1a1a;">Aucun favori</h3>
+        <p style="color:#888;">Vous n'avez pas encore ajouté de produits à vos favoris.</p>
+        <a href="boutique.html" style="display:inline-block; margin-top:16px; padding:12px 30px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border-radius:50px; text-decoration:none; font-weight:600; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+            <i class="fas fa-arrow-right"></i> Découvrir la boutique
+        </a>
+    </div>
+
     <!-- ===== PAGINATION ===== -->
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; flex-wrap:wrap; gap:12px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; flex-wrap:wrap; gap:12px;" id="paginationContainer">
         <span style="color:#888; font-size:0.9rem;" id="favorisPaginationInfo">Affichage de 0 à 0 sur 0</span>
         <div style="display:flex; gap:8px;">
-            <button onclick="prevFavorisPage()" id="prevFavorisPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; color:#888;">◀ Précédent</button>
-            <span id="favorisPageInfo" style="display:flex; align-items:center; padding:0 12px; font-weight:600;">Page 1</span>
-            <button onclick="nextFavorisPage()" id="nextFavorisPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; color:#888;">Suivant ▶</button>
+            <button onclick="prevFavorisPage()" id="prevFavorisPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+                <i class="fas fa-chevron-left"></i> Précédent
+            </button>
+            <span id="favorisPageInfo" style="display:flex; align-items:center; padding:0 12px; font-weight:600; color:#1a1a1a;">Page 1</span>
+            <button onclick="nextFavorisPage()" id="nextFavorisPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+                Suivant <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
     </div>
 </div>
@@ -67,230 +86,427 @@
 <!-- ===== SCRIPTS ===== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-    // ==========================================
-    // RÉFÉRENCE SUPABASE
-    // ==========================================
-    const supabaseClient = window.supabaseClient;
+    (function() {
+        // ==========================================
+        // RÉFÉRENCE SUPABASE
+        // ==========================================
+        const supabaseClient = window.supabaseClient;
 
-    if (!supabaseClient) {
-        console.error('❌ SupabaseClient non disponible !');
-        document.getElementById('favorisContainer').innerHTML = `
-            <div style="text-align:center; padding:60px; color:red;">
-                <i class="fas fa-exclamation-circle" style="font-size:3rem;"></i>
-                <h3>Erreur de connexion</h3>
-                <p>Impossible de se connecter à la base de données.</p>
-                <p style="font-size:0.9rem; color:#888;">Veuillez rafraîchir la page.</p>
-            </div>
-        `;
-        return;
-    }
-
-    console.log('✅ SupabaseClient disponible dans favoris.html');
-
-    // ==========================================
-    // VARIABLES GLOBALES
-    // ==========================================
-    let allFavoris = [];
-    let filteredFavoris = [];
-    let currentPage = 1;
-    const perPage = 9;
-
-    // ==========================================
-    // DONNÉES DE TEST
-    // ==========================================
-    function getTestFavoris() {
-        return [
-            { id: 1, produit: 'NIKEL Sport Blanc', categorie: 'sport', prix: 7900, image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=200&h=200&fit=crop', nbFavoris: 12, clients: ['Jean D.', 'Marie M.'] },
-            { id: 2, produit: 'Montre EDGE', categorie: 'accessoires', prix: 14900, image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop', nbFavoris: 8, clients: ['Amadou D.'] },
-            { id: 3, produit: 'Sac NOMAD', categorie: 'accessoires', prix: 5900, image: 'https://images.unsplash.com/photo-1547949003-9792a18a2601?w=200&h=200&fit=crop', nbFavoris: 5, clients: ['Sophie B.'] },
-            { id: 4, produit: 'NIKEL Essential Bleu', categorie: 'vêtements', prix: 8900, image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=200&h=200&fit=crop', nbFavoris: 4, clients: ['Marie M.'] },
-            { id: 5, produit: 'NIKEL Urban Gris', categorie: 'vêtements', prix: 9900, image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=200&h=200&fit=crop', nbFavoris: 3, clients: ['Jean D.'] }
-        ];
-    }
-
-    // ==========================================
-    // RENDU DES FAVORIS
-    // ==========================================
-    function renderFavoris() {
-        const grid = document.getElementById('favorisGrid');
-        if (filteredFavoris.length === 0) {
-            grid.innerHTML = `<div style="text-align:center; padding:40px; color:#888; grid-column:1/-1;">Aucun favori trouvé.</div>`;
+        if (!supabaseClient) {
+            console.error('❌ SupabaseClient non disponible !');
+            document.getElementById('favorisContainer').innerHTML = `
+                <div style="text-align:center; padding:60px; color:red;">
+                    <i class="fas fa-exclamation-circle" style="font-size:3rem;"></i>
+                    <h3>Erreur de connexion</h3>
+                    <p>Impossible de se connecter à la base de données.</p>
+                    <p style="font-size:0.9rem; color:#888;">Veuillez rafraîchir la page.</p>
+                </div>
+            `;
             return;
         }
-        const start = (currentPage - 1) * perPage;
-        const items = filteredFavoris.slice(start, start + perPage);
-        grid.innerHTML = items.map(f => `
-            <div style="background:#f8f8f8; border-radius:12px; overflow:hidden; transition:all 0.3s;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 30px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
-                <img src="${f.image}" style="width:100%; height:160px; object-fit:cover;" onerror="this.src='https://via.placeholder.com/200x200/1a1a1a/FFFFFF?text=NIKEL'">
-                <div style="padding:14px;">
-                    <h4 style="font-weight:600; font-size:1rem; margin-bottom:2px;">${f.produit}</h4>
-                    <p style="color:#888; font-size:0.85rem; margin-bottom:6px;">${f.categorie}</p>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-weight:700; color:#c9a84c;">${f.prix.toLocaleString()} FCFA</span>
-                        <span style="background:white; padding:2px 12px; border-radius:50px; font-size:0.8rem; color:#e74c3c; border:1px solid #f0f0f0;">
-                            <i class="fas fa-heart" style="color:#e74c3c; margin-right:4px;"></i> ${f.nbFavoris}
-                        </span>
-                    </div>
-                    <details style="font-size:0.8rem; color:#888; margin-top:8px;">
-                        <summary style="cursor:pointer; font-weight:500; color:#555;">👥 ${f.clients.length} clients</summary>
-                        <div style="margin-top:6px; display:flex; flex-wrap:wrap; gap:4px;">
-                            ${f.clients.map(c => `<span style="background:#e8e8e8; padding:2px 10px; border-radius:50px; font-size:0.75rem;">${c}</span>`).join('')}
-                        </div>
-                    </details>
-                </div>
-            </div>
-        `).join('');
-        updatePaginationInfo();
-    }
 
-    // ==========================================
-    // STATISTIQUES
-    // ==========================================
-    function updateStats() {
-        document.getElementById('totalFavoris').textContent = allFavoris.reduce((s, f) => s + f.nbFavoris, 0);
-        document.getElementById('totalProduits').textContent = allFavoris.length;
-        const allClients = allFavoris.flatMap(f => f.clients);
-        document.getElementById('totalClients').textContent = [...new Set(allClients)].length;
-    }
+        console.log('✅ SupabaseClient disponible dans favoris.html');
 
-    // ==========================================
-    // PAGINATION
-    // ==========================================
-    function updatePaginationInfo() {
-        const total = filteredFavoris.length;
-        const start = (currentPage - 1) * perPage + 1;
-        const end = Math.min(currentPage * perPage, total);
-        document.getElementById('favorisPaginationInfo').textContent = `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total}`;
-        document.getElementById('favorisPageInfo').textContent = `Page ${currentPage} sur ${Math.ceil(total / perPage) || 1}`;
-        document.getElementById('prevFavorisPage').disabled = currentPage <= 1;
-        document.getElementById('nextFavorisPage').disabled = currentPage >= Math.ceil(total / perPage);
-    }
+        // ==========================================
+        // VARIABLES GLOBALES
+        // ==========================================
+        let allFavoris = [];
+        let filteredFavoris = [];
+        let currentPage = 1;
+        const perPage = 9;
 
-    function prevFavorisPage() { if (currentPage > 1) { currentPage--; renderFavoris(); updatePaginationInfo(); } }
-    function nextFavorisPage() { if (currentPage < Math.ceil(filteredFavoris.length / perPage)) { currentPage++; renderFavoris(); updatePaginationInfo(); } }
+        // ID du client connecté (à remplacer par l'ID réel du client)
+        // 🔥 Pour le moment, on utilise un ID fixe pour tester
+        // Plus tard, on utilisera l'ID du client connecté
+        const currentClientId = 1; // ← À remplacer par l'ID du client connecté
 
-    // ==========================================
-    // FILTRES
-    // ==========================================
-    function applyFavorisFilters() {
-        const search = document.getElementById('searchFavoris').value.toLowerCase().trim();
-        const cat = document.getElementById('filterFavorisCategorie').value;
-        filteredFavoris = allFavoris.filter(f => {
-            let m = true;
-            if (search) m = f.produit.toLowerCase().includes(search);
-            if (cat !== 'all') m = m && f.categorie === cat;
-            return m;
-        });
-        currentPage = 1;
-        renderFavoris();
-        updatePaginationInfo();
-    }
+        // ==========================================
+        // CHARGER LES FAVORIS DEPUIS SUPABASE
+        // ==========================================
+        async function loadFavorisData() {
+            try {
+                console.log('📝 Chargement des favoris depuis Supabase...');
+                console.log('👤 Client ID:', currentClientId);
 
-    function resetFavorisFilters() {
-        document.getElementById('searchFavoris').value = '';
-        document.getElementById('filterFavorisCategorie').value = 'all';
-        filteredFavoris = [...allFavoris];
-        currentPage = 1;
-        renderFavoris();
-        updatePaginationInfo();
-    }
+                // 1. Récupérer les favoris du client
+                const { data: favoris, error: favorisError } = await supabaseClient
+                    .from('favoris')
+                    .select('produit_id')
+                    .eq('client_id', currentClientId);
 
-    // ==========================================
-    // CHARGER LES DONNÉES DEPUIS SUPABASE
-    // ==========================================
-    async function loadFavorisData() {
-        try {
-            console.log('📝 Chargement des favoris depuis Supabase...');
-            
-            // Récupérer les produits de la table 'produits'
-            const { data: produits, error: produitsError } = await supabaseClient
-                .from('produits')
-                .select('*')
-                .order('id', { ascending: true });
+                if (favorisError) {
+                    console.error('❌ Erreur chargement favoris:', favorisError);
+                    showNotification('❌ Erreur de chargement des favoris', 'error');
+                    return;
+                }
 
-            if (produitsError) {
-                console.error('❌ Erreur chargement produits:', produitsError);
-                allFavoris = getTestFavoris();
+                console.log('📊 Favoris trouvés:', favoris);
+
+                if (!favoris || favoris.length === 0) {
+                    allFavoris = [];
+                    filteredFavoris = [];
+                    renderFavoris();
+                    updateStats();
+                    updatePaginationInfo();
+                    return;
+                }
+
+                // 2. Récupérer les IDs des produits favoris
+                const productIds = favoris.map(f => f.produit_id);
+                console.log('🆔 IDs des produits favoris:', productIds);
+
+                // 3. Récupérer les détails des produits
+                const { data: produits, error: produitsError } = await supabaseClient
+                    .from('produits')
+                    .select('*')
+                    .in('id', productIds);
+
+                if (produitsError) {
+                    console.error('❌ Erreur chargement produits:', produitsError);
+                    showNotification('❌ Erreur de chargement des produits', 'error');
+                    return;
+                }
+
+                console.log('📦 Produits récupérés:', produits);
+
+                // 4. Construire les données des favoris
+                allFavoris = produits.map(p => ({
+                    id: p.id,
+                    produit: p.nom,
+                    categorie: p.categorie || 'non-classé',
+                    prix: parseFloat(p.prix) || 0,
+                    prix_original: p.prix_original ? parseFloat(p.prix_original) : null,
+                    stock: p.stock || 0,
+                    image: p.image_url || 'https://via.placeholder.com/200x200/1a1a1a/FFFFFF?text=NIKEL',
+                    description: p.description || '',
+                    statut: p.statut || 'En stock'
+                }));
+
+                console.log(`✅ ${allFavoris.length} favoris chargés depuis Supabase`);
+
                 filteredFavoris = [...allFavoris];
                 renderFavoris();
                 updateStats();
                 updatePaginationInfo();
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                showNotification('❌ Erreur de chargement des favoris', 'error');
+            }
+        }
+
+        // ==========================================
+        // RENDU DES FAVORIS
+        // ==========================================
+        function renderFavoris() {
+            const grid = document.getElementById('favorisGrid');
+            const empty = document.getElementById('emptyFavoris');
+            const pagination = document.getElementById('paginationContainer');
+
+            if (allFavoris.length === 0) {
+                grid.style.display = 'none';
+                empty.style.display = 'block';
+                pagination.style.display = 'none';
                 return;
             }
 
-            // Récupérer les clients de la table 'clients'
-            const { data: clients, error: clientsError } = await supabaseClient
-                .from('clients')
-                .select('prenom, nom')
-                .limit(10);
+            grid.style.display = 'grid';
+            empty.style.display = 'none';
+            pagination.style.display = 'flex';
 
-            if (clientsError) {
-                console.warn('⚠️ Erreur chargement clients:', clientsError);
+            if (filteredFavoris.length === 0) {
+                grid.innerHTML = `
+                    <div style="text-align:center; padding:40px; color:#888; grid-column:1/-1;">
+                        <i class="fas fa-search" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
+                        Aucun favori ne correspond à votre recherche.
+                    </div>
+                `;
+                return;
             }
 
-            // Générer les favoris à partir des produits
-            if (produits && produits.length > 0) {
-                // Simuler des favoris pour chaque produit
-                const clientNames = clients && clients.length > 0 
-                    ? clients.map(c => `${c.prenom} ${c.nom}`)
-                    : ['Jean D.', 'Marie M.', 'Amadou D.', 'Sophie B.', 'Fleury H.'];
+            const start = (currentPage - 1) * perPage;
+            const items = filteredFavoris.slice(start, start + perPage);
 
-                allFavoris = produits.map((p, index) => {
-                    const nbFavoris = Math.floor(Math.random() * 15) + 3; // 3 à 17 favoris
-                    const shuffled = [...clientNames].sort(() => 0.5 - Math.random());
-                    const favorisClients = shuffled.slice(0, Math.min(nbFavoris, shuffled.length));
+            grid.innerHTML = items.map(f => `
+                <div style="background:#f8f8f8; border-radius:12px; overflow:hidden; transition:all 0.3s; position:relative; border:1px solid transparent;" 
+                     onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 30px rgba(0,0,0,0.12)';this.style.borderColor='#c9a84c'" 
+                     onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none';this.style.borderColor='transparent'">
                     
-                    return {
-                        id: p.id || index + 1,
-                        produit: p.nom || 'Produit ' + (index + 1),
-                        categorie: p.categorie || 'non-classé',
-                        prix: parseFloat(p.prix) || 0,
-                        image: p.image_url || 'https://via.placeholder.com/200x200/1a1a1a/FFFFFF?text=NIKEL',
-                        nbFavoris: nbFavoris,
-                        clients: favorisClients.length > 0 ? favorisClients : ['Client inconnu']
-                    };
-                });
+                    <!-- Badge stock -->
+                    ${f.stock === 0 ? `<span style="position:absolute;top:10px;right:10px;background:#e74c3c;color:white;padding:4px 12px;border-radius:50px;font-size:0.7rem;font-weight:600;z-index:2;">Rupture</span>` : ''}
+                    ${f.stock > 0 && f.stock < 5 ? `<span style="position:absolute;top:10px;right:10px;background:#f39c12;color:white;padding:4px 12px;border-radius:50px;font-size:0.7rem;font-weight:600;z-index:2;">Stock limité</span>` : ''}
+                    ${f.prix_original && f.prix_original > f.prix ? `<span style="position:absolute;top:10px;left:10px;background:#e74c3c;color:white;padding:4px 12px;border-radius:50px;font-size:0.7rem;font-weight:600;z-index:2;">-${Math.round(((f.prix_original - f.prix) / f.prix_original) * 100)}%</span>` : ''}
 
-                console.log(`✅ ${allFavoris.length} favoris générés depuis Supabase`);
-            } else {
-                console.warn('⚠️ Aucun produit trouvé, utilisation des données de test');
-                allFavoris = getTestFavoris();
-            }
+                    <img src="${f.image}" 
+                         style="width:100%; height:180px; object-fit:cover; cursor:pointer;" 
+                         onclick="window.location.href='produit.html?id=${f.id}'"
+                         onerror="this.src='https://via.placeholder.com/200x200/1a1a1a/FFFFFF?text=NIKEL'">
+                    <div style="padding:16px;">
+                        <h4 style="font-weight:600; font-size:1rem; margin:0 0 4px 0; cursor:pointer;" onclick="window.location.href='produit.html?id=${f.id}'">${f.produit}</h4>
+                        <p style="color:#888; font-size:0.85rem; margin:0 0 8px 0;">${f.categorie}</p>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <span style="font-weight:700; color:#c9a84c; font-size:1.1rem;">${f.prix.toLocaleString()} FCFA</span>
+                                ${f.prix_original && f.prix_original > f.prix ? `<span style="text-decoration:line-through; color:#999; font-size:0.8rem; margin-left:8px;">${f.prix_original.toLocaleString()} FCFA</span>` : ''}
+                            </div>
+                            <button onclick="removeFromFavorites('${f.id}')" 
+                                    style="background:transparent; border:none; cursor:pointer; font-size:1.2rem; color:#e74c3c; transition:all 0.3s; padding:8px; border-radius:50%;"
+                                    onmouseover="this.style.background='#fff5f5';this.style.transform='scale(1.1)'" 
+                                    onmouseout="this.style.background='transparent';this.style.transform='scale(1)'"
+                                    title="Retirer des favoris">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                        ${f.stock > 0 ? `
+                            <button onclick="addToCart('${f.id}', '${f.produit}', ${f.prix}, '${f.image}')" 
+                                    style="width:100%; margin-top:10px; padding:8px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer; transition:all 0.3s; font-size:0.9rem;"
+                                    onmouseover="this.style.transform='scale(1.02)'" 
+                                    onmouseout="this.style.transform='scale(1)'">
+                                <i class="fas fa-shopping-bag"></i> Ajouter au panier
+                            </button>
+                        ` : `
+                            <button disabled style="width:100%; margin-top:10px; padding:8px; background:#ddd; color:#999; border:none; border-radius:8px; font-weight:600; cursor:not-allowed; font-size:0.9rem;">
+                                <i class="fas fa-times-circle"></i> Rupture de stock
+                            </button>
+                        `}
+                    </div>
+                </div>
+            `).join('');
 
-            filteredFavoris = [...allFavoris];
-            renderFavoris();
-            updateStats();
-            updatePaginationInfo();
-
-        } catch (err) {
-            console.error('❌ Erreur:', err);
-            allFavoris = getTestFavoris();
-            filteredFavoris = [...allFavoris];
-            renderFavoris();
-            updateStats();
             updatePaginationInfo();
         }
-    }
 
-    // ==========================================
-    // EXPOSER LES FONCTIONS GLOBALEMENT
-    // ==========================================
-    window.applyFavorisFilters = applyFavorisFilters;
-    window.resetFavorisFilters = resetFavorisFilters;
-    window.prevFavorisPage = prevFavorisPage;
-    window.nextFavorisPage = nextFavorisPage;
+        // ==========================================
+        // STATISTIQUES
+        // ==========================================
+        function updateStats() {
+            document.getElementById('totalFavoris').textContent = allFavoris.length;
+            document.getElementById('totalProduits').textContent = allFavoris.length;
+            
+            const enStock = allFavoris.filter(f => f.stock > 0).length;
+            document.getElementById('totalStock').textContent = enStock;
+        }
 
-    // ==========================================
-    // INITIALISATION
-    // ==========================================
-    function init() {
-        console.log('🚀 Chargement de favoris.html...');
-        loadFavorisData();
-    }
+        // ==========================================
+        // PAGINATION
+        // ==========================================
+        function updatePaginationInfo() {
+            const total = filteredFavoris.length;
+            const start = (currentPage - 1) * perPage + 1;
+            const end = Math.min(currentPage * perPage, total);
+            const totalPages = Math.ceil(total / perPage) || 1;
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
+            document.getElementById('favorisPaginationInfo').textContent = 
+                `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
+            document.getElementById('favorisPageInfo').textContent = `Page ${currentPage} sur ${totalPages}`;
+
+            document.getElementById('prevFavorisPage').disabled = currentPage <= 1;
+            document.getElementById('nextFavorisPage').disabled = currentPage >= totalPages;
+        }
+
+        function prevFavorisPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderFavoris();
+                updatePaginationInfo();
+            }
+        }
+
+        function nextFavorisPage() {
+            const totalPages = Math.ceil(filteredFavoris.length / perPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderFavoris();
+                updatePaginationInfo();
+            }
+        }
+
+        // ==========================================
+        // FILTRES
+        // ==========================================
+        function applyFavorisFilters() {
+            const search = document.getElementById('searchFavoris').value.toLowerCase().trim();
+            const cat = document.getElementById('filterFavorisCategorie').value;
+
+            filteredFavoris = allFavoris.filter(f => {
+                let match = true;
+                if (search) {
+                    match = f.produit.toLowerCase().includes(search) ||
+                            (f.description && f.description.toLowerCase().includes(search));
+                }
+                if (cat !== 'all') {
+                    match = match && f.categorie === cat;
+                }
+                return match;
+            });
+
+            currentPage = 1;
+            renderFavoris();
+            updatePaginationInfo();
+        }
+
+        function resetFavorisFilters() {
+            document.getElementById('searchFavoris').value = '';
+            document.getElementById('filterFavorisCategorie').value = 'all';
+            filteredFavoris = [...allFavoris];
+            currentPage = 1;
+            renderFavoris();
+            updatePaginationInfo();
+        }
+
+        // ==========================================
+        // RETIRER DES FAVORIS
+        // ==========================================
+        async function removeFromFavorites(productId) {
+            if (!confirm('Voulez-vous retirer ce produit de vos favoris ?')) return;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('favoris')
+                    .delete()
+                    .eq('client_id', currentClientId)
+                    .eq('produit_id', productId);
+
+                if (error) {
+                    console.error('❌ Erreur suppression favoris:', error);
+                    showNotification('❌ Erreur lors de la suppression', 'error');
+                    return;
+                }
+
+                // Mettre à jour la liste
+                allFavoris = allFavoris.filter(f => f.id !== productId);
+                filteredFavoris = [...allFavoris];
+                renderFavoris();
+                updateStats();
+                updatePaginationInfo();
+
+                showNotification('💔 Produit retiré des favoris', 'info');
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                showNotification('❌ Une erreur est survenue', 'error');
+            }
+        }
+
+        // ==========================================
+        // AJOUTER AU PANIER
+        // ==========================================
+        function addToCart(productId, productName, price, image) {
+            let cart = JSON.parse(localStorage.getItem('nikel_cart') || '[]');
+            
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({
+                    id: productId,
+                    name: productName,
+                    price: price,
+                    image: image,
+                    quantity: 1
+                });
+            }
+
+            localStorage.setItem('nikel_cart', JSON.stringify(cart));
+            updateBadge();
+            
+            showNotification(`✅ ${productName} ajouté au panier !`, 'success');
+        }
+
+        // ==========================================
+        // BADGE PANIER
+        // ==========================================
+        function updateBadge() {
+            const badge = document.querySelector('.badge');
+            if (!badge) return;
+            try {
+                const cart = JSON.parse(localStorage.getItem('nikel_cart') || '[]');
+                const total = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                badge.textContent = total;
+                badge.style.display = total > 0 ? 'flex' : 'none';
+            } catch(e) {
+                badge.textContent = '0';
+                badge.style.display = 'none';
+            }
+        }
+
+        // ==========================================
+        // RAFRAÎCHIR
+        // ==========================================
+        function rafraichirFavoris() {
+            loadFavorisData();
+            showNotification('🔄 Favoris actualisés', 'info');
+        }
+
+        // ==========================================
+        // NOTIFICATION
+        // ==========================================
+        function showNotification(message, type = 'info') {
+            document.querySelectorAll('.toast-nikel').forEach(t => t.remove());
+
+            const colors = {
+                success: '#27ae60',
+                error: '#e74c3c',
+                info: '#c9a84c'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-nikel';
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: #1a1a1a;
+                color: white;
+                padding: 16px 24px;
+                border-radius: 14px;
+                font-weight: 500;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+                z-index: 9999;
+                max-width: 400px;
+                font-size: 0.95rem;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                animation: slideUp 0.5s ease;
+                border-left: 4px solid ${colors[type] || colors.info};
+            `;
+            toast.innerHTML = `<span>${message}</span>`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // ==========================================
+        // EXPOSER LES FONCTIONS GLOBALEMENT
+        // ==========================================
+        window.applyFavorisFilters = applyFavorisFilters;
+        window.resetFavorisFilters = resetFavorisFilters;
+        window.prevFavorisPage = prevFavorisPage;
+        window.nextFavorisPage = nextFavorisPage;
+        window.removeFromFavorites = removeFromFavorites;
+        window.addToCart = addToCart;
+        window.rafraichirFavoris = rafraichirFavoris;
+        window.showNotification = showNotification;
+
+        // ==========================================
+        // INITIALISATION
+        // ==========================================
+        function init() {
+            console.log('🚀 Chargement de favoris.html...');
+            loadFavorisData();
+            updateBadge();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
 </script>
