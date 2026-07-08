@@ -111,6 +111,17 @@
         console.log('✅ SupabaseClient disponible dans avis.html');
 
         // ==========================================
+        // AJOUTER LES COLONNES POUR LES RÉPONSES
+        // ==========================================
+        // Exécuter cette requête une fois dans Supabase :
+        /*
+        ALTER TABLE public.avis 
+        ADD COLUMN IF NOT EXISTS reponse_admin TEXT,
+        ADD COLUMN IF NOT EXISTS reponse_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+        ADD COLUMN IF NOT EXISTS reponse_admin_nom TEXT;
+        */
+
+        // ==========================================
         // VARIABLES GLOBALES
         // ==========================================
         let allAvis = [];
@@ -125,7 +136,6 @@
             try {
                 console.log('📝 Chargement des avis depuis Supabase...');
 
-                // 1. Récupérer les avis avec les infos des produits et des clients
                 const { data: avis, error } = await supabaseClient
                     .from('avis')
                     .select(`
@@ -153,7 +163,6 @@
                     return;
                 }
 
-                // 2. Construire les données
                 allAvis = avis.map(a => ({
                     id: a.id,
                     client: a.client_nom || 'Client anonyme',
@@ -163,7 +172,11 @@
                     commentaire: a.commentaire || '',
                     date: a.created_at ? new Date(a.created_at).toLocaleDateString('fr-FR') : 'Date inconnue',
                     est_approuve: a.est_approuve || false,
-                    client_email: a.client_email || ''
+                    client_email: a.client_email || '',
+                    // 🔥 NOUVEAU : Champs pour les réponses
+                    reponse_admin: a.reponse_admin || '',
+                    reponse_date: a.reponse_date || null,
+                    reponse_admin_nom: a.reponse_admin_nom || 'NIKEL'
                 }));
 
                 console.log(`✅ ${allAvis.length} avis chargés depuis Supabase`);
@@ -187,7 +200,7 @@
         }
 
         // ==========================================
-        // RENDU DES AVIS
+        // RENDU DES AVIS AVEC RÉPONSES
         // ==========================================
         function renderAvis() {
             const container = document.getElementById('avisList');
@@ -207,6 +220,8 @@
 
             container.innerHTML = items.map(a => `
                 <div style="background:#ffffff; border-radius:12px; padding:18px; margin-bottom:12px; border-left:4px solid ${a.est_approuve ? '#27ae60' : '#f39c12'}; box-shadow:0 2px 8px rgba(0,0,0,0.04); border:1px solid #f0f0f0;">
+                    
+                    <!-- En-tête -->
                     <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
                         <div style="flex:1;">
                             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
@@ -227,8 +242,23 @@
                             <p style="font-size:0.8rem; color:#888; margin:2px 0 0 0;">${a.date}</p>
                         </div>
                     </div>
+
+                    <!-- Commentaire -->
                     ${a.commentaire ? `<p style="margin-top:10px; color:#555; line-height:1.6;">${a.commentaire}</p>` : ''}
-                    
+
+                    <!-- 🔥 RÉPONSE ADMIN (Option 3) -->
+                    ${a.reponse_admin ? `
+                        <div style="margin-top:12px; padding:12px 16px; background:#f8f5e8; border-radius:8px; border-left:3px solid #c9a84c;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-weight:600; color:#c9a84c; font-size:0.8rem;">
+                                    <i class="fas fa-reply"></i> Réponse de ${a.reponse_admin_nom || 'NIKEL'}
+                                </span>
+                                <span style="font-size:0.7rem; color:#888;">${a.reponse_date ? new Date(a.reponse_date).toLocaleDateString('fr-FR') : ''}</span>
+                            </div>
+                            <p style="margin:4px 0 0 0; color:#555; font-size:0.95rem; line-height:1.5;">${a.reponse_admin}</p>
+                        </div>
+                    ` : ''}
+
                     <!-- Actions -->
                     <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; border-top:1px solid #f0f0f0; padding-top:12px;">
                         ${!a.est_approuve ? `
@@ -239,8 +269,8 @@
                         <button onclick="supprimerAvis('${a.id}')" style="padding:6px 16px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.8rem; font-weight:600; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                             🗑️ Supprimer
                         </button>
-                        <button onclick="repondreAvis('${a.id}', '${a.client}')" style="padding:6px 16px; border:none; border-radius:6px; background:#c9a84c; color:white; cursor:pointer; font-size:0.8rem; font-weight:600; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                            💬 Répondre
+                        <button onclick="repondreAvis('${a.id}', '${a.client}')" style="padding:6px 16px; border:none; border-radius:6px; background:#c9a84c; color:white; cursor:pointer; font-size:0.8rem; font-weight:600; transition:all 0.3s; display:inline-flex; align-items:center; gap:6px;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                            <i class="fas fa-reply"></i> ${a.reponse_admin ? 'Modifier la réponse' : 'Répondre'}
                         </button>
                     </div>
                 </div>
@@ -254,17 +284,9 @@
         // ==========================================
         function updateStats() {
             const total = allAvis.length;
-            
-            // Moyenne
             const moy = total > 0 ? (allAvis.reduce((s, a) => s + a.note, 0) / total) : 0;
-            
-            // Nombre d'avis 5 étoiles
             const cinq = allAvis.filter(a => a.note === 5).length;
-            
-            // Avec commentaire
             const avecCommentaire = allAvis.filter(a => a.commentaire && a.commentaire.trim().length > 0).length;
-            
-            // En attente d'approbation
             const enAttente = allAvis.filter(a => !a.est_approuve).length;
 
             document.getElementById('totalAvis').textContent = total;
@@ -272,10 +294,8 @@
             document.getElementById('total5').textContent = cinq;
             document.getElementById('totalCommentaires').textContent = avecCommentaire;
             document.getElementById('totalEnAttente').textContent = enAttente;
-            
             document.getElementById('nbAvis').textContent = `(${total} avis)`;
             
-            // Étoiles
             const fullStars = Math.round(moy);
             document.getElementById('etoiles').textContent = '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars);
         }
@@ -322,26 +342,20 @@
 
             filteredAvis = allAvis.filter(a => {
                 let match = true;
-                
-                // Recherche
                 if (search) {
                     match = a.client.toLowerCase().includes(search) ||
                             a.produit.toLowerCase().includes(search) ||
-                            (a.commentaire && a.commentaire.toLowerCase().includes(search));
+                            (a.commentaire && a.commentaire.toLowerCase().includes(search)) ||
+                            (a.reponse_admin && a.reponse_admin.toLowerCase().includes(search));
                 }
-                
-                // Note
                 if (note !== 'all') {
                     match = match && a.note === parseInt(note);
                 }
-                
-                // Statut
                 if (statut === 'approuve') {
                     match = match && a.est_approuve === true;
                 } else if (statut === 'en_attente') {
                     match = match && a.est_approuve === false;
                 }
-                
                 return match;
             });
 
@@ -370,13 +384,8 @@
                     .update({ est_approuve: true })
                     .eq('id', id);
 
-                if (error) {
-                    console.error('❌ Erreur approbation:', error);
-                    showNotification('❌ Erreur lors de l\'approbation', 'error');
-                    return;
-                }
+                if (error) throw error;
 
-                // Mettre à jour localement
                 const avis = allAvis.find(a => a.id === id);
                 if (avis) avis.est_approuve = true;
                 
@@ -387,7 +396,7 @@
 
             } catch (err) {
                 console.error('❌ Erreur:', err);
-                showNotification('❌ Une erreur est survenue', 'error');
+                showNotification('❌ Erreur lors de l\'approbation', 'error');
             }
         }
 
@@ -403,13 +412,8 @@
                     .delete()
                     .eq('id', id);
 
-                if (error) {
-                    console.error('❌ Erreur suppression:', error);
-                    showNotification('❌ Erreur lors de la suppression', 'error');
-                    return;
-                }
+                if (error) throw error;
 
-                // Mettre à jour localement
                 allAvis = allAvis.filter(a => a.id !== id);
                 filteredAvis = [...allAvis];
                 renderAvis();
@@ -419,22 +423,65 @@
 
             } catch (err) {
                 console.error('❌ Erreur:', err);
-                showNotification('❌ Une erreur est survenue', 'error');
+                showNotification('❌ Erreur lors de la suppression', 'error');
             }
         }
 
         // ==========================================
-        // RÉPONDRE À UN AVIS
+        // RÉPONDRE À UN AVIS (AVEC STOCKAGE EN BDD)
         // ==========================================
-        function repondreAvis(id, client) {
-            const reponse = prompt(`📝 Répondre à ${client} :`, 'Merci pour votre retour ! Nous prenons en compte votre avis.');
+        async function repondreAvis(id, client) {
+            // Récupérer l'avis existant pour voir s'il y a déjà une réponse
+            const avis = allAvis.find(a => a.id === id);
+            const reponseExistante = avis?.reponse_admin || '';
+
+            const reponse = prompt(
+                `📝 Répondre à ${client} :`, 
+                reponseExistante || 'Merci pour votre retour ! Nous prenons en compte votre avis.'
+            );
             
-            if (reponse && reponse.trim()) {
-                // Ici tu peux intégrer l'envoi d'email ou stocker la réponse
-                showNotification(`✅ Réponse envoyée à ${client}`, 'success');
-                console.log(`📨 Réponse à l'avis ${id}: ${reponse}`);
-            } else if (reponse !== null) {
+            if (reponse === null) return; // Annulé
+            
+            if (!reponse.trim()) {
                 showNotification('❌ La réponse ne peut pas être vide', 'error');
+                return;
+            }
+
+            try {
+                // 1. Mettre à jour la base de données
+                const { error } = await supabaseClient
+                    .from('avis')
+                    .update({
+                        reponse_admin: reponse,
+                        reponse_date: new Date().toISOString(),
+                        reponse_admin_nom: 'NIKEL'
+                    })
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                // 2. Mettre à jour localement
+                const avisLocal = allAvis.find(a => a.id === id);
+                if (avisLocal) {
+                    avisLocal.reponse_admin = reponse;
+                    avisLocal.reponse_date = new Date().toISOString();
+                    avisLocal.reponse_admin_nom = 'NIKEL';
+                }
+
+                // 3. Recharger l'affichage
+                filteredAvis = [...allAvis];
+                renderAvis();
+                updateStats();
+
+                // 4. Notification
+                showNotification(`✅ Réponse envoyée à ${client}`, 'success');
+
+                // 5. (Optionnel) Envoyer un email au client
+                // await sendEmailNotification(client, reponse);
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                showNotification('❌ Erreur lors de l\'enregistrement de la réponse', 'error');
             }
         }
 
