@@ -90,36 +90,22 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     (function() {
-        // ==========================================
-        // RÉFÉRENCE SUPABASE
-        // ==========================================
         const supabaseClient = window.supabaseClient;
 
         if (!supabaseClient) {
             console.error('❌ SupabaseClient non disponible !');
-            document.getElementById('avisContainer').innerHTML = `
-                <div style="text-align:center; padding:60px; color:red;">
-                    <i class="fas fa-exclamation-circle" style="font-size:3rem;"></i>
-                    <h3>Erreur de connexion</h3>
-                    <p>Impossible de se connecter à la base de données.</p>
-                    <p style="font-size:0.9rem; color:#888;">Veuillez rafraîchir la page.</p>
-                </div>
-            `;
             return;
         }
 
         console.log('✅ SupabaseClient disponible dans avis.html');
 
-        // ==========================================
-        // VARIABLES GLOBALES
-        // ==========================================
         let allAvis = [];
         let filteredAvis = [];
         let currentPage = 1;
         const perPage = 5;
 
         // ==========================================
-        // CHARGER LES AVIS DEPUIS SUPABASE
+        // CHARGER LES AVIS
         // ==========================================
         async function loadAvisData() {
             try {
@@ -188,7 +174,7 @@
         }
 
         // ==========================================
-        // RENDU DES AVIS AVEC RÉPONSES
+        // RENDU DES AVIS
         // ==========================================
         function renderAvis() {
             const container = document.getElementById('avisList');
@@ -212,7 +198,6 @@
                 return `
                 <div style="background:#ffffff; border-radius:12px; padding:18px; margin-bottom:12px; border-left:4px solid ${a.est_approuve ? '#27ae60' : '#f39c12'}; box-shadow:0 2px 8px rgba(0,0,0,0.04); border:1px solid #f0f0f0;">
                     
-                    <!-- En-tête -->
                     <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
                         <div style="flex:1;">
                             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
@@ -234,10 +219,8 @@
                         </div>
                     </div>
 
-                    <!-- Commentaire -->
                     ${a.commentaire ? `<p style="margin-top:10px; color:#555; line-height:1.6;">${a.commentaire}</p>` : ''}
 
-                    <!-- Réponse admin -->
                     ${hasReponse ? `
                         <div style="margin-top:12px; padding:12px 16px; background:#f8f5e8; border-radius:8px; border-left:3px solid #c9a84c;">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -250,7 +233,6 @@
                         </div>
                     ` : ''}
 
-                    <!-- Actions -->
                     <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; border-top:1px solid #f0f0f0; padding-top:12px;">
                         ${!a.est_approuve ? `
                             <button onclick="approuverAvis('${a.id}')" style="padding:6px 16px; border:none; border-radius:6px; background:#27ae60; color:white; cursor:pointer; font-size:0.8rem; font-weight:600; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
@@ -422,7 +404,9 @@
         // MODAL DE RÉPONSE
         // ==========================================
         function ouvrirReponseModal(avisId, clientNom) {
-            // Créer la modal
+            const avis = allAvis.find(a => a.id === avisId);
+            const reponseExistante = avis?.reponse_admin || '';
+
             const modal = document.createElement('div');
             modal.id = 'reponseModal';
             modal.style.cssText = `
@@ -438,10 +422,6 @@
                 justify-content: center;
                 backdrop-filter: blur(4px);
             `;
-
-            // Récupérer la réponse existante
-            const avis = allAvis.find(a => a.id === avisId);
-            const reponseExistante = avis?.reponse_admin || '';
 
             modal.innerHTML = `
                 <div style="background:white; border-radius:16px; padding:32px; max-width:550px; width:90%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
@@ -472,7 +452,6 @@
 
             document.body.appendChild(modal);
 
-            // Focus sur le textarea
             setTimeout(() => {
                 const textarea = document.getElementById('reponseTextarea');
                 if (textarea) textarea.focus();
@@ -485,7 +464,7 @@
         }
 
         // ==========================================
-        // ENREGISTRER LA RÉPONSE
+        // ENREGISTRER LA RÉPONSE (CORRIGÉ AVEC LOGS)
         // ==========================================
         async function enregistrerReponse(avisId) {
             const textarea = document.getElementById('reponseTextarea');
@@ -496,17 +475,27 @@
                 return;
             }
 
+            console.log('📝 Enregistrement de la réponse pour l\'avis:', avisId);
+            console.log('📝 Contenu de la réponse:', reponse);
+
             try {
-                const { error } = await supabaseClient
+                const { data, error } = await supabaseClient
                     .from('avis')
                     .update({
                         reponse_admin: reponse,
                         reponse_date: new Date().toISOString(),
                         reponse_admin_nom: 'NIKEL'
                     })
-                    .eq('id', avisId);
+                    .eq('id', avisId)
+                    .select();
 
-                if (error) throw error;
+                if (error) {
+                    console.error('❌ Erreur Supabase:', error);
+                    showNotification('❌ Erreur: ' + (error.message || 'Erreur inconnue'), 'error');
+                    return;
+                }
+
+                console.log('✅ Réponse enregistrée avec succès:', data);
 
                 // Mettre à jour localement
                 const avis = allAvis.find(a => a.id === avisId);
@@ -528,22 +517,6 @@
                 showNotification('❌ Erreur lors de l\'enregistrement', 'error');
             }
         }
-
-        // ==========================================
-        // FERMER LA MODALE AVEC ÉCHAP
-        // ==========================================
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                fermerReponseModal();
-            }
-        });
-
-        // Fermer en cliquant à l'extérieur
-        document.addEventListener('click', function(e) {
-            if (e.target && e.target.id === 'reponseModal') {
-                fermerReponseModal();
-            }
-        });
 
         // ==========================================
         // NOTIFICATION
@@ -590,7 +563,7 @@
         }
 
         // ==========================================
-        // EXPOSER LES FONCTIONS GLOBALEMENT
+        // EXPOSER LES FONCTIONS
         // ==========================================
         window.applyAvisFilters = applyAvisFilters;
         window.resetAvisFilters = resetAvisFilters;
