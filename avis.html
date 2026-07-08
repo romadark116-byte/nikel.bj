@@ -10,14 +10,14 @@
             <p style="color:#888; font-size:0.95rem;">Consultez et gérez les avis de vos clients.</p>
         </div>
         <div style="display:flex; gap:8px; align-items:center;">
-            <span style="font-size:1.2rem; font-weight:700; color:#c9a84c;" id="noteMoyenne">4.6</span>
-            <span style="color:#f39c12;" id="etoiles">★★★★★</span>
+            <span style="font-size:1.2rem; font-weight:700; color:#c9a84c;" id="noteMoyenne">0.0</span>
+            <span style="color:#f39c12;" id="etoiles">☆☆☆☆☆</span>
             <span style="color:#888; font-size:0.9rem;" id="nbAvis">(0 avis)</span>
         </div>
     </div>
 
     <!-- ===== STATISTIQUES ===== -->
-    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px;">
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
         <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total avis</p>
             <p style="font-size:1.8rem; font-weight:700; color:#1a1a1a;" id="totalAvis">0</p>
@@ -30,31 +30,44 @@
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">📝 Avec commentaire</p>
             <p style="font-size:1.8rem; font-weight:700; color:#f39c12;" id="totalCommentaires">0</p>
         </div>
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #e74c3c;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">⏳ En attente</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#e74c3c;" id="totalEnAttente">0</p>
+        </div>
     </div>
 
     <!-- ===== FILTRES ===== -->
     <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
         <div style="flex:2; min-width:200px;">
-            <input type="text" id="searchAvis" placeholder="🔍 Rechercher un avis..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onkeyup="applyAvisFilters()">
+            <input type="text" id="searchAvis" placeholder="🔍 Rechercher un avis..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onkeyup="applyAvisFilters()">
         </div>
         <div style="min-width:150px;">
-            <select id="filterNote" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onchange="applyAvisFilters()">
+            <select id="filterNote" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyAvisFilters()">
                 <option value="all">⭐ Toutes les notes</option>
-                <option value="5">⭐⭐⭐⭐⭐</option>
-                <option value="4">⭐⭐⭐⭐</option>
-                <option value="3">⭐⭐⭐</option>
-                <option value="2">⭐⭐</option>
-                <option value="1">⭐</option>
+                <option value="5">⭐⭐⭐⭐⭐ - 5 étoiles</option>
+                <option value="4">⭐⭐⭐⭐ - 4 étoiles</option>
+                <option value="3">⭐⭐⭐ - 3 étoiles</option>
+                <option value="2">⭐⭐ - 2 étoiles</option>
+                <option value="1">⭐ - 1 étoile</option>
             </select>
         </div>
-        <button onclick="resetAvisFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; cursor:pointer; color:#888;">Réinitialiser</button>
+        <div style="min-width:150px;">
+            <select id="filterStatut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyAvisFilters()">
+                <option value="all">📊 Tous les statuts</option>
+                <option value="approuve">✅ Approuvés</option>
+                <option value="en_attente">⏳ En attente</option>
+            </select>
+        </div>
+        <button onclick="resetAvisFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+            <i class="fas fa-undo"></i> Réinitialiser
+        </button>
     </div>
 
     <!-- ===== LISTE AVIS ===== -->
     <div id="avisList">
         <div style="text-align:center; padding:40px; color:#888;">
             <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
-            Chargement...
+            Chargement des avis...
         </div>
     </div>
 
@@ -62,143 +75,437 @@
     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:12px;">
         <span style="color:#888; font-size:0.9rem;" id="avisPaginationInfo">Affichage de 0 à 0 sur 0</span>
         <div style="display:flex; gap:8px;">
-            <button onclick="prevAvisPage()" id="prevAvisPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; color:#888;">◀ Précédent</button>
-            <span id="avisPageInfo" style="display:flex; align-items:center; padding:0 12px; font-weight:600;">Page 1</span>
-            <button onclick="nextAvisPage()" id="nextAvisPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; color:#888;">Suivant ▶</button>
+            <button onclick="prevAvisPage()" id="prevAvisPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+                <i class="fas fa-chevron-left"></i> Précédent
+            </button>
+            <span id="avisPageInfo" style="display:flex; align-items:center; padding:0 12px; font-weight:600; color:#1a1a1a;">Page 1</span>
+            <button onclick="nextAvisPage()" id="nextAvisPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+                Suivant <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
     </div>
 </div>
 
 <!-- ===== SCRIPTS ===== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     (function() {
-        let allAvis = [], filteredAvis = [], currentPage = 1;
+        // ==========================================
+        // RÉFÉRENCE SUPABASE
+        // ==========================================
+        const supabaseClient = window.supabaseClient;
+
+        if (!supabaseClient) {
+            console.error('❌ SupabaseClient non disponible !');
+            document.getElementById('avisContainer').innerHTML = `
+                <div style="text-align:center; padding:60px; color:red;">
+                    <i class="fas fa-exclamation-circle" style="font-size:3rem;"></i>
+                    <h3>Erreur de connexion</h3>
+                    <p>Impossible de se connecter à la base de données.</p>
+                    <p style="font-size:0.9rem; color:#888;">Veuillez rafraîchir la page.</p>
+                </div>
+            `;
+            return;
+        }
+
+        console.log('✅ SupabaseClient disponible dans avis.html');
+
+        // ==========================================
+        // VARIABLES GLOBALES
+        // ==========================================
+        let allAvis = [];
+        let filteredAvis = [];
+        let currentPage = 1;
         const perPage = 5;
 
-        const testData = [
-            { id: 1, client: 'Jean Dupont', produit: 'NIKEL Sport Blanc', note: 5, commentaire: 'Excellent produit, très confortable et stylé !', date: '28/06/2026' },
-            { id: 2, client: 'Marie Martin', produit: 'Montre EDGE', note: 4, commentaire: 'Très belle montre, fonctionne parfaitement.', date: '25/06/2026' },
-            { id: 3, client: 'Amadou Diallo', produit: 'Sac NOMAD', note: 5, commentaire: 'Sac de qualité supérieure, le cuir est magnifique.', date: '22/06/2026' },
-            { id: 4, client: 'Sophie Bernard', produit: 'NIKEL Essential Bleu', note: 3, commentaire: 'T-shirt correct mais la taille est un peu grand.', date: '20/06/2026' },
-            { id: 5, client: 'Fleury HAMIDOU', produit: 'NIKEL Urban Gris', note: 5, commentaire: 'Un sweat incroyable, la matière est douce.', date: '18/06/2026' }
-        ];
+        // ==========================================
+        // CHARGER LES AVIS DEPUIS SUPABASE
+        // ==========================================
+        async function loadAvisData() {
+            try {
+                console.log('📝 Chargement des avis depuis Supabase...');
 
-        function renderStars(n) { return '★'.repeat(n) + '☆'.repeat(5 - n); }
+                // 1. Récupérer les avis avec les infos des produits et des clients
+                const { data: avis, error } = await supabaseClient
+                    .from('avis')
+                    .select(`
+                        *,
+                        produits (
+                            nom
+                        )
+                    `)
+                    .order('created_at', { ascending: false });
 
+                if (error) {
+                    console.error('❌ Erreur chargement avis:', error);
+                    showNotification('❌ Erreur de chargement des avis', 'error');
+                    return;
+                }
+
+                console.log('📊 Avis trouvés:', avis);
+
+                if (!avis || avis.length === 0) {
+                    allAvis = [];
+                    filteredAvis = [];
+                    renderAvis();
+                    updateStats();
+                    updatePaginationInfo();
+                    return;
+                }
+
+                // 2. Construire les données
+                allAvis = avis.map(a => ({
+                    id: a.id,
+                    client: a.client_nom || 'Client anonyme',
+                    produit: a.produits ? a.produits.nom : 'Produit inconnu',
+                    produit_id: a.produit_id,
+                    note: a.note || 0,
+                    commentaire: a.commentaire || '',
+                    date: a.created_at ? new Date(a.created_at).toLocaleDateString('fr-FR') : 'Date inconnue',
+                    est_approuve: a.est_approuve || false,
+                    client_email: a.client_email || ''
+                }));
+
+                console.log(`✅ ${allAvis.length} avis chargés depuis Supabase`);
+
+                filteredAvis = [...allAvis];
+                renderAvis();
+                updateStats();
+                updatePaginationInfo();
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                showNotification('❌ Erreur de chargement des avis', 'error');
+            }
+        }
+
+        // ==========================================
+        // RENDU DES ÉTOILES
+        // ==========================================
+        function renderStars(n) {
+            return '★'.repeat(n) + '☆'.repeat(5 - n);
+        }
+
+        // ==========================================
+        // RENDU DES AVIS
+        // ==========================================
         function renderAvis() {
             const container = document.getElementById('avisList');
+
             if (filteredAvis.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:30px; color:#888; background:#f8f8f8; border-radius:12px;">Aucun avis trouvé.</div>`;
+                container.innerHTML = `
+                    <div style="text-align:center; padding:40px; color:#888; background:#f8f8f8; border-radius:12px;">
+                        <i class="fas fa-comment-slash" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
+                        Aucun avis trouvé.
+                    </div>
+                `;
                 return;
             }
+
             const start = (currentPage - 1) * perPage;
             const items = filteredAvis.slice(start, start + perPage);
+
             container.innerHTML = items.map(a => `
-                <div style="background:#f8f8f8; border-radius:12px; padding:16px; margin-bottom:10px; border-left:4px solid #c9a84c;">
+                <div style="background:#ffffff; border-radius:12px; padding:18px; margin-bottom:12px; border-left:4px solid ${a.est_approuve ? '#27ae60' : '#f39c12'}; box-shadow:0 2px 8px rgba(0,0,0,0.04); border:1px solid #f0f0f0;">
                     <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
-                        <div>
-                            <h4 style="font-weight:600; margin-bottom:2px;">${a.client}</h4>
-                            <p style="font-size:0.85rem; color:#888;">${a.produit}</p>
+                        <div style="flex:1;">
+                            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                                <h4 style="font-weight:600; margin:0;">${a.client}</h4>
+                                ${a.est_approuve 
+                                    ? `<span style="background:#27ae60; color:white; padding:2px 10px; border-radius:50px; font-size:0.65rem; font-weight:600;">✅ Approuvé</span>`
+                                    : `<span style="background:#f39c12; color:white; padding:2px 10px; border-radius:50px; font-size:0.65rem; font-weight:600;">⏳ En attente</span>`
+                                }
+                            </div>
+                            <p style="font-size:0.85rem; color:#888; margin:4px 0 0 0;">
+                                <a href="produit.html?id=${a.produit_id}" style="color:#888; text-decoration:none;" onmouseover="this.style.color='#c9a84c'" onmouseout="this.style.color='#888'">
+                                    📦 ${a.produit}
+                                </a>
+                            </p>
                         </div>
                         <div style="text-align:right;">
                             <span style="font-size:1.1rem; color:#f39c12;">${renderStars(a.note)}</span>
-                            <p style="font-size:0.8rem; color:#888;">${a.date}</p>
+                            <p style="font-size:0.8rem; color:#888; margin:2px 0 0 0;">${a.date}</p>
                         </div>
                     </div>
-                    <p style="margin-top:6px; color:#555;">${a.commentaire}</p>
-                    <div style="margin-top:8px; display:flex; gap:8px;">
-                        <button onclick="deleteAvis(${a.id})" style="padding:4px 12px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.8rem;">🗑️ Supprimer</button>
-                        <button onclick="replyAvis(${a.id})" style="padding:4px 12px; border:none; border-radius:6px; background:#c9a84c; color:white; cursor:pointer; font-size:0.8rem;">💬 Répondre</button>
+                    ${a.commentaire ? `<p style="margin-top:10px; color:#555; line-height:1.6;">${a.commentaire}</p>` : ''}
+                    
+                    <!-- Actions -->
+                    <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; border-top:1px solid #f0f0f0; padding-top:12px;">
+                        ${!a.est_approuve ? `
+                            <button onclick="approuverAvis('${a.id}')" style="padding:6px 16px; border:none; border-radius:6px; background:#27ae60; color:white; cursor:pointer; font-size:0.8rem; font-weight:600; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                ✅ Approuver
+                            </button>
+                        ` : ''}
+                        <button onclick="supprimerAvis('${a.id}')" style="padding:6px 16px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.8rem; font-weight:600; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                            🗑️ Supprimer
+                        </button>
+                        <button onclick="repondreAvis('${a.id}', '${a.client}')" style="padding:6px 16px; border:none; border-radius:6px; background:#c9a84c; color:white; cursor:pointer; font-size:0.8rem; font-weight:600; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                            💬 Répondre
+                        </button>
                     </div>
                 </div>
             `).join('');
+
             updatePaginationInfo();
         }
 
+        // ==========================================
+        // STATISTIQUES
+        // ==========================================
         function updateStats() {
             const total = allAvis.length;
+            
+            // Moyenne
             const moy = total > 0 ? (allAvis.reduce((s, a) => s + a.note, 0) / total) : 0;
+            
+            // Nombre d'avis 5 étoiles
             const cinq = allAvis.filter(a => a.note === 5).length;
-            const avecCommentaire = allAvis.filter(a => a.commentaire && a.commentaire.length > 0).length;
+            
+            // Avec commentaire
+            const avecCommentaire = allAvis.filter(a => a.commentaire && a.commentaire.trim().length > 0).length;
+            
+            // En attente d'approbation
+            const enAttente = allAvis.filter(a => !a.est_approuve).length;
+
             document.getElementById('totalAvis').textContent = total;
             document.getElementById('noteMoyenne').textContent = moy.toFixed(1);
             document.getElementById('total5').textContent = cinq;
             document.getElementById('totalCommentaires').textContent = avecCommentaire;
+            document.getElementById('totalEnAttente').textContent = enAttente;
+            
             document.getElementById('nbAvis').textContent = `(${total} avis)`;
-            document.getElementById('etoiles').textContent = '★'.repeat(Math.round(moy)) + '☆'.repeat(5 - Math.round(moy));
+            
+            // Étoiles
+            const fullStars = Math.round(moy);
+            document.getElementById('etoiles').textContent = '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars);
         }
 
+        // ==========================================
+        // PAGINATION
+        // ==========================================
         function updatePaginationInfo() {
             const total = filteredAvis.length;
             const start = (currentPage - 1) * perPage + 1;
             const end = Math.min(currentPage * perPage, total);
-            document.getElementById('avisPaginationInfo').textContent = `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total}`;
-            document.getElementById('avisPageInfo').textContent = `Page ${currentPage} sur ${Math.ceil(total / perPage) || 1}`;
+            const totalPages = Math.ceil(total / perPage) || 1;
+
+            document.getElementById('avisPaginationInfo').textContent = 
+                `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
+            document.getElementById('avisPageInfo').textContent = `Page ${currentPage} sur ${totalPages}`;
+
+            document.getElementById('prevAvisPage').disabled = currentPage <= 1;
+            document.getElementById('nextAvisPage').disabled = currentPage >= totalPages;
         }
 
+        function prevAvisPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderAvis();
+            }
+        }
+
+        function nextAvisPage() {
+            const totalPages = Math.ceil(filteredAvis.length / perPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderAvis();
+            }
+        }
+
+        // ==========================================
+        // FILTRES
+        // ==========================================
         function applyAvisFilters() {
             const search = document.getElementById('searchAvis').value.toLowerCase().trim();
             const note = document.getElementById('filterNote').value;
+            const statut = document.getElementById('filterStatut').value;
+
             filteredAvis = allAvis.filter(a => {
-                let m = true;
-                if (search) m = a.client.toLowerCase().includes(search) || a.produit.toLowerCase().includes(search) || a.commentaire.toLowerCase().includes(search);
-                if (note !== 'all') m = m && a.note === parseInt(note);
-                return m;
+                let match = true;
+                
+                // Recherche
+                if (search) {
+                    match = a.client.toLowerCase().includes(search) ||
+                            a.produit.toLowerCase().includes(search) ||
+                            (a.commentaire && a.commentaire.toLowerCase().includes(search));
+                }
+                
+                // Note
+                if (note !== 'all') {
+                    match = match && a.note === parseInt(note);
+                }
+                
+                // Statut
+                if (statut === 'approuve') {
+                    match = match && a.est_approuve === true;
+                } else if (statut === 'en_attente') {
+                    match = match && a.est_approuve === false;
+                }
+                
+                return match;
             });
+
             currentPage = 1;
             renderAvis();
+            updatePaginationInfo();
         }
 
         function resetAvisFilters() {
             document.getElementById('searchAvis').value = '';
             document.getElementById('filterNote').value = 'all';
+            document.getElementById('filterStatut').value = 'all';
             filteredAvis = [...allAvis];
             currentPage = 1;
             renderAvis();
+            updatePaginationInfo();
         }
 
-        function deleteAvis(id) {
-            if (!confirm('Supprimer cet avis ?')) return;
-            allAvis = allAvis.filter(a => a.id !== id);
-            filteredAvis = [...allAvis];
-            renderAvis();
-            updateStats();
-            showNotification('🗑️ Avis supprimé', 'info');
-        }
+        // ==========================================
+        // APPROUVER UN AVIS
+        // ==========================================
+        async function approuverAvis(id) {
+            try {
+                const { error } = await supabaseClient
+                    .from('avis')
+                    .update({ est_approuve: true })
+                    .eq('id', id);
 
-        function replyAvis(id) {
-            const a = allAvis.find(a => a.id === id);
-            if (a) {
-                const r = prompt(`Répondre à ${a.client} :`, 'Merci pour votre retour !');
-                if (r) showNotification(`✅ Réponse envoyée à ${a.client}`, 'success');
+                if (error) {
+                    console.error('❌ Erreur approbation:', error);
+                    showNotification('❌ Erreur lors de l\'approbation', 'error');
+                    return;
+                }
+
+                // Mettre à jour localement
+                const avis = allAvis.find(a => a.id === id);
+                if (avis) avis.est_approuve = true;
+                
+                filteredAvis = [...allAvis];
+                renderAvis();
+                updateStats();
+                showNotification('✅ Avis approuvé avec succès', 'success');
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                showNotification('❌ Une erreur est survenue', 'error');
             }
         }
 
-        function prevAvisPage() { if (currentPage > 1) { currentPage--; renderAvis(); } }
-        function nextAvisPage() { if (currentPage < Math.ceil(filteredAvis.length / perPage)) { currentPage++; renderAvis(); } }
+        // ==========================================
+        // SUPPRIMER UN AVIS
+        // ==========================================
+        async function supprimerAvis(id) {
+            if (!confirm('Voulez-vous vraiment supprimer cet avis ? Cette action est irréversible.')) return;
 
-        function showNotification(msg, type) {
-            const t = document.createElement('div');
-            t.style.cssText = `position:fixed; bottom:30px; right:30px; background:#1a1a1a; color:white; padding:14px 24px; border-radius:12px; z-index:9999; border-left:4px solid ${type === 'success' ? '#27ae60' : '#e74c3c'};`;
-            t.textContent = msg;
-            document.body.appendChild(t);
-            setTimeout(() => { t.remove(); }, 3000);
+            try {
+                const { error } = await supabaseClient
+                    .from('avis')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) {
+                    console.error('❌ Erreur suppression:', error);
+                    showNotification('❌ Erreur lors de la suppression', 'error');
+                    return;
+                }
+
+                // Mettre à jour localement
+                allAvis = allAvis.filter(a => a.id !== id);
+                filteredAvis = [...allAvis];
+                renderAvis();
+                updateStats();
+                updatePaginationInfo();
+                showNotification('🗑️ Avis supprimé avec succès', 'info');
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                showNotification('❌ Une erreur est survenue', 'error');
+            }
         }
 
-        function loadData() {
-            allAvis = testData;
-            filteredAvis = [...allAvis];
-            renderAvis();
-            updateStats();
+        // ==========================================
+        // RÉPONDRE À UN AVIS
+        // ==========================================
+        function repondreAvis(id, client) {
+            const reponse = prompt(`📝 Répondre à ${client} :`, 'Merci pour votre retour ! Nous prenons en compte votre avis.');
+            
+            if (reponse && reponse.trim()) {
+                // Ici tu peux intégrer l'envoi d'email ou stocker la réponse
+                showNotification(`✅ Réponse envoyée à ${client}`, 'success');
+                console.log(`📨 Réponse à l'avis ${id}: ${reponse}`);
+            } else if (reponse !== null) {
+                showNotification('❌ La réponse ne peut pas être vide', 'error');
+            }
         }
 
+        // ==========================================
+        // NOTIFICATION
+        // ==========================================
+        function showNotification(message, type = 'info') {
+            document.querySelectorAll('.toast-nikel').forEach(t => t.remove());
+
+            const colors = {
+                success: '#27ae60',
+                error: '#e74c3c',
+                info: '#c9a84c'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-nikel';
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: #1a1a1a;
+                color: white;
+                padding: 16px 24px;
+                border-radius: 14px;
+                font-weight: 500;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+                z-index: 9999;
+                max-width: 400px;
+                font-size: 0.95rem;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                animation: slideUp 0.5s ease;
+                border-left: 4px solid ${colors[type] || colors.info};
+            `;
+            toast.innerHTML = `<span>${message}</span>`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // ==========================================
+        // EXPOSER LES FONCTIONS GLOBALEMENT
+        // ==========================================
         window.applyAvisFilters = applyAvisFilters;
         window.resetAvisFilters = resetAvisFilters;
         window.prevAvisPage = prevAvisPage;
         window.nextAvisPage = nextAvisPage;
-        window.deleteAvis = deleteAvis;
-        window.replyAvis = replyAvis;
+        window.approuverAvis = approuverAvis;
+        window.supprimerAvis = supprimerAvis;
+        window.repondreAvis = repondreAvis;
+        window.showNotification = showNotification;
 
-        document.addEventListener('DOMContentLoaded', loadData);
+        // ==========================================
+        // INITIALISATION
+        // ==========================================
+        function init() {
+            console.log('🚀 Chargement de avis.html...');
+            loadAvisData();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
     })();
 </script>
