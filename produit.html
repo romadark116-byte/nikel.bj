@@ -371,7 +371,7 @@
             letter-spacing: 2px;
         }
 
-        /* 🔥 Réponse admin */
+        /* ===== RÉPONSE ADMIN ===== */
         .avis-item .avis-reponse {
             margin-top: 12px;
             padding: 12px 16px;
@@ -384,6 +384,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
         }
 
         .avis-item .avis-reponse .reponse-header .reponse-nom {
@@ -904,7 +906,6 @@
             console.log('🔍 Chargement des avis pour le produit ID:', produitId);
 
             try {
-                // 🔥 Récupérer les avis approuvés pour ce produit (avec réponses)
                 const { data: avis, error } = await supabaseClient
                     .from('avis')
                     .select('*')
@@ -919,7 +920,6 @@
                 }
 
                 console.log('📊 Avis trouvés:', avis);
-                console.log('📊 Nombre d\'avis:', avis ? avis.length : 0);
 
                 const total = avis ? avis.length : 0;
                 let moyenne = 0;
@@ -928,11 +928,8 @@
                     moyenne = (sum / total).toFixed(1);
                 }
 
-                const statsContainer = document.getElementById('avisStats');
-                if (statsContainer) {
-                    document.getElementById('avisMoyenne').textContent = moyenne;
-                    document.getElementById('avisTotal').textContent = total;
-                }
+                document.getElementById('avisMoyenne').textContent = moyenne;
+                document.getElementById('avisTotal').textContent = total;
 
                 if (!avis || avis.length === 0) {
                     container.innerHTML = `
@@ -944,9 +941,7 @@
                     return;
                 }
 
-                // 🔥 Afficher les avis avec les réponses
                 container.innerHTML = avis.map(a => {
-                    // Vérifier si une réponse existe
                     const hasReponse = a.reponse_admin && a.reponse_admin.trim() !== '';
 
                     return `
@@ -1226,7 +1221,6 @@
                 window.currentQuantity = 1;
                 document.getElementById('quantityDisplay').textContent = '1';
 
-                // 🔥 Charger les avis (avec réponses)
                 await loadAvis(productId);
 
             } catch (err) {
