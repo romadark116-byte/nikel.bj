@@ -1,347 +1,110 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tableau de bord - Dashboard</title>
-    <!-- Font Awesome pour les icônes -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <!-- Google Font pour Playfair Display -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet" />
-    <style>
-        /* Réinitialisation et style général */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<!-- dashboard.html - Tableau de bord -->
+<div id="dashboardContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
-            padding: 40px 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        #dashboardContainer {
-            max-width: 1200px;
-            width: 100%;
-            background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
-            padding: 32px;
-            transition: all 0.2s;
-        }
-
-        /* Boutons */
-        .btn-add {
-            width: 100%;
-            padding: 8px;
-            background: linear-gradient(135deg, #c9a84c, #a8892e);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: transform 0.1s, box-shadow 0.2s;
-        }
-
-        .btn-add:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(201, 168, 76, 0.4);
-        }
-
-        .btn-add:active {
-            transform: scale(0.97);
-        }
-
-        /* Statuts */
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: white;
-        }
-
-        .badge-livree {
-            background: #27ae60;
-        }
-        .badge-encours {
-            background: #f39c12;
-        }
-        .badge-rembourse {
-            background: #e74c3c;
-        }
-
-        /* Tableau responsive */
-        @media (max-width: 700px) {
-            #dashboardContainer {
-                padding: 16px;
-            }
-            .stats-grid {
-                grid-template-columns: 1fr 1fr !important;
-            }
-            .recommend-grid {
-                grid-template-columns: 1fr 1fr !important;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: 1fr !important;
-            }
-            .recommend-grid {
-                grid-template-columns: 1fr !important;
-            }
-            .table-responsive {
-                font-size: 0.8rem;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <div id="dashboardContainer">
-        <!-- ===== STATISTIQUES DYNAMIQUES ===== -->
-        <div class="stats-grid" style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:30px;">
-            <div style="background:#f8f8f8; padding:20px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
-                <p style="color:#888; font-size:0.85rem; margin-bottom:4px;">Mes ventes</p>
-                <p id="ventesCount" style="font-size:2rem; font-weight:700; color:#1a1a1a;">3</p>
-            </div>
-            <div style="background:#f8f8f8; padding:20px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
-                <p style="color:#888; font-size:0.85rem; margin-bottom:4px;">En attente</p>
-                <p id="enAttenteCount" style="font-size:2rem; font-weight:700; color:#f39c12;">1</p>
-            </div>
-            <div style="background:#f8f8f8; padding:20px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
-                <p style="color:#888; font-size:0.85rem; margin-bottom:4px;">Mes visites</p>
-                <p id="visitesCount" style="font-size:2rem; font-weight:700; color:#1a1a1a;">450</p>
-            </div>
-            <div style="background:#f8f8f8; padding:20px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
-                <p style="color:#888; font-size:0.85rem; margin-bottom:4px;">Total vendu</p>
-                <p id="totalVendu" style="font-size:2rem; font-weight:700; color:#27ae60;">267,00 €</p>
-            </div>
+    <!-- ===== STATISTIQUES ===== -->
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:30px;">
+        <div style="background:#f8f8f8; padding:20px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
+            <p style="color:#888; font-size:0.85rem; margin-bottom:4px;">Mes ventes</p>
+            <p style="font-size:2rem; font-weight:700; color:#1a1a1a;">3</p>
         </div>
-
-        <!-- ===== DERNIÈRES COMMANDES ===== -->
-        <div style="background:#f8f8f8; border-radius:12px; padding:24px; margin-bottom:30px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
-                <h3 style="font-family:'Playfair Display',serif; font-size:1.2rem; margin:0;">
-                    <i class="fas fa-clock" style="color:#c9a84c;"></i> Dernières ventes
-                </h3>
-                <a href="#" id="voirToutes" style="color:#c9a84c; font-size:0.9rem; text-decoration:none;">Voir toutes →</a>
-            </div>
-            <div class="table-responsive" style="overflow-x:auto;">
-                <table id="ordersTable" style="width:100%; border-collapse:collapse; font-size:0.95rem;">
-                    <thead>
-                        <tr style="border-bottom:2px solid #e8e8e8;">
-                            <th style="text-align:left; padding:12px 8px; color:#888; font-weight:600;">Commande</th>
-                            <th style="text-align:left; padding:12px 8px; color:#888; font-weight:600;">Date</th>
-                            <th style="text-align:left; padding:12px 8px; color:#888; font-weight:600;">Total</th>
-                            <th style="text-align:left; padding:12px 8px; color:#888; font-weight:600;">Statut</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ordersBody">
-                        <!-- Les lignes sont injectées par JavaScript -->
-                    </tbody>
-                </table>
-            </div>
+        <div style="background:#f8f8f8; padding:20px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
+            <p style="color:#888; font-size:0.85rem; margin-bottom:4px;">En attente</p>
+            <p style="font-size:2rem; font-weight:700; color:#f39c12;">1</p>
         </div>
-
-        <!-- ===== RECOMMANDATIONS ===== -->
-        <div>
-            <h3 style="font-family:'Playfair Display',serif; font-size:1.2rem; margin-bottom:16px;">
-                <i class="fas fa-star" style="color:#c9a84c;"></i> Les articles les plus recommandés
-            </h3>
-            <div id="recommendContainer" class="recommend-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:16px;">
-                <!-- Les cartes sont injectées par JavaScript -->
-            </div>
+        <div style="background:#f8f8f8; padding:20px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
+            <p style="color:#888; font-size:0.85rem; margin-bottom:4px;">Mes visites</p>
+            <p style="font-size:2rem; font-weight:700; color:#1a1a1a;">450</p>
+        </div>
+        <div style="background:#f8f8f8; padding:20px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
+            <p style="color:#888; font-size:0.85rem; margin-bottom:4px;">Total vendu</p>
+            <p style="font-size:2rem; font-weight:700; color:#27ae60;">267,00 €</p>
         </div>
     </div>
 
-    <script>
-        (function() {
-            'use strict';
-
-            // ----- DONNÉES EXEMPLES (simulent une API) -----
-            const ordersData = [
-                { id: '#NIK-2026-001', date: '15/06/2026', total: 89.00, statut: 'Livrée' },
-                { id: '#NIK-2026-002', date: '10/06/2026', total: 149.00, statut: 'En cours' },
-                { id: '#NIK-2026-003', date: '05/06/2026', total: 59.00, statut: 'Remboursée' }
-            ];
-
-            // On peut ajouter une commande supplémentaire pour tester l'ajout dynamique
-            // (mais on garde 3 pour l'exemple)
-
-            const recommendData = [
-                { nom: 'Montre EDGE', prix: 149.00, image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop' },
-                { nom: 'Veste BOMBER', prix: 159.00, image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=200&h=200&fit=crop' },
-                { nom: 'Lunettes NOIR', prix: 120.00, image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=200&h=200&fit=crop' }
-            ];
-
-            // ----- ÉLÉMENTS DOM -----
-            const ventesEl = document.getElementById('ventesCount');
-            const enAttenteEl = document.getElementById('enAttenteCount');
-            const visitesEl = document.getElementById('visitesCount');
-            const totalVenduEl = document.getElementById('totalVendu');
-            const ordersBody = document.getElementById('ordersBody');
-            const recommendContainer = document.getElementById('recommendContainer');
-            const voirToutesLink = document.getElementById('voirToutes');
-
-            // ----- FONCTIONS -----
-
-            // Met à jour les statistiques à partir des commandes
-            function updateStats(orders) {
-                const totalVentes = orders.length;
-                const enAttente = orders.filter(o => o.statut === 'En cours').length;
-                // Total vendu (somme des totaux des commandes livrées et en cours, par exemple)
-                const total = orders.reduce((acc, o) => acc + o.total, 0);
-
-                ventesEl.textContent = totalVentes;
-                enAttenteEl.textContent = enAttente;
-                // Pour les visites, on garde une valeur fixe (ou on pourrait la faire varier)
-                // mais on peut aussi la laisser statique
-                // totalVenduEl.textContent = total.toFixed(2) + ' €';
-                totalVenduEl.textContent = total.toFixed(2).replace('.', ',') + ' €';
-            }
-
-            // Affiche les commandes dans le tableau
-            function renderOrders(orders) {
-                if (!ordersBody) return;
-                ordersBody.innerHTML = '';
-                orders.forEach(order => {
-                    const tr = document.createElement('tr');
-                    tr.style.borderBottom = '1px solid #e8e8e8';
-
-                    // Déterminer la classe CSS pour le statut
-                    let badgeClass = '';
-                    let icon = '';
-                    switch (order.statut) {
-                        case 'Livrée':
-                            badgeClass = 'badge-livree';
-                            icon = 'fa-check';
-                            break;
-                        case 'En cours':
-                            badgeClass = 'badge-encours';
-                            icon = 'fa-clock';
-                            break;
-                        case 'Remboursée':
-                            badgeClass = 'badge-rembourse';
-                            icon = 'fa-undo';
-                            break;
-                        default:
-                            badgeClass = 'badge-encours';
-                            icon = 'fa-clock';
-                    }
-
-                    const totalFormatted = order.total.toFixed(2).replace('.', ',');
-
-                    tr.innerHTML = `
-                        <td style="padding:12px 8px; font-weight:600;">${order.id}</td>
-                        <td style="padding:12px 8px; color:#888;">${order.date}</td>
-                        <td style="padding:12px 8px; font-weight:700; color:#c9a84c;">${totalFormatted} €</td>
+    <!-- ===== DERNIÈRES COMMANDES ===== -->
+    <div style="background:#f8f8f8; border-radius:12px; padding:24px; margin-bottom:30px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h3 style="font-family:'Playfair Display',serif; font-size:1.2rem; margin:0;">
+                <i class="fas fa-clock" style="color:#c9a84c;"></i> Dernières ventes
+            </h3>
+            <a href="#" style="color:#c9a84c; font-size:0.9rem; text-decoration:none;">Voir toutes →</a>
+        </div>
+        <div style="overflow-x:auto;">
+            <table style="width:100%; border-collapse:collapse; font-size:0.95rem;">
+                <thead>
+                    <tr style="border-bottom:2px solid #e8e8e8;">
+                        <th style="text-align:left; padding:12px 8px; color:#888; font-weight:600;">Commande</th>
+                        <th style="text-align:left; padding:12px 8px; color:#888; font-weight:600;">Date</th>
+                        <th style="text-align:left; padding:12px 8px; color:#888; font-weight:600;">Total</th>
+                        <th style="text-align:left; padding:12px 8px; color:#888; font-weight:600;">Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom:1px solid #e8e8e8;">
+                        <td style="padding:12px 8px; font-weight:600;">#NIK-2026-001</td>
+                        <td style="padding:12px 8px; color:#888;">15/06/2026</td>
+                        <td style="padding:12px 8px; font-weight:700; color:#c9a84c;">89,00 €</td>
                         <td style="padding:12px 8px;">
-                            <span class="badge ${badgeClass}">
-                                <i class="fas ${icon}"></i> ${order.statut}
+                            <span style="background:#27ae60; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600;">
+                                <i class="fas fa-check"></i> Livrée
                             </span>
                         </td>
-                    `;
-                    ordersBody.appendChild(tr);
-                });
-            }
+                    </tr>
+                    <tr style="border-bottom:1px solid #e8e8e8;">
+                        <td style="padding:12px 8px; font-weight:600;">#NIK-2026-002</td>
+                        <td style="padding:12px 8px; color:#888;">10/06/2026</td>
+                        <td style="padding:12px 8px; font-weight:700; color:#c9a84c;">149,00 €</td>
+                        <td style="padding:12px 8px;">
+                            <span style="background:#f39c12; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600;">
+                                <i class="fas fa-clock"></i> En cours
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:12px 8px; font-weight:600;">#NIK-2026-003</td>
+                        <td style="padding:12px 8px; color:#888;">05/06/2026</td>
+                        <td style="padding:12px 8px; font-weight:700; color:#c9a84c;">59,00 €</td>
+                        <td style="padding:12px 8px;">
+                            <span style="background:#e74c3c; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600;">
+                                <i class="fas fa-undo"></i> Remboursée
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-            // Affiche les recommandations
-            function renderRecommendations(items) {
-                if (!recommendContainer) return;
-                recommendContainer.innerHTML = '';
-                items.forEach(item => {
-                    const div = document.createElement('div');
-                    div.style.background = '#f8f8f8';
-                    div.style.borderRadius = '12px';
-                    div.style.overflow = 'hidden';
-
-                    const prixFormatted = item.prix.toFixed(2).replace('.', ',');
-
-                    div.innerHTML = `
-                        <img src="${item.image}" alt="${item.nom}" style="width:100%; height:150px; object-fit:cover;">
-                        <div style="padding:12px;">
-                            <h4 style="font-size:0.9rem; font-weight:600; margin-bottom:4px;">${item.nom}</h4>
-                            <p style="font-weight:700; color:#c9a84c;">${prixFormatted} €</p>
-                            <button class="btn-add" data-produit="${item.nom}" data-prix="${item.prix}">
-                                <i class="fas fa-cart-plus"></i> Ajouter
-                            </button>
-                        </div>
-                    `;
-                    recommendContainer.appendChild(div);
-                });
-
-                // Ajouter les écouteurs d'événements sur les boutons "Ajouter"
-                document.querySelectorAll('.btn-add').forEach(btn => {
-                    btn.addEventListener('click', function(e) {
-                        const nom = this.dataset.produit || 'Produit';
-                        const prix = parseFloat(this.dataset.prix) || 0;
-                        // Simuler un ajout au panier
-                        alert(`🛒 "${nom}" ajouté au panier ! (${prix.toFixed(2).replace('.', ',')} €)`);
-                        // On pourrait ici incrémenter un compteur ou ajouter une ligne dans le tableau
-                        // Mais pour l'exemple, on se contente d'une alerte.
-                    });
-                });
-            }
-
-            // Fonction pour ajouter une commande (simulation)
-            function addOrder(order) {
-                ordersData.push(order);
-                updateStats(ordersData);
-                renderOrders(ordersData);
-                // On pourrait aussi recalculer les stats
-            }
-
-            // Simulation d'un clic sur "Voir toutes"
-            voirToutesLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                alert('🔍 Redirection vers la liste complète des commandes (simulée).');
-            });
-
-            // ----- INITIALISATION -----
-            function init() {
-                // Statistiques
-                updateStats(ordersData);
-                // Tableau des commandes
-                renderOrders(ordersData);
-                // Recommandations
-                renderRecommendations(recommendData);
-
-                // Bonus : ajout d'une commande supplémentaire après 3 secondes pour montrer la mise à jour dynamique
-                // (on peut commenter si on veut garder le dashboard "fixe")
-                setTimeout(() => {
-                    const newOrder = {
-                        id: '#NIK-2026-004',
-                        date: '20/06/2026',
-                        total: 210.00,
-                        statut: 'Livrée'
-                    };
-                    addOrder(newOrder);
-                    // On modifie aussi les visites pour montrer qu'on peut mettre à jour
-                    const currentVisites = parseInt(visitesEl.textContent, 10) || 450;
-                    visitesEl.textContent = currentVisites + 15; // +15 visites
-
-                    // On peut aussi changer le total vendu (déjà mis à jour via updateStats)
-                }, 3000);
-            }
-
-            // Démarrer quand le DOM est prêt
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', init);
-            } else {
-                init();
-            }
-
-        })();
-    </script>
-
-</body>
-</html>
+    <!-- ===== RECOMMANDATIONS ===== -->
+    <div>
+        <h3 style="font-family:'Playfair Display',serif; font-size:1.2rem; margin-bottom:16px;">
+            <i class="fas fa-star" style="color:#c9a84c;"></i> Les articles les plus recommandés 
+        </h3>
+        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:16px;">
+            <div style="background:#f8f8f8; border-radius:12px; overflow:hidden;">
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop" alt="Produit" style="width:100%; height:150px; object-fit:cover;">
+                <div style="padding:12px;">
+                    <h4 style="font-size:0.9rem; font-weight:600; margin-bottom:4px;">Montre EDGE</h4>
+                    <p style="font-weight:700; color:#c9a84c;">149,00 €</p>
+                    <button style="width:100%; padding:8px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Ajouter</button>
+                </div>
+            </div>
+            <div style="background:#f8f8f8; border-radius:12px; overflow:hidden;">
+                <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=200&h=200&fit=crop" alt="Produit" style="width:100%; height:150px; object-fit:cover;">
+                <div style="padding:12px;">
+                    <h4 style="font-size:0.9rem; font-weight:600; margin-bottom:4px;">Veste BOMBER</h4>
+                    <p style="font-weight:700; color:#c9a84c;">159,00 €</p>
+                    <button style="width:100%; padding:8px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Ajouter</button>
+                </div>
+            </div>
+            <div style="background:#f8f8f8; border-radius:12px; overflow:hidden;">
+                <img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=200&h=200&fit=crop" alt="Produit" style="width:100%; height:150px; object-fit:cover;">
+                <div style="padding:12px;">
+                    <h4 style="font-size:0.9rem; font-weight:600; margin-bottom:4px;">Lunettes NOIR</h4>
+                    <p style="font-weight:700; color:#c9a84c;">120,00 €</p>
+                    <button style="width:100%; padding:8px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Ajouter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
