@@ -464,7 +464,7 @@
         }
 
         // ==========================================
-        // ENREGISTRER LA RÉPONSE (CORRIGÉ AVEC LOGS)
+        // ENREGISTRER LA RÉPONSE (CORRIGÉ)
         // ==========================================
         async function enregistrerReponse(avisId) {
             const textarea = document.getElementById('reponseTextarea');
@@ -479,15 +479,15 @@
             console.log('📝 Contenu de la réponse:', reponse);
 
             try {
-                const { data, error } = await supabaseClient
+                // Mettre à jour l'avis avec la réponse
+                const { error } = await supabaseClient
                     .from('avis')
                     .update({
                         reponse_admin: reponse,
                         reponse_date: new Date().toISOString(),
                         reponse_admin_nom: 'NIKEL'
                     })
-                    .eq('id', avisId)
-                    .select();
+                    .eq('id', avisId);
 
                 if (error) {
                     console.error('❌ Erreur Supabase:', error);
@@ -495,7 +495,7 @@
                     return;
                 }
 
-                console.log('✅ Réponse enregistrée avec succès:', data);
+                console.log('✅ Réponse enregistrée avec succès');
 
                 // Mettre à jour localement
                 const avis = allAvis.find(a => a.id === avisId);
@@ -505,9 +505,8 @@
                     avis.reponse_admin_nom = 'NIKEL';
                 }
 
-                filteredAvis = [...allAvis];
-                renderAvis();
-                updateStats();
+                // Recharger les avis
+                await loadAvisData();
 
                 fermerReponseModal();
                 showNotification('✅ Réponse enregistrée avec succès', 'success');
