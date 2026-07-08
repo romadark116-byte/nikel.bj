@@ -30,6 +30,7 @@
             color: var(--gray);
             text-decoration: none;
             cursor: pointer;
+            position: relative;
         }
 
         .sidebar-menu ul li a:hover {
@@ -51,11 +52,29 @@
 
         .sidebar-menu ul li a .badge-notif {
             margin-left: auto;
-            background: var(--gold);
+            background: #e74c3c;
             color: white;
             padding: 2px 10px;
             border-radius: 50px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            min-width: 20px;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        .sidebar-menu ul li a .badge-notif.zero {
+            background: transparent;
+            color: transparent;
+            animation: none;
+            min-width: 0;
+            padding: 0;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         .sidebar-menu ul li a .badge-count {
@@ -199,9 +218,9 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="#" data-page="suivi-ventes">
+                                <a href="#" data-page="suivi-ventes" id="ventesLink">
                                     <i class="fas fa-chart-line"></i> Suivi des ventes
-                                    <span class="badge-notif">5</span>
+                                    <span class="badge-notif" id="ventesBadge">0</span>
                                 </a>
                             </li>
                             <li>
@@ -305,6 +324,13 @@
     <script src="script.js"></script>
     <script>
         // ==========================================
+        // VARIABLES GLOBALES
+        // ==========================================
+        let ventesCount = 0;
+        let lastCheckedVentes = 0;
+        let notificationInterval = null;
+
+        // ==========================================
         // VÉRIFICATION DE SESSION ADMIN
         // ==========================================
         function checkAdminSession() {
@@ -330,19 +356,16 @@
                 
                 console.log('✅ [MON-COMPTE] Session valide pour:', admin.email);
                 
-                // ✅ Mettre à jour le nom dans le header
                 const userName = document.getElementById('userName');
                 if (userName) {
                     userName.textContent = admin.prenom + ' ' + admin.nom;
                 }
                 
-                // ✅ Mettre à jour le nom dans la sidebar
                 const adminName = document.getElementById('adminName');
                 if (adminName) {
                     adminName.textContent = admin.prenom + ' ' + admin.nom;
                 }
                 
-                // ✅ Mettre à jour l'email dans la sidebar
                 const adminEmail = document.getElementById('adminEmail');
                 if (adminEmail) {
                     adminEmail.textContent = admin.email;
@@ -368,15 +391,112 @@
             navLinks.forEach(link => {
                 const href = link.getAttribute('href');
                 if (href && publicPages.some(page => href.includes(page))) {
-                    // Désactiver le lien
                     link.addEventListener('click', function(e) {
                         e.preventDefault();
                         showNotification('⚠️ Vous êtes dans l\'espace admin. Utilisez "Quitter l\'espace admin" pour retourner sur le site.', 'error');
                     });
-                    // Ajouter la classe de désactivation
                     link.classList.add('nav-link-disabled');
                 }
             });
+        }
+
+        // ==========================================
+        // CHARGER LE NOMBRE DE VENTES
+        // ==========================================
+        async function loadVentesCount() {
+            try {
+                if (!window.supabaseClient) {
+                    console.warn('⚠️ Supabase non disponible');
+                    return 0;
+                }
+
+                // Récupérer le nombre total de clients avec statut 'en attente' ou 'soldé'
+                const { data, error, count } = await window.supabaseClient
+                    .from('clients')
+                    .select('id, statut, created_at', { count: 'exact', head: false })
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error('❌ Erreur chargement ventes:', error);
+                    return 0;
+                }
+
+                // Compter les nouvelles ventes (statut différent de 'annulé')
+                const newVentes = data ? data.filter(c => c.statut !== 'annulé').length : 0;
+                
+                console.log(`📊 Nombre de ventes: ${newVentes}`);
+                return newVentes;
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                return 0;
+            }
+        }
+
+        // ==========================================
+        // METTRE À JOUR LE BADGE DE NOTIFICATION
+        // ==========================================
+        async function updateVentesBadge() {
+            try {
+                const totalVentes = await loadVentesCount();
+                const badge = document.getElementById('ventesBadge');
+                
+                if (!badge) return;
+
+                // Récupérer la dernière valeur connue
+                const lastKnown = parseInt(localStorage.getItem('nikel_ventes_count')) || 0;
+                
+                // Calculer les nouvelles ventes
+                const newVentes = totalVentes - lastKnown;
+                
+                if (newVentes > 0) {
+                    badge.textContent = newVentes;
+                    badge.className = 'badge-notif';
+                    // Ajouter une animation de notification sonore visuelle
+                    badge.style.animation = 'pulse 0.5s ease 3';
+                    console.log(`🔔 ${newVentes} nouvelle(s) vente(s) !`);
+                } else {
+                    badge.textContent = '0';
+                    badge.className = 'badge-notif zero';
+                }
+                
+                // Mettre à jour la dernière valeur connue
+                localStorage.setItem('nikel_ventes_count', totalVentes.toString());
+
+            } catch (err) {
+                console.error('❌ Erreur mise à jour badge:', err);
+            }
+        }
+
+        // ==========================================
+        // RÉINITIALISER LA NOTIFICATION (quand on clique sur Suivi des ventes)
+        // ==========================================
+        function resetVentesNotification() {
+            const badge = document.getElementById('ventesBadge');
+            if (badge) {
+                badge.textContent = '0';
+                badge.className = 'badge-notif zero';
+                // Mettre à jour la dernière valeur connue
+                loadVentesCount().then(count => {
+                    localStorage.setItem('nikel_ventes_count', count.toString());
+                });
+                console.log('🔕 Notification de ventes réinitialisée');
+            }
+        }
+
+        // ==========================================
+        // DÉMARRER LA VÉRIFICATION PÉRIODIQUE
+        // ==========================================
+        function startNotificationCheck() {
+            // Vérifier immédiatement
+            updateVentesBadge();
+            
+            // Puis vérifier toutes les 30 secondes
+            if (notificationInterval) {
+                clearInterval(notificationInterval);
+            }
+            notificationInterval = setInterval(updateVentesBadge, 30000);
+            console.log('⏰ Vérification des ventes toutes les 30 secondes');
         }
 
         // ==========================================
@@ -389,10 +509,19 @@
             // Bloquer la navigation publique
             blockPublicNavigation();
             
+            // Démarrer la vérification des notifications
+            startNotificationCheck();
+            
             const mainContent = document.getElementById('mainContent');
             const menuLinks = document.querySelectorAll('.sidebar-menu a[data-page]');
+            const ventesLink = document.getElementById('ventesLink');
 
-            function loadPage(page) {
+            function loadPage(page, resetNotif = false) {
+                // Si on charge la page "suivi-ventes", réinitialiser la notification
+                if (page === 'suivi-ventes' && resetNotif) {
+                    resetVentesNotification();
+                }
+
                 mainContent.innerHTML = `
                     <div style="text-align:center; padding:40px; color:var(--gray);">
                         <i class="fas fa-spinner fa-spin" style="font-size:2rem;"></i>
@@ -434,9 +563,19 @@
                     const page = this.dataset.page;
                     menuLinks.forEach(l => l.classList.remove('active'));
                     this.classList.add('active');
-                    loadPage(page);
+                    
+                    // Si c'est le lien "Suivi des ventes", réinitialiser la notification
+                    const resetNotif = (page === 'suivi-ventes');
+                    loadPage(page, resetNotif);
                 });
             });
+
+            // Gestion spéciale pour le lien "Suivi des ventes" avec réinitialisation
+            if (ventesLink) {
+                ventesLink.addEventListener('click', function(e) {
+                    // La réinitialisation se fait dans loadPage
+                });
+            }
 
             // Charger le tableau de bord par défaut
             loadPage('dashboard');
@@ -468,15 +607,20 @@
             
             console.log('🔍 [DÉCONNEXION] Début du processus...');
             
-            // 1. Supprimer la session admin
-            localStorage.removeItem('nikel_admin');
-            console.log('🗑️ [DÉCONNEXION] Session supprimée');
+            // Arrêter la vérification périodique
+            if (notificationInterval) {
+                clearInterval(notificationInterval);
+                notificationInterval = null;
+                console.log('⏹️ Vérification périodique arrêtée');
+            }
             
-            // 2. Vider le sessionStorage
+            localStorage.removeItem('nikel_admin');
+            localStorage.removeItem('nikel_ventes_count');
+            console.log('🗑️ [DÉCONNEXION] Session et données supprimées');
+            
             sessionStorage.clear();
             console.log('🗑️ [DÉCONNEXION] sessionStorage vidé');
             
-            // 3. Vérifier que la session est bien supprimée
             const sessionAfter = localStorage.getItem('nikel_admin');
             if (sessionAfter) {
                 console.warn('⚠️ [DÉCONNEXION] La session existe encore !');
@@ -485,10 +629,8 @@
                 console.log('✅ [DÉCONNEXION] Session bien supprimée');
             }
             
-            // 4. Notification
             showNotification('👋 Déconnexion réussie !', 'info');
             
-            // 5. Redirection vers login (pour se reconnecter)
             setTimeout(function() {
                 console.log('🚀 [DÉCONNEXION] Redirection vers login.html');
                 window.location.href = 'login.html';
@@ -503,15 +645,20 @@
             
             console.log('🔍 [QUITTER] Retour au site public...');
             
-            // 1. Supprimer la session admin
-            localStorage.removeItem('nikel_admin');
-            console.log('🗑️ [QUITTER] Session supprimée');
+            // Arrêter la vérification périodique
+            if (notificationInterval) {
+                clearInterval(notificationInterval);
+                notificationInterval = null;
+                console.log('⏹️ Vérification périodique arrêtée');
+            }
             
-            // 2. Vider le sessionStorage
+            localStorage.removeItem('nikel_admin');
+            localStorage.removeItem('nikel_ventes_count');
+            console.log('🗑️ [QUITTER] Session et données supprimées');
+            
             sessionStorage.clear();
             console.log('🗑️ [QUITTER] sessionStorage vidé');
             
-            // 3. Vérifier que la session est bien supprimée
             const sessionAfter = localStorage.getItem('nikel_admin');
             if (sessionAfter) {
                 console.warn('⚠️ [QUITTER] La session existe encore !');
@@ -520,10 +667,8 @@
                 console.log('✅ [QUITTER] Session bien supprimée');
             }
             
-            // 4. Notification
             showNotification('👋 Retour au site public !', 'info');
             
-            // 5. Redirection vers index (site public)
             setTimeout(function() {
                 console.log('🚀 [QUITTER] Redirection vers index.html');
                 window.location.href = 'index.html';
@@ -574,6 +719,9 @@
         window.showNotification = showNotification;
         window.handleLogout = handleLogout;
         window.handleQuit = handleQuit;
+        window.resetVentesNotification = resetVentesNotification;
+        window.updateVentesBadge = updateVentesBadge;
+        window.loadVentesCount = loadVentesCount;
         window.handleSearch = function() {
             const input = document.getElementById('searchInput');
             if (input && input.value.trim().length > 0) {
