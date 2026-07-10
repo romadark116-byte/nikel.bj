@@ -775,6 +775,7 @@
 
         // ==========================================
         // CHARGER LES DONNÉES DU FONDATEUR
+        // MODIFICATION : Utilisation de pdg_tof_url depuis admin_profiles
         // ==========================================
         document.addEventListener('DOMContentLoaded', async function() {
             // Charger la galerie en premier
@@ -799,6 +800,7 @@
 
                 console.log('🔄 Chargement des données du fondateur...');
 
+                // ✅ MODIFICATION : Requête avec jointure pour récupérer pdg_tof_url
                 const { data: admin, error } = await supabaseClient
                     .from('admins')
                     .select(`
@@ -817,6 +819,7 @@
                             titre,
                             signature,
                             description,
+                            pdg_tof_url,
                             created_at,
                             updated_at
                         )
@@ -837,7 +840,9 @@
                 console.log('✅ Données du fondateur chargées avec succès');
 
                 // --- METTRE À JOUR LA PHOTO ---
-                let photoUrl = admin.photo_url;
+                // ✅ MODIFICATION : Priorité à pdg_tof_url du profil, puis photo_url de l'admin
+                const profile = admin.admin_profiles || {};
+                let photoUrl = profile.pdg_tof_url || admin.photo_url;
                 
                 if (!photoUrl || photoUrl.trim() === '') {
                     const fullName = `${admin.prenom || ''} ${admin.nom || ''}`.trim();
@@ -862,7 +867,6 @@
                 }
 
                 // --- METTRE À JOUR LES AUTRES CHAMPS ---
-                const profile = admin.admin_profiles || {};
                 if (profile.titre && profile.titre.trim() !== '') {
                     titleEl.textContent = profile.titre;
                 }
