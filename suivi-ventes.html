@@ -144,15 +144,15 @@
         const perPage = 10;
 
         // ==========================================
-        // DONNÉES DE TEST (fallback)
+        // DONNÉES DE TEST (fallback) - MISES À JOUR AVEC statut_produit
         // ==========================================
         function getTestData() {
             return [
-                { id: 1, prenom: 'Jean', nom: 'Dupont', email: 'jean@email.com', telephone: '0612345678', ville: 'Paris', pays: 'FR', created_at: new Date().toISOString(), total_achat: 398.00, statut: 'soldé' },
-                { id: 2, prenom: 'Fleury', nom: 'HAMIDOU', email: 'f91631072@gmail.com', telephone: '0191647720', ville: 'Parakou', pays: 'BJ', created_at: new Date(Date.now() - 86400000).toISOString(), total_achat: 267.00, statut: 'en attente' },
-                { id: 3, prenom: 'Marie', nom: 'Martin', email: 'marie@email.com', telephone: '0765432109', ville: 'Lyon', pays: 'FR', created_at: new Date(Date.now() - 172800000).toISOString(), total_achat: 159.00, statut: 'annulé' },
-                { id: 4, prenom: 'Amadou', nom: 'Diallo', email: 'amadou@email.com', telephone: '779012345', ville: 'Dakar', pays: 'SN', created_at: new Date(Date.now() - 259200000).toISOString(), total_achat: 299.00, statut: 'soldé' },
-                { id: 5, prenom: 'Sophie', nom: 'Bernard', email: 'sophie@email.com', telephone: '0612345987', ville: 'Marseille', pays: 'FR', created_at: new Date(Date.now() - 345600000).toISOString(), total_achat: 149.00, statut: 'en attente' }
+                { id: 1, prenom: 'Jean', nom: 'Dupont', email: 'jean@email.com', telephone: '0612345678', ville: 'Paris', pays: 'FR', created_at: new Date().toISOString(), total_achat: 398.00, statut_produit: 'soldé' },
+                { id: 2, prenom: 'Fleury', nom: 'HAMIDOU', email: 'f91631072@gmail.com', telephone: '0191647720', ville: 'Parakou', pays: 'BJ', created_at: new Date(Date.now() - 86400000).toISOString(), total_achat: 267.00, statut_produit: 'en attente' },
+                { id: 3, prenom: 'Marie', nom: 'Martin', email: 'marie@email.com', telephone: '0765432109', ville: 'Lyon', pays: 'FR', created_at: new Date(Date.now() - 172800000).toISOString(), total_achat: 159.00, statut_produit: 'annulé' },
+                { id: 4, prenom: 'Amadou', nom: 'Diallo', email: 'amadou@email.com', telephone: '779012345', ville: 'Dakar', pays: 'SN', created_at: new Date(Date.now() - 259200000).toISOString(), total_achat: 299.00, statut_produit: 'soldé' },
+                { id: 5, prenom: 'Sophie', nom: 'Bernard', email: 'sophie@email.com', telephone: '0612345987', ville: 'Marseille', pays: 'FR', created_at: new Date(Date.now() - 345600000).toISOString(), total_achat: 149.00, statut_produit: 'en attente' }
             ];
         }
 
@@ -304,7 +304,7 @@
                     d2.setHours(23, 59, 59);
                     if (d2 < dV) match = false;
                 }
-                s
+                
                 return match;
             });
 
@@ -325,7 +325,7 @@
         }
 
         // ==========================================
-        // METTRE À JOUR LE STATUT
+        // METTRE À JOUR LE STATUT - UTILISE statut_produit
         // ==========================================
         async function updateStatut(id, newStatut) {
             // Mettre à jour localement
@@ -341,12 +341,12 @@
             renderVentes();
             updateVentesStats();
 
-            // Mettre à jour dans Supabase
+            // Mettre à jour dans Supabase avec statut_produit
             try {
                 if (supabaseClient) {
                     const { error } = await supabaseClient
                         .from('clients')
-                        .update({ statut: newStatut })
+                        .update({ statut_produit: newStatut })  // ← Utilisation de statut_produit
                         .eq('id', id);
 
                     if (error) {
@@ -370,7 +370,7 @@
         }
 
         // ==========================================
-        // EXPORTER CSV
+        // EXPORTER CSV - UTILISE statut_produit
         // ==========================================
         function exportCSV() {
             if (allVentes.length === 0) {
@@ -381,7 +381,9 @@
             let csv = 'ID,Client,Email,Téléphone,Date,Total,Ville,Pays,Statut\n';
             allVentes.forEach(v => {
                 const client = `${v.prenom || ''} ${v.nom || ''}`.trim();
-                csv += `${v.id},"${client}","${v.email || ''}","${v.telephone || ''}","${formatDate(v.created_at)}","${v.total_achat || 0}","${v.ville || ''}","${v.pays || ''}","${v.statut || ''}"\n`;
+                // Utiliser statut_produit ou statut en fallback
+                const statutValue = v.statut_produit || v.statut || '';
+                csv += `${v.id},"${client}","${v.email || ''}","${v.telephone || ''}","${formatDate(v.created_at)}","${v.total_achat || 0}","${v.ville || ''}","${v.pays || ''}","${statutValue}"\n`;
             });
 
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -404,7 +406,7 @@
         }
 
         // ==========================================
-        // CHARGER LES DONNÉES DEPUIS SUPABASE
+        // CHARGER LES DONNÉES DEPUIS SUPABASE - UTILISE statut_produit
         // ==========================================
         async function loadVentesData() {
             try {
@@ -441,10 +443,10 @@
                 if (data && data.length > 0) {
                     console.log(`✅ ${data.length} clients chargés depuis Supabase`);
                     
-                    // Si la colonne statut n'existe pas, ajouter un statut par défaut
+                    // Utiliser statut_produit comme source du statut
                     allVentes = data.map(c => ({
                         ...c,
-                        statut: c.statut || 'en attente'
+                        statut: c.statut_produit || 'en attente'  // ← Utilisation de statut_produit
                     }));
                     
                     filteredVentes = [...allVentes];
