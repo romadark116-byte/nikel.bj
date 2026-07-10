@@ -180,10 +180,10 @@
                 </div>
             </div>
 
-            <!-- Statut -->
+            <!-- Statut Contact -->
             <div class="form-group">
-                <label for="statut"><i class="fas fa-tag"></i> Statut</label>
-                <select id="statut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+                <label for="statut_contact"><i class="fas fa-tag"></i> Statut</label>
+                <select id="statut_contact" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
                     <option value="prospect" selected>⭐ Prospect</option>
                     <option value="client">✅ Client</option>
                 </select>
@@ -381,7 +381,7 @@
         }
 
         // ==========================================
-        // BADGE STATUT
+        // BADGE STATUT - Utilise statut_contact
         // ==========================================
         function getStatutBadge(statut) {
             if (statut === 'client') {
@@ -404,7 +404,7 @@
         const itemsPerPage = 10;
 
         // ==========================================
-        // CHARGER LES DONNÉES
+        // CHARGER LES DONNÉES - Utilise statut_contact
         // ==========================================
         async function loadContactsData() {
             try {
@@ -427,9 +427,10 @@
 
                 if (data && data.length > 0) {
                     console.log(`✅ ${data.length} contacts chargés depuis Supabase`);
+                    // ✅ Utilisation de statut_contact
                     allContacts = data.map(c => ({
                         ...c,
-                        statut: c.statut || 'prospect',
+                        statut: c.statut_contact || 'prospect',  // ← Utilisation de statut_contact
                         indicatif: c.indicatif || paysToIndicatif[c.pays] || '+229'
                     }));
                 } else {
@@ -475,7 +476,6 @@
             const pageItems = filteredContacts.slice(startIndex, endIndex);
 
             tbody.innerHTML = pageItems.map(contact => {
-                // Afficher le téléphone complet (indicatif + numéro)
                 const fullPhone = (contact.indicatif || '+229') + ' ' + (contact.telephone || '');
                 return `
                 <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
@@ -590,7 +590,7 @@
             document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus" style="color:#c9a84c;"></i> Ajouter un contact';
             document.getElementById('contactId').value = '';
             document.getElementById('contactForm').reset();
-            document.getElementById('statut').value = 'prospect';
+            document.getElementById('statut_contact').value = 'prospect';
             document.getElementById('indicatif').value = '+229';
             document.getElementById('pays').value = 'BJ';
             document.getElementById('paysDisplay').value = 'Bénin';
@@ -611,24 +611,21 @@
             document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-edit" style="color:#c9a84c;"></i> Modifier le contact';
             document.getElementById('contactId').value = contact.id;
             
-            // ✅ Informations personnelles
             document.getElementById('prenom').value = contact.prenom || '';
             document.getElementById('nom').value = contact.nom || '';
             document.getElementById('email').value = contact.email || '';
             
-            // ✅ Téléphone : indicatif dans la colonne indicatif, numéro seul dans telephone
             const indicatif = contact.indicatif || paysToIndicatif[contact.pays] || '+229';
             const numero = contact.telephone || '';
             document.getElementById('indicatif').value = indicatif;
             document.getElementById('telephone').value = numero;
             
-            // ✅ Ville et Pays
             document.getElementById('ville').value = contact.ville || 'Cotonou';
             document.getElementById('pays').value = contact.pays || 'BJ';
             document.getElementById('paysDisplay').value = paysLabels[contact.pays] || 'Bénin';
             
-            // ✅ Statut
-            document.getElementById('statut').value = contact.statut || 'prospect';
+            // ✅ Utilisation de statut_contact
+            document.getElementById('statut_contact').value = contact.statut || 'prospect';
             
             document.getElementById('contactModal').style.display = 'flex';
             updateVilles();
@@ -646,7 +643,7 @@
         }
 
         // ==========================================
-        // SAUVEGARDER CONTACT
+        // SAUVEGARDER CONTACT - Utilise statut_contact
         // ==========================================
         async function saveContact(event) {
             event.preventDefault();
@@ -660,15 +657,16 @@
             const telephone = document.getElementById('telephone').value.trim();
             const paysCode = document.getElementById('pays').value;
             
+            // ✅ Utilisation de statut_contact
             const contactData = {
                 prenom: document.getElementById('prenom').value.trim(),
                 nom: document.getElementById('nom').value.trim(),
                 email: document.getElementById('email').value.trim(),
-                telephone: telephone, // ✅ Seulement le numéro, sans indicatif
-                indicatif: indicatif,   // ✅ Indicatif séparé
+                telephone: telephone,
+                indicatif: indicatif,
                 ville: document.getElementById('ville').value,
                 pays: paysCode,
-                statut: document.getElementById('statut').value,
+                statut_contact: document.getElementById('statut_contact').value,  // ← Utilisation de statut_contact
                 date_clic: new Date().toISOString()
             };
 
@@ -687,7 +685,11 @@
 
                     const index = allContacts.findIndex(c => c.id === parseInt(id));
                     if (index !== -1) {
-                        allContacts[index] = { ...allContacts[index], ...contactData };
+                        allContacts[index] = { 
+                            ...allContacts[index], 
+                            ...contactData,
+                            statut: contactData.statut_contact  // Mise à jour de l'affichage
+                        };
                     }
                     showNotification('✅ Contact modifié avec succès !', 'success');
                 } else {
@@ -703,7 +705,10 @@
                     }
 
                     if (data && data.length > 0) {
-                        allContacts.push(data[0]);
+                        allContacts.push({
+                            ...data[0],
+                            statut: data[0].statut_contact || 'prospect'
+                        });
                     }
                     showNotification('✅ Contact ajouté avec succès !', 'success');
                 }
