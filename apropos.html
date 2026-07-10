@@ -799,6 +799,7 @@
 
                 console.log('🔄 Chargement des données du fondateur...');
 
+                // ✅ Récupérer les données depuis la table admins avec la jointure vers admin_profiles
                 const { data: admin, error } = await supabaseClient
                     .from('admins')
                     .select(`
@@ -810,15 +811,13 @@
                         boutique_nom,
                         ville,
                         pays,
-                        pdg_tof_url,
                         created_at,
                         admin_profiles (
                             id,
                             titre,
                             signature,
                             description,
-                            created_at,
-                            updated_at
+                            pdg_tof_url
                         )
                     `)
                     .eq('id', 1)
@@ -836,8 +835,11 @@
 
                 console.log('✅ Données du fondateur chargées avec succès');
 
-                // --- METTRE À JOUR LA PHOTO AVEC pdg_tof_url ---
-                let photoUrl = admin.pdg_tof_url;
+                // --- RÉCUPÉRER LE PROFIL ---
+                const profile = admin.admin_profiles || {};
+
+                // --- METTRE À JOUR LA PHOTO AVEC pdg_tof_url DEPUIS admin_profiles ---
+                let photoUrl = profile.pdg_tof_url;
                 
                 if (!photoUrl || photoUrl.trim() === '') {
                     const fullName = `${admin.prenom || ''} ${admin.nom || ''}`.trim();
@@ -862,7 +864,6 @@
                 }
 
                 // --- METTRE À JOUR LES AUTRES CHAMPS ---
-                const profile = admin.admin_profiles || {};
                 if (profile.titre && profile.titre.trim() !== '') {
                     titleEl.textContent = profile.titre;
                 }
