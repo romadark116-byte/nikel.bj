@@ -372,7 +372,7 @@
             <div class="section-card">
                 <div class="section-header">
                     <h3><i class="fas fa-clock"></i> Dernières ventes</h3>
-                    <a onclick="window.navigateTo && window.navigateTo('suivi-ventes')">Voir toutes →</a>
+                    <a onclick="navigateToPage('suivi-ventes')">Voir toutes →</a>
                 </div>
                 <div class="table-wrapper">
                     <table>
@@ -400,7 +400,7 @@
             <div class="section-card">
                 <div class="section-header">
                     <h3><i class="fas fa-heart" style="color:#e74c3c;"></i> Top 5 des produits les plus aimés</h3>
-                    <a onclick="window.navigateTo && window.navigateTo('favoris')">Voir tous les favoris →</a>
+                    <a onclick="navigateToPage('favoris')">Voir tous les favoris →</a>
                 </div>
                 <div class="favoris-grid" id="topFavorisGrid">
                     <div style="text-align:center; padding:30px; color:#888; grid-column:1/-1;">
@@ -434,6 +434,34 @@
             } catch (e) {
                 console.error('❌ Erreur initialisation Supabase:', e);
             }
+
+            // ==========================================
+            // FONCTION DE NAVIGATION UNIVERSELLE
+            // ==========================================
+            function navigateToPage(page) {
+                console.log('🔍 [DASHBOARD] Navigation vers:', page);
+                
+                // Essayer d'utiliser la fonction navigateTo du parent (mon-compte.html)
+                if (window.parent && typeof window.parent.navigateTo === 'function') {
+                    console.log('✅ [DASHBOARD] Utilisation de window.parent.navigateTo');
+                    window.parent.navigateTo(page);
+                    return;
+                }
+                
+                // Essayer d'utiliser la fonction navigateTo globale
+                if (typeof window.navigateTo === 'function') {
+                    console.log('✅ [DASHBOARD] Utilisation de window.navigateTo');
+                    window.navigateTo(page);
+                    return;
+                }
+                
+                // Fallback: redirection classique
+                console.log('⚠️ [DASHBOARD] Fallback: redirection classique');
+                window.location.href = 'mon-compte.html?page=' + page;
+            }
+
+            // Exposer la fonction globalement pour les boutons onclick
+            window.navigateToPage = navigateToPage;
 
             // ==========================================
             // DONNÉES DE TEST
@@ -519,19 +547,6 @@
                         <td>${getStatutBadge(v.statut_produit || 'en attente')}</td>
                     </tr>
                 `).join('');
-            }
-
-            // ==========================================
-            // FONCTION POUR CHANGER D'ONGLET (utilise navigateTo de mon-compte.html)
-            // ==========================================
-            function goToSuiviVentes() {
-                // Vérifier si la fonction navigateTo existe (définie dans mon-compte.html)
-                if (typeof window.navigateTo === 'function') {
-                    window.navigateTo('suivi-ventes');
-                } else {
-                    // Fallback: redirection classique
-                    window.location.href = 'mon-compte.html?page=suivi-ventes';
-                }
             }
 
             // ==========================================
@@ -679,7 +694,7 @@
                                     <span><i class="fas fa-heart heart-icon"></i> ${p.nbFavoris} favoris</span>
                                     <span><i class="fas fa-box"></i> ${p.stock || 0} en stock</span>
                                 </div>
-                                <button class="btn-stats" onclick="goToSuiviVentes()">
+                                <button class="btn-stats" onclick="navigateToPage('suivi-ventes')">
                                     <i class="fas fa-chart-bar"></i> Voir statistiques
                                 </button>
                             </div>
@@ -750,11 +765,6 @@
                     await loadTopFavoris();
                 }
             }
-
-            // ==========================================
-            // EXPOSER LES FONCTIONS GLOBALEMENT
-            // ==========================================
-            window.goToSuiviVentes = goToSuiviVentes;
 
             // ==========================================
             // INITIALISATION
