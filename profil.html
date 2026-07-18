@@ -104,24 +104,18 @@
                 </div>
             </div>
 
-            <!-- ===== NOUVEAU : GRAND TITRE (colonne titreb) ===== -->
+            <!-- ===== GRAND TITRE (colonne titreb) ===== -->
             <div class="form-group">
                 <label for="grandTitre" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-heading" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Grand titre</label>
                 <input type="text" id="grandTitre" name="grandTitre" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'" placeholder="Ex: L'élégance à votre portée">
                 <small style="color:#888; font-size:0.8rem;">Le titre principal qui apparaît sur votre page boutique.</small>
             </div>
 
-            <!-- ===== NOUVEAU : DESCRIPTION DE LA BOUTIQUE (colonne legende) ===== -->
+            <!-- ===== DESCRIPTION DE LA BOUTIQUE (colonne legende) ===== -->
             <div class="form-group">
                 <label for="legendeBoutique" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-align-left" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Description de la boutique</label>
                 <textarea id="legendeBoutique" name="legendeBoutique" rows="3" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit; resize:vertical;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'" placeholder="Ex: Découvrez notre collection unique de prêt-à-porter haut de gamme..."></textarea>
                 <small style="color:#888; font-size:0.8rem;">Une courte description qui apparaît sous le grand titre.</small>
-            </div>
-
-            <!-- ===== ANCIEN : DESCRIPTION BOUTIQUE (gardé pour compatibilité) ===== -->
-            <div class="form-group">
-                <label for="descriptionBoutique" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-align-left" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Description complète</label>
-                <textarea id="descriptionBoutique" name="descriptionBoutique" rows="4" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit; resize:vertical;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'" placeholder="Description détaillée de votre boutique..."></textarea>
             </div>
 
             <!-- Photo professionnelle -->
@@ -141,14 +135,14 @@
                 </div>
             </div>
 
-            <!-- ===== NOUVEAU : TITRE PRO (colonne titre de admin_profiles) ===== -->
+            <!-- ===== TITRE PRO (colonne titre de admin_profiles) ===== -->
             <div class="form-group">
                 <label for="titrePro" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-user-tie" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Titre professionnel</label>
                 <input type="text" id="titrePro" name="titrePro" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'" placeholder="Ex: Designer de mode - Fondateur de NIKEL">
                 <small style="color:#888; font-size:0.8rem;">Votre titre professionnel qui apparaît sur votre profil.</small>
             </div>
 
-            <!-- ===== ANCIEN : BIO (gardé mais lié à la colonne description de admin_profiles) ===== -->
+            <!-- ===== DESCRIPTION PRO (Bio) - colonne description de admin_profiles ===== -->
             <div class="form-group">
                 <label for="bio" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-align-left" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Description Pro (Bio)</label>
                 <textarea id="bio" name="bio" rows="4" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit; resize:vertical;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'" placeholder="Présentez-vous en quelques mots..."></textarea>
@@ -278,9 +272,6 @@
                     console.log('✅ Boutique trouvée:', data);
                     document.getElementById('nomBoutique').value = data.nom || 'NIKEL';
                     document.getElementById('adresseBoutique').value = data.adresse || '';
-                    document.getElementById('descriptionBoutique').value = data.description || '';
-                    
-                    // ===== NOUVEAUX CHAMPS =====
                     document.getElementById('grandTitre').value = data.titreb || '';
                     document.getElementById('legendeBoutique').value = data.legende || '';
                     
@@ -296,7 +287,6 @@
                             admin_id: adminSession.id,
                             nom: 'NIKEL',
                             adresse: '123 rue de l\'Élégance, 75001 Paris',
-                            description: 'NIKEL est une boutique de prêt-à-porter qui allie élégance intemporelle et qualité exceptionnelle.',
                             titreb: 'L\'élégance à votre portée',
                             legende: 'Découvrez notre collection unique de prêt-à-porter haut de gamme.'
                         }]);
@@ -389,9 +379,8 @@
                 const boutiqueData = {
                     nom: formData.nomBoutique,
                     adresse: formData.adresseBoutique,
-                    description: formData.descriptionBoutique,
-                    titreb: formData.grandTitre,      // Nouveau champ
-                    legende: formData.legendeBoutique, // Nouveau champ
+                    titreb: formData.grandTitre,
+                    legende: formData.legendeBoutique,
                     updated_at: new Date().toISOString()
                 };
 
@@ -421,8 +410,8 @@
 
                 // 3. Mettre à jour le profil pro (admin_profiles)
                 const proData = {
-                    titre: formData.titrePro,         // Nouveau champ
-                    description: formData.bio,         // Description Pro (Bio)
+                    titre: formData.titrePro,
+                    description: formData.bio,
                     updated_at: new Date().toISOString()
                 };
 
@@ -505,7 +494,6 @@
                     telephone: document.getElementById('telephone').value || '',
                     nomBoutique: document.getElementById('nomBoutique').value || '',
                     adresseBoutique: document.getElementById('adresseBoutique').value || '',
-                    descriptionBoutique: document.getElementById('descriptionBoutique').value || '',
                     grandTitre: document.getElementById('grandTitre').value || '',
                     legendeBoutique: document.getElementById('legendeBoutique').value || '',
                     titrePro: document.getElementById('titrePro').value || '',
