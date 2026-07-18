@@ -104,9 +104,24 @@
                 </div>
             </div>
 
+            <!-- ===== NOUVEAU : GRAND TITRE (colonne titreb) ===== -->
             <div class="form-group">
-                <label for="descriptionBoutique" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-align-left" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Description de la boutique</label>
-                <textarea id="descriptionBoutique" name="descriptionBoutique" rows="4" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit; resize:vertical;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'"></textarea>
+                <label for="grandTitre" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-heading" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Grand titre</label>
+                <input type="text" id="grandTitre" name="grandTitre" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'" placeholder="Ex: L'élégance à votre portée">
+                <small style="color:#888; font-size:0.8rem;">Le titre principal qui apparaît sur votre page boutique.</small>
+            </div>
+
+            <!-- ===== NOUVEAU : DESCRIPTION DE LA BOUTIQUE (colonne legende) ===== -->
+            <div class="form-group">
+                <label for="legendeBoutique" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-align-left" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Description de la boutique</label>
+                <textarea id="legendeBoutique" name="legendeBoutique" rows="3" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit; resize:vertical;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'" placeholder="Ex: Découvrez notre collection unique de prêt-à-porter haut de gamme..."></textarea>
+                <small style="color:#888; font-size:0.8rem;">Une courte description qui apparaît sous le grand titre.</small>
+            </div>
+
+            <!-- ===== ANCIEN : DESCRIPTION BOUTIQUE (gardé pour compatibilité) ===== -->
+            <div class="form-group">
+                <label for="descriptionBoutique" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-align-left" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Description complète</label>
+                <textarea id="descriptionBoutique" name="descriptionBoutique" rows="4" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit; resize:vertical;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'" placeholder="Description détaillée de votre boutique..."></textarea>
             </div>
 
             <!-- Photo professionnelle -->
@@ -126,9 +141,18 @@
                 </div>
             </div>
 
+            <!-- ===== NOUVEAU : TITRE PRO (colonne titre de admin_profiles) ===== -->
+            <div class="form-group">
+                <label for="titrePro" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-user-tie" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Titre professionnel</label>
+                <input type="text" id="titrePro" name="titrePro" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'" placeholder="Ex: Designer de mode - Fondateur de NIKEL">
+                <small style="color:#888; font-size:0.8rem;">Votre titre professionnel qui apparaît sur votre profil.</small>
+            </div>
+
+            <!-- ===== ANCIEN : BIO (gardé mais lié à la colonne description de admin_profiles) ===== -->
             <div class="form-group">
                 <label for="bio" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-align-left" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Description Pro (Bio)</label>
-                <textarea id="bio" name="bio" rows="4" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit; resize:vertical;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'"></textarea>
+                <textarea id="bio" name="bio" rows="4" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit; resize:vertical;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'" placeholder="Présentez-vous en quelques mots..."></textarea>
+                <small style="color:#888; font-size:0.8rem;">Votre biographie professionnelle.</small>
             </div>
         </div>
 
@@ -150,45 +174,15 @@
 <script>
     (function() {
         // ==========================================
-        // SUPABASE CONFIG - CORRECTION
+        // SUPABASE CONFIG
         // ==========================================
         const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
         
-        // ✅ UTILISER window.supabase qui est défini par le CDN
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         window.supabaseClient = supabaseClient;
 
         console.log('✅ Supabase initialisé dans profil.html');
-        console.log('🔍 supabaseClient disponible:', !!supabaseClient);
-
-        // ==========================================
-        // TEST DE CONNEXION
-        // ==========================================
-        async function testSupabaseConnection() {
-            try {
-                console.log('🔍 Test de connexion à Supabase...');
-                const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
-                if (!adminSession) {
-                    console.warn('⚠️ Aucun admin connecté');
-                    return;
-                }
-                
-                const { data, error } = await supabaseClient
-                    .from('admins')
-                    .select('*')
-                    .eq('email', adminSession.email);
-                
-                if (error) {
-                    console.error('❌ Erreur test Supabase:', error);
-                    showNotification('❌ Erreur de connexion à la base de données', 'error');
-                } else {
-                    console.log('✅ Test Supabase réussi, données:', data);
-                }
-            } catch (err) {
-                console.error('❌ Erreur test:', err);
-            }
-        }
 
         // ==========================================
         // NOTIFICATION
@@ -240,16 +234,13 @@
             const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
             if (!adminSession || !adminSession.email) {
                 console.warn('⚠️ Aucun admin connecté');
-                showNotification('⚠️ Vous devez être connecté pour modifier votre profil', 'error');
                 return;
             }
 
             try {
-                console.log('📝 [1] Chargement des données pour:', adminSession.email);
-                console.log('📝 [1] ID Admin:', adminSession.id);
-                
-                // 1. Charger les infos personnelles
-                console.log('📝 [2] Chargement de la table admins...');
+                console.log('📝 Chargement des données pour:', adminSession.email);
+
+                // 1. Charger les infos personnelles (admins)
                 const { data: adminData, error: adminError } = await supabaseClient
                     .from('admins')
                     .select('*')
@@ -257,55 +248,48 @@
                     .single();
 
                 if (adminError) {
-                    console.error('❌ [2] Erreur chargement admin:', adminError);
+                    console.error('❌ Erreur chargement admin:', adminError);
                     showNotification('❌ Erreur chargement: ' + adminError.message, 'error');
                     return;
                 }
 
                 if (adminData) {
-                    console.log('✅ [2] Admin trouvé:', adminData);
+                    console.log('✅ Admin trouvé:', adminData);
                     document.getElementById('prenom').value = adminData.prenom || '';
                     document.getElementById('nom').value = adminData.nom || '';
                     document.getElementById('ville').value = adminData.ville || '';
                     document.getElementById('pays').value = adminData.pays || 'FR';
                     document.getElementById('telephone').value = adminData.telephone || '';
                     document.getElementById('email').value = adminData.email || '';
-                } else {
-                    console.warn('⚠️ [2] Aucun admin trouvé');
                 }
 
                 // 2. Charger les paramètres boutique
-                console.log('📝 [3] Chargement de la table boutique...');
                 const { data: boutiqueData, error: boutiqueError } = await supabaseClient
                     .from('boutique')
                     .select('*')
                     .eq('admin_id', adminSession.id);
 
                 if (boutiqueError) {
-                    console.error('❌ [3] Erreur chargement boutique:', boutiqueError);
-                    showNotification('❌ Erreur chargement boutique: ' + boutiqueError.message, 'error');
+                    console.error('❌ Erreur chargement boutique:', boutiqueError);
                 }
 
                 if (boutiqueData && boutiqueData.length > 0) {
                     const data = boutiqueData[0];
-                    console.log('✅ [3] Boutique trouvée:', data);
+                    console.log('✅ Boutique trouvée:', data);
                     document.getElementById('nomBoutique').value = data.nom || 'NIKEL';
                     document.getElementById('adresseBoutique').value = data.adresse || '';
                     document.getElementById('descriptionBoutique').value = data.description || '';
-                    document.getElementById('bio').value = data.bio || '';
+                    
+                    // ===== NOUVEAUX CHAMPS =====
+                    document.getElementById('grandTitre').value = data.titreb || '';
+                    document.getElementById('legendeBoutique').value = data.legende || '';
                     
                     if (data.photo_url) {
                         document.getElementById('boutiquePhoto').innerHTML = 
                             `<img src="${data.photo_url}" style="width:100%;height:100%;object-fit:cover;">`;
                     }
-                    if (data.pro_photo_url) {
-                        document.getElementById('proPhoto').innerHTML = 
-                            `<img src="${data.pro_photo_url}" style="width:100%;height:100%;object-fit:cover;">`;
-                    }
-                    showNotification('✅ Données chargées avec succès', 'success');
                 } else {
-                    console.warn('⚠️ [3] Aucune boutique trouvée, création...');
-                    
+                    console.warn('⚠️ Aucune boutique trouvée, création...');
                     const { error: createError } = await supabaseClient
                         .from('boutique')
                         .insert([{
@@ -313,21 +297,59 @@
                             nom: 'NIKEL',
                             adresse: '123 rue de l\'Élégance, 75001 Paris',
                             description: 'NIKEL est une boutique de prêt-à-porter qui allie élégance intemporelle et qualité exceptionnelle.',
-                            bio: 'Passionné par la mode et le design, j\'ai fondé NIKEL en 2020.'
+                            titreb: 'L\'élégance à votre portée',
+                            legende: 'Découvrez notre collection unique de prêt-à-porter haut de gamme.'
                         }]);
 
                     if (createError) {
-                        console.error('❌ [3] Erreur création boutique:', createError);
-                        showNotification('❌ Erreur création boutique: ' + createError.message, 'error');
+                        console.error('❌ Erreur création boutique:', createError);
                     } else {
-                        console.log('✅ [3] Boutique créée avec succès');
-                        showNotification('✅ Paramètres boutique initialisés', 'success');
+                        console.log('✅ Boutique créée avec succès');
                         await loadAdminData();
                         return;
                     }
                 }
 
-                console.log('✅ [4] Chargement terminé');
+                // 3. Charger les infos professionnelles (admin_profiles)
+                const { data: proData, error: proError } = await supabaseClient
+                    .from('admin_profiles')
+                    .select('*')
+                    .eq('admin_id', adminSession.id)
+                    .maybeSingle();
+
+                if (proError) {
+                    console.error('❌ Erreur chargement admin_profiles:', proError);
+                }
+
+                if (proData) {
+                    console.log('✅ Profil pro trouvé:', proData);
+                    document.getElementById('titrePro').value = proData.titre || '';
+                    document.getElementById('bio').value = proData.description || '';
+                    
+                    if (proData.photo_url) {
+                        document.getElementById('proPhoto').innerHTML = 
+                            `<img src="${proData.photo_url}" style="width:100%;height:100%;object-fit:cover;">`;
+                    }
+                } else {
+                    console.warn('⚠️ Aucun profil pro trouvé, création...');
+                    const { error: createError } = await supabaseClient
+                        .from('admin_profiles')
+                        .insert([{
+                            admin_id: adminSession.id,
+                            titre: 'Designer de mode - Fondateur de NIKEL',
+                            description: 'Passionné par la mode et le design, j\'ai fondé NIKEL en 2020 pour offrir une alternative élégante et accessible.'
+                        }]);
+
+                    if (createError) {
+                        console.error('❌ Erreur création admin_profiles:', createError);
+                    } else {
+                        console.log('✅ Profil pro créé avec succès');
+                        await loadAdminData();
+                        return;
+                    }
+                }
+
+                showNotification('✅ Données chargées avec succès', 'success');
 
             } catch (err) {
                 console.error('❌ Erreur générale:', err);
@@ -347,8 +369,8 @@
 
             try {
                 console.log('📝 Sauvegarde des données...');
-                
-                // 1. Mettre à jour les infos personnelles
+
+                // 1. Mettre à jour les infos personnelles (admins)
                 const { error: adminError } = await supabaseClient
                     .from('admins')
                     .update({
@@ -363,12 +385,13 @@
                 if (adminError) throw adminError;
                 console.log('✅ Infos personnelles sauvegardées');
 
-                // 2. Mettre à jour la boutique
+                // 2. Mettre à jour la boutique (avec les nouveaux champs)
                 const boutiqueData = {
                     nom: formData.nomBoutique,
                     adresse: formData.adresseBoutique,
                     description: formData.descriptionBoutique,
-                    bio: formData.bio,
+                    titreb: formData.grandTitre,      // Nouveau champ
+                    legende: formData.legendeBoutique, // Nouveau champ
                     updated_at: new Date().toISOString()
                 };
 
@@ -394,6 +417,37 @@
                         }]);
                     if (error) throw error;
                     console.log('✅ Boutique créée');
+                }
+
+                // 3. Mettre à jour le profil pro (admin_profiles)
+                const proData = {
+                    titre: formData.titrePro,         // Nouveau champ
+                    description: formData.bio,         // Description Pro (Bio)
+                    updated_at: new Date().toISOString()
+                };
+
+                const { data: proExisting, error: proCheckError } = await supabaseClient
+                    .from('admin_profiles')
+                    .select('id')
+                    .eq('admin_id', adminSession.id)
+                    .maybeSingle();
+
+                if (proExisting) {
+                    const { error } = await supabaseClient
+                        .from('admin_profiles')
+                        .update(proData)
+                        .eq('admin_id', adminSession.id);
+                    if (error) throw error;
+                    console.log('✅ Profil pro mis à jour');
+                } else {
+                    const { error } = await supabaseClient
+                        .from('admin_profiles')
+                        .insert([{
+                            admin_id: adminSession.id,
+                            ...proData
+                        }]);
+                    if (error) throw error;
+                    console.log('✅ Profil pro créé');
                 }
 
                 // Mettre à jour la session
@@ -452,6 +506,9 @@
                     nomBoutique: document.getElementById('nomBoutique').value || '',
                     adresseBoutique: document.getElementById('adresseBoutique').value || '',
                     descriptionBoutique: document.getElementById('descriptionBoutique').value || '',
+                    grandTitre: document.getElementById('grandTitre').value || '',
+                    legendeBoutique: document.getElementById('legendeBoutique').value || '',
+                    titrePro: document.getElementById('titrePro').value || '',
                     bio: document.getElementById('bio').value || ''
                 };
                 
@@ -477,14 +534,12 @@
         // ==========================================
         function init() {
             console.log('🚀 Démarrage de profil.html...');
-            console.log('🔍 window.supabase disponible:', !!window.supabase);
             
             setupPhotoUpload('photoInput', 'profilePhoto', 'nikel_profile_photo');
             setupPhotoUpload('boutiquePhotoInput', 'boutiquePhoto', 'nikel_boutique_photo');
             setupPhotoUpload('proPhotoInput', 'proPhoto', 'nikel_pro_photo');
             
             setTimeout(async () => {
-                await testSupabaseConnection();
                 await loadAdminData();
             }, 500);
         }
