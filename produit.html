@@ -110,6 +110,7 @@
         .product-info .rating .stars {
             color: var(--gold);
             font-size: 1.1rem;
+            letter-spacing: 2px;
         }
 
         .product-info .rating .reviews {
@@ -814,6 +815,30 @@
         }
 
         // ==========================================
+        // CALCULER LA MOYENNE DES AVIS
+        // ==========================================
+        function calculateRating(avis) {
+            if (!avis || avis.length === 0) {
+                return { moyenne: 0, total: 0, etoiles: '☆☆☆☆☆' };
+            }
+            
+            const total = avis.length;
+            const sum = avis.reduce((acc, a) => acc + a.note, 0);
+            const moyenne = sum / total;
+            
+            // Générer les étoiles pleines/vides
+            const etoilesPleines = Math.round(moyenne);
+            const etoilesVides = 5 - etoilesPleines;
+            const etoiles = '★'.repeat(etoilesPleines) + '☆'.repeat(etoilesVides);
+            
+            return {
+                moyenne: moyenne.toFixed(1),
+                total: total,
+                etoiles: etoiles
+            };
+        }
+
+        // ==========================================
         // FAVORIS
         // ==========================================
         async function isProductFavorited(productId, clientId) {
@@ -921,16 +946,26 @@
 
                 console.log('📊 Avis trouvés:', avis);
 
-                const total = avis ? avis.length : 0;
-                let moyenne = 0;
-                if (total > 0) {
-                    const sum = avis.reduce((acc, a) => acc + a.note, 0);
-                    moyenne = (sum / total).toFixed(1);
+                // Calculer les statistiques
+                const stats = calculateRating(avis);
+                
+                // Mettre à jour l'affichage des étoiles et des avis
+                const ratingDisplay = document.querySelector('.rating .stars');
+                const reviewsDisplay = document.querySelector('.rating .reviews');
+                
+                if (ratingDisplay) {
+                    ratingDisplay.textContent = stats.etoiles;
+                }
+                
+                if (reviewsDisplay) {
+                    reviewsDisplay.textContent = `(${stats.moyenne}/5 · ${stats.total} avis)`;
                 }
 
-                document.getElementById('avisMoyenne').textContent = moyenne;
-                document.getElementById('avisTotal').textContent = total;
+                // Mettre à jour les stats dans le header des avis
+                document.getElementById('avisMoyenne').textContent = stats.moyenne;
+                document.getElementById('avisTotal').textContent = stats.total;
 
+                // Afficher les avis
                 if (!avis || avis.length === 0) {
                     container.innerHTML = `
                         <div class="avis-empty">
@@ -943,13 +978,14 @@
 
                 container.innerHTML = avis.map(a => {
                     const hasReponse = a.reponse_admin && a.reponse_admin.trim() !== '';
+                    const etoilesAvis = '★'.repeat(a.note) + '☆'.repeat(5 - a.note);
 
                     return `
                     <div class="avis-item">
                         <p class="avis-quote">"${a.commentaire || ''}"</p>
                         <p class="avis-nom">${a.client_nom}</p>
                         <p class="avis-date">${new Date(a.created_at).toLocaleDateString('fr-FR')}</p>
-                        <div class="avis-stars-display">${'★'.repeat(a.note)}${'☆'.repeat(5 - a.note)}</div>
+                        <div class="avis-stars-display">${etoilesAvis}</div>
                         
                         ${hasReponse ? `
                             <div class="avis-reponse">
@@ -1157,8 +1193,8 @@
                         <h1>${product.nom}</h1>
                         
                         <div class="rating">
-                            <span class="stars">★★★★★</span>
-                            <span class="reviews">(4.8/5 · 127 avis)</span>
+                            <span class="stars">☆☆☆☆☆</span>
+                            <span class="reviews">(0/5 · 0 avis)</span>
                         </div>
 
                         <div class="prices">
@@ -1221,6 +1257,7 @@
                 window.currentQuantity = 1;
                 document.getElementById('quantityDisplay').textContent = '1';
 
+                // Charger les avis après avoir affiché le produit
                 await loadAvis(productId);
 
             } catch (err) {
