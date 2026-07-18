@@ -9,172 +9,19 @@
     <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== LAYOUT GLOBAL ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-            display: flex;
+        .dashboard-page {
+            padding: 40px 0;
+            background: #fafafa;
             min-height: 100vh;
         }
 
-        /* ===== SIDEBAR ===== */
-        .sidebar {
-            width: 280px;
-            background: #1a1a1a;
-            color: white;
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            overflow-y: auto;
-            flex-shrink: 0;
+        .dashboard-page .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
-        .sidebar .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #c9a84c;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .sidebar .logo i {
-            font-size: 1.8rem;
-        }
-
-        .sidebar .user-info {
-            padding: 16px 0;
-            border-bottom: 1px solid #333;
-            margin-bottom: 20px;
-        }
-
-        .sidebar .user-info .user-name {
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: white;
-        }
-
-        .sidebar .user-info .user-email {
-            font-size: 0.85rem;
-            color: #888;
-            margin-top: 4px;
-        }
-
-        .sidebar .nav-menu {
-            list-style: none;
-            flex: 1;
-        }
-
-        .sidebar .nav-menu li {
-            margin-bottom: 4px;
-        }
-
-        .sidebar .nav-menu li a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            color: #aaa;
-            text-decoration: none;
-            border-radius: 10px;
-            transition: all 0.3s;
-            font-size: 0.95rem;
-        }
-
-        .sidebar .nav-menu li a:hover {
-            background: #2a2a2a;
-            color: white;
-        }
-
-        .sidebar .nav-menu li a.active {
-            background: #c9a84c;
-            color: #1a1a1a;
-            font-weight: 600;
-        }
-
-        .sidebar .nav-menu li a.active i {
-            color: #1a1a1a;
-        }
-
-        .sidebar .nav-menu li a i {
-            width: 20px;
-            text-align: center;
-            color: #666;
-        }
-
-        .sidebar .nav-menu li a.active i {
-            color: #1a1a1a;
-        }
-
-        .sidebar .nav-menu li a .badge-nav {
-            margin-left: auto;
-            background: #c9a84c;
-            color: #1a1a1a;
-            font-size: 0.7rem;
-            padding: 2px 10px;
-            border-radius: 50px;
-            font-weight: 600;
-        }
-
-        .sidebar .logout {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #333;
-        }
-
-        .sidebar .logout a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            color: #888;
-            text-decoration: none;
-            border-radius: 10px;
-            transition: all 0.3s;
-        }
-
-        .sidebar .logout a:hover {
-            background: #2a2a2a;
-            color: #e74c3c;
-        }
-
-        /* ===== CONTENU PRINCIPAL ===== */
-        .main-content {
-            flex: 1;
-            padding: 30px 40px;
-            background: #f5f5f5;
-            overflow-y: auto;
-        }
-
-        .main-content .page-title {
-            margin-bottom: 30px;
-        }
-
-        .main-content .page-title h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            color: #1a1a1a;
-            margin-bottom: 4px;
-        }
-
-        .main-content .page-title p {
-            color: #888;
-            font-size: 0.95rem;
-        }
-
-        /* ===== STATS CARDS ===== */
+        /* Stats Cards */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -227,7 +74,7 @@
         .stat-card.border-green { border-left-color: #27ae60; }
         .stat-card.border-blue { border-left-color: #3498db; }
 
-        /* ===== SECTION CARD ===== */
+        /* Section communes */
         .section-card {
             background: #ffffff;
             border-radius: 16px;
@@ -271,7 +118,7 @@
             text-decoration: underline;
         }
 
-        /* ===== TABLEAU ===== */
+        /* Tableau */
         .table-wrapper {
             overflow-x: auto;
             border-radius: 12px;
@@ -320,7 +167,7 @@
         .statut-badge.attente { background: #f39c12; }
         .statut-badge.annule { background: #e74c3c; }
 
-        /* ===== TOP 5 FAVORIS ===== */
+        /* Top 5 Favoris - Grille */
         .favoris-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -434,128 +281,7 @@
             font-size: 0.9rem;
         }
 
-        /* ===== CONTENU DES PAGES (caché par défaut) ===== */
-        .page-content {
-            display: none;
-        }
-
-        .page-content.active {
-            display: block;
-        }
-
-        /* ===== SUIVI VENTES (intégré) ===== */
-        .filters-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 20px;
-            align-items: center;
-            background: #f8f8f8;
-            padding: 16px;
-            border-radius: 12px;
-        }
-
-        .filters-bar input,
-        .filters-bar select {
-            padding: 10px 14px;
-            border: 2px solid #e8e8e8;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            background: #ffffff;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        .filters-bar input:focus,
-        .filters-bar select:focus {
-            border-color: #c9a84c;
-        }
-
-        .filters-bar input[type="text"] {
-            flex: 2;
-            min-width: 200px;
-        }
-
-        .filters-bar select {
-            min-width: 150px;
-            cursor: pointer;
-        }
-
-        .filters-bar .btn-reset {
-            padding: 10px 20px;
-            background: transparent;
-            border: 2px solid #e8e8e8;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: #888;
-        }
-
-        .filters-bar .btn-reset:hover {
-            border-color: #c9a84c;
-            color: #c9a84c;
-        }
-
-        .filters-bar .btn-export {
-            padding: 10px 20px;
-            background: #27ae60;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .filters-bar .btn-export:hover {
-            transform: scale(1.02);
-        }
-
-        /* ===== PAGINATION ===== */
-        .pagination-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 16px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .pagination-info span {
-            color: #888;
-            font-size: 0.9rem;
-        }
-
-        .pagination-info .pagination-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .pagination-info .pagination-buttons button {
-            padding: 8px 16px;
-            border: 2px solid #e8e8e8;
-            border-radius: 8px;
-            background: transparent;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: #888;
-            font-weight: 600;
-        }
-
-        .pagination-info .pagination-buttons button:hover:not(:disabled) {
-            border-color: #c9a84c;
-            color: #c9a84c;
-        }
-
-        .pagination-info .pagination-buttons button:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        /* ===== EMPTY STATE ===== */
+        /* Empty state */
         .empty-state {
             text-align: center;
             padding: 40px 20px;
@@ -569,31 +295,10 @@
             margin-bottom: 12px;
         }
 
-        /* ===== RESPONSIVE ===== */
+        /* Responsive */
         @media (max-width: 992px) {
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
-            }
-            .sidebar {
-                width: 80px;
-                padding: 20px 10px;
-            }
-            .sidebar .logo span,
-            .sidebar .user-info .user-name,
-            .sidebar .user-info .user-email,
-            .sidebar .nav-menu li a span,
-            .sidebar .logout a span {
-                display: none;
-            }
-            .sidebar .nav-menu li a {
-                justify-content: center;
-                padding: 12px;
-            }
-            .sidebar .nav-menu li a i {
-                font-size: 1.2rem;
-            }
-            .main-content {
-                padding: 20px;
             }
         }
 
@@ -604,29 +309,9 @@
             .favoris-grid {
                 grid-template-columns: 1fr 1fr;
             }
-            .sidebar {
-                width: 60px;
-                padding: 15px 8px;
-            }
-            .sidebar .logo {
-                font-size: 1.2rem;
-                justify-content: center;
-            }
-            .main-content {
-                padding: 15px;
-            }
-            .filters-bar {
-                flex-direction: column;
-            }
-            .filters-bar input[type="text"] {
-                width: 100%;
-            }
-            .filters-bar select {
-                width: 100%;
-            }
         }
 
-        /* ===== ANIMATIONS ===== */
+        /* Animation */
         @keyframes slideUp {
             from {
                 opacity: 0;
@@ -645,111 +330,21 @@
         .stat-card:nth-child(2) { animation-delay: 0.2s; }
         .stat-card:nth-child(3) { animation-delay: 0.3s; }
         .stat-card:nth-child(4) { animation-delay: 0.4s; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .page-content.active {
-            animation: fadeIn 0.4s ease;
-        }
-
-        /* ===== SCROLLBAR SIDEBAR ===== */
-        .sidebar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .sidebar::-webkit-scrollbar-track {
-            background: #1a1a1a;
-        }
-        .sidebar::-webkit-scrollbar-thumb {
-            background: #c9a84c;
-            border-radius: 10px;
-        }
     </style>
 </head>
 <body>
-
-    <!-- ===== SIDEBAR ===== -->
-    <aside class="sidebar">
-        <div class="logo">
-            <i class="fas fa-crown"></i>
-            <span>NIKEL</span>
-        </div>
-
-        <div class="user-info">
-            <div class="user-name">Justine Kamara</div>
-            <div class="user-email">f91631072@gmail.com</div>
-        </div>
-
-        <ul class="nav-menu">
-            <li>
-                <a href="#" class="active" data-page="dashboard">
-                    <i class="fas fa-chart-pie"></i>
-                    <span>Tableau de bord</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" data-page="profil">
-                    <i class="fas fa-user"></i>
-                    <span>Profil</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" data-page="suivi-ventes">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Suivi des ventes</span>
-                    <span class="badge-nav">12</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" data-page="contacts">
-                    <i class="fas fa-address-book"></i>
-                    <span>Mes contacts</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" data-page="articles">
-                    <i class="fas fa-newspaper"></i>
-                    <span>Mes articles</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" data-page="favoris">
-                    <i class="fas fa-heart"></i>
-                    <span>Favoris des clients</span>
-                    <span class="badge-nav">5</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" data-page="avis">
-                    <i class="fas fa-star"></i>
-                    <span>Avis et notes</span>
-                </a>
-            </li>
-        </ul>
-
-        <div class="logout">
-            <a href="login.html">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Déconnexion</span>
-            </a>
-        </div>
-    </aside>
-
-    <!-- ===== CONTENU PRINCIPAL ===== -->
-    <main class="main-content">
-
-        <!-- ========================================== -->
-        <!-- PAGE : TABLEAU DE BORD (DEFAULT)          -->
-        <!-- ========================================== -->
-        <div class="page-content active" id="page-dashboard">
-            <div class="page-title">
-                <h1><i class="fas fa-chart-pie" style="color:#c9a84c;"></i> Tableau de bord</h1>
-                <p>Vue d'ensemble de votre activité sur NIKEL.</p>
+    <!-- ===== PAGE DASHBOARD SANS HEADER ===== -->
+    <section class="dashboard-page">
+        <div class="container">
+            <!-- ===== TITRE ===== -->
+            <div style="margin-bottom: 30px;">
+                <h1 style="font-family:'Playfair Display',serif; font-size:2rem; color:#1a1a1a; margin-bottom:4px;">
+                    <i class="fas fa-chart-pie" style="color:#c9a84c;"></i> Tableau de bord
+                </h1>
+                <p style="color:#888; font-size:0.95rem;">Vue d'ensemble de votre activité sur NIKEL.</p>
             </div>
 
-            <!-- Stats -->
+            <!-- ===== STATISTIQUES ===== -->
             <div class="stats-grid">
                 <div class="stat-card border-gold">
                     <span class="stat-icon">📦</span>
@@ -773,11 +368,11 @@
                 </div>
             </div>
 
-            <!-- Dernières ventes -->
+            <!-- ===== DERNIÈRES COMMANDES ===== -->
             <div class="section-card">
                 <div class="section-header">
                     <h3><i class="fas fa-clock"></i> Dernières ventes</h3>
-                    <a onclick="navigateTo('suivi-ventes')">Voir toutes →</a>
+                    <a onclick="window.navigateTo && window.navigateTo('suivi-ventes')">Voir toutes →</a>
                 </div>
                 <div class="table-wrapper">
                     <table>
@@ -801,11 +396,11 @@
                 </div>
             </div>
 
-            <!-- Top 5 Favoris -->
+            <!-- ===== TOP 5 FAVORIS ===== -->
             <div class="section-card">
                 <div class="section-header">
                     <h3><i class="fas fa-heart" style="color:#e74c3c;"></i> Top 5 des produits les plus aimés</h3>
-                    <a onclick="navigateTo('favoris')">Voir tous les favoris →</a>
+                    <a onclick="window.navigateTo && window.navigateTo('favoris')">Voir tous les favoris →</a>
                 </div>
                 <div class="favoris-grid" id="topFavorisGrid">
                     <div style="text-align:center; padding:30px; color:#888; grid-column:1/-1;">
@@ -815,162 +410,7 @@
                 </div>
             </div>
         </div>
-
-        <!-- ========================================== -->
-        <!-- PAGE : SUIVI DES VENTES                    -->
-        <!-- ========================================== -->
-        <div class="page-content" id="page-suivi-ventes">
-            <div class="page-title">
-                <h1><i class="fas fa-chart-line" style="color:#c9a84c;"></i> Suivi des ventes</h1>
-                <p>Gérez et suivez toutes vos commandes en un seul endroit.</p>
-            </div>
-
-            <!-- Filtres -->
-            <div class="filters-bar">
-                <input type="text" id="searchVentes" placeholder="🔍 Rechercher par nom, email ou téléphone..." onkeyup="applyVentesFilters()">
-                <select id="filterStatut" onchange="applyVentesFilters()">
-                    <option value="all">📊 Tous les statuts</option>
-                    <option value="soldé">✅ Soldé</option>
-                    <option value="en attente">⏳ En attente</option>
-                    <option value="annulé">❌ Annulé</option>
-                </select>
-                <input type="date" id="dateDebut" onchange="applyVentesFilters()" placeholder="Date début">
-                <input type="date" id="dateFin" onchange="applyVentesFilters()" placeholder="Date fin">
-                <button class="btn-reset" onclick="resetVentesFilters()">
-                    <i class="fas fa-undo"></i> Réinitialiser
-                </button>
-                <button class="btn-export" onclick="exportCSV()">
-                    <i class="fas fa-file-export"></i> Exporter CSV
-                </button>
-            </div>
-
-            <!-- Tableau -->
-            <div class="section-card">
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Client</th>
-                                <th>Email</th>
-                                <th>Téléphone</th>
-                                <th>Date</th>
-                                <th>Total</th>
-                                <th>Ville</th>
-                                <th>Statut</th>
-                                <th style="text-align:center;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ventesTableBody">
-                            <tr>
-                                <td colspan="9" style="text-align:center; padding:30px; color:#888;">
-                                    <i class="fas fa-spinner fa-spin"></i> Chargement...
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="pagination-info">
-                    <span id="ventesPaginationInfo">Affichage de 0 à 0 sur 0 entrées</span>
-                    <div class="pagination-buttons">
-                        <button onclick="prevVentesPage()" id="prevVentesPage">
-                            <i class="fas fa-chevron-left"></i> Précédent
-                        </button>
-                        <span id="ventesPageInfo" style="display:flex;align-items:center;padding:0 12px;font-weight:600;color:#1a1a1a;">Page 1</span>
-                        <button onclick="nextVentesPage()" id="nextVentesPage">
-                            Suivant <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ========================================== -->
-        <!-- PAGE : PROFIL                              -->
-        <!-- ========================================== -->
-        <div class="page-content" id="page-profil">
-            <div class="page-title">
-                <h1><i class="fas fa-user" style="color:#c9a84c;"></i> Profil</h1>
-                <p>Gérez vos informations personnelles.</p>
-            </div>
-            <div class="section-card">
-                <div style="text-align:center; padding:40px; color:#888;">
-                    <i class="fas fa-user-circle" style="font-size:4rem; color:#ddd; display:block; margin-bottom:16px;"></i>
-                    <h3 style="color:#1a1a1a;">Justine Kamara</h3>
-                    <p>f91631072@gmail.com</p>
-                    <p style="font-size:0.9rem;">Membre depuis 2024</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ========================================== -->
-        <!-- PAGE : CONTACTS                            -->
-        <!-- ========================================== -->
-        <div class="page-content" id="page-contacts">
-            <div class="page-title">
-                <h1><i class="fas fa-address-book" style="color:#c9a84c;"></i> Mes contacts</h1>
-                <p>Gérez vos clients et fournisseurs.</p>
-            </div>
-            <div class="section-card">
-                <div class="empty-state">
-                    <i class="fas fa-address-book"></i>
-                    <p>Aucun contact enregistré.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ========================================== -->
-        <!-- PAGE : ARTICLES                            -->
-        <!-- ========================================== -->
-        <div class="page-content" id="page-articles">
-            <div class="page-title">
-                <h1><i class="fas fa-newspaper" style="color:#c9a84c;"></i> Mes articles</h1>
-                <p>Gérez vos articles et publications.</p>
-            </div>
-            <div class="section-card">
-                <div class="empty-state">
-                    <i class="fas fa-newspaper"></i>
-                    <p>Aucun article publié.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ========================================== -->
-        <!-- PAGE : FAVORIS DES CLIENTS                 -->
-        <!-- ========================================== -->
-        <div class="page-content" id="page-favoris">
-            <div class="page-title">
-                <h1><i class="fas fa-heart" style="color:#e74c3c;"></i> Favoris des clients</h1>
-                <p>Découvrez les produits les plus appréciés par vos clients.</p>
-            </div>
-            <div class="section-card">
-                <div class="favoris-grid" id="favorisFullGrid">
-                    <div style="text-align:center; padding:30px; color:#888; grid-column:1/-1;">
-                        <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
-                        Chargement des favoris...
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ========================================== -->
-        <!-- PAGE : AVIS ET NOTES                       -->
-        <!-- ========================================== -->
-        <div class="page-content" id="page-avis">
-            <div class="page-title">
-                <h1><i class="fas fa-star" style="color:#c9a84c;"></i> Avis et notes</h1>
-                <p>Consultez les avis de vos clients.</p>
-            </div>
-            <div class="section-card">
-                <div class="empty-state">
-                    <i class="fas fa-star"></i>
-                    <p>Aucun avis pour le moment.</p>
-                </div>
-            </div>
-        </div>
-
-    </main>
+    </section>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -987,61 +427,13 @@
                 if (window.supabase) {
                     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                     window.supabaseClient = supabaseClient;
-                    console.log('✅ Supabase initialisé');
+                    console.log('✅ Supabase initialisé dans dashboard.html');
                 } else {
                     console.warn('⚠️ Supabase SDK non chargé');
                 }
             } catch (e) {
                 console.error('❌ Erreur initialisation Supabase:', e);
             }
-
-            // ==========================================
-            // NAVIGATION
-            // ==========================================
-            function navigateTo(page) {
-                // Cacher toutes les pages
-                document.querySelectorAll('.page-content').forEach(el => {
-                    el.classList.remove('active');
-                });
-
-                // Afficher la page cible
-                const target = document.getElementById('page-' + page);
-                if (target) {
-                    target.classList.add('active');
-                }
-
-                // Mettre à jour le menu
-                document.querySelectorAll('.nav-menu a').forEach(link => {
-                    link.classList.remove('active');
-                    if (link.dataset.page === page) {
-                        link.classList.add('active');
-                    }
-                });
-
-                // Si on va sur suivi-ventes, charger les données
-                if (page === 'suivi-ventes') {
-                    loadVentesData();
-                }
-                if (page === 'favoris') {
-                    loadAllFavoris();
-                }
-            }
-
-            // Exposer la navigation globalement
-            window.navigateTo = navigateTo;
-
-            // ==========================================
-            // GESTION DU MENU
-            // ==========================================
-            document.querySelectorAll('.nav-menu a').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const page = this.dataset.page;
-                    if (page) {
-                        navigateTo(page);
-                    }
-                });
-            });
 
             // ==========================================
             // DONNÉES DE TEST
@@ -1066,13 +458,6 @@
                 return d.toLocaleDateString('fr-FR');
             }
 
-            function formatDateTime(dateString) {
-                if (!dateString) return '—';
-                const d = new Date(dateString);
-                if (isNaN(d.getTime())) return '—';
-                return d.toLocaleDateString('fr-FR') + ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-            }
-
             // ==========================================
             // BADGE STATUT
             // ==========================================
@@ -1089,7 +474,7 @@
             }
 
             // ==========================================
-            // DASHBOARD - STATISTIQUES
+            // METTRE À JOUR LES STATISTIQUES
             // ==========================================
             function updateStats(data) {
                 const ventes = data.filter(v => v.statut_produit === 'soldé');
@@ -1106,7 +491,7 @@
             }
 
             // ==========================================
-            // DASHBOARD - DERNIÈRES VENTES
+            // AFFICHER LES DERNIÈRES VENTES
             // ==========================================
             function renderLastVentes(data) {
                 const tbody = document.getElementById('lastVentesBody');
@@ -1137,13 +522,29 @@
             }
 
             // ==========================================
-            // DASHBOARD - TOP 5 FAVORIS
+            // FONCTION POUR CHANGER D'ONGLET (utilise navigateTo de mon-compte.html)
+            // ==========================================
+            function goToSuiviVentes() {
+                // Vérifier si la fonction navigateTo existe (définie dans mon-compte.html)
+                if (typeof window.navigateTo === 'function') {
+                    window.navigateTo('suivi-ventes');
+                } else {
+                    // Fallback: redirection classique
+                    window.location.href = 'mon-compte.html?page=suivi-ventes';
+                }
+            }
+
+            // ==========================================
+            // CHARGER LE TOP 5 DES FAVORIS
             // ==========================================
             async function loadTopFavoris() {
                 const grid = document.getElementById('topFavorisGrid');
                 
                 try {
+                    console.log('📝 Chargement du Top 5 des favoris...');
+
                     if (!supabaseClient) {
+                        console.warn('⚠️ Supabase non disponible');
                         grid.innerHTML = `
                             <div class="empty-state" style="grid-column:1/-1;">
                                 <i class="fas fa-heart"></i>
@@ -1153,11 +554,23 @@
                         return;
                     }
 
+                    // 1. Récupérer tous les favoris
                     const { data: favoris, error: favorisError } = await supabaseClient
                         .from('favoris')
                         .select('produit_id');
 
-                    if (favorisError || !favoris || favoris.length === 0) {
+                    if (favorisError) {
+                        console.error('❌ Erreur chargement favoris:', favorisError);
+                        grid.innerHTML = `
+                            <div class="empty-state" style="grid-column:1/-1;">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <p>Erreur de chargement des favoris.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    if (!favoris || favoris.length === 0) {
                         grid.innerHTML = `
                             <div class="empty-state" style="grid-column:1/-1;">
                                 <i class="fas fa-heart" style="color:#ddd;"></i>
@@ -1167,12 +580,14 @@
                         return;
                     }
 
+                    // 2. Compter les favoris par produit
                     const productCount = {};
                     favoris.forEach(f => {
                         const id = f.produit_id;
                         productCount[id] = (productCount[id] || 0) + 1;
                     });
 
+                    // 3. Trier par nombre de favoris (décroissant) et prendre les 5 premiers
                     const sortedProducts = Object.entries(productCount)
                         .sort((a, b) => b[1] - a[1])
                         .slice(0, 5);
@@ -1189,12 +604,14 @@
                         return;
                     }
 
+                    // 4. Récupérer les détails des produits
                     const { data: produits, error: produitsError } = await supabaseClient
                         .from('produits')
                         .select('*')
                         .in('id', productIds);
 
-                    if (produitsError || !produits) {
+                    if (produitsError) {
+                        console.error('❌ Erreur chargement produits:', produitsError);
                         grid.innerHTML = `
                             <div class="empty-state" style="grid-column:1/-1;">
                                 <i class="fas fa-exclamation-triangle"></i>
@@ -1204,11 +621,26 @@
                         return;
                     }
 
+                    // 5. Construire les données avec le nombre de favoris
                     const topProducts = produits.map(p => ({
                         ...p,
                         nbFavoris: productCount[p.id] || 0
                     })).sort((a, b) => b.nbFavoris - a.nbFavoris);
 
+                    console.log(`✅ Top ${topProducts.length} produits favoris chargés`);
+
+                    // 6. Afficher les produits
+                    if (topProducts.length === 0) {
+                        grid.innerHTML = `
+                            <div class="empty-state" style="grid-column:1/-1;">
+                                <i class="fas fa-heart" style="color:#ddd;"></i>
+                                <p>Aucun produit favori trouvé.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    // Icônes de catégorie
                     const categoryIcons = {
                         'vêtements': '👕',
                         'accessoires': '👜',
@@ -1218,6 +650,7 @@
                         'luxe': '💎'
                     };
 
+                    // Classes pour les médailles
                     const rankClasses = ['gold', 'silver', 'bronze', '', ''];
 
                     grid.innerHTML = topProducts.map((p, index) => {
@@ -1246,7 +679,7 @@
                                     <span><i class="fas fa-heart heart-icon"></i> ${p.nbFavoris} favoris</span>
                                     <span><i class="fas fa-box"></i> ${p.stock || 0} en stock</span>
                                 </div>
-                                <button class="btn-stats" onclick="navigateTo('suivi-ventes')">
+                                <button class="btn-stats" onclick="goToSuiviVentes()">
                                     <i class="fas fa-chart-bar"></i> Voir statistiques
                                 </button>
                             </div>
@@ -1265,458 +698,15 @@
             }
 
             // ==========================================
-            // SUIVI VENTES - VARIABLES
-            // ==========================================
-            let allVentes = [];
-            let filteredVentes = [];
-            let currentVentesPage = 1;
-            const perPageVentes = 10;
-
-            // ==========================================
-            // SUIVI VENTES - CHARGER LES DONNÉES
-            // ==========================================
-            async function loadVentesData() {
-                const tbody = document.getElementById('ventesTableBody');
-                
-                try {
-                    console.log('📝 Chargement des ventes...');
-
-                    if (!supabaseClient) {
-                        allVentes = getTestData();
-                        filteredVentes = [...allVentes];
-                        renderVentesTable();
-                        updateVentesPagination();
-                        return;
-                    }
-
-                    const { data, error } = await supabaseClient
-                        .from('clients')
-                        .select('*')
-                        .order('created_at', { ascending: false });
-
-                    if (error || !data || data.length === 0) {
-                        allVentes = getTestData();
-                        filteredVentes = [...allVentes];
-                        renderVentesTable();
-                        updateVentesPagination();
-                        return;
-                    }
-
-                    allVentes = data.map(c => ({
-                        ...c,
-                        statut: c.statut_produit || 'en attente'
-                    }));
-                    
-                    filteredVentes = [...allVentes];
-                    renderVentesTable();
-                    updateVentesPagination();
-
-                } catch (err) {
-                    console.error('❌ Erreur:', err);
-                    allVentes = getTestData();
-                    filteredVentes = [...allVentes];
-                    renderVentesTable();
-                    updateVentesPagination();
-                }
-            }
-
-            // ==========================================
-            // SUIVI VENTES - RENDU TABLEAU
-            // ==========================================
-            function renderVentesTable() {
-                const tbody = document.getElementById('ventesTableBody');
-                
-                if (filteredVentes.length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="9" style="text-align:center; padding:30px; color:#888;">
-                                <i class="fas fa-inbox" style="font-size:1.5rem; display:block; margin-bottom:8px; color:#ddd;"></i>
-                                Aucune vente trouvée.
-                            </td>
-                        </tr>
-                    `;
-                    return;
-                }
-
-                const start = (currentVentesPage - 1) * perPageVentes;
-                const items = filteredVentes.slice(start, start + perPageVentes);
-
-                tbody.innerHTML = items.map(v => `
-                    <tr>
-                        <td style="font-weight:600;">#${v.id}</td>
-                        <td>${v.prenom || ''} ${v.nom || ''}</td>
-                        <td style="color:#888;">${v.email || '—'}</td>
-                        <td style="color:#888;">${v.telephone || '—'}</td>
-                        <td style="color:#888;font-size:0.9rem;">${formatDateTime(v.created_at)}</td>
-                        <td style="font-weight:700;color:#c9a84c;">${(v.total_achat || 0).toFixed(2).replace('.', ',')} FCFA</td>
-                        <td style="color:#888;">${v.ville || '—'}</td>
-                        <td>${getStatutBadge(v.statut || 'en attente')}</td>
-                        <td style="text-align:center;">
-                            <button onclick="updateStatutVente(${v.id}, 'soldé')" style="padding:4px 8px;border:none;border-radius:4px;background:#27ae60;color:white;cursor:pointer;font-size:0.7rem;margin:2px;" title="Soldé">✅</button>
-                            <button onclick="updateStatutVente(${v.id}, 'en attente')" style="padding:4px 8px;border:none;border-radius:4px;background:#f39c12;color:white;cursor:pointer;font-size:0.7rem;margin:2px;" title="En attente">⏳</button>
-                            <button onclick="updateStatutVente(${v.id}, 'annulé')" style="padding:4px 8px;border:none;border-radius:4px;background:#e74c3c;color:white;cursor:pointer;font-size:0.7rem;margin:2px;" title="Annulé">❌</button>
-                        </td>
-                    </tr>
-                `).join('');
-
-                updateVentesPagination();
-            }
-
-            // ==========================================
-            // SUIVI VENTES - PAGINATION
-            // ==========================================
-            function updateVentesPagination() {
-                const total = filteredVentes.length;
-                const start = (currentVentesPage - 1) * perPageVentes + 1;
-                const end = Math.min(currentVentesPage * perPageVentes, total);
-                const totalPages = Math.ceil(total / perPageVentes) || 1;
-
-                document.getElementById('ventesPaginationInfo').textContent = 
-                    `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
-                document.getElementById('ventesPageInfo').textContent = `Page ${currentVentesPage} sur ${totalPages}`;
-
-                document.getElementById('prevVentesPage').disabled = currentVentesPage <= 1;
-                document.getElementById('nextVentesPage').disabled = currentVentesPage >= totalPages;
-            }
-
-            function prevVentesPage() {
-                if (currentVentesPage > 1) {
-                    currentVentesPage--;
-                    renderVentesTable();
-                }
-            }
-
-            function nextVentesPage() {
-                const totalPages = Math.ceil(filteredVentes.length / perPageVentes);
-                if (currentVentesPage < totalPages) {
-                    currentVentesPage++;
-                    renderVentesTable();
-                }
-            }
-
-            // ==========================================
-            // SUIVI VENTES - FILTRES
-            // ==========================================
-            function applyVentesFilters() {
-                const search = document.getElementById('searchVentes').value.toLowerCase().trim();
-                const statut = document.getElementById('filterStatut').value;
-                const dateDebut = document.getElementById('dateDebut').value;
-                const dateFin = document.getElementById('dateFin').value;
-
-                filteredVentes = allVentes.filter(v => {
-                    let match = true;
-                    
-                    if (search) {
-                        const fullName = `${v.prenom || ''} ${v.nom || ''}`.toLowerCase();
-                        const email = (v.email || '').toLowerCase();
-                        const phone = (v.telephone || '').toLowerCase();
-                        match = fullName.includes(search) || email.includes(search) || phone.includes(search);
-                    }
-                    
-                    if (statut !== 'all') {
-                        match = match && (v.statut === statut || v.statut_produit === statut);
-                    }
-                    
-                    if (dateDebut && match) {
-                        const d1 = new Date(dateDebut);
-                        const dV = new Date(v.created_at);
-                        if (d1 > dV) match = false;
-                    }
-                    if (dateFin && match) {
-                        const d2 = new Date(dateFin);
-                        const dV = new Date(v.created_at);
-                        d2.setHours(23, 59, 59);
-                        if (d2 < dV) match = false;
-                    }
-                    
-                    return match;
-                });
-
-                currentVentesPage = 1;
-                renderVentesTable();
-            }
-
-            function resetVentesFilters() {
-                document.getElementById('searchVentes').value = '';
-                document.getElementById('filterStatut').value = 'all';
-                document.getElementById('dateDebut').value = '';
-                document.getElementById('dateFin').value = '';
-                filteredVentes = [...allVentes];
-                currentVentesPage = 1;
-                renderVentesTable();
-            }
-
-            // ==========================================
-            // SUIVI VENTES - UPDATE STATUT
-            // ==========================================
-            async function updateStatutVente(id, newStatut) {
-                const v = allVentes.find(item => item.id === id);
-                if (!v) return;
-
-                const oldStatut = v.statut || v.statut_produit;
-                v.statut = newStatut;
-                v.statut_produit = newStatut;
-                
-                const f = filteredVentes.find(item => item.id === id);
-                if (f) {
-                    f.statut = newStatut;
-                    f.statut_produit = newStatut;
-                }
-
-                renderVentesTable();
-                renderLastVentes(allVentes);
-                updateStats(allVentes);
-
-                try {
-                    if (supabaseClient) {
-                        const { error } = await supabaseClient
-                            .from('clients')
-                            .update({ statut_produit: newStatut })
-                            .eq('id', id);
-
-                        if (error) {
-                            console.error('❌ Erreur mise à jour:', error);
-                            v.statut = oldStatut;
-                            v.statut_produit = oldStatut;
-                            if (f) {
-                                f.statut = oldStatut;
-                                f.statut_produit = oldStatut;
-                            }
-                            renderVentesTable();
-                            renderLastVentes(allVentes);
-                            updateStats(allVentes);
-                            showNotification('❌ Erreur lors de la mise à jour', 'error');
-                            return;
-                        }
-                    }
-                    showNotification(`✅ Statut mis à jour : ${newStatut}`, 'success');
-                } catch (err) {
-                    console.error('❌ Erreur:', err);
-                    showNotification('❌ Erreur lors de la mise à jour', 'error');
-                }
-            }
-
-            // ==========================================
-            // SUIVI VENTES - EXPORT CSV
-            // ==========================================
-            function exportCSV() {
-                if (allVentes.length === 0) {
-                    showNotification('❌ Aucune donnée à exporter', 'error');
-                    return;
-                }
-
-                let csv = 'ID,Client,Email,Téléphone,Date,Total,Ville,Pays,Statut\n';
-                allVentes.forEach(v => {
-                    const client = `${v.prenom || ''} ${v.nom || ''}`.trim();
-                    const statutValue = v.statut_produit || v.statut || '';
-                    csv += `${v.id},"${client}","${v.email || ''}","${v.telephone || ''}","${formatDateTime(v.created_at)}","${v.total_achat || 0}","${v.ville || ''}","${v.pays || ''}","${statutValue}"\n`;
-                });
-
-                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `ventes_${new Date().toISOString().slice(0,10)}.csv`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                showNotification('✅ Export CSV effectué', 'success');
-            }
-
-            // ==========================================
-            // PAGE FAVORIS COMPLETE
-            // ==========================================
-            async function loadAllFavoris() {
-                const grid = document.getElementById('favorisFullGrid');
-                
-                try {
-                    if (!supabaseClient) {
-                        grid.innerHTML = `
-                            <div class="empty-state" style="grid-column:1/-1;">
-                                <i class="fas fa-heart"></i>
-                                <p>Impossible de charger les favoris.</p>
-                            </div>
-                        `;
-                        return;
-                    }
-
-                    const { data: favoris, error: favorisError } = await supabaseClient
-                        .from('favoris')
-                        .select('produit_id, clients(prenom, nom)');
-
-                    if (favorisError || !favoris || favoris.length === 0) {
-                        grid.innerHTML = `
-                            <div class="empty-state" style="grid-column:1/-1;">
-                                <i class="fas fa-heart" style="color:#ddd;"></i>
-                                <p>Aucun favori pour le moment.</p>
-                            </div>
-                        `;
-                        return;
-                    }
-
-                    // Grouper par produit
-                    const productMap = {};
-                    favoris.forEach(f => {
-                        const id = f.produit_id;
-                        if (!productMap[id]) productMap[id] = { clients: [] };
-                        if (f.clients) {
-                            const nom = `${f.clients.prenom || ''} ${f.clients.nom || ''}`.trim();
-                            if (nom) productMap[id].clients.push(nom);
-                        }
-                    });
-
-                    const productIds = Object.keys(productMap);
-                    const { data: produits, error: produitsError } = await supabaseClient
-                        .from('produits')
-                        .select('*')
-                        .in('id', productIds);
-
-                    if (produitsError || !produits) {
-                        grid.innerHTML = `
-                            <div class="empty-state" style="grid-column:1/-1;">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <p>Erreur de chargement des produits.</p>
-                            </div>
-                        `;
-                        return;
-                    }
-
-                    const allFavoris = produits.map(p => ({
-                        ...p,
-                        nbFavoris: productMap[p.id]?.clients.length || 0,
-                        clients: productMap[p.id]?.clients || []
-                    })).sort((a, b) => b.nbFavoris - a.nbFavoris);
-
-                    const categoryIcons = {
-                        'vêtements': '👕',
-                        'accessoires': '👜',
-                        'chaussures': '👟',
-                        'sport': '🏋️',
-                        'électronique': '📱',
-                        'luxe': '💎'
-                    };
-
-                    grid.innerHTML = allFavoris.map((p, index) => {
-                        const imageUrl = p.image_url 
-                            ? (p.image_url.startsWith('http') ? p.image_url : `${SUPABASE_URL}/storage/v1/object/public/produits/${p.image_url}`)
-                            : 'https://via.placeholder.com/220x180/1a1a1a/FFFFFF?text=NIKEL';
-                        
-                        const catIcon = categoryIcons[p.categorie] || '📦';
-                        const rank = index + 1;
-                        const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
-
-                        return `
-                        <div class="favoris-card">
-                            <div class="rank-badge">${medal}</div>
-                            <img src="${imageUrl}" 
-                                 alt="${p.nom}"
-                                 onerror="this.src='https://via.placeholder.com/220x180/1a1a1a/FFFFFF?text=NIKEL'">
-                            <div class="product-info">
-                                <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
-                                    <span style="font-size:0.85rem;">${catIcon}</span>
-                                    <span style="color:#888;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;">${p.categorie || 'Non-classé'}</span>
-                                </div>
-                                <h4>${p.nom}</h4>
-                                <p class="price">${parseFloat(p.prix).toFixed(2).replace('.', ',')} FCFA</p>
-                                <div class="favoris-stats">
-                                    <span><i class="fas fa-heart heart-icon"></i> ${p.nbFavoris} favoris</span>
-                                    <span><i class="fas fa-box"></i> ${p.stock || 0} en stock</span>
-                                </div>
-                                ${p.clients && p.clients.length > 0 ? `
-                                    <details style="margin-top:8px;">
-                                        <summary style="cursor:pointer;font-size:0.8rem;color:#888;padding:4px 0;border-top:1px solid #f0f0f0;padding-top:10px;">
-                                            👥 ${p.clients.length} client${p.clients.length > 1 ? 's' : ''} ont aimé
-                                        </summary>
-                                        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;">
-                                            ${p.clients.slice(0, 20).map(c => 
-                                                `<span style="background:#f8f8f8;padding:3px 10px;border-radius:50px;font-size:0.75rem;color:#555;border:1px solid #eee;">${c}</span>`
-                                            ).join('')}
-                                            ${p.clients.length > 20 ? `<span style="font-size:0.75rem;color:#888;padding:3px 10px;">+${p.clients.length - 20} autres</span>` : ''}
-                                        </div>
-                                    </details>
-                                ` : `
-                                    <div style="margin-top:8px;padding-top:10px;border-top:1px solid #f0f0f0;">
-                                        <span style="font-size:0.8rem;color:#999;">Aucun client n'a encore aimé ce produit</span>
-                                    </div>
-                                `}
-                            </div>
-                        </div>
-                    `}).join('');
-
-                } catch (err) {
-                    console.error('❌ Erreur:', err);
-                    grid.innerHTML = `
-                        <div class="empty-state" style="grid-column:1/-1;">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <p>Erreur de chargement des favoris.</p>
-                        </div>
-                    `;
-                }
-            }
-
-            // ==========================================
-            // NOTIFICATION
-            // ==========================================
-            function showNotification(message, type = 'info') {
-                document.querySelectorAll('.toast-nikel').forEach(t => t.remove());
-
-                const colors = {
-                    success: '#27ae60',
-                    error: '#e74c3c',
-                    info: '#c9a84c'
-                };
-
-                const toast = document.createElement('div');
-                toast.className = 'toast-nikel';
-                toast.style.cssText = `
-                    position: fixed;
-                    bottom: 30px;
-                    right: 30px;
-                    background: #1a1a1a;
-                    color: white;
-                    padding: 16px 24px;
-                    border-radius: 14px;
-                    font-weight: 500;
-                    box-shadow: 0 8px 40px rgba(0,0,0,0.25);
-                    z-index: 9999;
-                    max-width: 400px;
-                    font-size: 0.95rem;
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                    animation: slideUp 0.5s ease;
-                    border-left: 4px solid ${colors[type] || colors.info};
-                `;
-                toast.innerHTML = `<span>${message}</span>`;
-                document.body.appendChild(toast);
-
-                setTimeout(() => {
-                    toast.style.opacity = '0';
-                    toast.style.transform = 'translateY(20px)';
-                    toast.style.transition = 'all 0.4s ease';
-                    setTimeout(() => toast.remove(), 400);
-                }, 3000);
-            }
-
-            // ==========================================
-            // EXPOSER LES FONCTIONS GLOBALEMENT
-            // ==========================================
-            window.applyVentesFilters = applyVentesFilters;
-            window.resetVentesFilters = resetVentesFilters;
-            window.prevVentesPage = prevVentesPage;
-            window.nextVentesPage = nextVentesPage;
-            window.updateStatutVente = updateStatutVente;
-            window.exportCSV = exportCSV;
-            window.showNotification = showNotification;
-            window.navigateTo = navigateTo;
-
-            // ==========================================
-            // CHARGER LES DONNÉES DU DASHBOARD
+            // CHARGER TOUTES LES DONNÉES
             // ==========================================
             async function loadDashboardData() {
                 try {
                     console.log('📝 Chargement des données du dashboard...');
 
+                    // Charger les commandes pour les stats
                     if (!supabaseClient) {
+                        console.warn('⚠️ Supabase non disponible, utilisation des données de test');
                         const testData = getTestData();
                         updateStats(testData);
                         renderLastVentes(testData);
@@ -1729,7 +719,8 @@
                         .select('*')
                         .order('created_at', { ascending: false });
 
-                    if (error || !data || data.length === 0) {
+                    if (error) {
+                        console.error('❌ Erreur chargement:', error);
                         const testData = getTestData();
                         updateStats(testData);
                         renderLastVentes(testData);
@@ -1737,8 +728,18 @@
                         return;
                     }
 
-                    updateStats(data);
-                    renderLastVentes(data);
+                    if (data && data.length > 0) {
+                        console.log(`✅ ${data.length} clients chargés depuis Supabase`);
+                        updateStats(data);
+                        renderLastVentes(data);
+                    } else {
+                        console.warn('⚠️ Aucune donnée trouvée, utilisation des données de test');
+                        const testData = getTestData();
+                        updateStats(testData);
+                        renderLastVentes(testData);
+                    }
+
+                    // Charger le Top 5 des favoris
                     await loadTopFavoris();
 
                 } catch (err) {
@@ -1749,6 +750,11 @@
                     await loadTopFavoris();
                 }
             }
+
+            // ==========================================
+            // EXPOSER LES FONCTIONS GLOBALEMENT
+            // ==========================================
+            window.goToSuiviVentes = goToSuiviVentes;
 
             // ==========================================
             // INITIALISATION
