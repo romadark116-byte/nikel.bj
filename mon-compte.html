@@ -401,7 +401,7 @@
         }
 
         // ==========================================
-        // CHARGER LE NOMBRE DE VENTES
+        // CHARGER LE NOMBRE DE VENTES - CORRIGÉ AVEC statut_produit
         // ==========================================
         async function loadVentesCount() {
             try {
@@ -410,10 +410,10 @@
                     return 0;
                 }
 
-                // Récupérer le nombre total de clients avec statut 'en attente' ou 'soldé'
-                const { data, error, count } = await window.supabaseClient
+                // Récupérer le nombre total de clients avec statut_produit 'en attente' ou 'soldé'
+                const { data, error } = await window.supabaseClient
                     .from('clients')
-                    .select('id, statut, created_at', { count: 'exact', head: false })
+                    .select('id, statut_produit, created_at')
                     .order('created_at', { ascending: false });
 
                 if (error) {
@@ -421,8 +421,8 @@
                     return 0;
                 }
 
-                // Compter les nouvelles ventes (statut différent de 'annulé')
-                const newVentes = data ? data.filter(c => c.statut !== 'annulé').length : 0;
+                // Compter les nouvelles ventes (statut_produit différent de 'annulé')
+                const newVentes = data ? data.filter(c => c.statut_produit !== 'annulé').length : 0;
                 
                 console.log(`📊 Nombre de ventes: ${newVentes}`);
                 return newVentes;
@@ -556,6 +556,22 @@
                         `;
                     });
             }
+
+            // Exposer navigateTo globalement pour que dashboard.html puisse l'utiliser
+            window.navigateTo = function(page) {
+                console.log('🔍 [MON-COMPTE] Navigation vers:', page);
+                
+                // Mettre à jour le menu
+                menuLinks.forEach(l => l.classList.remove('active'));
+                const targetLink = document.querySelector(`.sidebar-menu a[data-page="${page}"]`);
+                if (targetLink) {
+                    targetLink.classList.add('active');
+                }
+                
+                // Charger la page
+                const resetNotif = (page === 'suivi-ventes');
+                loadPage(page, resetNotif);
+            };
 
             menuLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
@@ -715,19 +731,24 @@
             }, 3000);
         }
 
-        // Exposer les fonctions globalement
-        window.showNotification = showNotification;
-        window.handleLogout = handleLogout;
-        window.handleQuit = handleQuit;
-        window.resetVentesNotification = resetVentesNotification;
-        window.updateVentesBadge = updateVentesBadge;
-        window.loadVentesCount = loadVentesCount;
-        window.handleSearch = function() {
+        // ==========================================
+        // RECHERCHE
+        // ==========================================
+        function handleSearch() {
             const input = document.getElementById('searchInput');
             if (input && input.value.trim().length > 0) {
                 window.location.href = `boutique.html?search=${encodeURIComponent(input.value.trim())}`;
             }
-        };
+        }
+
+        // Exposer les fonctions globalement
+        window.showNotification = showNotification;
+        window.handleLogout = handleLogout;
+        window.handleQuit = handleQuit;
+        window.handleSearch = handleSearch;
+        window.resetVentesNotification = resetVentesNotification;
+        window.updateVentesBadge = updateVentesBadge;
+        window.loadVentesCount = loadVentesCount;
     </script>
 </body>
 </html>
