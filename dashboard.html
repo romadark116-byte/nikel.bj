@@ -4,24 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NIKEL · Tableau de bord</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="animations.css">
-    <link rel="stylesheet" href="responsive.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        .dashboard-page {
-            padding: 40px 0;
-            background: #fafafa;
-            min-height: 100vh;
-        }
-
-        .dashboard-page .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Stats Cards */
+        /* ===== STATS CARDS ===== */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -74,7 +58,7 @@
         .stat-card.border-green { border-left-color: #27ae60; }
         .stat-card.border-blue { border-left-color: #3498db; }
 
-        /* Section communes */
+        /* ===== SECTION CARD ===== */
         .section-card {
             background: #ffffff;
             border-radius: 16px;
@@ -118,7 +102,7 @@
             text-decoration: underline;
         }
 
-        /* Tableau */
+        /* ===== TABLEAU ===== */
         .table-wrapper {
             overflow-x: auto;
             border-radius: 12px;
@@ -167,7 +151,7 @@
         .statut-badge.attente { background: #f39c12; }
         .statut-badge.annule { background: #e74c3c; }
 
-        /* Top 5 Favoris - Grille */
+        /* ===== TOP 5 FAVORIS ===== */
         .favoris-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -281,7 +265,7 @@
             font-size: 0.9rem;
         }
 
-        /* Empty state */
+        /* ===== EMPTY STATE ===== */
         .empty-state {
             text-align: center;
             padding: 40px 20px;
@@ -295,7 +279,7 @@
             margin-bottom: 12px;
         }
 
-        /* Responsive */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 992px) {
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -311,7 +295,7 @@
             }
         }
 
-        /* Animation */
+        /* ===== ANIMATION ===== */
         @keyframes slideUp {
             from {
                 opacity: 0;
@@ -333,8 +317,7 @@
     </style>
 </head>
 <body>
-    <!-- ===== PAGE DASHBOARD SANS HEADER ===== -->
-    <section class="dashboard-page">
+    <div class="dashboard-page">
         <div class="container">
             <!-- ===== TITRE ===== -->
             <div style="margin-bottom: 30px;">
@@ -372,7 +355,9 @@
             <div class="section-card">
                 <div class="section-header">
                     <h3><i class="fas fa-clock"></i> Dernières ventes</h3>
-                    <a onclick="navigateToPage('suivi-ventes')">Voir toutes →</a>
+                    <a onclick="window.parent.navigateTo && window.parent.navigateTo('suivi-ventes') || window.navigateTo && window.navigateTo('suivi-ventes') || (window.location.href='mon-compte.html?page=suivi-ventes')">
+                        Voir toutes →
+                    </a>
                 </div>
                 <div class="table-wrapper">
                     <table>
@@ -400,7 +385,9 @@
             <div class="section-card">
                 <div class="section-header">
                     <h3><i class="fas fa-heart" style="color:#e74c3c;"></i> Top 5 des produits les plus aimés</h3>
-                    <a onclick="navigateToPage('favoris')">Voir tous les favoris →</a>
+                    <a onclick="window.parent.navigateTo && window.parent.navigateTo('favoris') || window.navigateTo && window.navigateTo('favoris') || (window.location.href='mon-compte.html?page=favoris')">
+                        Voir tous les favoris →
+                    </a>
                 </div>
                 <div class="favoris-grid" id="topFavorisGrid">
                     <div style="text-align:center; padding:30px; color:#888; grid-column:1/-1;">
@@ -410,58 +397,23 @@
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- ===== SCRIPT LÉGER POUR CHARGER LES DONNÉES ===== -->
     <script>
         (function() {
-            // ==========================================
-            // SUPABASE CONFIG
-            // ==========================================
-            const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
-            const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
-            
-            let supabaseClient = null;
+            console.log('🚀 Chargement du dashboard (version allégée)...');
 
-            try {
-                if (window.supabase) {
-                    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                    window.supabaseClient = supabaseClient;
-                    console.log('✅ Supabase initialisé dans dashboard.html');
-                } else {
-                    console.warn('⚠️ Supabase SDK non chargé');
-                }
-            } catch (e) {
-                console.error('❌ Erreur initialisation Supabase:', e);
+            // ==========================================
+            // RÉCUPÉRER LE CLIENT SUPABASE
+            // ==========================================
+            let supabaseClient = window.supabaseClient || null;
+
+            if (!supabaseClient) {
+                console.warn('⚠️ Supabase non disponible, utilisation des données de test');
+                loadTestData();
+                return;
             }
-
-            // ==========================================
-            // FONCTION DE NAVIGATION UNIVERSELLE
-            // ==========================================
-            function navigateToPage(page) {
-                console.log('🔍 [DASHBOARD] Navigation vers:', page);
-                
-                // Essayer d'utiliser la fonction navigateTo du parent (mon-compte.html)
-                if (window.parent && typeof window.parent.navigateTo === 'function') {
-                    console.log('✅ [DASHBOARD] Utilisation de window.parent.navigateTo');
-                    window.parent.navigateTo(page);
-                    return;
-                }
-                
-                // Essayer d'utiliser la fonction navigateTo globale
-                if (typeof window.navigateTo === 'function') {
-                    console.log('✅ [DASHBOARD] Utilisation de window.navigateTo');
-                    window.navigateTo(page);
-                    return;
-                }
-                
-                // Fallback: redirection classique
-                console.log('⚠️ [DASHBOARD] Fallback: redirection classique');
-                window.location.href = 'mon-compte.html?page=' + page;
-            }
-
-            // Exposer la fonction globalement pour les boutons onclick
-            window.navigateToPage = navigateToPage;
 
             // ==========================================
             // DONNÉES DE TEST
@@ -474,6 +426,13 @@
                     { id: 4, prenom: 'Amadou', nom: 'Diallo', email: 'amadou@email.com', telephone: '779012345', ville: 'Dakar', pays: 'SN', created_at: new Date(Date.now() - 259200000).toISOString(), total_achat: 299.00, statut_produit: 'soldé' },
                     { id: 5, prenom: 'Sophie', nom: 'Bernard', email: 'sophie@email.com', telephone: '0612345987', ville: 'Marseille', pays: 'FR', created_at: new Date(Date.now() - 345600000).toISOString(), total_achat: 149.00, statut_produit: 'en attente' }
                 ];
+            }
+
+            function loadTestData() {
+                const data = getTestData();
+                updateStats(data);
+                renderLastVentes(data);
+                loadTopFavoris();
             }
 
             // ==========================================
@@ -512,10 +471,15 @@
                 const totalVendu = ventes.reduce((sum, v) => sum + (v.total_achat || 0), 0);
                 const totalVisites = data.length;
 
-                document.getElementById('statVentes').textContent = totalVentes;
-                document.getElementById('statAttente').textContent = totalAttente;
-                document.getElementById('statVisites').textContent = totalVisites;
-                document.getElementById('statTotal').textContent = totalVendu.toFixed(2).replace('.', ',') + ' FCFA';
+                const elVentes = document.getElementById('statVentes');
+                const elAttente = document.getElementById('statAttente');
+                const elVisites = document.getElementById('statVisites');
+                const elTotal = document.getElementById('statTotal');
+
+                if (elVentes) elVentes.textContent = totalVentes;
+                if (elAttente) elAttente.textContent = totalAttente;
+                if (elVisites) elVisites.textContent = totalVisites;
+                if (elTotal) elTotal.textContent = totalVendu.toFixed(2).replace('.', ',') + ' FCFA';
             }
 
             // ==========================================
@@ -523,6 +487,8 @@
             // ==========================================
             function renderLastVentes(data) {
                 const tbody = document.getElementById('lastVentesBody');
+                if (!tbody) return;
+
                 const sorted = [...data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
                 const last5 = sorted.slice(0, 5);
 
@@ -550,16 +516,32 @@
             }
 
             // ==========================================
+            // FONCTION DE NAVIGATION
+            // ==========================================
+            function navigateTo(page) {
+                if (window.parent && typeof window.parent.navigateTo === 'function') {
+                    window.parent.navigateTo(page);
+                } else if (typeof window.navigateTo === 'function') {
+                    window.navigateTo(page);
+                } else {
+                    window.location.href = 'mon-compte.html?page=' + page;
+                }
+            }
+
+            // Exposer pour les boutons
+            window.navigateTo = navigateTo;
+
+            // ==========================================
             // CHARGER LE TOP 5 DES FAVORIS
             // ==========================================
             async function loadTopFavoris() {
                 const grid = document.getElementById('topFavorisGrid');
+                if (!grid) return;
                 
                 try {
                     console.log('📝 Chargement du Top 5 des favoris...');
 
                     if (!supabaseClient) {
-                        console.warn('⚠️ Supabase non disponible');
                         grid.innerHTML = `
                             <div class="empty-state" style="grid-column:1/-1;">
                                 <i class="fas fa-heart"></i>
@@ -569,23 +551,11 @@
                         return;
                     }
 
-                    // 1. Récupérer tous les favoris
                     const { data: favoris, error: favorisError } = await supabaseClient
                         .from('favoris')
                         .select('produit_id');
 
-                    if (favorisError) {
-                        console.error('❌ Erreur chargement favoris:', favorisError);
-                        grid.innerHTML = `
-                            <div class="empty-state" style="grid-column:1/-1;">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <p>Erreur de chargement des favoris.</p>
-                            </div>
-                        `;
-                        return;
-                    }
-
-                    if (!favoris || favoris.length === 0) {
+                    if (favorisError || !favoris || favoris.length === 0) {
                         grid.innerHTML = `
                             <div class="empty-state" style="grid-column:1/-1;">
                                 <i class="fas fa-heart" style="color:#ddd;"></i>
@@ -595,14 +565,12 @@
                         return;
                     }
 
-                    // 2. Compter les favoris par produit
                     const productCount = {};
                     favoris.forEach(f => {
                         const id = f.produit_id;
                         productCount[id] = (productCount[id] || 0) + 1;
                     });
 
-                    // 3. Trier par nombre de favoris (décroissant) et prendre les 5 premiers
                     const sortedProducts = Object.entries(productCount)
                         .sort((a, b) => b[1] - a[1])
                         .slice(0, 5);
@@ -619,14 +587,12 @@
                         return;
                     }
 
-                    // 4. Récupérer les détails des produits
                     const { data: produits, error: produitsError } = await supabaseClient
                         .from('produits')
                         .select('*')
                         .in('id', productIds);
 
-                    if (produitsError) {
-                        console.error('❌ Erreur chargement produits:', produitsError);
+                    if (produitsError || !produits) {
                         grid.innerHTML = `
                             <div class="empty-state" style="grid-column:1/-1;">
                                 <i class="fas fa-exclamation-triangle"></i>
@@ -636,26 +602,11 @@
                         return;
                     }
 
-                    // 5. Construire les données avec le nombre de favoris
                     const topProducts = produits.map(p => ({
                         ...p,
                         nbFavoris: productCount[p.id] || 0
                     })).sort((a, b) => b.nbFavoris - a.nbFavoris);
 
-                    console.log(`✅ Top ${topProducts.length} produits favoris chargés`);
-
-                    // 6. Afficher les produits
-                    if (topProducts.length === 0) {
-                        grid.innerHTML = `
-                            <div class="empty-state" style="grid-column:1/-1;">
-                                <i class="fas fa-heart" style="color:#ddd;"></i>
-                                <p>Aucun produit favori trouvé.</p>
-                            </div>
-                        `;
-                        return;
-                    }
-
-                    // Icônes de catégorie
                     const categoryIcons = {
                         'vêtements': '👕',
                         'accessoires': '👜',
@@ -665,10 +616,10 @@
                         'luxe': '💎'
                     };
 
-                    // Classes pour les médailles
                     const rankClasses = ['gold', 'silver', 'bronze', '', ''];
 
                     grid.innerHTML = topProducts.map((p, index) => {
+                        const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
                         const imageUrl = p.image_url 
                             ? (p.image_url.startsWith('http') ? p.image_url : `${SUPABASE_URL}/storage/v1/object/public/produits/${p.image_url}`)
                             : 'https://via.placeholder.com/220x180/1a1a1a/FFFFFF?text=NIKEL';
@@ -694,7 +645,7 @@
                                     <span><i class="fas fa-heart heart-icon"></i> ${p.nbFavoris} favoris</span>
                                     <span><i class="fas fa-box"></i> ${p.stock || 0} en stock</span>
                                 </div>
-                                <button class="btn-stats" onclick="navigateToPage('suivi-ventes')">
+                                <button class="btn-stats" onclick="navigateTo('suivi-ventes')">
                                     <i class="fas fa-chart-bar"></i> Voir statistiques
                                 </button>
                             </div>
@@ -713,19 +664,14 @@
             }
 
             // ==========================================
-            // CHARGER TOUTES LES DONNÉES
+            // CHARGER LES DONNÉES DU DASHBOARD
             // ==========================================
             async function loadDashboardData() {
                 try {
                     console.log('📝 Chargement des données du dashboard...');
 
-                    // Charger les commandes pour les stats
                     if (!supabaseClient) {
-                        console.warn('⚠️ Supabase non disponible, utilisation des données de test');
-                        const testData = getTestData();
-                        updateStats(testData);
-                        renderLastVentes(testData);
-                        await loadTopFavoris();
+                        loadTestData();
                         return;
                     }
 
@@ -734,35 +680,19 @@
                         .select('*')
                         .order('created_at', { ascending: false });
 
-                    if (error) {
-                        console.error('❌ Erreur chargement:', error);
-                        const testData = getTestData();
-                        updateStats(testData);
-                        renderLastVentes(testData);
-                        await loadTopFavoris();
+                    if (error || !data || data.length === 0) {
+                        loadTestData();
                         return;
                     }
 
-                    if (data && data.length > 0) {
-                        console.log(`✅ ${data.length} clients chargés depuis Supabase`);
-                        updateStats(data);
-                        renderLastVentes(data);
-                    } else {
-                        console.warn('⚠️ Aucune donnée trouvée, utilisation des données de test');
-                        const testData = getTestData();
-                        updateStats(testData);
-                        renderLastVentes(testData);
-                    }
-
-                    // Charger le Top 5 des favoris
+                    console.log(`✅ ${data.length} clients chargés depuis Supabase`);
+                    updateStats(data);
+                    renderLastVentes(data);
                     await loadTopFavoris();
 
                 } catch (err) {
                     console.error('❌ Erreur:', err);
-                    const testData = getTestData();
-                    updateStats(testData);
-                    renderLastVentes(testData);
-                    await loadTopFavoris();
+                    loadTestData();
                 }
             }
 
@@ -770,7 +700,6 @@
             // INITIALISATION
             // ==========================================
             function init() {
-                console.log('🚀 Chargement du dashboard...');
                 loadDashboardData();
             }
 
