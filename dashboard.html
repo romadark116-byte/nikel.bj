@@ -253,7 +253,7 @@
             color: #e74c3c;
         }
 
-        .favoris-card .product-info .btn-voir {
+        .favoris-card .product-info .btn-stats {
             width: 100%;
             padding: 10px;
             background: transparent;
@@ -270,10 +270,14 @@
             gap: 8px;
         }
 
-        .favoris-card .product-info .btn-voir:hover {
-            border-color: #c9a84c;
-            background: #c9a84c;
+        .favoris-card .product-info .btn-stats:hover {
+            border-color: #3498db;
+            background: #3498db;
             color: white;
+        }
+
+        .favoris-card .product-info .btn-stats i {
+            font-size: 0.9rem;
         }
 
         /* Empty state */
@@ -517,6 +521,13 @@
             }
 
             // ==========================================
+            // REDIRIGER VERS SUIVI-VENTES
+            // ==========================================
+            function goToSuiviVentes() {
+                window.location.href = 'suivi-ventes.html';
+            }
+
+            // ==========================================
             // CHARGER LE TOP 5 DES FAVORIS
             // ==========================================
             async function loadTopFavoris() {
@@ -661,8 +672,8 @@
                                     <span><i class="fas fa-heart heart-icon"></i> ${p.nbFavoris} favoris</span>
                                     <span><i class="fas fa-box"></i> ${p.stock || 0} en stock</span>
                                 </div>
-                                <button class="btn-voir" onclick="window.location.href='produit.html?id=${p.id}'">
-                                    <i class="fas fa-eye"></i> Voir le produit
+                                <button class="btn-stats" onclick="goToSuiviVentes()">
+                                    <i class="fas fa-chart-bar"></i> Voir statistiques
                                 </button>
                             </div>
                         </div>
@@ -732,6 +743,11 @@
                     await loadTopFavoris();
                 }
             }
+
+            // ==========================================
+            // EXPOSER LES FONCTIONS GLOBALEMENT
+            // ==========================================
+            window.goToSuiviVentes = goToSuiviVentes;
 
             // ==========================================
             // INITIALISATION
