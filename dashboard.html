@@ -238,6 +238,33 @@
             color: #e74c3c;
         }
 
+        .favoris-card .product-info .btn-stats {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            color: #1a1a1a;
+            border: 2px solid #e8e8e8;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .favoris-card .product-info .btn-stats:hover {
+            border-color: #3498db;
+            background: #3498db;
+            color: white;
+        }
+
+        .favoris-card .product-info .btn-stats i {
+            font-size: 0.9rem;
+        }
+
         /* ===== EMPTY STATE ===== */
         .empty-state {
             text-align: center;
@@ -328,9 +355,7 @@
             <div class="section-card">
                 <div class="section-header">
                     <h3><i class="fas fa-clock"></i> Dernières ventes</h3>
-                    <a onclick="window.parent.navigateTo && window.parent.navigateTo('suivi-ventes') || window.navigateTo && window.navigateTo('suivi-ventes') || (window.location.href='mon-compte.html?page=suivi-ventes')">
-                        Voir toutes →
-                    </a>
+                    <a onclick="goToPage('suivi-ventes')">Voir toutes →</a>
                 </div>
                 <div class="table-wrapper">
                     <table>
@@ -358,9 +383,7 @@
             <div class="section-card">
                 <div class="section-header">
                     <h3><i class="fas fa-heart" style="color:#e74c3c;"></i> Top 5 des produits les plus aimés</h3>
-                    <a onclick="window.parent.navigateTo && window.parent.navigateTo('favoris') || window.navigateTo && window.navigateTo('favoris') || (window.location.href='mon-compte.html?page=favoris')">
-                        Voir tous les favoris →
-                    </a>
+                    <a onclick="goToPage('favoris')">Voir tous les favoris →</a>
                 </div>
                 <div class="favoris-grid" id="topFavorisGrid">
                     <div style="text-align:center; padding:30px; color:#888; grid-column:1/-1;">
@@ -375,7 +398,35 @@
     <!-- ===== SCRIPT LÉGER POUR CHARGER LES DONNÉES ===== -->
     <script>
         (function() {
-            console.log('🚀 Chargement du dashboard...');
+            console.log('🚀 Chargement du dashboard (version allégée)...');
+
+            // ==========================================
+            // FONCTION DE NAVIGATION VERS SUIVI-VENTES
+            // ==========================================
+            function goToPage(page) {
+                console.log('🔍 [DASHBOARD] Navigation vers:', page);
+                
+                // 1. Essayer parent (mon-compte.html)
+                if (window.parent && typeof window.parent.navigateTo === 'function') {
+                    console.log('✅ [DASHBOARD] Utilisation de window.parent.navigateTo');
+                    window.parent.navigateTo(page);
+                    return;
+                }
+                
+                // 2. Essayer window globale
+                if (typeof window.navigateTo === 'function') {
+                    console.log('✅ [DASHBOARD] Utilisation de window.navigateTo');
+                    window.navigateTo(page);
+                    return;
+                }
+                
+                // 3. Fallback: redirection classique avec paramètre
+                console.log('⚠️ [DASHBOARD] Fallback: redirection classique');
+                window.location.href = 'mon-compte.html?page=' + page;
+            }
+
+            // Exposer la fonction globalement pour les boutons onclick
+            window.goToPage = goToPage;
 
             // ==========================================
             // RÉCUPÉRER LE CLIENT SUPABASE
@@ -602,6 +653,9 @@
                                     <span><i class="fas fa-heart heart-icon"></i> ${p.nbFavoris} favoris</span>
                                     <span><i class="fas fa-box"></i> ${p.stock || 0} en stock</span>
                                 </div>
+                                <button class="btn-stats" onclick="goToPage('suivi-ventes')">
+                                    <i class="fas fa-chart-bar"></i> Voir statistiques
+                                </button>
                             </div>
                         </div>
                     `}).join('');
