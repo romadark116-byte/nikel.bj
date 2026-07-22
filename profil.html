@@ -403,11 +403,13 @@
                     return;
                 }
 
-                // Supprimer du Storage (optionnel)
+                // Supprimer du Storage
                 if (photo.image) {
                     try {
-                        const path = photo.image.split('/storage/v1/object/public/galerie/')[1];
-                        if (path) {
+                        // Extraire le chemin du fichier depuis l'URL
+                        const urlParts = photo.image.split('/storage/v1/object/public/galerie/');
+                        if (urlParts.length > 1) {
+                            const path = urlParts[1];
                             await supabaseClient.storage
                                 .from('galerie')
                                 .remove([path]);
@@ -515,20 +517,15 @@
         // ==========================================
         function renderGalerie() {
             const container = document.getElementById('galerieContainer');
-            const emptyMsg = document.getElementById('galerieEmpty');
             
             if (galerieData.length === 0) {
-                if (!emptyMsg) {
-                    container.innerHTML = `
-                        <div id="galerieEmpty" style="text-align:center; padding:30px; color:#999; background:#fff; border-radius:8px; border:2px dashed #e0e0e0;">
-                            <i class="fas fa-camera" style="font-size:2rem; display:block; margin-bottom:8px; color:#ddd;"></i>
-                            <p style="margin:0;">Aucune photo dans la galerie</p>
-                            <p style="font-size:0.85rem; margin:4px 0 0 0;">Cliquez sur "Ajouter une photo" pour commencer</p>
-                        </div>
-                    `;
-                } else {
-                    container.innerHTML = emptyMsg.outerHTML;
-                }
+                container.innerHTML = `
+                    <div id="galerieEmpty" style="text-align:center; padding:30px; color:#999; background:#fff; border-radius:8px; border:2px dashed #e0e0e0;">
+                        <i class="fas fa-camera" style="font-size:2rem; display:block; margin-bottom:8px; color:#ddd;"></i>
+                        <p style="margin:0;">Aucune photo dans la galerie</p>
+                        <p style="font-size:0.85rem; margin:4px 0 0 0;">Cliquez sur "Ajouter une photo" pour commencer</p>
+                    </div>
+                `;
                 return;
             }
 
@@ -901,24 +898,27 @@
             window.loadGalerie = loadGalerie;
 
             // Bouton ajouter photo
-            document.getElementById('ajouterPhotoBtn').addEventListener('click', function() {
-                if (galerieData.length >= 5) {
-                    showNotification('⚠️ Maximum 5 photos atteint', 'error');
-                    return;
-                }
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
-                input.onchange = function(e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const titre = prompt('Titre de la photo :', `Photo ${galerieData.length + 1}`);
-                        const description = prompt('Description :', '');
-                        ajouterPhotoGalerie(file, titre || '', description || '');
+            const ajouterBtn = document.getElementById('ajouterPhotoBtn');
+            if (ajouterBtn) {
+                ajouterBtn.addEventListener('click', function() {
+                    if (galerieData.length >= 5) {
+                        showNotification('⚠️ Maximum 5 photos atteint', 'error');
+                        return;
                     }
-                };
-                input.click();
-            });
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = function(e) {
+                        const file = e.target.files[0];
+                        if (file) {
+                            const titre = prompt('Titre de la photo :', `Photo ${galerieData.length + 1}`);
+                            const description = prompt('Description :', '');
+                            ajouterPhotoGalerie(file, titre || '', description || '');
+                        }
+                    };
+                    input.click();
+                });
+            }
             
             setTimeout(async () => {
                 await loadAdminData();
