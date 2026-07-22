@@ -87,21 +87,51 @@
                 <input type="text" id="adresseBoutique" name="adresseBoutique" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
             </div>
 
-            <!-- Photo de la boutique -->
-            <div style="display:flex; align-items:center; gap:20px; padding:16px; background:#f8f8f8; border-radius:12px; margin-bottom:16px; flex-wrap:wrap;">
-                <div style="position:relative; width:80px; height:80px; flex-shrink:0;">
-                    <div id="boutiquePhoto" style="width:80px; height:80px; border-radius:12px; background:linear-gradient(135deg, #2d2d2d, #1a1a1a); display:flex; align-items:center; justify-content:center; font-size:2rem; color:white; overflow:hidden; border:2px solid #e8e8e8;">
-                        <i class="fas fa-store"></i>
+            <!-- ===== GALERIE PHOTO DE LA BOUTIQUE (3 IMAGES) ===== -->
+            <div style="padding:16px; background:#f8f8f8; border-radius:12px; margin-bottom:16px;">
+                <h4 style="font-size:0.95rem; margin-bottom:12px; color:#1a1a1a;">
+                    <i class="fas fa-images" style="color:#c9a84c;"></i> Galerie photo de la boutique
+                </h4>
+                <p style="font-size:0.85rem; color:#888; margin-bottom:16px;">Images qui représentent votre boutique (3 photos maximum).</p>
+                
+                <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;">
+                    <!-- Image 1 -->
+                    <div style="position:relative; border-radius:12px; overflow:hidden; border:2px solid #e8e8e8; background:#ffffff; aspect-ratio:1/1;">
+                        <div id="boutiquePhoto1" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#f0f0f0; color:#ccc; font-size:0.8rem; flex-direction:column;">
+                            <i class="fas fa-image" style="font-size:2rem; margin-bottom:8px;"></i>
+                            <span>Image 1</span>
+                        </div>
+                        <label for="boutiquePhotoInput1" style="position:absolute; bottom:8px; right:8px; background:#c9a84c; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.8rem; border:2px solid white; transition:all 0.3s; box-shadow:0 2px 8px rgba(0,0,0,0.15);" onmouseover="this.style.background='#a8892e'" onmouseout="this.style.background='#c9a84c'">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                        <input type="file" id="boutiquePhotoInput1" accept="image/*" style="display:none;">
                     </div>
-                    <label for="boutiquePhotoInput" style="position:absolute; bottom:0; right:0; background:#c9a84c; color:white; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.8rem; border:2px solid white; transition:all 0.3s;" onmouseover="this.style.background='#a8892e'" onmouseout="this.style.background='#c9a84c'">
-                        <i class="fas fa-camera"></i>
-                    </label>
-                    <input type="file" id="boutiquePhotoInput" accept="image/*" style="display:none;">
+
+                    <!-- Image 2 -->
+                    <div style="position:relative; border-radius:12px; overflow:hidden; border:2px solid #e8e8e8; background:#ffffff; aspect-ratio:1/1;">
+                        <div id="boutiquePhoto2" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#f0f0f0; color:#ccc; font-size:0.8rem; flex-direction:column;">
+                            <i class="fas fa-image" style="font-size:2rem; margin-bottom:8px;"></i>
+                            <span>Image 2</span>
+                        </div>
+                        <label for="boutiquePhotoInput2" style="position:absolute; bottom:8px; right:8px; background:#c9a84c; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.8rem; border:2px solid white; transition:all 0.3s; box-shadow:0 2px 8px rgba(0,0,0,0.15);" onmouseover="this.style.background='#a8892e'" onmouseout="this.style.background='#c9a84c'">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                        <input type="file" id="boutiquePhotoInput2" accept="image/*" style="display:none;">
+                    </div>
+
+                    <!-- Image 3 -->
+                    <div style="position:relative; border-radius:12px; overflow:hidden; border:2px solid #e8e8e8; background:#ffffff; aspect-ratio:1/1;">
+                        <div id="boutiquePhoto3" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#f0f0f0; color:#ccc; font-size:0.8rem; flex-direction:column;">
+                            <i class="fas fa-image" style="font-size:2rem; margin-bottom:8px;"></i>
+                            <span>Image 3</span>
+                        </div>
+                        <label for="boutiquePhotoInput3" style="position:absolute; bottom:8px; right:8px; background:#c9a84c; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.8rem; border:2px solid white; transition:all 0.3s; box-shadow:0 2px 8px rgba(0,0,0,0.15);" onmouseover="this.style.background='#a8892e'" onmouseout="this.style.background='#c9a84c'">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                        <input type="file" id="boutiquePhotoInput3" accept="image/*" style="display:none;">
+                    </div>
                 </div>
-                <div>
-                    <h4 style="font-size:0.95rem; margin-bottom:2px; color:#1a1a1a;">Galerie photo de la boutique</h4>
-                    <p style="font-size:0.85rem; color:#888;">Images qui représentent votre boutique.</p>
-                </div>
+                <p style="font-size:0.8rem; color:#888; margin-top:8px;">📸 Formats acceptés : JPG, PNG · Max 2 Mo par image</p>
             </div>
 
             <!-- ===== GRAND TITRE (colonne titreb) ===== -->
@@ -275,9 +305,18 @@
                     document.getElementById('grandTitre').value = data.titreb || '';
                     document.getElementById('legendeBoutique').value = data.legende || '';
                     
-                    if (data.photo_url) {
-                        document.getElementById('boutiquePhoto').innerHTML = 
-                            `<img src="${data.photo_url}" style="width:100%;height:100%;object-fit:cover;">`;
+                    // Charger les 3 images de la galerie
+                    if (data.photo1) {
+                        document.getElementById('boutiquePhoto1').innerHTML = 
+                            `<img src="${data.photo1}" style="width:100%;height:100%;object-fit:cover;">`;
+                    }
+                    if (data.photo2) {
+                        document.getElementById('boutiquePhoto2').innerHTML = 
+                            `<img src="${data.photo2}" style="width:100%;height:100%;object-fit:cover;">`;
+                    }
+                    if (data.photo3) {
+                        document.getElementById('boutiquePhoto3').innerHTML = 
+                            `<img src="${data.photo3}" style="width:100%;height:100%;object-fit:cover;">`;
                     }
                 } else {
                     console.warn('⚠️ Aucune boutique trouvée, création...');
@@ -375,12 +414,15 @@
                 if (adminError) throw adminError;
                 console.log('✅ Infos personnelles sauvegardées');
 
-                // 2. Mettre à jour la boutique (avec les nouveaux champs)
+                // 2. Mettre à jour la boutique (avec les nouvelles photos)
                 const boutiqueData = {
                     nom: formData.nomBoutique,
                     adresse: formData.adresseBoutique,
                     titreb: formData.grandTitre,
                     legende: formData.legendeBoutique,
+                    photo1: formData.boutiquePhoto1 || null,
+                    photo2: formData.boutiquePhoto2 || null,
+                    photo3: formData.boutiquePhoto3 || null,
                     updated_at: new Date().toISOString()
                 };
 
@@ -457,7 +499,29 @@
         }
 
         // ==========================================
-        // GESTION DES PHOTOS
+        // GESTION DES PHOTOS DE LA GALERIE BOUTIQUE
+        // ==========================================
+        function setupBoutiquePhotoUpload(inputId, displayId, storageKey) {
+            const input = document.getElementById(inputId);
+            const display = document.getElementById(displayId);
+            
+            if (input && display) {
+                input.addEventListener('change', function(e) {
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            display.innerHTML = '<img src="' + event.target.result + '" style="width:100%;height:100%;object-fit:cover;">';
+                            localStorage.setItem(storageKey, event.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        }
+
+        // ==========================================
+        // GESTION DES PHOTOS (profil et pro)
         // ==========================================
         function setupPhotoUpload(inputId, displayId, storageKey) {
             const input = document.getElementById(inputId);
@@ -497,7 +561,10 @@
                     grandTitre: document.getElementById('grandTitre').value || '',
                     legendeBoutique: document.getElementById('legendeBoutique').value || '',
                     titrePro: document.getElementById('titrePro').value || '',
-                    bio: document.getElementById('bio').value || ''
+                    bio: document.getElementById('bio').value || '',
+                    boutiquePhoto1: localStorage.getItem('nikel_boutique_photo1') || null,
+                    boutiquePhoto2: localStorage.getItem('nikel_boutique_photo2') || null,
+                    boutiquePhoto3: localStorage.getItem('nikel_boutique_photo3') || null
                 };
                 
                 console.log('📝 Données à sauvegarder:', formData);
@@ -523,9 +590,14 @@
         function init() {
             console.log('🚀 Démarrage de profil.html...');
             
+            // Photos de profil
             setupPhotoUpload('photoInput', 'profilePhoto', 'nikel_profile_photo');
-            setupPhotoUpload('boutiquePhotoInput', 'boutiquePhoto', 'nikel_boutique_photo');
             setupPhotoUpload('proPhotoInput', 'proPhoto', 'nikel_pro_photo');
+            
+            // Galerie boutique (3 images)
+            setupBoutiquePhotoUpload('boutiquePhotoInput1', 'boutiquePhoto1', 'nikel_boutique_photo1');
+            setupBoutiquePhotoUpload('boutiquePhotoInput2', 'boutiquePhoto2', 'nikel_boutique_photo2');
+            setupBoutiquePhotoUpload('boutiquePhotoInput3', 'boutiquePhoto3', 'nikel_boutique_photo3');
             
             setTimeout(async () => {
                 await loadAdminData();
