@@ -87,51 +87,29 @@
                 <input type="text" id="adresseBoutique" name="adresseBoutique" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
             </div>
 
-            <!-- ===== GALERIE PHOTO DE LA BOUTIQUE (3 IMAGES) ===== -->
+            <!-- ===== GALERIE PHOTO DE LA BOUTIQUE (DYNAMIQUE - 5 PHOTOS MAX) ===== -->
             <div style="padding:16px; background:#f8f8f8; border-radius:12px; margin-bottom:16px;">
-                <h4 style="font-size:0.95rem; margin-bottom:12px; color:#1a1a1a;">
-                    <i class="fas fa-images" style="color:#c9a84c;"></i> Galerie photo de la boutique
-                </h4>
-                <p style="font-size:0.85rem; color:#888; margin-bottom:16px;">Images qui représentent votre boutique (3 photos maximum).</p>
-                
-                <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;">
-                    <!-- Image 1 -->
-                    <div style="position:relative; border-radius:12px; overflow:hidden; border:2px solid #e8e8e8; background:#ffffff; aspect-ratio:1/1;">
-                        <div id="boutiquePhoto1" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#f0f0f0; color:#ccc; font-size:0.8rem; flex-direction:column;">
-                            <i class="fas fa-image" style="font-size:2rem; margin-bottom:8px;"></i>
-                            <span>Image 1</span>
-                        </div>
-                        <label for="boutiquePhotoInput1" style="position:absolute; bottom:8px; right:8px; background:#c9a84c; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.8rem; border:2px solid white; transition:all 0.3s; box-shadow:0 2px 8px rgba(0,0,0,0.15);" onmouseover="this.style.background='#a8892e'" onmouseout="this.style.background='#c9a84c'">
-                            <i class="fas fa-camera"></i>
-                        </label>
-                        <input type="file" id="boutiquePhotoInput1" accept="image/*" style="display:none;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+                    <div>
+                        <h4 style="font-size:0.95rem; margin:0; color:#1a1a1a;">
+                            <i class="fas fa-images" style="color:#c9a84c;"></i> Galerie photo de la boutique
+                        </h4>
+                        <p style="font-size:0.8rem; color:#888; margin:4px 0 0 0;">Ajoutez jusqu'à 5 photos avec un titre et une description.</p>
                     </div>
+                    <button type="button" id="ajouterPhotoBtn" style="padding:8px 20px; background:#c9a84c; color:white; border:none; border-radius:8px; font-size:0.85rem; font-weight:600; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px;" onmouseover="this.style.background='#a8892e'" onmouseout="this.style.background='#c9a84c'">
+                        <i class="fas fa-plus"></i> Ajouter une photo
+                    </button>
+                </div>
 
-                    <!-- Image 2 -->
-                    <div style="position:relative; border-radius:12px; overflow:hidden; border:2px solid #e8e8e8; background:#ffffff; aspect-ratio:1/1;">
-                        <div id="boutiquePhoto2" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#f0f0f0; color:#ccc; font-size:0.8rem; flex-direction:column;">
-                            <i class="fas fa-image" style="font-size:2rem; margin-bottom:8px;"></i>
-                            <span>Image 2</span>
-                        </div>
-                        <label for="boutiquePhotoInput2" style="position:absolute; bottom:8px; right:8px; background:#c9a84c; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.8rem; border:2px solid white; transition:all 0.3s; box-shadow:0 2px 8px rgba(0,0,0,0.15);" onmouseover="this.style.background='#a8892e'" onmouseout="this.style.background='#c9a84c'">
-                            <i class="fas fa-camera"></i>
-                        </label>
-                        <input type="file" id="boutiquePhotoInput2" accept="image/*" style="display:none;">
-                    </div>
-
-                    <!-- Image 3 -->
-                    <div style="position:relative; border-radius:12px; overflow:hidden; border:2px solid #e8e8e8; background:#ffffff; aspect-ratio:1/1;">
-                        <div id="boutiquePhoto3" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#f0f0f0; color:#ccc; font-size:0.8rem; flex-direction:column;">
-                            <i class="fas fa-image" style="font-size:2rem; margin-bottom:8px;"></i>
-                            <span>Image 3</span>
-                        </div>
-                        <label for="boutiquePhotoInput3" style="position:absolute; bottom:8px; right:8px; background:#c9a84c; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.8rem; border:2px solid white; transition:all 0.3s; box-shadow:0 2px 8px rgba(0,0,0,0.15);" onmouseover="this.style.background='#a8892e'" onmouseout="this.style.background='#c9a84c'">
-                            <i class="fas fa-camera"></i>
-                        </label>
-                        <input type="file" id="boutiquePhotoInput3" accept="image/*" style="display:none;">
+                <!-- Container des photos -->
+                <div id="galerieContainer" style="display:flex; flex-direction:column; gap:16px;">
+                    <!-- Les photos seront ajoutées ici dynamiquement -->
+                    <div id="galerieEmpty" style="text-align:center; padding:30px; color:#999; background:#fff; border-radius:8px; border:2px dashed #e0e0e0;">
+                        <i class="fas fa-camera" style="font-size:2rem; display:block; margin-bottom:8px; color:#ddd;"></i>
+                        <p style="margin:0;">Aucune photo dans la galerie</p>
+                        <p style="font-size:0.85rem; margin:4px 0 0 0;">Cliquez sur "Ajouter une photo" pour commencer</p>
                     </div>
                 </div>
-                <p style="font-size:0.8rem; color:#888; margin-top:8px;">📸 Formats acceptés : JPG, PNG · Max 2 Mo par image</p>
             </div>
 
             <!-- ===== GRAND TITRE (colonne titreb) ===== -->
@@ -209,6 +187,12 @@
         console.log('✅ Supabase initialisé dans profil.html');
 
         // ==========================================
+        // VARIABLES
+        // ==========================================
+        let photoCounter = 0;
+        let galerieData = [];
+
+        // ==========================================
         // NOTIFICATION
         // ==========================================
         function showNotification(message, type = 'info') {
@@ -249,6 +233,161 @@
                 toast.style.transition = 'all 0.4s ease';
                 setTimeout(() => toast.remove(), 400);
             }, 3000);
+        }
+
+        // ==========================================
+        // GÉNÉRER UN ID UNIQUE
+        // ==========================================
+        function generateId() {
+            return 'photo_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // ==========================================
+        // AJOUTER UNE PHOTO À LA GALERIE
+        // ==========================================
+        function ajouterPhotoGalerie(imageData = null, titre = '', description = '') {
+            if (galerieData.length >= 5) {
+                showNotification('⚠️ Maximum 5 photos atteint', 'error');
+                return;
+            }
+
+            const id = generateId();
+            const photoObj = {
+                id: id,
+                image: imageData || null,
+                titre: titre,
+                description: description
+            };
+            galerieData.push(photoObj);
+            renderGalerie();
+        }
+
+        // ==========================================
+        // SUPPRIMER UNE PHOTO
+        // ==========================================
+        function supprimerPhoto(id) {
+            if (confirm('Voulez-vous vraiment supprimer cette photo ?')) {
+                galerieData = galerieData.filter(p => p.id !== id);
+                renderGalerie();
+                showNotification('🗑️ Photo supprimée', 'info');
+            }
+        }
+
+        // ==========================================
+        // MODIFIER LE TITRE ET LA DESCRIPTION
+        // ==========================================
+        function modifierPhoto(id, titre, description) {
+            const photo = galerieData.find(p => p.id === id);
+            if (photo) {
+                photo.titre = titre;
+                photo.description = description;
+                // Mettre à jour l'affichage
+                const item = document.querySelector(`[data-photo-id="${id}"]`);
+                if (item) {
+                    const titleDisplay = item.querySelector('.photo-titre-display');
+                    const descDisplay = item.querySelector('.photo-desc-display');
+                    if (titleDisplay) titleDisplay.textContent = titre || 'Sans titre';
+                    if (descDisplay) descDisplay.textContent = description || 'Aucune description';
+                }
+                showNotification('✅ Modifications enregistrées', 'success');
+            }
+        }
+
+        // ==========================================
+        // CHANGER L'IMAGE D'UNE PHOTO
+        // ==========================================
+        function changerImagePhoto(id, event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const photo = galerieData.find(p => p.id === id);
+                    if (photo) {
+                        photo.image = e.target.result;
+                        renderGalerie();
+                        showNotification('✅ Image mise à jour', 'success');
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // ==========================================
+        // RENDRE LA GALERIE
+        // ==========================================
+        function renderGalerie() {
+            const container = document.getElementById('galerieContainer');
+            const emptyMsg = document.getElementById('galerieEmpty');
+            
+            if (galerieData.length === 0) {
+                // Afficher le message vide
+                if (!emptyMsg) {
+                    container.innerHTML = `
+                        <div id="galerieEmpty" style="text-align:center; padding:30px; color:#999; background:#fff; border-radius:8px; border:2px dashed #e0e0e0;">
+                            <i class="fas fa-camera" style="font-size:2rem; display:block; margin-bottom:8px; color:#ddd;"></i>
+                            <p style="margin:0;">Aucune photo dans la galerie</p>
+                            <p style="font-size:0.85rem; margin:4px 0 0 0;">Cliquez sur "Ajouter une photo" pour commencer</p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = emptyMsg.outerHTML;
+                }
+                return;
+            }
+
+            // Construire l'affichage
+            let html = '';
+            galerieData.forEach((photo, index) => {
+                html += `
+                    <div data-photo-id="${photo.id}" style="background:#ffffff; border-radius:10px; padding:16px; border:1px solid #e8e8e8; transition:all 0.3s; position:relative;" onmouseover="this.style.borderColor='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8'">
+                        <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start;">
+                            <!-- Miniature -->
+                            <div style="position:relative; width:120px; height:120px; flex-shrink:0; border-radius:8px; overflow:hidden; background:#f0f0f0; border:1px solid #e8e8e8;">
+                                ${photo.image ? 
+                                    `<img src="${photo.image}" style="width:100%;height:100%;object-fit:cover;">` :
+                                    `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:0.8rem;flex-direction:column;">
+                                        <i class="fas fa-image" style="font-size:2rem;margin-bottom:4px;"></i>
+                                        <span>Aucune image</span>
+                                    </div>`
+                                }
+                                <label for="changeImage_${photo.id}" style="position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,0.7);color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.7rem;border:2px solid white;transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">
+                                    <i class="fas fa-camera"></i>
+                                </label>
+                                <input type="file" id="changeImage_${photo.id}" accept="image/*" style="display:none;" onchange="window.changerImagePhoto('${photo.id}', event)">
+                            </div>
+
+                            <!-- Infos -->
+                            <div style="flex:1; min-width:200px;">
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                                    <div style="grid-column:1/2;">
+                                        <label style="font-size:0.8rem; color:#888; font-weight:600;">Titre</label>
+                                        <input type="text" id="titre_${photo.id}" value="${photo.titre || ''}" style="width:100%; padding:6px 10px; border:1px solid #e8e8e8; border-radius:6px; font-size:0.9rem; font-family:inherit;" placeholder="Titre de la photo">
+                                    </div>
+                                    <div style="grid-column:2/3;">
+                                        <label style="font-size:0.8rem; color:#888; font-weight:600;">Description</label>
+                                        <input type="text" id="desc_${photo.id}" value="${photo.description || ''}" style="width:100%; padding:6px 10px; border:1px solid #e8e8e8; border-radius:6px; font-size:0.9rem; font-family:inherit;" placeholder="Description">
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:8px; margin-top:8px;">
+                                    <button type="button" onclick="window.modifierPhoto('${photo.id}', document.getElementById('titre_${photo.id}').value, document.getElementById('desc_${photo.id}').value)" style="padding:4px 16px; background:#c9a84c; color:white; border:none; border-radius:6px; font-size:0.8rem; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.background='#a8892e'" onmouseout="this.style.background='#c9a84c'">
+                                        <i class="fas fa-save"></i> Modifier
+                                    </button>
+                                    <button type="button" onclick="window.supprimerPhoto('${photo.id}')" style="padding:4px 16px; background:#e74c3c; color:white; border:none; border-radius:6px; font-size:0.8rem; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.background='#c0392b'" onmouseout="this.style.background='#e74c3c'">
+                                        <i class="fas fa-trash"></i> Supprimer
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Numéro / badge -->
+                            <div style="position:absolute; top:8px; right:12px; background:#c9a84c; color:white; padding:2px 12px; border-radius:50px; font-size:0.7rem; font-weight:600;">
+                                #${index + 1}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
         }
 
         // ==========================================
@@ -305,18 +444,17 @@
                     document.getElementById('grandTitre').value = data.titreb || '';
                     document.getElementById('legendeBoutique').value = data.legende || '';
                     
-                    // Charger les 3 images de la galerie
-                    if (data.photo1) {
-                        document.getElementById('boutiquePhoto1').innerHTML = 
-                            `<img src="${data.photo1}" style="width:100%;height:100%;object-fit:cover;">`;
-                    }
-                    if (data.photo2) {
-                        document.getElementById('boutiquePhoto2').innerHTML = 
-                            `<img src="${data.photo2}" style="width:100%;height:100%;object-fit:cover;">`;
-                    }
-                    if (data.photo3) {
-                        document.getElementById('boutiquePhoto3').innerHTML = 
-                            `<img src="${data.photo3}" style="width:100%;height:100%;object-fit:cover;">`;
+                    // Charger la galerie depuis la colonne galerie (JSON)
+                    if (data.galerie) {
+                        try {
+                            const galerie = typeof data.galerie === 'string' ? JSON.parse(data.galerie) : data.galerie;
+                            if (Array.isArray(galerie) && galerie.length > 0) {
+                                galerieData = galerie;
+                                renderGalerie();
+                            }
+                        } catch (e) {
+                            console.warn('⚠️ Erreur parsing galerie:', e);
+                        }
                     }
                 } else {
                     console.warn('⚠️ Aucune boutique trouvée, création...');
@@ -327,7 +465,8 @@
                             nom: 'NIKEL',
                             adresse: '123 rue de l\'Élégance, 75001 Paris',
                             titreb: 'L\'élégance à votre portée',
-                            legende: 'Découvrez notre collection unique de prêt-à-porter haut de gamme.'
+                            legende: 'Découvrez notre collection unique de prêt-à-porter haut de gamme.',
+                            galerie: JSON.stringify([])
                         }]);
 
                     if (createError) {
@@ -414,15 +553,13 @@
                 if (adminError) throw adminError;
                 console.log('✅ Infos personnelles sauvegardées');
 
-                // 2. Mettre à jour la boutique (avec les nouvelles photos)
+                // 2. Mettre à jour la boutique (avec la galerie)
                 const boutiqueData = {
                     nom: formData.nomBoutique,
                     adresse: formData.adresseBoutique,
                     titreb: formData.grandTitre,
                     legende: formData.legendeBoutique,
-                    photo1: formData.boutiquePhoto1 || null,
-                    photo2: formData.boutiquePhoto2 || null,
-                    photo3: formData.boutiquePhoto3 || null,
+                    galerie: JSON.stringify(galerieData),
                     updated_at: new Date().toISOString()
                 };
 
@@ -499,28 +636,6 @@
         }
 
         // ==========================================
-        // GESTION DES PHOTOS DE LA GALERIE BOUTIQUE
-        // ==========================================
-        function setupBoutiquePhotoUpload(inputId, displayId, storageKey) {
-            const input = document.getElementById(inputId);
-            const display = document.getElementById(displayId);
-            
-            if (input && display) {
-                input.addEventListener('change', function(e) {
-                    const file = this.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(event) {
-                            display.innerHTML = '<img src="' + event.target.result + '" style="width:100%;height:100%;object-fit:cover;">';
-                            localStorage.setItem(storageKey, event.target.result);
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-            }
-        }
-
-        // ==========================================
         // GESTION DES PHOTOS (profil et pro)
         // ==========================================
         function setupPhotoUpload(inputId, displayId, storageKey) {
@@ -561,10 +676,7 @@
                     grandTitre: document.getElementById('grandTitre').value || '',
                     legendeBoutique: document.getElementById('legendeBoutique').value || '',
                     titrePro: document.getElementById('titrePro').value || '',
-                    bio: document.getElementById('bio').value || '',
-                    boutiquePhoto1: localStorage.getItem('nikel_boutique_photo1') || null,
-                    boutiquePhoto2: localStorage.getItem('nikel_boutique_photo2') || null,
-                    boutiquePhoto3: localStorage.getItem('nikel_boutique_photo3') || null
+                    bio: document.getElementById('bio').value || ''
                 };
                 
                 console.log('📝 Données à sauvegarder:', formData);
@@ -578,6 +690,8 @@
             profileForm.addEventListener('reset', function(e) {
                 e.preventDefault();
                 if (confirm('Voulez-vous vraiment réinitialiser les modifications non sauvegardées ?')) {
+                    // Recharger les données depuis la base
+                    galerieData = [];
                     loadAdminData();
                     showNotification('🔄 Formulaire réinitialisé', 'info');
                 }
@@ -594,10 +708,35 @@
             setupPhotoUpload('photoInput', 'profilePhoto', 'nikel_profile_photo');
             setupPhotoUpload('proPhotoInput', 'proPhoto', 'nikel_pro_photo');
             
-            // Galerie boutique (3 images)
-            setupBoutiquePhotoUpload('boutiquePhotoInput1', 'boutiquePhoto1', 'nikel_boutique_photo1');
-            setupBoutiquePhotoUpload('boutiquePhotoInput2', 'boutiquePhoto2', 'nikel_boutique_photo2');
-            setupBoutiquePhotoUpload('boutiquePhotoInput3', 'boutiquePhoto3', 'nikel_boutique_photo3');
+            // Exposer les fonctions globalement
+            window.ajouterPhotoGalerie = ajouterPhotoGalerie;
+            window.supprimerPhoto = supprimerPhoto;
+            window.modifierPhoto = modifierPhoto;
+            window.changerImagePhoto = changerImagePhoto;
+            window.renderGalerie = renderGalerie;
+
+            // Bouton ajouter photo
+            document.getElementById('ajouterPhotoBtn').addEventListener('click', function() {
+                if (galerieData.length >= 5) {
+                    showNotification('⚠️ Maximum 5 photos atteint', 'error');
+                    return;
+                }
+                // Ouvrir un dialogue de sélection de fichier
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            ajouterPhotoGalerie(event.target.result, '', '');
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+                input.click();
+            });
             
             setTimeout(async () => {
                 await loadAdminData();
