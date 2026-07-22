@@ -1,3 +1,177 @@
+<!-- profil.html - Page Profil du vendeur -->
+<div id="profilContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
+
+    <!-- ===== TITRE ===== -->
+    <h2 style="font-family:'Playfair Display',serif; margin-bottom:24px; padding-bottom:16px; border-bottom:2px solid #f0f0f0; font-size:1.6rem; color:#1a1a1a;">
+        <i class="fas fa-user-circle" style="color:#c9a84c;"></i> Mon Profil
+    </h2>
+
+    <form id="profileForm" style="display:flex; flex-direction:column; gap:30px;">
+
+        <!-- ===== SECTION 1 : PHOTO DE PROFIL ===== -->
+        <div style="display:flex; align-items:center; gap:24px; padding:20px; background:#f8f8f8; border-radius:12px; flex-wrap:wrap;">
+            <div style="position:relative; width:100px; height:100px; flex-shrink:0;">
+                <div id="profilePhoto" style="width:100px; height:100px; border-radius:50%; background:linear-gradient(135deg, #c9a84c, #a8892e); display:flex; align-items:center; justify-content:center; font-size:3rem; color:white; overflow:hidden; border:3px solid #c9a84c;">
+                    <i class="fas fa-user"></i>
+                </div>
+                <label for="photoInput" style="position:absolute; bottom:0; right:0; background:#c9a84c; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.9rem; border:2px solid white; transition:all 0.3s;" onmouseover="this.style.background='#a8892e'" onmouseout="this.style.background='#c9a84c'">
+                    <i class="fas fa-camera"></i>
+                </label>
+                <input type="file" id="photoInput" accept="image/*" style="display:none;">
+            </div>
+            <div>
+                <h4 style="margin-bottom:4px; font-size:1rem; color:#1a1a1a;">Photo de profil</h4>
+                <p style="font-size:0.9rem; color:#888;">Cliquez sur l'icône appareil photo pour changer votre photo.</p>
+                <p style="font-size:0.8rem; color:#888;">Formats acceptés : JPG, PNG · Max 2 Mo</p>
+            </div>
+        </div>
+
+        <!-- ===== SECTION 2 : INFORMATIONS PERSONNELLES ===== -->
+        <div>
+            <h3 style="font-family:'Playfair Display',serif; margin-bottom:16px; font-size:1.1rem; color:#1a1a1a;">
+                <i class="fas fa-id-card" style="color:#c9a84c;"></i> Informations personnelles
+            </h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div class="form-group">
+                    <label for="prenom" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-user" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Prénom</label>
+                    <input type="text" id="prenom" name="prenom" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
+                </div>
+                <div class="form-group">
+                    <label for="nom" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-user" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Nom</label>
+                    <input type="text" id="nom" name="nom" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
+                </div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div class="form-group">
+                    <label for="ville" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-city" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Ville</label>
+                    <input type="text" id="ville" name="ville" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
+                </div>
+                <div class="form-group">
+                    <label for="pays" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-globe" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Pays</label>
+                    <select id="pays" name="pays" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
+                        <option value="FR">France</option>
+                        <option value="BJ">Bénin</option>
+                        <option value="TG">Togo</option>
+                        <option value="BF">Burkina Faso</option>
+                        <option value="CI">Côte d'Ivoire</option>
+                        <option value="SN">Sénégal</option>
+                        <option value="ML">Mali</option>
+                        <option value="NE">Niger</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="telephone" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-phone" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Téléphone</label>
+                <input type="tel" id="telephone" name="telephone" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
+            </div>
+            <div class="form-group">
+                <label for="email" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-envelope" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Email</label>
+                <input type="email" id="email" name="email" value="" readonly style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f0f0f0; font-family:inherit; cursor:not-allowed; color:#666;" title="L'email ne peut pas être modifié">
+                <small style="color:#888; font-size:0.8rem;">🔒 L'email est utilisé pour la connexion et ne peut pas être modifié.</small>
+            </div>
+        </div>
+
+        <!-- ===== SECTION 3 : PARAMÈTRES DE LA BOUTIQUE ===== -->
+        <div>
+            <h3 style="font-family:'Playfair Display',serif; margin-bottom:16px; font-size:1.1rem; color:#1a1a1a;">
+                <i class="fas fa-store" style="color:#c9a84c;"></i> Paramètres de la boutique
+            </h3>
+            
+            <div class="form-group">
+                <label for="nomBoutique" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-tag" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Nom de la boutique</label>
+                <input type="text" id="nomBoutique" name="nomBoutique" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
+            </div>
+
+            <div class="form-group">
+                <label for="adresseBoutique" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-map-marker-alt" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Adresse de la boutique</label>
+                <input type="text" id="adresseBoutique" name="adresseBoutique" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
+            </div>
+
+            <!-- ===== GALERIE PHOTO DE LA BOUTIQUE (DYNAMIQUE - 5 PHOTOS MAX) ===== -->
+            <div style="padding:16px; background:#f8f8f8; border-radius:12px; margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+                    <div>
+                        <h4 style="font-size:0.95rem; margin:0; color:#1a1a1a;">
+                            <i class="fas fa-images" style="color:#c9a84c;"></i> Galerie photo de la boutique
+                        </h4>
+                        <p style="font-size:0.8rem; color:#888; margin:4px 0 0 0;">Ajoutez jusqu'à 5 photos avec un titre et une description.</p>
+                    </div>
+                    <button type="button" id="ajouterPhotoBtn" style="padding:8px 20px; background:#c9a84c; color:white; border:none; border-radius:8px; font-size:0.85rem; font-weight:600; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px;" onmouseover="this.style.background='#a8892e'" onmouseout="this.style.background='#c9a84c'">
+                        <i class="fas fa-plus"></i> Ajouter une photo
+                    </button>
+                </div>
+
+                <!-- Container des photos -->
+                <div id="galerieContainer" style="display:flex; flex-direction:column; gap:16px;">
+                    <!-- Les photos seront ajoutées ici dynamiquement -->
+                    <div id="galerieEmpty" style="text-align:center; padding:30px; color:#999; background:#fff; border-radius:8px; border:2px dashed #e0e0e0;">
+                        <i class="fas fa-camera" style="font-size:2rem; display:block; margin-bottom:8px; color:#ddd;"></i>
+                        <p style="margin:0;">Aucune photo dans la galerie</p>
+                        <p style="font-size:0.85rem; margin:4px 0 0 0;">Cliquez sur "Ajouter une photo" pour commencer</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== GRAND TITRE (colonne titreb) ===== -->
+            <div class="form-group">
+                <label for="grandTitre" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-heading" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Grand titre</label>
+                <input type="text" id="grandTitre" name="grandTitre" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'" placeholder="Ex: L'élégance à votre portée">
+                <small style="color:#888; font-size:0.8rem;">Le titre principal qui apparaît sur votre page boutique.</small>
+            </div>
+
+            <!-- ===== DESCRIPTION DE LA BOUTIQUE (colonne legende) ===== -->
+            <div class="form-group">
+                <label for="legendeBoutique" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-align-left" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Description de la boutique</label>
+                <textarea id="legendeBoutique" name="legendeBoutique" rows="3" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit; resize:vertical;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'" placeholder="Ex: Découvrez notre collection unique de prêt-à-porter haut de gamme..."></textarea>
+                <small style="color:#888; font-size:0.8rem;">Une courte description qui apparaît sous le grand titre.</small>
+            </div>
+
+            <!-- Photo professionnelle -->
+            <div style="display:flex; align-items:center; gap:20px; padding:16px; background:#f8f8f8; border-radius:12px; margin-bottom:16px; flex-wrap:wrap;">
+                <div style="position:relative; width:80px; height:80px; flex-shrink:0;">
+                    <div id="proPhoto" style="width:80px; height:80px; border-radius:12px; background:linear-gradient(135deg, #2d2d2d, #1a1a1a); display:flex; align-items:center; justify-content:center; font-size:2rem; color:white; overflow:hidden; border:2px solid #e8e8e8;">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <label for="proPhotoInput" style="position:absolute; bottom:0; right:0; background:#c9a84c; color:white; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.8rem; border:2px solid white; transition:all 0.3s;" onmouseover="this.style.background='#a8892e'" onmouseout="this.style.background='#c9a84c'">
+                        <i class="fas fa-camera"></i>
+                    </label>
+                    <input type="file" id="proPhotoInput" accept="image/*" style="display:none;">
+                </div>
+                <div>
+                    <h4 style="font-size:0.95rem; margin-bottom:2px; color:#1a1a1a;">Photo professionnelle</h4>
+                    <p style="font-size:0.85rem; color:#888;">Photo qui apparaîtra sur vos cartes professionnelles.</p>
+                </div>
+            </div>
+
+            <!-- ===== TITRE PRO (colonne titre de admin_profiles) ===== -->
+            <div class="form-group">
+                <label for="titrePro" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-user-tie" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Titre professionnel</label>
+                <input type="text" id="titrePro" name="titrePro" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'" placeholder="Ex: Designer de mode - Fondateur de NIKEL">
+                <small style="color:#888; font-size:0.8rem;">Votre titre professionnel qui apparaît sur votre profil.</small>
+            </div>
+
+            <!-- ===== DESCRIPTION PRO (Bio) - colonne description de admin_profiles ===== -->
+            <div class="form-group">
+                <label for="bio" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-align-left" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Description Pro (Bio)</label>
+                <textarea id="bio" name="bio" rows="4" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit; resize:vertical;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'" placeholder="Présentez-vous en quelques mots..."></textarea>
+                <small style="color:#888; font-size:0.8rem;">Votre biographie professionnelle.</small>
+            </div>
+        </div>
+
+        <!-- ===== BOUTON ENREGISTRER ===== -->
+        <div style="display:flex; gap:12px; flex-wrap:wrap; border-top:2px solid #f0f0f0; padding-top:20px;">
+            <button type="submit" class="btn-save" style="padding:12px 30px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:600; cursor:pointer; transition:all 0.3s; display:inline-flex; align-items:center; gap:10px;" onmouseover="this.style.transform='scale(1.02)';this.style.boxShadow='0 4px 20px rgba(201,168,76,0.4)'" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='none'">
+                <i class="fas fa-save"></i> Enregistrer les modifications
+            </button>
+            <button type="reset" class="btn-reset" style="padding:12px 30px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:1rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+                <i class="fas fa-undo"></i> Réinitialiser
+            </button>
+        </div>
+
+    </form>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     (function() {
@@ -15,15 +189,14 @@
         // ==========================================
         // VARIABLES
         // ==========================================
+        let photoCounter = 0;
         let galerieData = [];
-        let isInitialized = false;
 
         // ==========================================
         // NOTIFICATION
         // ==========================================
         function showNotification(message, type = 'info') {
-            const existing = document.querySelector('.toast-nikel');
-            if (existing) existing.remove();
+            document.querySelectorAll('.toast-nikel').forEach(t => t.remove());
             
             const colors = {
                 success: '#27ae60',
@@ -63,322 +236,106 @@
         }
 
         // ==========================================
-        // UPLOAD D'IMAGE VERS SUPABASE STORAGE
+        // GÉNÉRER UN ID UNIQUE
         // ==========================================
-        async function uploadImageToStorage(file, adminId) {
-            try {
-                const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/gif'];
-                if (!validTypes.includes(file.type)) {
-                    showNotification('❌ Format non supporté. Utilisez JPG, PNG, WEBP ou GIF', 'error');
-                    return null;
-                }
-
-                if (file.size > 5 * 1024 * 1024) {
-                    showNotification('❌ Image trop grande. Maximum 5MB', 'error');
-                    return null;
-                }
-
-                const fileExt = file.name.split('.').pop();
-                const fileName = `galerie/${adminId}/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
-                
-                console.log('📤 Upload de l\'image:', fileName);
-
-                const { data, error } = await supabaseClient.storage
-                    .from('galerie')
-                    .upload(fileName, file, {
-                        cacheControl: '3600',
-                        upsert: false,
-                        contentType: file.type
-                    });
-
-                if (error) {
-                    console.error('❌ Erreur upload:', error);
-                    showNotification('❌ Erreur upload: ' + error.message, 'error');
-                    return null;
-                }
-
-                const { data: urlData } = supabaseClient.storage
-                    .from('galerie')
-                    .getPublicUrl(fileName);
-
-                console.log('✅ Image uploadée:', urlData.publicUrl);
-                return urlData.publicUrl;
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                showNotification('❌ Erreur upload: ' + err.message, 'error');
-                return null;
-            }
-        }
-
-        // ==========================================
-        // CHARGER LA GALERIE DEPUIS SUPABASE
-        // ==========================================
-        async function loadGalerie(adminId) {
-            try {
-                console.log('📝 Chargement de la galerie pour admin:', adminId);
-
-                const { data, error } = await supabaseClient
-                    .from('galerie')
-                    .select('*')
-                    .eq('admin_id', adminId)
-                    .eq('est_active', true)
-                    .order('ordre', { ascending: true });
-
-                if (error) {
-                    console.error('❌ Erreur chargement galerie:', error);
-                    // Fallback sans le filtre est_active
-                    const { data: fallbackData, error: fallbackError } = await supabaseClient
-                        .from('galerie')
-                        .select('*')
-                        .eq('admin_id', adminId)
-                        .order('ordre', { ascending: true });
-
-                    if (fallbackError) {
-                        console.error('❌ Erreur fallback:', fallbackError);
-                        return;
-                    }
-                    if (fallbackData) {
-                        galerieData = fallbackData.map(item => ({
-                            id: item.id,
-                            image: item.image_url,
-                            titre: item.titre || '',
-                            description: item.description || '',
-                            ordre: item.ordre || 0,
-                            est_active: item.est_active
-                        }));
-                        renderGalerie();
-                    }
-                    return;
-                }
-
-                console.log(`✅ ${data.length} photos chargées`);
-
-                galerieData = data.map(item => ({
-                    id: item.id,
-                    image: item.image_url,
-                    titre: item.titre || '',
-                    description: item.description || '',
-                    ordre: item.ordre || 0,
-                    est_active: item.est_active
-                }));
-
-                renderGalerie();
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-            }
+        function generateId() {
+            return 'photo_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
         }
 
         // ==========================================
         // AJOUTER UNE PHOTO À LA GALERIE
         // ==========================================
-        async function ajouterPhotoGalerie(file, titre = '', description = '') {
-            const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
-            if (!adminSession || !adminSession.id) {
-                showNotification('⚠️ Vous devez être connecté', 'error');
-                return;
-            }
-
+        function ajouterPhotoGalerie(imageData = null, titre = '', description = '') {
             if (galerieData.length >= 5) {
                 showNotification('⚠️ Maximum 5 photos atteint', 'error');
                 return;
             }
 
-            try {
-                showNotification('📤 Upload en cours...', 'info');
-
-                const imageUrl = await uploadImageToStorage(file, adminSession.id);
-                if (!imageUrl) return;
-
-                const { data, error } = await supabaseClient
-                    .from('galerie')
-                    .insert({
-                        admin_id: adminSession.id,
-                        image_url: imageUrl,
-                        titre: titre || `Photo ${galerieData.length + 1}`,
-                        description: description || '',
-                        ordre: galerieData.length + 1,
-                        est_active: true
-                    })
-                    .select()
-                    .single();
-
-                if (error) {
-                    console.error('❌ Erreur insertion galerie:', error);
-                    showNotification('❌ Erreur: ' + error.message, 'error');
-                    return;
-                }
-
-                console.log('✅ Photo ajoutée:', data);
-
-                galerieData.push({
-                    id: data.id,
-                    image: data.image_url,
-                    titre: data.titre || '',
-                    description: data.description || '',
-                    ordre: data.ordre || 0,
-                    est_active: data.est_active
-                });
-
-                renderGalerie();
-                showNotification('✅ Photo ajoutée avec succès !', 'success');
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                showNotification('❌ Erreur: ' + err.message, 'error');
-            }
+            const id = generateId();
+            const photoObj = {
+                id: id,
+                image: imageData || null,
+                titre: titre,
+                description: description
+            };
+            galerieData.push(photoObj);
+            renderGalerie();
         }
 
         // ==========================================
         // SUPPRIMER UNE PHOTO
         // ==========================================
-        async function supprimerPhoto(id) {
-            if (!confirm('Voulez-vous vraiment supprimer cette photo ?')) {
-                return;
-            }
-
-            try {
-                const photo = galerieData.find(p => p.id === id);
-                if (!photo) return;
-
-                // Soft delete : marquer comme inactive
-                const { error } = await supabaseClient
-                    .from('galerie')
-                    .update({ est_active: false })
-                    .eq('id', id);
-
-                if (error) {
-                    console.error('❌ Erreur suppression:', error);
-                    showNotification('❌ Erreur: ' + error.message, 'error');
-                    return;
-                }
-
-                // Supprimer du Storage
-                if (photo.image) {
-                    try {
-                        const urlParts = photo.image.split('/storage/v1/object/public/galerie/');
-                        if (urlParts.length > 1) {
-                            const path = urlParts[1];
-                            await supabaseClient.storage
-                                .from('galerie')
-                                .remove([path]);
-                            console.log('🗑️ Image supprimée du Storage');
-                        }
-                    } catch (storageErr) {
-                        console.warn('⚠️ Erreur suppression Storage:', storageErr);
-                    }
-                }
-
+        function supprimerPhoto(id) {
+            if (confirm('Voulez-vous vraiment supprimer cette photo ?')) {
                 galerieData = galerieData.filter(p => p.id !== id);
                 renderGalerie();
                 showNotification('🗑️ Photo supprimée', 'info');
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                showNotification('❌ Erreur: ' + err.message, 'error');
             }
         }
 
         // ==========================================
         // MODIFIER LE TITRE ET LA DESCRIPTION
         // ==========================================
-        async function modifierPhoto(id, titre, description) {
-            try {
-                const { error } = await supabaseClient
-                    .from('galerie')
-                    .update({
-                        titre: titre,
-                        description: description,
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('id', id);
-
-                if (error) {
-                    console.error('❌ Erreur modification:', error);
-                    showNotification('❌ Erreur: ' + error.message, 'error');
-                    return;
+        function modifierPhoto(id, titre, description) {
+            const photo = galerieData.find(p => p.id === id);
+            if (photo) {
+                photo.titre = titre;
+                photo.description = description;
+                // Mettre à jour l'affichage
+                const item = document.querySelector(`[data-photo-id="${id}"]`);
+                if (item) {
+                    const titleDisplay = item.querySelector('.photo-titre-display');
+                    const descDisplay = item.querySelector('.photo-desc-display');
+                    if (titleDisplay) titleDisplay.textContent = titre || 'Sans titre';
+                    if (descDisplay) descDisplay.textContent = description || 'Aucune description';
                 }
-
-                const photo = galerieData.find(p => p.id === id);
-                if (photo) {
-                    photo.titre = titre;
-                    photo.description = description;
-                }
-
-                renderGalerie();
                 showNotification('✅ Modifications enregistrées', 'success');
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                showNotification('❌ Erreur: ' + err.message, 'error');
             }
         }
 
         // ==========================================
         // CHANGER L'IMAGE D'UNE PHOTO
         // ==========================================
-        async function changerImagePhoto(id, event) {
+        function changerImagePhoto(id, event) {
             const file = event.target.files[0];
-            if (!file) return;
-
-            const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
-            if (!adminSession || !adminSession.id) {
-                showNotification('⚠️ Vous devez être connecté', 'error');
-                return;
-            }
-
-            try {
-                showNotification('📤 Upload en cours...', 'info');
-
-                const imageUrl = await uploadImageToStorage(file, adminSession.id);
-                if (!imageUrl) return;
-
-                const { error } = await supabaseClient
-                    .from('galerie')
-                    .update({
-                        image_url: imageUrl,
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('id', id);
-
-                if (error) {
-                    console.error('❌ Erreur mise à jour image:', error);
-                    showNotification('❌ Erreur: ' + error.message, 'error');
-                    return;
-                }
-
-                const photo = galerieData.find(p => p.id === id);
-                if (photo) {
-                    photo.image = imageUrl;
-                }
-
-                renderGalerie();
-                showNotification('✅ Image mise à jour', 'success');
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                showNotification('❌ Erreur: ' + err.message, 'error');
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const photo = galerieData.find(p => p.id === id);
+                    if (photo) {
+                        photo.image = e.target.result;
+                        renderGalerie();
+                        showNotification('✅ Image mise à jour', 'success');
+                    }
+                };
+                reader.readAsDataURL(file);
             }
         }
 
         // ==========================================
-        // RENDRE LA GALERIE (avec les bons événements)
+        // RENDRE LA GALERIE
         // ==========================================
         function renderGalerie() {
             const container = document.getElementById('galerieContainer');
+            const emptyMsg = document.getElementById('galerieEmpty');
             
             if (galerieData.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align:center; padding:30px; color:#999; background:#fff; border-radius:8px; border:2px dashed #e0e0e0;">
-                        <i class="fas fa-camera" style="font-size:2rem; display:block; margin-bottom:8px; color:#ddd;"></i>
-                        <p style="margin:0;">Aucune photo dans la galerie</p>
-                        <p style="font-size:0.85rem; margin:4px 0 0 0;">Cliquez sur "Ajouter une photo" pour commencer</p>
-                    </div>
-                `;
+                // Afficher le message vide
+                if (!emptyMsg) {
+                    container.innerHTML = `
+                        <div id="galerieEmpty" style="text-align:center; padding:30px; color:#999; background:#fff; border-radius:8px; border:2px dashed #e0e0e0;">
+                            <i class="fas fa-camera" style="font-size:2rem; display:block; margin-bottom:8px; color:#ddd;"></i>
+                            <p style="margin:0;">Aucune photo dans la galerie</p>
+                            <p style="font-size:0.85rem; margin:4px 0 0 0;">Cliquez sur "Ajouter une photo" pour commencer</p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = emptyMsg.outerHTML;
+                }
                 return;
             }
 
+            // Construire l'affichage
             let html = '';
             galerieData.forEach((photo, index) => {
                 html += `
@@ -396,7 +353,7 @@
                                 <label for="changeImage_${photo.id}" style="position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,0.7);color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.7rem;border:2px solid white;transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">
                                     <i class="fas fa-camera"></i>
                                 </label>
-                                <input type="file" id="changeImage_${photo.id}" accept="image/*" style="display:none;">
+                                <input type="file" id="changeImage_${photo.id}" accept="image/*" style="display:none;" onchange="window.changerImagePhoto('${photo.id}', event)">
                             </div>
 
                             <!-- Infos -->
@@ -412,10 +369,10 @@
                                     </div>
                                 </div>
                                 <div style="display:flex; gap:8px; margin-top:8px;">
-                                    <button type="button" onclick="modifierPhotoGalerie('${photo.id}')" style="padding:4px 16px; background:#c9a84c; color:white; border:none; border-radius:6px; font-size:0.8rem; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.background='#a8892e'" onmouseout="this.style.background='#c9a84c'">
+                                    <button type="button" onclick="window.modifierPhoto('${photo.id}', document.getElementById('titre_${photo.id}').value, document.getElementById('desc_${photo.id}').value)" style="padding:4px 16px; background:#c9a84c; color:white; border:none; border-radius:6px; font-size:0.8rem; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.background='#a8892e'" onmouseout="this.style.background='#c9a84c'">
                                         <i class="fas fa-save"></i> Modifier
                                     </button>
-                                    <button type="button" onclick="supprimerPhotoGalerie('${photo.id}')" style="padding:4px 16px; background:#e74c3c; color:white; border:none; border-radius:6px; font-size:0.8rem; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.background='#c0392b'" onmouseout="this.style.background='#e74c3c'">
+                                    <button type="button" onclick="window.supprimerPhoto('${photo.id}')" style="padding:4px 16px; background:#e74c3c; color:white; border:none; border-radius:6px; font-size:0.8rem; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.background='#c0392b'" onmouseout="this.style.background='#e74c3c'">
                                         <i class="fas fa-trash"></i> Supprimer
                                     </button>
                                 </div>
@@ -431,38 +388,12 @@
             });
 
             container.innerHTML = html;
-
-            // ==========================================
-            // ATTACHER LES ÉVÉNEMENTS APRÈS LE RENDU
-            // ==========================================
-            // Gestion des changements d'image
-            document.querySelectorAll('[id^="changeImage_"]').forEach(input => {
-                input.addEventListener('change', function(e) {
-                    const photoId = this.id.replace('changeImage_', '');
-                    changerImagePhoto(photoId, e);
-                });
-            });
         }
 
         // ==========================================
-        // WRAPPERS POUR LES BOUTONS (pour éviter les problèmes de scope)
-        // ==========================================
-        function modifierPhotoGalerie(id) {
-            const titre = document.getElementById(`titre_${id}`).value;
-            const description = document.getElementById(`desc_${id}`).value;
-            modifierPhoto(id, titre, description);
-        }
-
-        function supprimerPhotoGalerie(id) {
-            supprimerPhoto(id);
-        }
-
-        // ==========================================
-        // CHARGER LES DONNÉES (OPTIMISÉ)
+        // CHARGER LES DONNÉES
         // ==========================================
         async function loadAdminData() {
-            if (isInitialized) return;
-            
             const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
             if (!adminSession || !adminSession.email) {
                 console.warn('⚠️ Aucun admin connecté');
@@ -472,57 +403,120 @@
             try {
                 console.log('📝 Chargement des données pour:', adminSession.email);
 
-                // Charger toutes les données en parallèle
-                const [adminResult, boutiqueResult, galerieResult, proResult] = await Promise.all([
-                    supabaseClient.from('admins').select('*').eq('email', adminSession.email).single(),
-                    supabaseClient.from('boutique').select('*').eq('admin_id', adminSession.id),
-                    supabaseClient.from('galerie').select('*').eq('admin_id', adminSession.id).eq('est_active', true).order('ordre', { ascending: true }),
-                    supabaseClient.from('admin_profiles').select('*').eq('admin_id', adminSession.id).maybeSingle()
-                ]);
+                // 1. Charger les infos personnelles (admins)
+                const { data: adminData, error: adminError } = await supabaseClient
+                    .from('admins')
+                    .select('*')
+                    .eq('email', adminSession.email)
+                    .single();
 
-                // Admin
-                if (adminResult.data) {
-                    document.getElementById('prenom').value = adminResult.data.prenom || '';
-                    document.getElementById('nom').value = adminResult.data.nom || '';
-                    document.getElementById('ville').value = adminResult.data.ville || '';
-                    document.getElementById('pays').value = adminResult.data.pays || 'FR';
-                    document.getElementById('telephone').value = adminResult.data.telephone || '';
-                    document.getElementById('email').value = adminResult.data.email || '';
+                if (adminError) {
+                    console.error('❌ Erreur chargement admin:', adminError);
+                    showNotification('❌ Erreur chargement: ' + adminError.message, 'error');
+                    return;
                 }
 
-                // Boutique
-                if (boutiqueResult.data && boutiqueResult.data.length > 0) {
-                    const data = boutiqueResult.data[0];
+                if (adminData) {
+                    console.log('✅ Admin trouvé:', adminData);
+                    document.getElementById('prenom').value = adminData.prenom || '';
+                    document.getElementById('nom').value = adminData.nom || '';
+                    document.getElementById('ville').value = adminData.ville || '';
+                    document.getElementById('pays').value = adminData.pays || 'FR';
+                    document.getElementById('telephone').value = adminData.telephone || '';
+                    document.getElementById('email').value = adminData.email || '';
+                }
+
+                // 2. Charger les paramètres boutique
+                const { data: boutiqueData, error: boutiqueError } = await supabaseClient
+                    .from('boutique')
+                    .select('*')
+                    .eq('admin_id', adminSession.id);
+
+                if (boutiqueError) {
+                    console.error('❌ Erreur chargement boutique:', boutiqueError);
+                }
+
+                if (boutiqueData && boutiqueData.length > 0) {
+                    const data = boutiqueData[0];
+                    console.log('✅ Boutique trouvée:', data);
                     document.getElementById('nomBoutique').value = data.nom || 'NIKEL';
                     document.getElementById('adresseBoutique').value = data.adresse || '';
                     document.getElementById('grandTitre').value = data.titreb || '';
                     document.getElementById('legendeBoutique').value = data.legende || '';
-                }
+                    
+                    // Charger la galerie depuis la colonne galerie (JSON)
+                    if (data.galerie) {
+                        try {
+                            const galerie = typeof data.galerie === 'string' ? JSON.parse(data.galerie) : data.galerie;
+                            if (Array.isArray(galerie) && galerie.length > 0) {
+                                galerieData = galerie;
+                                renderGalerie();
+                            }
+                        } catch (e) {
+                            console.warn('⚠️ Erreur parsing galerie:', e);
+                        }
+                    }
+                } else {
+                    console.warn('⚠️ Aucune boutique trouvée, création...');
+                    const { error: createError } = await supabaseClient
+                        .from('boutique')
+                        .insert([{
+                            admin_id: adminSession.id,
+                            nom: 'NIKEL',
+                            adresse: '123 rue de l\'Élégance, 75001 Paris',
+                            titreb: 'L\'élégance à votre portée',
+                            legende: 'Découvrez notre collection unique de prêt-à-porter haut de gamme.',
+                            galerie: JSON.stringify([])
+                        }]);
 
-                // Galerie
-                if (galerieResult.data) {
-                    galerieData = galerieResult.data.map(item => ({
-                        id: item.id,
-                        image: item.image_url,
-                        titre: item.titre || '',
-                        description: item.description || '',
-                        ordre: item.ordre || 0,
-                        est_active: item.est_active
-                    }));
-                    renderGalerie();
-                }
-
-                // Profil pro
-                if (proResult.data) {
-                    document.getElementById('titrePro').value = proResult.data.titre || '';
-                    document.getElementById('bio').value = proResult.data.description || '';
-                    if (proResult.data.photo_url) {
-                        document.getElementById('proPhoto').innerHTML = 
-                            `<img src="${proResult.data.photo_url}" style="width:100%;height:100%;object-fit:cover;">`;
+                    if (createError) {
+                        console.error('❌ Erreur création boutique:', createError);
+                    } else {
+                        console.log('✅ Boutique créée avec succès');
+                        await loadAdminData();
+                        return;
                     }
                 }
 
-                isInitialized = true;
+                // 3. Charger les infos professionnelles (admin_profiles)
+                const { data: proData, error: proError } = await supabaseClient
+                    .from('admin_profiles')
+                    .select('*')
+                    .eq('admin_id', adminSession.id)
+                    .maybeSingle();
+
+                if (proError) {
+                    console.error('❌ Erreur chargement admin_profiles:', proError);
+                }
+
+                if (proData) {
+                    console.log('✅ Profil pro trouvé:', proData);
+                    document.getElementById('titrePro').value = proData.titre || '';
+                    document.getElementById('bio').value = proData.description || '';
+                    
+                    if (proData.photo_url) {
+                        document.getElementById('proPhoto').innerHTML = 
+                            `<img src="${proData.photo_url}" style="width:100%;height:100%;object-fit:cover;">`;
+                    }
+                } else {
+                    console.warn('⚠️ Aucun profil pro trouvé, création...');
+                    const { error: createError } = await supabaseClient
+                        .from('admin_profiles')
+                        .insert([{
+                            admin_id: adminSession.id,
+                            titre: 'Designer de mode - Fondateur de NIKEL',
+                            description: 'Passionné par la mode et le design, j\'ai fondé NIKEL en 2020 pour offrir une alternative élégante et accessible.'
+                        }]);
+
+                    if (createError) {
+                        console.error('❌ Erreur création admin_profiles:', createError);
+                    } else {
+                        console.log('✅ Profil pro créé avec succès');
+                        await loadAdminData();
+                        return;
+                    }
+                }
+
                 showNotification('✅ Données chargées avec succès', 'success');
 
             } catch (err) {
@@ -544,30 +538,87 @@
             try {
                 console.log('📝 Sauvegarde des données...');
 
-                await Promise.all([
-                    supabaseClient.from('admins').update({
+                // 1. Mettre à jour les infos personnelles (admins)
+                const { error: adminError } = await supabaseClient
+                    .from('admins')
+                    .update({
                         prenom: formData.prenom,
                         nom: formData.nom,
                         ville: formData.ville,
                         pays: formData.pays,
                         telephone: formData.telephone
-                    }).eq('email', adminSession.email),
+                    })
+                    .eq('email', adminSession.email);
 
-                    supabaseClient.from('boutique').update({
-                        nom: formData.nomBoutique,
-                        adresse: formData.adresseBoutique,
-                        titreb: formData.grandTitre,
-                        legende: formData.legendeBoutique,
-                        updated_at: new Date().toISOString()
-                    }).eq('admin_id', adminSession.id),
+                if (adminError) throw adminError;
+                console.log('✅ Infos personnelles sauvegardées');
 
-                    supabaseClient.from('admin_profiles').update({
-                        titre: formData.titrePro,
-                        description: formData.bio,
-                        updated_at: new Date().toISOString()
-                    }).eq('admin_id', adminSession.id)
-                ]);
+                // 2. Mettre à jour la boutique (avec la galerie)
+                const boutiqueData = {
+                    nom: formData.nomBoutique,
+                    adresse: formData.adresseBoutique,
+                    titreb: formData.grandTitre,
+                    legende: formData.legendeBoutique,
+                    galerie: JSON.stringify(galerieData),
+                    updated_at: new Date().toISOString()
+                };
 
+                const { data: existing, error: checkError } = await supabaseClient
+                    .from('boutique')
+                    .select('id')
+                    .eq('admin_id', adminSession.id)
+                    .maybeSingle();
+
+                if (existing) {
+                    const { error } = await supabaseClient
+                        .from('boutique')
+                        .update(boutiqueData)
+                        .eq('admin_id', adminSession.id);
+                    if (error) throw error;
+                    console.log('✅ Boutique mise à jour');
+                } else {
+                    const { error } = await supabaseClient
+                        .from('boutique')
+                        .insert([{
+                            admin_id: adminSession.id,
+                            ...boutiqueData
+                        }]);
+                    if (error) throw error;
+                    console.log('✅ Boutique créée');
+                }
+
+                // 3. Mettre à jour le profil pro (admin_profiles)
+                const proData = {
+                    titre: formData.titrePro,
+                    description: formData.bio,
+                    updated_at: new Date().toISOString()
+                };
+
+                const { data: proExisting, error: proCheckError } = await supabaseClient
+                    .from('admin_profiles')
+                    .select('id')
+                    .eq('admin_id', adminSession.id)
+                    .maybeSingle();
+
+                if (proExisting) {
+                    const { error } = await supabaseClient
+                        .from('admin_profiles')
+                        .update(proData)
+                        .eq('admin_id', adminSession.id);
+                    if (error) throw error;
+                    console.log('✅ Profil pro mis à jour');
+                } else {
+                    const { error } = await supabaseClient
+                        .from('admin_profiles')
+                        .insert([{
+                            admin_id: adminSession.id,
+                            ...proData
+                        }]);
+                    if (error) throw error;
+                    console.log('✅ Profil pro créé');
+                }
+
+                // Mettre à jour la session
                 const updatedAdmin = JSON.parse(localStorage.getItem('nikel_admin'));
                 updatedAdmin.prenom = formData.prenom;
                 updatedAdmin.nom = formData.nom;
@@ -585,7 +636,7 @@
         }
 
         // ==========================================
-        // GESTION DES PHOTOS
+        // GESTION DES PHOTOS (profil et pro)
         // ==========================================
         function setupPhotoUpload(inputId, displayId, storageKey) {
             const input = document.getElementById(inputId);
@@ -628,14 +679,19 @@
                     bio: document.getElementById('bio').value || ''
                 };
                 
-                await saveAllData(formData);
+                console.log('📝 Données à sauvegarder:', formData);
+                const success = await saveAllData(formData);
+                
+                if (success) {
+                    showNotification('✅ Profil mis à jour avec succès !', 'success');
+                }
             });
 
             profileForm.addEventListener('reset', function(e) {
                 e.preventDefault();
                 if (confirm('Voulez-vous vraiment réinitialiser les modifications non sauvegardées ?')) {
+                    // Recharger les données depuis la base
                     galerieData = [];
-                    isInitialized = false;
                     loadAdminData();
                     showNotification('🔄 Formulaire réinitialisé', 'info');
                 }
@@ -648,43 +704,43 @@
         function init() {
             console.log('🚀 Démarrage de profil.html...');
             
+            // Photos de profil
             setupPhotoUpload('photoInput', 'profilePhoto', 'nikel_profile_photo');
             setupPhotoUpload('proPhotoInput', 'proPhoto', 'nikel_pro_photo');
             
-            // Exposer les fonctions globalement POUR LES BOUTONS
-            window.modifierPhoto = modifierPhoto;
-            window.supprimerPhoto = supprimerPhoto;
-            window.changerImagePhoto = changerImagePhoto;
+            // Exposer les fonctions globalement
             window.ajouterPhotoGalerie = ajouterPhotoGalerie;
-            window.modifierPhotoGalerie = modifierPhotoGalerie;
-            window.supprimerPhotoGalerie = supprimerPhotoGalerie;
+            window.supprimerPhoto = supprimerPhoto;
+            window.modifierPhoto = modifierPhoto;
+            window.changerImagePhoto = changerImagePhoto;
             window.renderGalerie = renderGalerie;
 
-            const ajouterBtn = document.getElementById('ajouterPhotoBtn');
-            if (ajouterBtn) {
-                ajouterBtn.addEventListener('click', function() {
-                    if (galerieData.length >= 5) {
-                        showNotification('⚠️ Maximum 5 photos atteint', 'error');
-                        return;
+            // Bouton ajouter photo
+            document.getElementById('ajouterPhotoBtn').addEventListener('click', function() {
+                if (galerieData.length >= 5) {
+                    showNotification('⚠️ Maximum 5 photos atteint', 'error');
+                    return;
+                }
+                // Ouvrir un dialogue de sélection de fichier
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            ajouterPhotoGalerie(event.target.result, '', '');
+                        };
+                        reader.readAsDataURL(file);
                     }
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = 'image/*';
-                    input.onchange = function(e) {
-                        const file = e.target.files[0];
-                        if (file) {
-                            const titre = prompt('Titre de la photo :', `Photo ${galerieData.length + 1}`);
-                            const description = prompt('Description :', '');
-                            ajouterPhotoGalerie(file, titre || '', description || '');
-                        }
-                    };
-                    input.click();
-                });
-            }
+                };
+                input.click();
+            });
             
             setTimeout(async () => {
                 await loadAdminData();
-            }, 300);
+            }, 500);
         }
 
         if (document.readyState === 'loading') {
