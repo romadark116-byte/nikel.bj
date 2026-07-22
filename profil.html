@@ -495,4 +495,348 @@
 
             const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
             if (!adminSession || !adminSession.id) {
-                showNotification('⚠️ Vous
+                showNotification('⚠️ Vous devez être connecté', 'error');
+                return;
+            }
+
+            try {
+                showNotification('📤 Upload en cours...', 'info');
+
+                const imageUrl = await uploadImageToStorage(file, adminSession.id);
+                if (!imageUrl) return;
+
+                const { error } = await supabaseClient
+                    .from('galerie')
+                    .update({
+                        image_url: imageUrl,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', id);
+
+                if (error) {
+                    console.error('❌ Erreur mise à jour image:', error);
+                    showNotification('❌ Erreur: ' + error.message, 'error');
+                    return;
+                }
+
+                const photo = galerieData.find(p => p.id === id);
+                if (photo) {
+                    photo.image = imageUrl;
+                }
+
+                renderGalerie();
+                showNotification('✅ Image mise à jour', 'success');
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                showNotification('❌ Erreur: ' + err.message, 'error');
+            }
+        }
+
+        // ==========================================
+        // RENDRE LA GALERIE
+        // ==========================================
+        function renderGalerie() {
+            const container = document.getElementById('galerieContainer');
+            
+            if (galerieData.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding:30px; color:#999; background:#fff; border-radius:8px; border:2px dashed #e0e0e0;">
+                        <i class="fas fa-camera" style="font-size:2rem; display:block; margin-bottom:8px; color:#ddd;"></i>
+                        <p style="margin:0;">Aucune photo dans la galerie</p>
+                        <p style="font-size:0.85rem; margin:4px 0 0 0;">Cliquez sur "Ajouter une photo" pour commencer</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            galerieData.forEach((photo, index) => {
+                html += `
+                    <div data-photo-id="${photo.id}" style="background:#ffffff; border-radius:10px; padding:16px; border:1px solid #e8e8e8; transition:all 0.3s; position:relative;" onmouseover="this.style.borderColor='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8'">
+                        <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start;">
+                            <div style="position:relative; width:120px; height:120px; flex-shrink:0; border-radius:8px; overflow:hidden; background:#f0f0f0; border:1px solid #e8e8e8;">
+                                ${photo.image ? 
+                                    `<img src="${photo.image}" style="width:100%;height:100%;object-fit:cover;">` :
+                                    `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:0.8rem;flex-direction:column;">
+                                        <i class="fas fa-image" style="font-size:2rem;margin-bottom:4px;"></i>
+                                        <span>Aucune image</span>
+                                    </div>`
+                                }
+                                <label for="changeImage_${photo.id}" style="position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,0.7);color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.7rem;border:2px solid white;transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">
+                                    <i class="fas fa-camera"></i>
+                                </label>
+                                <input type="file" id="changeImage_${photo.id}" accept="image/*" style="display:none;" onchange="window.changerImagePhoto('${photo.id}', event)">
+                            </div>
+
+                            <div style="flex:1; min-width:200px;">
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                                    <div style="grid-column:1/2;">
+                                        <label style="font-size:0.8rem; color:#888; font-weight:600;">Titre</label>
+                                        <input type="text" id="titre_${photo.id}" value="${photo.titre || ''}" style="width:100%; padding:6px 10px; border:1px solid #e8e8e8; border-radius:6px; font-size:0.9rem; font-family:inherit;" placeholder="Titre de la photo">
+                                    </div>
+                                    <div style="grid-column:2/3;">
+                                        <label style="font-size:0.8rem; color:#888; font-weight:600;">Description</label>
+                                        <input type="text" id="desc_${photo.id}" value="${photo.description || ''}" style="width:100%; padding:6px 10px; border:1px solid #e8e8e8; border-radius:6px; font-size:0.9rem; font-family:inherit;" placeholder="Description">
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:8px; margin-top:8px;">
+                                    <button type="button" onclick="window.modifierPhoto('${photo.id}', document.getElementById('titre_${photo.id}').value, document.getElementById('desc_${photo.id}').value)" style="padding:4px 16px; background:#c9a84c; color:white; border:none; border-radius:6px; font-size:0.8rem; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.background='#a8892e'" onmouseout="this.style.background='#c9a84c'">
+                                        <i class="fas fa-save"></i> Modifier
+                                    </button>
+                                    <button type="button" onclick="window.supprimerPhoto('${photo.id}')" style="padding:4px 16px; background:#e74c3c; color:white; border:none; border-radius:6px; font-size:0.8rem; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.background='#c0392b'" onmouseout="this.style.background='#e74c3c'">
+                                        <i class="fas fa-trash"></i> Supprimer
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div style="position:absolute; top:8px; right:12px; background:#c9a84c; color:white; padding:2px 12px; border-radius:50px; font-size:0.7rem; font-weight:600;">
+                                #${index + 1}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // ==========================================
+        // CHARGER LES DONNÉES (OPTIMISÉ)
+        // ==========================================
+        async function loadAdminData() {
+            if (isInitialized) return;
+            
+            const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
+            if (!adminSession || !adminSession.email) {
+                console.warn('⚠️ Aucun admin connecté');
+                return;
+            }
+
+            try {
+                console.log('📝 Chargement des données pour:', adminSession.email);
+
+                // Charger toutes les données en parallèle
+                const [adminResult, boutiqueResult, galerieResult, proResult] = await Promise.all([
+                    supabaseClient.from('admins').select('*').eq('email', adminSession.email).single(),
+                    supabaseClient.from('boutique').select('*').eq('admin_id', adminSession.id),
+                    supabaseClient.from('galerie').select('*').eq('admin_id', adminSession.id).eq('est_active', true).order('ordre', { ascending: true }),
+                    supabaseClient.from('admin_profiles').select('*').eq('admin_id', adminSession.id).maybeSingle()
+                ]);
+
+                // Admin
+                if (adminResult.data) {
+                    document.getElementById('prenom').value = adminResult.data.prenom || '';
+                    document.getElementById('nom').value = adminResult.data.nom || '';
+                    document.getElementById('ville').value = adminResult.data.ville || '';
+                    document.getElementById('pays').value = adminResult.data.pays || 'FR';
+                    document.getElementById('telephone').value = adminResult.data.telephone || '';
+                    document.getElementById('email').value = adminResult.data.email || '';
+                }
+
+                // Boutique
+                if (boutiqueResult.data && boutiqueResult.data.length > 0) {
+                    const data = boutiqueResult.data[0];
+                    document.getElementById('nomBoutique').value = data.nom || 'NIKEL';
+                    document.getElementById('adresseBoutique').value = data.adresse || '';
+                    document.getElementById('grandTitre').value = data.titreb || '';
+                    document.getElementById('legendeBoutique').value = data.legende || '';
+                }
+
+                // Galerie
+                if (galerieResult.data) {
+                    galerieData = galerieResult.data.map(item => ({
+                        id: item.id,
+                        image: item.image_url,
+                        titre: item.titre || '',
+                        description: item.description || '',
+                        ordre: item.ordre || 0,
+                        est_active: item.est_active
+                    }));
+                    renderGalerie();
+                }
+
+                // Profil pro
+                if (proResult.data) {
+                    document.getElementById('titrePro').value = proResult.data.titre || '';
+                    document.getElementById('bio').value = proResult.data.description || '';
+                    if (proResult.data.photo_url) {
+                        document.getElementById('proPhoto').innerHTML = 
+                            `<img src="${proResult.data.photo_url}" style="width:100%;height:100%;object-fit:cover;">`;
+                    }
+                }
+
+                isInitialized = true;
+                showNotification('✅ Données chargées avec succès', 'success');
+
+            } catch (err) {
+                console.error('❌ Erreur générale:', err);
+                showNotification('❌ Erreur: ' + (err.message || 'Erreur inconnue'), 'error');
+            }
+        }
+
+        // ==========================================
+        // SAUVEGARDER LES DONNÉES
+        // ==========================================
+        async function saveAllData(formData) {
+            const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
+            if (!adminSession || !adminSession.email) {
+                showNotification('⚠️ Vous devez être connecté', 'error');
+                return false;
+            }
+
+            try {
+                console.log('📝 Sauvegarde des données...');
+
+                await Promise.all([
+                    supabaseClient.from('admins').update({
+                        prenom: formData.prenom,
+                        nom: formData.nom,
+                        ville: formData.ville,
+                        pays: formData.pays,
+                        telephone: formData.telephone
+                    }).eq('email', adminSession.email),
+
+                    supabaseClient.from('boutique').update({
+                        nom: formData.nomBoutique,
+                        adresse: formData.adresseBoutique,
+                        titreb: formData.grandTitre,
+                        legende: formData.legendeBoutique,
+                        updated_at: new Date().toISOString()
+                    }).eq('admin_id', adminSession.id),
+
+                    supabaseClient.from('admin_profiles').update({
+                        titre: formData.titrePro,
+                        description: formData.bio,
+                        updated_at: new Date().toISOString()
+                    }).eq('admin_id', adminSession.id)
+                ]);
+
+                const updatedAdmin = JSON.parse(localStorage.getItem('nikel_admin'));
+                updatedAdmin.prenom = formData.prenom;
+                updatedAdmin.nom = formData.nom;
+                updatedAdmin.telephone = formData.telephone;
+                localStorage.setItem('nikel_admin', JSON.stringify(updatedAdmin));
+
+                showNotification('✅ Profil mis à jour avec succès !', 'success');
+                return true;
+
+            } catch (err) {
+                console.error('❌ Erreur sauvegarde:', err);
+                showNotification('❌ Erreur: ' + (err.message || 'Erreur inconnue'), 'error');
+                return false;
+            }
+        }
+
+        // ==========================================
+        // GESTION DES PHOTOS
+        // ==========================================
+        function setupPhotoUpload(inputId, displayId, storageKey) {
+            const input = document.getElementById(inputId);
+            const display = document.getElementById(displayId);
+            
+            if (input && display) {
+                input.addEventListener('change', function(e) {
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            display.innerHTML = '<img src="' + event.target.result + '" style="width:100%;height:100%;object-fit:cover;">';
+                            localStorage.setItem(storageKey, event.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        }
+
+        // ==========================================
+        // SOUMISSION DU FORMULAIRE
+        // ==========================================
+        const profileForm = document.getElementById('profileForm');
+        if (profileForm) {
+            profileForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    prenom: document.getElementById('prenom').value || '',
+                    nom: document.getElementById('nom').value || '',
+                    ville: document.getElementById('ville').value || '',
+                    pays: document.getElementById('pays').value || 'FR',
+                    telephone: document.getElementById('telephone').value || '',
+                    nomBoutique: document.getElementById('nomBoutique').value || '',
+                    adresseBoutique: document.getElementById('adresseBoutique').value || '',
+                    grandTitre: document.getElementById('grandTitre').value || '',
+                    legendeBoutique: document.getElementById('legendeBoutique').value || '',
+                    titrePro: document.getElementById('titrePro').value || '',
+                    bio: document.getElementById('bio').value || ''
+                };
+                
+                await saveAllData(formData);
+            });
+
+            profileForm.addEventListener('reset', function(e) {
+                e.preventDefault();
+                if (confirm('Voulez-vous vraiment réinitialiser les modifications non sauvegardées ?')) {
+                    galerieData = [];
+                    isInitialized = false;
+                    loadAdminData();
+                    showNotification('🔄 Formulaire réinitialisé', 'info');
+                }
+            });
+        }
+
+        // ==========================================
+        // INITIALISATION
+        // ==========================================
+        function init() {
+            console.log('🚀 Démarrage de profil.html...');
+            
+            setupPhotoUpload('photoInput', 'profilePhoto', 'nikel_profile_photo');
+            setupPhotoUpload('proPhotoInput', 'proPhoto', 'nikel_pro_photo');
+            
+            window.ajouterPhotoGalerie = ajouterPhotoGalerie;
+            window.supprimerPhoto = supprimerPhoto;
+            window.modifierPhoto = modifierPhoto;
+            window.changerImagePhoto = changerImagePhoto;
+            window.renderGalerie = renderGalerie;
+            window.uploadImageToStorage = uploadImageToStorage;
+            window.loadGalerie = loadGalerie;
+
+            const ajouterBtn = document.getElementById('ajouterPhotoBtn');
+            if (ajouterBtn) {
+                ajouterBtn.addEventListener('click', function() {
+                    if (galerieData.length >= 5) {
+                        showNotification('⚠️ Maximum 5 photos atteint', 'error');
+                        return;
+                    }
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = function(e) {
+                        const file = e.target.files[0];
+                        if (file) {
+                            const titre = prompt('Titre de la photo :', `Photo ${galerieData.length + 1}`);
+                            const description = prompt('Description :', '');
+                            ajouterPhotoGalerie(file, titre || '', description || '');
+                        }
+                    };
+                    input.click();
+                });
+            }
+            
+            setTimeout(async () => {
+                await loadAdminData();
+            }, 300);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        window.showNotification = showNotification;
+        
+    })();
+</script>
