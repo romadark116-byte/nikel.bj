@@ -1,6 +1,6 @@
 /**
  * ============================================
- * NIKEL - script.js
+ * Nati Shop - script.js
  * Version 4.2 - Avec Supabase + WhatsApp Checkout + Enregistrement clients
  * ============================================
  */
@@ -9,8 +9,8 @@
 // VARIABLES GLOBALES
 // ============================================
 let products = [];
-let cart = JSON.parse(localStorage.getItem('nikel_cart')) || [];
-let wishlist = JSON.parse(localStorage.getItem('nikel_wishlist')) || [];
+let cart = JSON.parse(localStorage.getItem('nati_shop_cart')) || [];
+let wishlist = JSON.parse(localStorage.getItem('nati_shop_wishlist')) || [];
 
 // ============================================
 // 1. CHARGEMENT DES PRODUITS DEPUIS SUPABASE
@@ -44,7 +44,7 @@ async function loadProductsFromSupabase() {
             name: p.nom,
             price: parseFloat(p.prix),
             oldPrice: p.prix_original ? parseFloat(p.prix_original) : null,
-            image: p.image_url || 'https://via.placeholder.com/400x400/1a1a1a/FFFFFF?text=NIKEL',
+            image: p.image_url || 'https://via.placeholder.com/400x400/1a1a1a/FFFFFF?text=Nati+Shop',
             category: p.categorie || 'non-classé',
             badge: p.promo > 0 ? 'soldes' : null,
             description: p.description || '',
@@ -149,7 +149,7 @@ function renderProducts(productsList, containerId) {
             : '';
         
         const oldPriceHtml = product.oldPrice && product.oldPrice > product.price
-            ? `<span class="old-price">${product.oldPrice.toFixed(2)} €</span>`
+            ? `<span class="old-price">${product.oldPrice.toFixed(2)} FCFA</span>`
             : '';
         
         return `
@@ -173,7 +173,7 @@ function renderProducts(productsList, containerId) {
                         <span style="color:var(--gray); font-size:0.8rem;">(${(product.rating || 4.5).toFixed(1)})</span>
                     </div>
                     <p class="product-price" style="display:flex;gap:10px;align-items:center;margin:8px 0;">
-                        <span style="font-size:1.2rem;font-weight:700;color:var(--gold);">${product.price.toFixed(2)} €</span>
+                        <span style="font-size:1.2rem;font-weight:700;color:var(--gold);">${product.price.toFixed(2)} FCFA</span>
                         ${oldPriceHtml}
                     </p>
                     ${product.stock > 0 ? `
@@ -262,7 +262,7 @@ function clearCart() {
 }
 
 function updateCart() {
-    localStorage.setItem('nikel_cart', JSON.stringify(cart));
+    localStorage.setItem('nati_shop_cart', JSON.stringify(cart));
     updateBadge();
     renderCartItems();
     updateTotal();
@@ -311,8 +311,8 @@ function renderCartItems() {
                 <img src="${imageUrl}" alt="${item.name}" style="width:80px;height:80px;object-fit:cover;border-radius:8px;" onerror="this.src='https://picsum.photos/seed/${item.id}/100/100'">
                 <div class="cart-item-info" style="flex:1;">
                     <h4 style="margin:0 0 4px 0;">${item.name}</h4>
-                    <p style="margin:0;font-weight:600;color:var(--gold);">${(item.price * item.quantity).toFixed(2)} €</p>
-                    <p style="margin:0;font-size:0.8rem;color:var(--gray);">${item.price.toFixed(2)} € / unité</p>
+                    <p style="margin:0;font-weight:600;color:var(--gold);">${(item.price * item.quantity).toFixed(2)} FCFA</p>
+                    <p style="margin:0;font-size:0.8rem;color:var(--gray);">${item.price.toFixed(2)} FCFA / unité</p>
                 </div>
                 <div class="cart-item-actions" style="display:flex;align-items:center;gap:8px;">
                     <button onclick="updateQuantity('${item.id}', -1)" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--light-gray);background:transparent;cursor:pointer;">
@@ -335,7 +335,7 @@ function updateTotal() {
     const totalEl = document.getElementById('cartTotal');
     if (totalEl) {
         const total = getCartTotal();
-        totalEl.textContent = total.toFixed(2) + ' €';
+        totalEl.textContent = total.toFixed(2) + ' FCFA';
     }
 }
 
@@ -521,7 +521,7 @@ function confirmOrder() {
     clientData.produits = produitsList.join(', ');
     
     // 3. Générer un numéro de commande unique
-    const orderNumber = 'NIK-' + Date.now().toString().slice(-6);
+    const orderNumber = 'NATI-' + Date.now().toString().slice(-6);
     
     // 4. ENREGISTRER LA COMMANDE DANS localStorage
     const orderData = {
@@ -531,7 +531,7 @@ function confirmOrder() {
         client: clientData,
         date: new Date().toISOString()
     };
-    localStorage.setItem('nikel_last_order', JSON.stringify(orderData));
+    localStorage.setItem('nati_shop_last_order', JSON.stringify(orderData));
     
     // 5. ENREGISTRER LE CLIENT DANS SUPABASE
     showNotification('📝 Enregistrement en cours...', 'info');
@@ -597,7 +597,7 @@ function renderConfirmation() {
     const container = document.getElementById('confirmationItems');
     if (!container) return;
     
-    const order = JSON.parse(localStorage.getItem('nikel_last_order'));
+    const order = JSON.parse(localStorage.getItem('nati_shop_last_order'));
     if (!order) {
         container.innerHTML = '<p>Aucune commande trouvée.</p>';
         return;
@@ -606,14 +606,14 @@ function renderConfirmation() {
     container.innerHTML = order.items.map(item => `
         <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--light-gray);">
             <span>${item.name} × ${item.quantity}</span>
-            <span style="font-weight:600;">${(item.price * item.quantity).toFixed(2)} €</span>
+            <span style="font-weight:600;">${(item.price * item.quantity).toFixed(2)} FCFA</span>
         </div>
     `).join('');
     
     const totalHtml = `
         <div style="display:flex; justify-content:space-between; padding:12px 0; font-size:1.1rem; font-weight:700; border-top:2px solid var(--gold);">
             <span>Total</span>
-            <span style="color:var(--accent-dark);">${order.total.toFixed(2)} €</span>
+            <span style="color:var(--accent-dark);">${order.total.toFixed(2)} FCFA</span>
         </div>
     `;
     container.insertAdjacentHTML('beforeend', totalHtml);
@@ -670,7 +670,7 @@ function addToWishlist(id) {
         showNotification(`${product.name} ajouté à vos favoris ❤️`, 'success');
     }
     
-    localStorage.setItem('nikel_wishlist', JSON.stringify(wishlist));
+    localStorage.setItem('nati_shop_wishlist', JSON.stringify(wishlist));
 }
 
 // ============================================
@@ -679,7 +679,7 @@ function addToWishlist(id) {
 function quickView(id) {
     const product = products.find(p => p.id === id);
     if (!product) return;
-    showNotification(`👀 ${product.name} - ${product.price.toFixed(2)} €`, 'info');
+    showNotification(`👀 ${product.name} - ${product.price.toFixed(2)} FCFA`, 'info');
 }
 
 // ============================================
@@ -722,7 +722,7 @@ function initLoginForm() {
     
     loginForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        showNotification('🔐 Connexion réussie ! Bienvenue.', 'success');
+        showNotification('🔐 Connexion réussie ! Bienvenue chez Nati Shop.', 'success');
         setTimeout(() => {
             window.location.href = 'mon-compte.html';
         }, 1000);
@@ -743,7 +743,7 @@ function initRegisterForm() {
             return;
         }
         
-        showNotification('✅ Inscription réussie ! Bienvenue chez NIKEL.', 'success');
+        showNotification('✅ Inscription réussie ! Bienvenue chez Nati Shop.', 'success');
         setTimeout(() => {
             window.location.href = 'login.html';
         }, 1000);
@@ -800,10 +800,46 @@ function showNotification(message, type = 'info') {
 }
 
 // ============================================
-// 16. INITIALISATION
+// 16. MIGRATION DU PANIER (ANCIENNE VERSION)
+// ============================================
+function migrateCart() {
+    const oldCart = localStorage.getItem('nikel_cart');
+    if (oldCart) {
+        try {
+            const cartData = JSON.parse(oldCart);
+            if (cartData && Array.isArray(cartData) && cartData.length > 0) {
+                localStorage.setItem('nati_shop_cart', oldCart);
+                console.log('🔄 Panier migré avec succès !');
+            }
+            localStorage.removeItem('nikel_cart');
+        } catch (e) {
+            console.warn('⚠️ Ancien panier non valide, ignoré.');
+        }
+    }
+    
+    const oldWishlist = localStorage.getItem('nikel_wishlist');
+    if (oldWishlist) {
+        try {
+            const wishlistData = JSON.parse(oldWishlist);
+            if (wishlistData && Array.isArray(wishlistData) && wishlistData.length > 0) {
+                localStorage.setItem('nati_shop_wishlist', oldWishlist);
+                console.log('🔄 Wishlist migrée avec succès !');
+            }
+            localStorage.removeItem('nikel_wishlist');
+        } catch (e) {
+            console.warn('⚠️ Ancienne wishlist non valide, ignorée.');
+        }
+    }
+}
+
+// ============================================
+// 17. INITIALISATION
 // ============================================
 async function initSite() {
-    console.log('🚀 NIKEL - Boutique en ligne v4.2 (WhatsApp + Clients)');
+    console.log('🚀 Nati Shop - Boutique en ligne v4.2 (WhatsApp + Clients)');
+    
+    // Migration automatique
+    migrateCart();
     
     // Charger les produits depuis Supabase
     const loaded = await loadProductsFromSupabase();
@@ -811,9 +847,9 @@ async function initSite() {
     if (!loaded) {
         console.warn('⚠️ Utilisation de données de secours');
         products = [
-            { id: '1', name: 'NIKEL Essential', price: 89.00, oldPrice: null, image: 'https://via.placeholder.com/400x400/1a1a1a/FFFFFF?text=NIKEL', category: 'vêtements', badge: null, description: 'T-shirt premium', rating: 4.5, stock: 25, promo: 0 },
-            { id: '2', name: 'NIKEL Sport', price: 79.00, oldPrice: 99.00, image: 'https://via.placeholder.com/400x400/1a1a1a/FFFFFF?text=NIKEL', category: 'sport', badge: 'soldes', description: 'T-shirt technique', rating: 4.7, stock: 15, promo: 20 },
-            { id: '3', name: 'NIKEL Luxe', price: 149.00, oldPrice: null, image: 'https://via.placeholder.com/400x400/1a1a1a/FFFFFF?text=NIKEL', category: 'accessoires', badge: null, description: 'Blazer élégant', rating: 4.8, stock: 10, promo: 0 }
+            { id: '1', name: 'Nati Shop Essential', price: 89.00, oldPrice: null, image: 'https://via.placeholder.com/400x400/1a1a1a/FFFFFF?text=Nati+Shop', category: 'vêtements', badge: null, description: 'T-shirt premium', rating: 4.5, stock: 25, promo: 0 },
+            { id: '2', name: 'Nati Shop Sport', price: 79.00, oldPrice: 99.00, image: 'https://via.placeholder.com/400x400/1a1a1a/FFFFFF?text=Nati+Shop', category: 'sport', badge: 'soldes', description: 'T-shirt technique', rating: 4.7, stock: 15, promo: 20 },
+            { id: '3', name: 'Nati Shop Luxe', price: 149.00, oldPrice: null, image: 'https://via.placeholder.com/400x400/1a1a1a/FFFFFF?text=Nati+Shop', category: 'accessoires', badge: null, description: 'Blazer élégant', rating: 4.8, stock: 10, promo: 0 }
         ];
     }
     
@@ -898,7 +934,7 @@ async function initSite() {
 document.addEventListener('DOMContentLoaded', initSite);
 
 // ============================================
-// 17. EXPOSER LES FONCTIONS GLOBALEMENT
+// 18. EXPOSER LES FONCTIONS GLOBALEMENT
 // ============================================
 window.addToCart = addToCart;
 window.removeFromCart = removeFromCart;
