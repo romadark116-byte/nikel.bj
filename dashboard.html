@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIKEL · Tableau de bord</title>
+    <title>Nati Shop · Tableau de bord</title>
     <style>
         /* ===== STATS CARDS ===== */
         .stats-grid {
@@ -297,7 +297,7 @@
                 <h1 style="font-family:'Playfair Display',serif; font-size:2rem; color:#1a1a1a; margin-bottom:4px;">
                     <i class="fas fa-chart-pie" style="color:#c9a84c;"></i> Tableau de bord
                 </h1>
-                <p style="color:#888; font-size:0.95rem;">Vue d'ensemble de votre activité sur NIKEL.</p>
+                <p style="color:#888; font-size:0.95rem;">Vue d'ensemble de votre activité sur Nati Shop.</p>
             </div>
 
             <!-- ===== STATISTIQUES ===== -->
@@ -371,7 +371,7 @@
     <!-- ===== SCRIPT LÉGER POUR CHARGER LES DONNÉES ===== -->
     <script>
         (function() {
-            console.log('🚀 Chargement du dashboard...');
+            console.log('🚀 Chargement du dashboard (Nati Shop)...');
 
             // ==========================================
             // FONCTION DE NAVIGATION (pour les liens)
@@ -400,6 +400,25 @@
 
             // Exposer la fonction globalement
             window.goToPage = goToPage;
+
+            // ==========================================
+            // MIGRATION DU PANIER (ANCIENNE VERSION)
+            // ==========================================
+            function migrateCart() {
+                const oldCart = localStorage.getItem('nikel_cart');
+                if (oldCart) {
+                    try {
+                        const cartData = JSON.parse(oldCart);
+                        if (cartData && Array.isArray(cartData) && cartData.length > 0) {
+                            localStorage.setItem('nati_shop_cart', oldCart);
+                            console.log('🔄 Panier migré avec succès !');
+                        }
+                        localStorage.removeItem('nikel_cart');
+                    } catch (e) {
+                        console.warn('⚠️ Ancien panier non valide, ignoré.');
+                    }
+                }
+            }
 
             // ==========================================
             // RÉCUPÉRER LE CLIENT SUPABASE
@@ -603,7 +622,7 @@
                         const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
                         const imageUrl = p.image_url 
                             ? (p.image_url.startsWith('http') ? p.image_url : `${SUPABASE_URL}/storage/v1/object/public/produits/${p.image_url}`)
-                            : 'https://via.placeholder.com/220x180/1a1a1a/FFFFFF?text=NIKEL';
+                            : 'https://via.placeholder.com/220x180/1a1a1a/FFFFFF?text=Nati+Shop';
                         
                         const catIcon = categoryIcons[p.categorie] || '📦';
                         const rankClass = rankClasses[index] || '';
@@ -614,7 +633,7 @@
                             <div class="rank-badge ${rankClass}">${rankEmoji}</div>
                             <img src="${imageUrl}" 
                                  alt="${p.nom}"
-                                 onerror="this.src='https://via.placeholder.com/220x180/1a1a1a/FFFFFF?text=NIKEL'">
+                                 onerror="this.src='https://via.placeholder.com/220x180/1a1a1a/FFFFFF?text=Nati+Shop'">
                             <div class="product-info">
                                 <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
                                     <span style="font-size:0.85rem;">${catIcon}</span>
@@ -678,6 +697,8 @@
             // INITIALISATION
             // ==========================================
             function init() {
+                // Migration automatique du panier
+                migrateCart();
                 loadDashboardData();
             }
 
