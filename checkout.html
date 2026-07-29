@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paiement - NIKEL</title>
+    <title>Paiement - Nati Shop</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="animations.css">
     <link rel="stylesheet" href="responsive.css">
@@ -273,7 +273,7 @@
     <header class="header">
         <div class="container header-grid">
             <div class="logo">
-                <a href="index.html"><i class="fas fa-crown"></i> NIKEL</a>
+                <a href="index.html"><i class="fas fa-crown"></i> Nati Shop</a>
             </div>
             <nav class="nav">
                 <ul>
@@ -428,7 +428,7 @@
     <footer class="footer">
         <div class="container footer-grid">
             <div class="footer-col">
-                <h4><i class="fas fa-crown"></i> NIKEL</h4>
+                <h4><i class="fas fa-crown"></i> Nati Shop</h4>
                 <p>Le style qui vous ressemble.</p>
                 <div class="socials">
                     <a href="#"><i class="fab fa-instagram"></i></a>
@@ -463,7 +463,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 NIKEL — Tous droits réservés.</p>
+            <p>&copy; 2026 Nati Shop — Tous droits réservés.</p>
         </div>
     </footer>
 
@@ -478,6 +478,25 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let products = [];
         let cart = [];
+
+        // ==========================================
+        // MIGRATION DU PANIER (ANCIENNE VERSION)
+        // ==========================================
+        function migrateCart() {
+            const oldCart = localStorage.getItem('nikel_cart');
+            if (oldCart) {
+                try {
+                    const cartData = JSON.parse(oldCart);
+                    if (cartData && Array.isArray(cartData) && cartData.length > 0) {
+                        localStorage.setItem('nati_shop_cart', oldCart);
+                        console.log('🔄 Panier migré avec succès !');
+                    }
+                    localStorage.removeItem('nikel_cart');
+                } catch (e) {
+                    console.warn('⚠️ Ancien panier non valide, ignoré.');
+                }
+            }
+        }
 
         // ==========================================
         // CONFIGURATION TÉLÉPHONE
@@ -577,7 +596,7 @@
         // ==========================================
         function loadCart() {
             try {
-                cart = JSON.parse(localStorage.getItem('nikel_cart')) || [];
+                cart = JSON.parse(localStorage.getItem('nati_shop_cart')) || [];
                 console.log(`🛒 ${cart.length} articles dans le panier`);
             } catch(e) {
                 cart = [];
@@ -589,7 +608,7 @@
         // VIDER LE PANIER
         // ==========================================
         function clearCart() {
-            localStorage.removeItem('nikel_cart');
+            localStorage.removeItem('nati_shop_cart');
             cart = [];
             console.log('🗑️ Panier vidé');
         }
@@ -645,7 +664,7 @@
                 const product = products.find(p => p.id === item.id);
                 return {
                     ...item,
-                    image: product ? product.image_url : 'https://via.placeholder.com/100x100/1a1a1a/FFFFFF?text=NIKEL',
+                    image: product ? product.image_url : 'https://via.placeholder.com/100x100/1a1a1a/FFFFFF?text=Nati+Shop',
                     category: product ? product.categorie : 'Collection'
                 };
             });
@@ -660,7 +679,7 @@
                 const itemTotal = prix * quantite;
                 total += itemTotal;
 
-                let imageUrl = item.image || 'https://via.placeholder.com/60x60/1a1a1a/FFFFFF?text=NIKEL';
+                let imageUrl = item.image || 'https://via.placeholder.com/60x60/1a1a1a/FFFFFF?text=Nati+Shop';
                 if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('https')) {
                     imageUrl = `${SUPABASE_URL}/storage/v1/object/public/produits/${imageUrl}`;
                 }
@@ -670,7 +689,7 @@
                         <img src="${imageUrl}" 
                              alt="${nom}" 
                              class="item-image" 
-                             onerror="this.src='https://via.placeholder.com/60x60/1a1a1a/FFFFFF?text=NIKEL'">
+                             onerror="this.src='https://via.placeholder.com/60x60/1a1a1a/FFFFFF?text=Nati+Shop'">
                         <div class="item-info">
                             <div class="item-row">
                                 <span class="item-name">${nom}</span>
@@ -832,7 +851,10 @@
         // INITIALISATION
         // ==========================================
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🛒 Page de paiement chargée');
+            console.log('🛒 Page de paiement chargée (Nati Shop)');
+            
+            // Migration automatique du panier
+            migrateCart();
             
             loadProducts();
 
@@ -850,7 +872,7 @@
             }
 
             window.addEventListener('storage', function(e) {
-                if (e.key === 'nikel_cart') {
+                if (e.key === 'nati_shop_cart') {
                     console.log('🔄 Panier modifié, mise à jour...');
                     renderCartItems();
                 }
@@ -877,9 +899,9 @@
 
                 console.log('✅ Client enregistré:', result);
 
-                let cart = JSON.parse(localStorage.getItem('nikel_cart')) || [];
+                let cart = JSON.parse(localStorage.getItem('nati_shop_cart')) || [];
                 
-                let message = `🛍️ *NOUVELLE COMMANDE NIKEL*\n\n`;
+                let message = `🛍️ *NOUVELLE COMMANDE NATI SHOP*\n\n`;
                 message += `👤 *Client :* ${result.client.prenom} ${result.client.nom}\n`;
                 message += `📧 *Email :* ${result.client.email}\n`;
                 message += `📱 *Téléphone :* ${result.client.indicatif} ${result.client.telephone}\n`;
