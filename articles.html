@@ -125,7 +125,7 @@
             <!-- Nom -->
             <div class="form-group">
                 <label for="articleNom"><i class="fas fa-tag"></i> Nom du produit</label>
-                <input type="text" id="articleNom" placeholder="Ex: NIKEL Sport Blanc" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
+                <input type="text" id="articleNom" placeholder="Ex: Nati Shop Sport Blanc" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8;">
             </div>
 
             <!-- Catégorie & Prix -->
@@ -285,10 +285,10 @@
                 <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
                     <td style="padding:12px; font-weight:600; color:#1a1a1a;">#${article.id}</td>
                     <td style="padding:12px;">
-                        <img src="${article.image_url || 'https://via.placeholder.com/50x50/1a1a1a/FFFFFF?text=NIKEL'}" 
+                        <img src="${article.image_url || 'https://via.placeholder.com/50x50/1a1a1a/FFFFFF?text=Nati+Shop'}" 
                              alt="${article.nom}" 
                              style="width:50px; height:50px; object-fit:cover; border-radius:8px;"
-                             onerror="this.src='https://via.placeholder.com/50x50/1a1a1a/FFFFFF?text=NIKEL'">
+                             onerror="this.src='https://via.placeholder.com/50x50/1a1a1a/FFFFFF?text=Nati+Shop'">
                     </td>
                     <td style="padding:12px; font-weight:500;">${article.nom}</td>
                     <td style="padding:12px; color:#888;">${article.categorie || '—'}</td>
@@ -544,6 +544,11 @@
                         return;
                     }
 
+                    // Mettre à jour l'article dans allArticles
+                    const index = allArticles.findIndex(a => a.id === id);
+                    if (index !== -1) {
+                        allArticles[index] = { ...allArticles[index], ...articleData };
+                    }
                     showNotification('✅ Article modifié avec succès !', 'success');
                 } else {
                     // AJOUT
@@ -613,7 +618,7 @@
         // NOTIFICATION
         // ==========================================
         function showNotification(message, type = 'info') {
-            document.querySelectorAll('.toast-nikel').forEach(t => t.remove());
+            document.querySelectorAll('.toast-nati').forEach(t => t.remove());
             
             const colors = {
                 success: '#27ae60',
@@ -622,7 +627,7 @@
             };
 
             const toast = document.createElement('div');
-            toast.className = 'toast-nikel';
+            toast.className = 'toast-nati';
             toast.style.cssText = `
                 position: fixed;
                 bottom: 30px;
@@ -656,7 +661,7 @@
         // INITIALISATION
         // ==========================================
         function init() {
-            console.log('🚀 Chargement de articles.html...');
+            console.log('🚀 Chargement de articles.html (Nati Shop)...');
             loadArticlesData();
 
             document.getElementById('articleForm').addEventListener('submit', saveArticle);
