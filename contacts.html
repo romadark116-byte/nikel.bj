@@ -396,6 +396,25 @@
         }
 
         // ==========================================
+        // MIGRATION DU PANIER (ANCIENNE VERSION)
+        // ==========================================
+        function migrateCart() {
+            const oldCart = localStorage.getItem('nikel_cart');
+            if (oldCart) {
+                try {
+                    const cartData = JSON.parse(oldCart);
+                    if (cartData && Array.isArray(cartData) && cartData.length > 0) {
+                        localStorage.setItem('nati_shop_cart', oldCart);
+                        console.log('🔄 Panier migré avec succès !');
+                    }
+                    localStorage.removeItem('nikel_cart');
+                } catch (e) {
+                    console.warn('⚠️ Ancien panier non valide, ignoré.');
+                }
+            }
+        }
+
+        // ==========================================
         // VARIABLES GLOBALES
         // ==========================================
         let allContacts = [];
@@ -760,7 +779,7 @@
         // NOTIFICATION
         // ==========================================
         function showNotification(message, type = 'info') {
-            document.querySelectorAll('.toast-nikel').forEach(t => t.remove());
+            document.querySelectorAll('.toast-nati').forEach(t => t.remove());
             
             const colors = {
                 success: '#27ae60',
@@ -769,7 +788,7 @@
             };
 
             const toast = document.createElement('div');
-            toast.className = 'toast-nikel';
+            toast.className = 'toast-nati';
             toast.style.cssText = `
                 position: fixed;
                 bottom: 30px;
@@ -803,7 +822,11 @@
         // INITIALISATION
         // ==========================================
         function init() {
-            console.log('🚀 Chargement de contacts.html...');
+            console.log('🚀 Chargement de contacts.html (Nati Shop)...');
+            
+            // Migration automatique du panier
+            migrateCart();
+            
             loadContactsData();
 
             document.getElementById('contactForm').addEventListener('submit', saveContact);
