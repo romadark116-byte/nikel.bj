@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion Admin - NIKEL</title>
+    <title>Connexion Admin - Nati Shop</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="animations.css">
     <link rel="stylesheet" href="responsive.css">
@@ -34,7 +34,7 @@
 <body>
     <header class="header">
         <div class="container header-grid">
-            <div class="logo"><a href="index.html"><i class="fas fa-crown"></i> NIKEL</a></div>
+            <div class="logo"><a href="index.html"><i class="fas fa-crown"></i> Nati Shop</a></div>
             <nav class="nav">
                 <ul>
                     <li><a href="index.html">Accueil</a></li>
@@ -68,7 +68,7 @@
             <div class="login-card">
                 <div class="logo-icon">
                     <i class="fas fa-crown"></i>
-                    <h2>NIKEL</h2>
+                    <h2>Nati Shop</h2>
                     <p>Espace Administrateur</p>
                 </div>
                 
@@ -97,7 +97,7 @@
     <footer class="footer">
         <div class="container footer-grid">
             <div class="footer-col">
-                <h4><i class="fas fa-crown"></i> NIKEL</h4>
+                <h4><i class="fas fa-crown"></i> Nati Shop</h4>
                 <p>Le style qui vous ressemble.</p>
                 <div class="socials">
                     <a href="#"><i class="fab fa-instagram"></i></a>
@@ -132,7 +132,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 NIKEL — Tous droits réservés.</p>
+            <p>&copy; 2026 Nati Shop — Tous droits réservés.</p>
         </div>
     </footer>
 
@@ -148,6 +148,25 @@
         window.supabaseClient = supabaseClient;
 
         console.log('✅ Supabase initialisé');
+
+        // ==========================================
+        // MIGRATION DU PANIER (ANCIENNE VERSION)
+        // ==========================================
+        function migrateCart() {
+            const oldCart = localStorage.getItem('nikel_cart');
+            if (oldCart) {
+                try {
+                    const cartData = JSON.parse(oldCart);
+                    if (cartData && Array.isArray(cartData) && cartData.length > 0) {
+                        localStorage.setItem('nati_shop_cart', oldCart);
+                        console.log('🔄 Panier migré avec succès !');
+                    }
+                    localStorage.removeItem('nikel_cart');
+                } catch (e) {
+                    console.warn('⚠️ Ancien panier non valide, ignoré.');
+                }
+            }
+        }
 
         // ==========================================
         // NOTIFICATION
@@ -171,7 +190,10 @@
         // 🔍 RÉINITIALISATION COMPLÈTE DE LA PAGE
         // ==========================================
         (function resetLoginPage() {
-            console.log('🔄 [LOGIN] Réinitialisation de la page...');
+            console.log('🔄 [LOGIN] Réinitialisation de la page (Nati Shop)...');
+            
+            // Migration automatique du panier
+            migrateCart();
             
             // 1. Nettoyer l'URL (supprimer les paramètres)
             if (window.location.search) {
@@ -181,10 +203,10 @@
             }
             
             // 2. Supprimer toute session résiduelle
-            const sessionData = localStorage.getItem('nikel_admin');
+            const sessionData = localStorage.getItem('nati_shop_admin');
             if (sessionData) {
                 console.warn('⚠️ [LOGIN] Session résiduelle trouvée, suppression...');
-                localStorage.removeItem('nikel_admin');
+                localStorage.removeItem('nati_shop_admin');
             }
             
             // 3. Vider le sessionStorage
@@ -210,7 +232,7 @@
         // 🔍 VÉRIFICATION FINALE DE SESSION
         // ==========================================
         (function checkSession() {
-            const sessionData = localStorage.getItem('nikel_admin');
+            const sessionData = localStorage.getItem('nati_shop_admin');
             console.log('🔍 [LOGIN] Vérification finale de la session...');
 
             if (sessionData) {
@@ -221,11 +243,11 @@
                         window.location.href = 'mon-compte.html';
                     } else {
                         console.warn('⚠️ [LOGIN] Session invalide, suppression...');
-                        localStorage.removeItem('nikel_admin');
+                        localStorage.removeItem('nati_shop_admin');
                     }
                 } catch (e) {
                     console.warn('⚠️ [LOGIN] Erreur de parsing, suppression...');
-                    localStorage.removeItem('nikel_admin');
+                    localStorage.removeItem('nati_shop_admin');
                 }
             } else {
                 console.log('✅ [LOGIN] Aucune session, affichage du formulaire');
@@ -284,13 +306,13 @@
                 console.log('✅ Connexion réussie !');
 
                 // 3. Stocker la session
-                localStorage.setItem('nikel_admin', JSON.stringify({
+                localStorage.setItem('nati_shop_admin', JSON.stringify({
                     id: admin.id,
                     prenom: admin.prenom,
                     nom: admin.nom,
                     email: admin.email,
                     telephone: admin.telephone,
-                    boutique_nom: admin.boutique_nom || 'NIKEL'
+                    boutique_nom: admin.boutique_nom || 'Nati Shop'
                 }));
 
                 showNotification('✅ Bonjour ' + admin.prenom + ' !', 'success');
@@ -328,8 +350,8 @@
             }
 
             const badge = document.querySelector('.badge');
-            const cart = JSON.parse(localStorage.getItem('nikel_cart')) || [];
-            const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cart = JSON.parse(localStorage.getItem('nati_shop_cart')) || [];
+            const total = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
             if (badge) {
                 badge.textContent = total;
                 badge.style.display = total > 0 ? 'flex' : 'none';
