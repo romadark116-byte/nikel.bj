@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmation - NIKEL</title>
+    <title>Confirmation - Nati Shop</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="animations.css">
     <link rel="stylesheet" href="responsive.css">
@@ -92,7 +92,7 @@
     <header class="header">
         <div class="container header-grid">
             <div class="logo">
-                <a href="index.html"><i class="fas fa-crown"></i> NIKEL</a>
+                <a href="index.html"><i class="fas fa-crown"></i> Nati Shop</a>
             </div>
             <nav class="nav">
                 <ul>
@@ -153,7 +153,7 @@
 
                 <!-- Numéro de demande -->
                 <div class="order-number" id="orderNumber">
-                    #NIK-2026-001
+                    #NATI-2026-001
                 </div>
 
                 <!-- Étapes à suivre -->
@@ -189,7 +189,7 @@
     <footer class="footer">
         <div class="container footer-grid">
             <div class="footer-col">
-                <h4><i class="fas fa-crown"></i> NIKEL</h4>
+                <h4><i class="fas fa-crown"></i> Nati Shop</h4>
                 <p>Le style qui vous ressemble.</p>
                 <div class="socials">
                     <a href="#"><i class="fab fa-instagram"></i></a>
@@ -224,28 +224,57 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 NIKEL — Tous droits réservés.</p>
+            <p>&copy; 2026 Nati Shop — Tous droits réservés.</p>
         </div>
     </footer>
 
     <script src="script.js"></script>
     <script>
-        // Mettre à jour le numéro de commande
+        // ==========================================
+        // MIGRATION DU PANIER (ANCIENNE VERSION)
+        // ==========================================
+        function migrateCart() {
+            const oldCart = localStorage.getItem('nikel_cart');
+            if (oldCart) {
+                try {
+                    const cartData = JSON.parse(oldCart);
+                    if (cartData && Array.isArray(cartData) && cartData.length > 0) {
+                        localStorage.setItem('nati_shop_cart', oldCart);
+                        console.log('🔄 Panier migré avec succès !');
+                    }
+                    localStorage.removeItem('nikel_cart');
+                } catch (e) {
+                    console.warn('⚠️ Ancien panier non valide, ignoré.');
+                }
+            }
+        }
+
+        // ==========================================
+        // METTRE À JOUR LE NUMÉRO DE COMMANDE
+        // ==========================================
         function updateOrderNumber() {
-            const order = JSON.parse(localStorage.getItem('nikel_last_order'));
+            const order = JSON.parse(localStorage.getItem('nati_shop_last_order'));
             const orderNumberEl = document.getElementById('orderNumber');
             if (orderNumberEl && order && order.orderNumber) {
                 orderNumberEl.textContent = order.orderNumber;
             }
         }
         
-        // Charger au chargement de la page
+        // ==========================================
+        // CHARGEMENT DE LA PAGE
+        // ==========================================
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎉 Page de confirmation - Nati Shop');
+            
+            // Migration automatique du panier
+            migrateCart();
+            
+            // Mettre à jour le numéro de commande
             updateOrderNumber();
             
             // Mettre à jour le badge du panier
-            const cart = JSON.parse(localStorage.getItem('nikel_cart')) || [];
-            const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cart = JSON.parse(localStorage.getItem('nati_shop_cart')) || [];
+            const total = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
             const badges = document.querySelectorAll('.badge');
             badges.forEach(badge => {
                 badge.textContent = total;
@@ -258,6 +287,32 @@
             if (menuToggle && nav) {
                 menuToggle.addEventListener('click', function() {
                     nav.classList.toggle('open');
+                });
+            }
+        });
+
+        // ==========================================
+        // FONCTION DE RECHERCHE
+        // ==========================================
+        function handleSearch() {
+            const input = document.getElementById('searchInput');
+            if (!input) return;
+            const query = input.value.trim();
+            if (query.length > 0) {
+                window.location.href = `boutique.html?search=${encodeURIComponent(query)}`;
+            } else {
+                window.location.href = 'boutique.html';
+            }
+        }
+
+        // Ajouter l'écouteur pour la touche Entrée sur la recherche
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        handleSearch();
+                    }
                 });
             }
         });
