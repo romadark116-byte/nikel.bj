@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact - NIKEL</title>
+    <title>Contact - Nati Shop</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="animations.css">
     <link rel="stylesheet" href="responsive.css">
@@ -303,7 +303,7 @@
     <header class="header">
         <div class="container header-grid">
             <div class="logo">
-                <a href="index.html"><i class="fas fa-crown"></i> NIKEL</a>
+                <a href="index.html"><i class="fas fa-crown"></i> Nati Shop</a>
             </div>
             <nav class="nav">
                 <ul>
@@ -387,10 +387,10 @@
                 </div>
 
                 <div class="socials">
-                    <a href="https://www.instagram.com/nikel_officiel/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.tiktok.com/@nikel_officiel" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://www.youtube.com/@nikel_officiel" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                    <a href="https://twitter.com/nikel_officiel" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/nati_shop_officiel/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@nati_shop_officiel" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.youtube.com/@nati_shop_officiel" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    <a href="https://twitter.com/nati_shop" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
                 </div>
             </div>
 
@@ -401,11 +401,11 @@
                     <form id="contactForm" novalidate>
                         <div class="form-group">
                             <label for="formName">Nom complet <span class="required">*</span></label>
-                            <input type="text" id="formName" required placeholder="Saississez votre nom et prénom">
+                            <input type="text" id="formName" required placeholder="Saisissez votre nom et prénom">
                         </div>
                         <div class="form-group">
                             <label for="formEmail">Email <span class="required">*</span></label>
-                            <input type="email" id="formEmail" required placeholder="Saississez votre adresse email valide">
+                            <input type="email" id="formEmail" required placeholder="Saisissez votre adresse email valide">
                         </div>
                         <div class="form-group">
                             <label for="formSubject">Sujet <span class="required">*</span></label>
@@ -462,12 +462,12 @@
     <footer class="footer">
         <div class="container footer-grid">
             <div class="footer-col">
-                <h4><i class="fas fa-crown"></i> NIKEL</h4>
+                <h4><i class="fas fa-crown"></i> Nati Shop</h4>
                 <p>Le style qui vous ressemble.</p>
                 <div class="socials">
-                    <a href="https://www.instagram.com/nikel_officiel/" target="_blank"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.tiktok.com/@nikel_officiel" target="_blank"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://www.youtube.com/@nikel_officiel" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="https://www.instagram.com/nati_shop_officiel/" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@nati_shop_officiel" target="_blank"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.youtube.com/@nati_shop_officiel" target="_blank"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
             <div class="footer-col">
@@ -497,7 +497,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 NIKEL — Tous droits réservés.</p>
+            <p>&copy; 2026 Nati Shop — Tous droits réservés.</p>
         </div>
     </footer>
 
@@ -538,7 +538,7 @@
                 `─────────────────────────────────────────────\n\n` +
                 `${formData.message}\n\n` +
                 `─────────────────────────────────────────────\n` +
-                `Cet email a été envoyé depuis le site NIKEL.`
+                `Cet email a été envoyé depuis le site Nati Shop.`
             );
 
             const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${formData.to_email}&su=${subject}&body=${body}`;
@@ -566,6 +566,25 @@
         }
 
         // ==========================================
+        // MIGRATION DU PANIER (ANCIENNE VERSION)
+        // ==========================================
+        function migrateCart() {
+            const oldCart = localStorage.getItem('nikel_cart');
+            if (oldCart) {
+                try {
+                    const cartData = JSON.parse(oldCart);
+                    if (cartData && Array.isArray(cartData) && cartData.length > 0) {
+                        localStorage.setItem('nati_shop_cart', oldCart);
+                        console.log('🔄 Panier migré avec succès !');
+                    }
+                    localStorage.removeItem('nikel_cart');
+                } catch (e) {
+                    console.warn('⚠️ Ancien panier non valide, ignoré.');
+                }
+            }
+        }
+
+        // ==========================================
         // LOAD CONTACT DATA
         // ==========================================
         async function loadContactData() {
@@ -590,7 +609,7 @@
                     if (admin.email) {
                         emailEl.textContent = admin.email;
                     } else {
-                        emailEl.textContent = 'contact@nikel.com';
+                        emailEl.textContent = 'contact@natishop.com';
                     }
 
                     const phoneEl = document.getElementById('adminPhone');
@@ -634,7 +653,7 @@
 
             } catch (error) {
                 console.error('❌ Erreur générale:', error);
-                document.getElementById('adminEmail').textContent = 'contact@nikel.com';
+                document.getElementById('adminEmail').textContent = 'contact@natishop.com';
                 document.getElementById('adminPhone').textContent = '+33 6 12 34 56 78';
                 document.getElementById('boutiqueAddress').textContent = '123 rue de l\'Élégance, 75001 Paris';
                 document.querySelectorAll('.contact-item').forEach(item => {
@@ -647,7 +666,10 @@
         // FORM SUBMISSION
         // ==========================================
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Page Contact - Initialisation...');
+            console.log('🚀 Page Contact - Nati Shop');
+            
+            // Migration automatique du panier
+            migrateCart();
             
             loadContactData();
 
