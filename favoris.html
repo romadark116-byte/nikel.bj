@@ -2,45 +2,45 @@
 <div id="favorisContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:24px;">
+    <div class="favoris-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:24px; gap:12px;">
         <div>
             <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:#1a1a1a; margin-bottom:4px;">
                 <i class="fas fa-heart" style="color:#c9a84c;"></i> Favoris des clients
             </h2>
             <p style="color:#888; font-size:0.95rem;">Découvrez les produits les plus appréciés par vos clients.</p>
         </div>
-        <button onclick="rafraichirFavoris()" style="padding:10px 20px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:0.9rem; font-weight:600; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+        <button onclick="rafraichirFavoris()" class="btn-refresh" style="padding:10px 20px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:0.9rem; font-weight:600; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px; white-space:nowrap;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
             <i class="fas fa-sync-alt"></i> Rafraîchir
         </button>
     </div>
 
     <!-- ===== STATISTIQUES ===== -->
-    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
+    <div class="favoris-stats" style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
+        <div class="stat-card" style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total favoris</p>
             <p style="font-size:1.8rem; font-weight:700; color:#1a1a1a;" id="totalFavoris">0</p>
         </div>
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
+        <div class="stat-card" style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Produits favoris</p>
             <p style="font-size:1.8rem; font-weight:700; color:#27ae60;" id="totalProduits">0</p>
         </div>
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
+        <div class="stat-card" style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Clients actifs</p>
             <p style="font-size:1.8rem; font-weight:700; color:#f39c12;" id="totalClients">0</p>
         </div>
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #e74c3c;">
+        <div class="stat-card" style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #e74c3c;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Top produit</p>
-            <p style="font-size:1.2rem; font-weight:700; color:#e74c3c; font-size:1rem;" id="topProduit">-</p>
+            <p style="font-size:1rem; font-weight:700; color:#e74c3c; word-break:break-word;" id="topProduit">-</p>
         </div>
     </div>
 
     <!-- ===== BARRE DE RECHERCHE ===== -->
-    <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
-        <div style="flex:2; min-width:200px;">
-            <input type="text" id="searchFavoris" placeholder="🔍 Rechercher un produit..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onkeyup="applyFavorisFilters()">
+    <div class="favoris-filters" style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
+        <div style="flex:2; min-width:180px;">
+            <input type="text" id="searchFavoris" placeholder="🔍 Rechercher un produit..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s; box-sizing:border-box;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onkeyup="applyFavorisFilters()">
         </div>
-        <div style="min-width:150px;">
-            <select id="filterFavorisCategorie" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyFavorisFilters()">
+        <div style="min-width:130px; flex:1;">
+            <select id="filterFavorisCategorie" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer; outline:none; transition:border-color 0.3s; box-sizing:border-box;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyFavorisFilters()">
                 <option value="all">📂 Toutes les catégories</option>
                 <option value="vêtements">👕 Vêtements</option>
                 <option value="accessoires">👜 Accessoires</option>
@@ -50,21 +50,21 @@
                 <option value="luxe">💎 Luxe</option>
             </select>
         </div>
-        <div style="min-width:150px;">
-            <select id="filterStock" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyFavorisFilters()">
+        <div style="min-width:130px; flex:1;">
+            <select id="filterStock" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer; outline:none; transition:border-color 0.3s; box-sizing:border-box;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyFavorisFilters()">
                 <option value="all">📦 Tous les stocks</option>
                 <option value="stock">✅ En stock</option>
                 <option value="limited">⚠️ Stock limité</option>
                 <option value="rupture">❌ Rupture</option>
             </select>
         </div>
-        <button onclick="resetFavorisFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+        <button onclick="resetFavorisFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888; white-space:nowrap;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
             <i class="fas fa-undo"></i> Réinitialiser
         </button>
     </div>
 
     <!-- ===== GRILLE FAVORIS ===== -->
-    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:24px;" id="favorisGrid">
+    <div class="favoris-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:24px;" id="favorisGrid">
         <div style="text-align:center; padding:40px; color:#888; grid-column:1/-1;">
             <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
             Chargement des favoris...
@@ -79,9 +79,9 @@
     </div>
 
     <!-- ===== PAGINATION ===== -->
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; flex-wrap:wrap; gap:12px;" id="paginationContainer">
+    <div class="favoris-pagination" style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; flex-wrap:wrap; gap:12px;" id="paginationContainer">
         <span style="color:#888; font-size:0.9rem;" id="favorisPaginationInfo">Affichage de 0 à 0 sur 0</span>
-        <div style="display:flex; gap:8px;">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button onclick="prevFavorisPage()" id="prevFavorisPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
                 <i class="fas fa-chevron-left"></i> Précédent
             </button>
@@ -92,6 +92,384 @@
         </div>
     </div>
 </div>
+
+<!-- ========================================== -->
+<!-- STYLES RESPONSIVES SPÉCIFIQUES            -->
+<!-- ========================================== -->
+<style>
+    /* Responsive - Favoris */
+    
+    @media (max-width: 992px) {
+        .favoris-grid {
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+            gap: 20px !important;
+        }
+
+        .favoris-grid .product-image {
+            height: 180px !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        #favorisContainer {
+            padding: 16px !important;
+        }
+
+        /* Header */
+        .favoris-header {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+        }
+
+        .favoris-header h2 {
+            font-size: 1.3rem !important;
+        }
+
+        .favoris-header p {
+            font-size: 0.85rem !important;
+        }
+
+        .favoris-header .btn-refresh {
+            width: 100% !important;
+            justify-content: center !important;
+            font-size: 0.85rem !important;
+            padding: 10px 16px !important;
+        }
+
+        /* Statistiques : 2 colonnes */
+        .favoris-stats {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 10px !important;
+        }
+
+        .favoris-stats .stat-card {
+            padding: 12px !important;
+        }
+
+        .favoris-stats .stat-card p:first-child {
+            font-size: 0.7rem !important;
+        }
+
+        .favoris-stats .stat-card p:last-child {
+            font-size: 1.4rem !important;
+        }
+
+        .favoris-stats .stat-card#topProduit {
+            font-size: 0.85rem !important;
+        }
+
+        /* Filtres */
+        .favoris-filters {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            padding: 12px !important;
+        }
+
+        .favoris-filters > div {
+            min-width: 100% !important;
+            flex: none !important;
+        }
+
+        .favoris-filters input,
+        .favoris-filters select {
+            font-size: 0.9rem !important;
+            padding: 8px 12px !important;
+        }
+
+        .favoris-filters button {
+            font-size: 0.85rem !important;
+            padding: 8px 14px !important;
+            width: 100% !important;
+            text-align: center !important;
+        }
+
+        /* Grille */
+        .favoris-grid {
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+            gap: 16px !important;
+        }
+
+        .favoris-grid .product-image {
+            height: 150px !important;
+        }
+
+        .favoris-grid .product-info h4 {
+            font-size: 0.9rem !important;
+        }
+
+        .favoris-grid .product-info .price {
+            font-size: 0.95rem !important;
+        }
+
+        .favoris-grid .product-info .clients-list {
+            font-size: 0.75rem !important;
+        }
+
+        .favoris-grid .product-info .category-badge {
+            font-size: 0.7rem !important;
+        }
+
+        .favoris-grid .product-info .stock-badge {
+            font-size: 0.6rem !important;
+            padding: 2px 8px !important;
+        }
+
+        /* Pagination */
+        .favoris-pagination {
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+
+        .favoris-pagination span {
+            font-size: 0.8rem !important;
+        }
+
+        .favoris-pagination button {
+            padding: 6px 12px !important;
+            font-size: 0.8rem !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        #favorisContainer {
+            padding: 12px !important;
+        }
+
+        /* Statistiques : 2 colonnes */
+        .favoris-stats {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 8px !important;
+        }
+
+        .favoris-stats .stat-card {
+            padding: 10px !important;
+        }
+
+        .favoris-stats .stat-card p:first-child {
+            font-size: 0.6rem !important;
+        }
+
+        .favoris-stats .stat-card p:last-child {
+            font-size: 1.2rem !important;
+        }
+
+        .favoris-stats .stat-card#topProduit {
+            font-size: 0.75rem !important;
+        }
+
+        /* Grille */
+        .favoris-grid {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 12px !important;
+        }
+
+        .favoris-grid .product-image {
+            height: 120px !important;
+        }
+
+        .favoris-grid .product-info {
+            padding: 10px !important;
+        }
+
+        .favoris-grid .product-info h4 {
+            font-size: 0.8rem !important;
+            margin-bottom: 2px !important;
+        }
+
+        .favoris-grid .product-info .price {
+            font-size: 0.8rem !important;
+            margin-bottom: 4px !important;
+        }
+
+        .favoris-grid .product-info .price .old {
+            font-size: 0.65rem !important;
+        }
+
+        .favoris-grid .product-info .category-badge {
+            font-size: 0.6rem !important;
+        }
+
+        .favoris-grid .product-info .clients-list {
+            font-size: 0.65rem !important;
+            padding-top: 6px !important;
+        }
+
+        .favoris-grid .product-info .clients-list summary {
+            font-size: 0.7rem !important;
+        }
+
+        .favoris-grid .product-info .clients-list span {
+            font-size: 0.6rem !important;
+            padding: 2px 6px !important;
+        }
+
+        .favoris-grid .product-info .stock-badge {
+            font-size: 0.55rem !important;
+            padding: 2px 6px !important;
+        }
+
+        .favoris-grid .product-info .discount-badge {
+            font-size: 0.55rem !important;
+            padding: 2px 8px !important;
+        }
+
+        /* Badges sur l'image */
+        .favoris-grid .product-image .badge-overlay {
+            font-size: 0.6rem !important;
+            padding: 2px 8px !important;
+        }
+
+        .favoris-grid .product-image .favoris-count {
+            font-size: 0.65rem !important;
+            padding: 2px 8px !important;
+        }
+
+        /* Header */
+        .favoris-header h2 {
+            font-size: 1.1rem !important;
+        }
+
+        .favoris-header p {
+            font-size: 0.8rem !important;
+        }
+
+        .favoris-header .btn-refresh {
+            font-size: 0.8rem !important;
+            padding: 8px 14px !important;
+        }
+
+        /* Pagination */
+        .favoris-pagination button {
+            padding: 4px 10px !important;
+            font-size: 0.7rem !important;
+        }
+
+        .favoris-pagination #favorisPageInfo {
+            font-size: 0.8rem !important;
+            padding: 0 8px !important;
+        }
+
+        /* Empty state */
+        #emptyFavoris {
+            padding: 40px 16px !important;
+        }
+
+        #emptyFavoris i {
+            font-size: 2.5rem !important;
+        }
+
+        #emptyFavoris h3 {
+            font-size: 1.1rem !important;
+        }
+
+        #emptyFavoris p {
+            font-size: 0.85rem !important;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .favoris-stats {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 6px !important;
+        }
+
+        .favoris-stats .stat-card {
+            padding: 8px !important;
+        }
+
+        .favoris-stats .stat-card p:first-child {
+            font-size: 0.55rem !important;
+        }
+
+        .favoris-stats .stat-card p:last-child {
+            font-size: 1rem !important;
+        }
+
+        .favoris-grid {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 8px !important;
+        }
+
+        .favoris-grid .product-image {
+            height: 100px !important;
+        }
+
+        .favoris-grid .product-info {
+            padding: 6px !important;
+        }
+
+        .favoris-grid .product-info h4 {
+            font-size: 0.7rem !important;
+        }
+
+        .favoris-grid .product-info .price {
+            font-size: 0.7rem !important;
+        }
+
+        .favoris-grid .product-info .category-badge {
+            font-size: 0.55rem !important;
+        }
+
+        .favoris-grid .product-info .clients-list {
+            font-size: 0.6rem !important;
+        }
+
+        .favoris-grid .product-info .clients-list span {
+            font-size: 0.55rem !important;
+            padding: 1px 4px !important;
+        }
+
+        .favoris-pagination button {
+            padding: 4px 8px !important;
+            font-size: 0.65rem !important;
+        }
+
+        .favoris-pagination #favorisPageInfo {
+            font-size: 0.7rem !important;
+            padding: 0 6px !important;
+        }
+
+        #favorisContainer {
+            padding: 8px !important;
+        }
+    }
+
+    /* Orientation paysage sur mobile */
+    @media (max-width: 768px) and (orientation: landscape) {
+        .favoris-stats {
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 8px !important;
+        }
+
+        .favoris-stats .stat-card {
+            padding: 8px !important;
+        }
+
+        .favoris-stats .stat-card p:last-child {
+            font-size: 1.2rem !important;
+        }
+
+        .favoris-filters {
+            flex-direction: row !important;
+            flex-wrap: wrap !important;
+        }
+
+        .favoris-filters > div {
+            min-width: 120px !important;
+            flex: 1 !important;
+        }
+
+        .favoris-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 12px !important;
+        }
+
+        .favoris-grid .product-image {
+            height: 130px !important;
+        }
+    }
+</style>
 
 <!-- ===== SCRIPTS ===== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -318,51 +696,51 @@
                 const catIcon = categoryIcons[f.categorie] || '📦';
 
                 return `
-                <div style="background:#ffffff; border-radius:12px; overflow:hidden; transition:all 0.3s; position:relative; border:1px solid #f0f0f0; box-shadow:0 2px 8px rgba(0,0,0,0.04);" 
+                <div class="favoris-card" style="background:#ffffff; border-radius:12px; overflow:hidden; transition:all 0.3s; position:relative; border:1px solid #f0f0f0; box-shadow:0 2px 8px rgba(0,0,0,0.04);" 
                      onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 30px rgba(0,0,0,0.12)';this.style.borderColor='#c9a84c'" 
                      onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.04)';this.style.borderColor='#f0f0f0'">
                     
                     <!-- Badge réduction -->
-                    ${discount ? `<span style="position:absolute;top:10px;left:10px;background:#e74c3c;color:white;padding:4px 12px;border-radius:50px;font-size:0.7rem;font-weight:700;z-index:2;box-shadow:0 2px 8px rgba(231,76,60,0.3);">-${discount}%</span>` : ''}
+                    ${discount ? `<span class="discount-badge" style="position:absolute;top:10px;left:10px;background:#e74c3c;color:white;padding:4px 12px;border-radius:50px;font-size:0.7rem;font-weight:700;z-index:2;box-shadow:0 2px 8px rgba(231,76,60,0.3);">-${discount}%</span>` : ''}
                     
                     <!-- Badge stock -->
-                    ${stockBadge ? `<span style="position:absolute;top:10px;right:10px;background:${stockColor};color:white;padding:4px 12px;border-radius:50px;font-size:0.7rem;font-weight:600;z-index:2;box-shadow:0 2px 8px rgba(0,0,0,0.15);">${stockBadge}</span>` : ''}
+                    ${stockBadge ? `<span class="stock-badge" style="position:absolute;top:10px;right:10px;background:${stockColor};color:white;padding:4px 12px;border-radius:50px;font-size:0.7rem;font-weight:600;z-index:2;box-shadow:0 2px 8px rgba(0,0,0,0.15);">${stockBadge}</span>` : ''}
 
                     <!-- Image -->
-                    <div style="position:relative;overflow:hidden;cursor:pointer;background:#f8f8f8;" onclick="window.location.href='produit.html?id=${f.id}'">
+                    <div class="product-image" style="position:relative;overflow:hidden;cursor:pointer;background:#f8f8f8;height:200px;" onclick="window.location.href='produit.html?id=${f.id}'">
                         <img src="${f.image}" 
-                             style="width:100%; height:200px; object-fit:cover; transition:transform 0.5s;"
+                             style="width:100%; height:100%; object-fit:cover; transition:transform 0.5s;"
                              onmouseover="this.style.transform='scale(1.05)'" 
                              onmouseout="this.style.transform='scale(1)'"
                              onerror="this.src='https://via.placeholder.com/260x260/1a1a1a/FFFFFF?text=Nati+Shop'">
                         ${f.nbFavoris > 0 ? `
-                            <div style="position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,0.7);color:white;padding:4px 12px;border-radius:50px;font-size:0.75rem;display:flex;align-items:center;gap:6px;backdrop-filter:blur(4px);">
+                            <div class="favoris-count" style="position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,0.7);color:white;padding:4px 12px;border-radius:50px;font-size:0.75rem;display:flex;align-items:center;gap:6px;backdrop-filter:blur(4px);">
                                 <i class="fas fa-heart" style="color:#e74c3c;"></i>
                                 <span>${f.nbFavoris}</span>
                             </div>
                         ` : ''}
                     </div>
                     
-                    <div style="padding:16px;">
+                    <div class="product-info" style="padding:16px;">
                         <!-- Catégorie -->
                         <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
                             <span style="font-size:0.85rem;">${catIcon}</span>
-                            <span style="color:#888; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px;">${f.categorie}</span>
+                            <span class="category-badge" style="color:#888; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px;">${f.categorie}</span>
                         </div>
                         
                         <!-- Nom -->
                         <h4 style="font-weight:600; font-size:1rem; margin:0 0 6px 0; cursor:pointer; color:#1a1a1a;" onclick="window.location.href='produit.html?id=${f.id}'">${f.produit}</h4>
                         
                         <!-- Prix -->
-                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                        <div class="price" style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
                             <span style="font-weight:700; color:#c9a84c; font-size:1.1rem;">${f.prix.toLocaleString()} FCFA</span>
                             ${f.prix_original && f.prix_original > f.prix ? 
-                                `<span style="text-decoration:line-through; color:#999; font-size:0.8rem;">${f.prix_original.toLocaleString()} FCFA</span>` : ''}
+                                `<span class="old" style="text-decoration:line-through; color:#999; font-size:0.8rem;">${f.prix_original.toLocaleString()} FCFA</span>` : ''}
                         </div>
 
                         <!-- Clients qui ont aimé -->
                         ${f.clients && f.clients.length > 0 ? `
-                            <details style="margin-top:8px;">
+                            <details class="clients-list" style="margin-top:8px;">
                                 <summary style="cursor:pointer; font-size:0.8rem; color:#888; font-weight:500; padding:4px 0; border-top:1px solid #f0f0f0; padding-top:10px;">
                                     👥 ${f.clients.length} client${f.clients.length > 1 ? 's' : ''} ont aimé
                                 </summary>
