@@ -14,8 +14,8 @@
         </button>
     </div>
 
-    <!-- ===== STATISTIQUES RAPIDES ===== -->
-    <div class="contacts-stats" style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px;">
+    <!-- ===== STATISTIQUES RAPIDES - 4 COLONNES COMME DASHBOARD ===== -->
+    <div class="contacts-stats" style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
         <div class="stat-card" style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total contacts</p>
             <p style="font-size:1.8rem; font-weight:700; color:#1a1a1a;" id="totalContacts">0</p>
@@ -27,6 +27,10 @@
         <div class="stat-card" style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Prospects</p>
             <p style="font-size:1.8rem; font-weight:700; color:#f39c12;" id="totalProspects">0</p>
+        </div>
+        <div class="stat-card" style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #3498db;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">👤 Actifs</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#3498db;" id="totalActifs">0</p>
         </div>
     </div>
 
@@ -222,6 +226,14 @@
 <style>
     /* Responsive - Contacts */
     
+    /* Statistiques : 4 colonnes sur desktop */
+    .contacts-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    
     @media (max-width: 768px) {
         #contactsContainer {
             padding: 16px !important;
@@ -248,7 +260,7 @@
             padding: 10px 16px !important;
         }
 
-        /* Statistiques : 2 colonnes */
+        /* Statistiques : 2 colonnes sur mobile */
         .contacts-stats {
             grid-template-columns: 1fr 1fr !important;
             gap: 10px !important;
@@ -501,7 +513,7 @@
     /* Orientation paysage sur mobile */
     @media (max-width: 768px) and (orientation: landscape) {
         .contacts-stats {
-            grid-template-columns: repeat(3, 1fr) !important;
+            grid-template-columns: repeat(4, 1fr) !important;
             gap: 8px !important;
         }
 
@@ -851,9 +863,12 @@
             const total = allContacts.length;
             const clients = allContacts.filter(c => c.statut === 'client').length;
             const prospects = allContacts.filter(c => c.statut === 'prospect').length;
+            const actifs = allContacts.filter(c => c.statut === 'client' && c.email).length;
+            
             document.getElementById('totalContacts').textContent = total;
             document.getElementById('totalClients').textContent = clients;
             document.getElementById('totalProspects').textContent = prospects;
+            document.getElementById('totalActifs').textContent = actifs;
         }
 
         // ==========================================
