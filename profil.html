@@ -1,4 +1,4 @@
-<!-- profil.html - Page Profil du vendeur -->
+<!-- profil.html - Page Profil du vendeur (version base64) -->
 <div id="profilContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
@@ -87,7 +87,7 @@
                 <input type="text" id="adresseBoutique" name="adresseBoutique" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
             </div>
 
-            <!-- ===== GALERIE PHOTO DE LA BOUTIQUE ===== -->
+            <!-- ===== GALERIE PHOTO DE LA BOUTIQUE (VERSION BASE64) ===== -->
             <div style="padding:16px; background:#f8f8f8; border-radius:12px; margin-bottom:16px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
                     <div>
@@ -174,6 +174,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     (function() {
+        'use strict';
+
         // ==========================================
         // SUPABASE CONFIG
         // ==========================================
@@ -234,52 +236,30 @@
         }
 
         // ==========================================
-        // UPLOAD D'IMAGE VERS SUPABASE STORAGE
+        // CONVERTIR IMAGE EN BASE64
         // ==========================================
-        async function uploadImageToStorage(file, adminId) {
-            try {
+        function convertImageToBase64(file) {
+            return new Promise((resolve, reject) => {
                 const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/gif'];
                 if (!validTypes.includes(file.type)) {
-                    showNotification('❌ Format non supporté. Utilisez JPG, PNG, WEBP ou GIF', 'error');
-                    return null;
+                    reject(new Error('Format non supporté. Utilisez JPG, PNG, WEBP ou GIF'));
+                    return;
                 }
 
                 if (file.size > 5 * 1024 * 1024) {
-                    showNotification('❌ Image trop grande. Maximum 5MB', 'error');
-                    return null;
+                    reject(new Error('Image trop grande. Maximum 5MB'));
+                    return;
                 }
 
-                const fileExt = file.name.split('.').pop();
-                const fileName = `galerie/${adminId}/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
-                
-                console.log('📤 Upload de l\'image:', fileName);
-
-                const { data, error } = await supabaseClient.storage
-                    .from('galerie')
-                    .upload(fileName, file, {
-                        cacheControl: '3600',
-                        upsert: false,
-                        contentType: file.type
-                    });
-
-                if (error) {
-                    console.error('❌ Erreur upload:', error);
-                    showNotification('❌ Erreur upload: ' + error.message, 'error');
-                    return null;
-                }
-
-                const { data: urlData } = supabaseClient.storage
-                    .from('galerie')
-                    .getPublicUrl(fileName);
-
-                console.log('✅ Image uploadée:', urlData.publicUrl);
-                return urlData.publicUrl;
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                showNotification('❌ Erreur upload: ' + err.message, 'error');
-                return null;
-            }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    resolve(e.target.result); // Données en base64
+                };
+                reader.onerror = function(e) {
+                    reject(new Error('Erreur lors de la lecture du fichier'));
+                };
+                reader.readAsDataURL(file);
+            });
         }
 
         // ==========================================
@@ -342,7 +322,7 @@
         }
 
         // ==========================================
-        // AJOUTER UNE PHOTO À LA GALERIE
+        // AJOUTER UNE PHOTO À LA GALERIE (BASE64)
         // ==========================================
         async function ajouterPhotoGalerie(file, titre = '', description = '') {
             const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
@@ -357,16 +337,17 @@
             }
 
             try {
-                showNotification('📤 Upload en cours...', 'info');
+                showNotification('🔄 Traitement de l\'image...', 'info');
 
-                const imageUrl = await uploadImageToStorage(file, adminSession.id);
-                if (!imageUrl) return;
+                // 🔑 CONVERTIR L'IMAGE EN BASE64
+                const base64Image = await convertImageToBase64(file);
+                console.log('✅ Image convertie en base64 (taille: ' + (base64Image.length / 1024).toFixed(2) + ' KB)');
 
                 const { data, error } = await supabaseClient
                     .from('galerie')
                     .insert({
                         admin_id: adminSession.id,
-                        image_url: imageUrl,
+                        image_url: base64Image, // Stockage en base64
                         titre: titre || `Photo ${galerieData.length + 1}`,
                         description: description || '',
                         ordre: galerieData.length + 1,
@@ -410,10 +391,6 @@
             }
 
             try {
-                const photo = galerieData.find(p => p.id === id);
-                if (!photo) return;
-
-                // Soft delete : marquer comme inactive
                 const { error } = await supabaseClient
                     .from('galerie')
                     .update({ est_active: false })
@@ -423,21 +400,6 @@
                     console.error('❌ Erreur suppression:', error);
                     showNotification('❌ Erreur: ' + error.message, 'error');
                     return;
-                }
-
-                // Supprimer du Storage (optionnel)
-                if (photo.image) {
-                    try {
-                        const path = photo.image.split('/storage/v1/object/public/galerie/')[1];
-                        if (path) {
-                            await supabaseClient.storage
-                                .from('galerie')
-                                .remove([path]);
-                            console.log('🗑️ Image supprimée du Storage');
-                        }
-                    } catch (storageErr) {
-                        console.warn('⚠️ Erreur suppression Storage:', storageErr);
-                    }
                 }
 
                 galerieData = galerieData.filter(p => p.id !== id);
@@ -486,28 +448,23 @@
         }
 
         // ==========================================
-        // CHANGER L'IMAGE D'UNE PHOTO
+        // CHANGER L'IMAGE D'UNE PHOTO (BASE64)
         // ==========================================
         async function changerImagePhoto(id, event) {
             const file = event.target.files[0];
             if (!file) return;
 
-            const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
-            if (!adminSession || !adminSession.id) {
-                showNotification('⚠️ Vous devez être connecté', 'error');
-                return;
-            }
-
             try {
-                showNotification('📤 Upload en cours...', 'info');
+                showNotification('🔄 Traitement de la nouvelle image...', 'info');
 
-                const imageUrl = await uploadImageToStorage(file, adminSession.id);
-                if (!imageUrl) return;
+                // 🔑 CONVERTIR L'IMAGE EN BASE64
+                const base64Image = await convertImageToBase64(file);
+                console.log('✅ Nouvelle image convertie en base64');
 
                 const { error } = await supabaseClient
                     .from('galerie')
                     .update({
-                        image_url: imageUrl,
+                        image_url: base64Image,
                         updated_at: new Date().toISOString()
                     })
                     .eq('id', id);
@@ -520,7 +477,7 @@
 
                 const photo = galerieData.find(p => p.id === id);
                 if (photo) {
-                    photo.image = imageUrl;
+                    photo.image = base64Image;
                 }
 
                 renderGalerie();
@@ -556,6 +513,9 @@
 
             let html = '';
             galerieData.forEach((photo, index) => {
+                // Vérifier si l'image est en base64 ou une URL
+                const isBase64 = photo.image && photo.image.startsWith('data:image');
+                
                 html += `
                     <div data-photo-id="${photo.id}" style="background:#ffffff; border-radius:10px; padding:16px; border:1px solid #e8e8e8; transition:all 0.3s; position:relative;" onmouseover="this.style.borderColor='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8'">
                         <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start;">
@@ -842,7 +802,7 @@
         }
 
         // ==========================================
-        // GESTION DES PHOTOS (profil et pro)
+        // GESTION DES PHOTOS (profil et pro) - BASE64
         // ==========================================
         function setupPhotoUpload(inputId, displayId, storageKey) {
             const input = document.getElementById(inputId);
@@ -854,8 +814,10 @@
                     if (file) {
                         const reader = new FileReader();
                         reader.onload = function(event) {
-                            display.innerHTML = '<img src="' + event.target.result + '" style="width:100%;height:100%;object-fit:cover;">';
-                            localStorage.setItem(storageKey, event.target.result);
+                            const base64Data = event.target.result;
+                            display.innerHTML = '<img src="' + base64Data + '" style="width:100%;height:100%;object-fit:cover;">';
+                            localStorage.setItem(storageKey, base64Data);
+                            showNotification('✅ Photo mise à jour', 'success');
                         };
                         reader.readAsDataURL(file);
                     }
@@ -907,7 +869,7 @@
         // INITIALISATION
         // ==========================================
         function init() {
-            console.log('🚀 Démarrage de profil.html...');
+            console.log('🚀 Démarrage de profil.html (version base64)...');
             
             // Photos de profil
             setupPhotoUpload('photoInput', 'profilePhoto', 'nikel_profile_photo');
@@ -921,7 +883,7 @@
             window.changerImagePhoto = changerImagePhoto;
             window.ajouterPhotoGalerie = ajouterPhotoGalerie;
             window.renderGalerie = renderGalerie;
-            window.uploadImageToStorage = uploadImageToStorage;
+            window.convertImageToBase64 = convertImageToBase64;
             window.loadGalerie = loadGalerie;
             window.showNotification = showNotification;
 
