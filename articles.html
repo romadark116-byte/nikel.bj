@@ -108,19 +108,37 @@
         color: #c9a84c;
     }
 
-    /* ===== TABLEAU ===== */
+    /* ===== TABLEAU AVEC SCROLL ===== */
     .articles-table-wrapper {
         overflow-x: auto;
+        overflow-y: visible;
         border-radius: 12px;
         border: 1px solid #f0f0f0;
         -webkit-overflow-scrolling: touch;
+        position: relative;
+        /* Indicateur de scroll pour mobile */
+        scroll-behavior: smooth;
+    }
+
+    /* Indicateur de défilement sur mobile */
+    .articles-table-wrapper::after {
+        content: '↔ Faire glisser pour voir plus';
+        display: none;
+        text-align: center;
+        padding: 8px;
+        color: #aaa;
+        font-size: 0.75rem;
+        background: #f8f8f8;
+        border-top: 1px solid #f0f0f0;
+        font-style: italic;
     }
 
     .articles-table-wrapper table {
         width: 100%;
         border-collapse: collapse;
         font-size: 0.95rem;
-        min-width: 650px;
+        min-width: 900px;
+        /* Augmenté pour voir toutes les colonnes */
     }
 
     .articles-table-wrapper table thead {
@@ -133,11 +151,17 @@
         padding: 14px 12px;
         font-weight: 600;
         color: #1a1a1a;
+        white-space: nowrap;
+        position: sticky;
+        top: 0;
+        background: #f8f8f8;
+        z-index: 2;
     }
 
     .articles-table-wrapper table td {
         padding: 12px;
         border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
     }
 
     .articles-table-wrapper table tr:hover td {
@@ -154,6 +178,37 @@
         gap: 6px;
         color: white;
         white-space: nowrap;
+    }
+
+    .articles-table-wrapper table td .action-btn {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 6px;
+        color: white;
+        cursor: pointer;
+        font-size: 0.8rem;
+        margin: 2px;
+        transition: all 0.2s;
+    }
+
+    .articles-table-wrapper table td .action-btn:hover {
+        transform: scale(1.05);
+    }
+
+    .articles-table-wrapper table td .action-btn.edit {
+        background: #f39c12;
+    }
+
+    .articles-table-wrapper table td .action-btn.edit:hover {
+        background: #e67e22;
+    }
+
+    .articles-table-wrapper table td .action-btn.delete {
+        background: #e74c3c;
+    }
+
+    .articles-table-wrapper table td .action-btn.delete:hover {
+        background: #c0392b;
     }
 
     /* ===== PAGINATION ===== */
@@ -245,7 +300,7 @@
             font-size: 1.6rem;
         }
         .articles-table-wrapper table {
-            min-width: 600px;
+            min-width: 800px;
         }
     }
 
@@ -268,6 +323,9 @@
         }
         .articles-filters-row .filter-group:first-child {
             min-width: 160px;
+        }
+        .articles-table-wrapper table {
+            min-width: 750px;
         }
     }
 
@@ -310,25 +368,40 @@
             width: 100%;
             text-align: center;
         }
+        
+        /* === TABLEAU SCROLLABLE SUR MOBILE === */
+        .articles-table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 10px;
+        }
+        
+        .articles-table-wrapper::after {
+            display: block;
+        }
+        
         .articles-table-wrapper table {
-            font-size: 0.85rem;
-            min-width: 500px;
+            font-size: 0.8rem;
+            min-width: 700px;
         }
         .articles-table-wrapper table th,
         .articles-table-wrapper table td {
             padding: 10px 8px;
         }
+        .articles-table-wrapper table th {
+            font-size: 0.75rem;
+        }
         .articles-table-wrapper table td img {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
         }
         .articles-table-wrapper table td .statut-badge {
-            font-size: 0.65rem;
-            padding: 3px 10px;
+            font-size: 0.6rem;
+            padding: 3px 8px;
         }
-        .articles-table-wrapper table .action-btn {
+        .articles-table-wrapper table td .action-btn {
             padding: 4px 8px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
         }
         .articles-pagination-row {
             flex-direction: column;
@@ -346,7 +419,6 @@
             font-size: 0.85rem;
             padding: 0 8px;
         }
-        /* Container principal */
         #articlesContainer {
             padding: 16px !important;
         }
@@ -360,7 +432,6 @@
             padding: 10px 18px !important;
             font-size: 0.85rem !important;
         }
-        /* Modal */
         #articleModal > div {
             padding: 20px !important;
             max-width: 95% !important;
@@ -424,23 +495,32 @@
             font-size: 0.75rem;
             padding: 6px 12px;
         }
+        
+        .articles-table-wrapper::after {
+            font-size: 0.65rem;
+            padding: 6px;
+        }
+        
         .articles-table-wrapper table {
-            font-size: 0.75rem;
-            min-width: 400px;
+            font-size: 0.7rem;
+            min-width: 600px;
         }
         .articles-table-wrapper table th,
         .articles-table-wrapper table td {
             padding: 8px 6px;
         }
+        .articles-table-wrapper table th {
+            font-size: 0.65rem;
+        }
         .articles-table-wrapper table td img {
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
         }
         .articles-table-wrapper table td .statut-badge {
             font-size: 0.55rem;
-            padding: 2px 8px;
+            padding: 2px 6px;
         }
-        .articles-table-wrapper table .action-btn {
+        .articles-table-wrapper table td .action-btn {
             padding: 3px 6px;
             font-size: 0.6rem;
         }
@@ -511,16 +591,19 @@
             font-size: 0.55rem;
         }
         .articles-table-wrapper table {
-            font-size: 0.65rem;
-            min-width: 320px;
+            font-size: 0.6rem;
+            min-width: 500px;
         }
         .articles-table-wrapper table th,
         .articles-table-wrapper table td {
             padding: 6px 4px;
         }
+        .articles-table-wrapper table th {
+            font-size: 0.55rem;
+        }
         .articles-table-wrapper table td img {
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
         }
         #articlesContainer {
             padding: 8px !important;
@@ -575,14 +658,14 @@
             flex: 0 0 auto;
         }
         .articles-table-wrapper table {
-            min-width: 450px;
+            min-width: 650px;
         }
         .articles-pagination-row {
             flex-direction: row;
         }
     }
 
-    /* ===== ANIMATION ===== */
+    /* Animation */
     @keyframes slideUp {
         from {
             opacity: 0;
@@ -671,19 +754,19 @@
         </button>
     </div>
 
-    <!-- ===== TABLEAU DES ARTICLES ===== -->
+    <!-- ===== TABLEAU DES ARTICLES AVEC SCROLL ===== -->
     <div class="articles-table-wrapper">
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Image</th>
-                    <th>Nom</th>
-                    <th>Catégorie</th>
-                    <th>Prix</th>
-                    <th>Stock</th>
-                    <th>Statut</th>
-                    <th style="text-align:center;">Actions</th>
+                    <th style="min-width:80px;">ID</th>
+                    <th style="min-width:70px;">Image</th>
+                    <th style="min-width:120px;">Nom</th>
+                    <th style="min-width:110px;">Catégorie</th>
+                    <th style="min-width:100px;">Prix</th>
+                    <th style="min-width:70px;text-align:center;">Stock</th>
+                    <th style="min-width:130px;">Statut</th>
+                    <th style="min-width:140px;text-align:center;">Actions</th>
                 </tr>
             </thead>
             <tbody id="articlesTableBody">
@@ -712,7 +795,7 @@
     </div>
 </div>
 
-<!-- ===== MODAL AJOUT / MODIFICATION ARTICLE AVEC UPLOAD D'IMAGE ===== -->
+<!-- ===== MODAL AJOUT / MODIFICATION ARTICLE ===== -->
 <div id="articleModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center; padding:16px;">
     <div style="background:white; border-radius:16px; padding:32px; max-width:550px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
@@ -796,13 +879,12 @@
                 <textarea id="articleDescription" rows="3" placeholder="Description du produit..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; resize:vertical; font-family:inherit; box-sizing:border-box;"></textarea>
             </div>
 
-            <!-- ===== IMAGE - UPLOAD DEPUIS LA GALERIE (VERSION BASE64) ===== -->
+            <!-- ===== IMAGE - UPLOAD BASE64 ===== -->
             <div style="margin-bottom:14px;">
                 <label style="display:block; font-weight:600; margin-bottom:4px; font-size:0.9rem; color:#1a1a1a;">
                     <i class="fas fa-image"></i> Image du produit
                 </label>
                 
-                <!-- Zone de drop/upload -->
                 <div id="imageUploadArea" class="file-upload-area" style="border:2px dashed #e8e8e8; border-radius:12px; padding:20px; text-align:center; cursor:pointer; transition:all 0.3s; background:#fafafa;" 
                      onclick="document.getElementById('articleImageInput').click()"
                      ondragover="event.preventDefault(); this.style.borderColor='#c9a84c'; this.style.background='#f8f5eb'"
@@ -817,7 +899,6 @@
                         <p style="color:#aaa; font-size:0.8rem; margin-top:4px;">PNG, JPG, WEBP jusqu'à 5MB</p>
                     </div>
                     
-                    <!-- Aperçu de l'image -->
                     <div id="imagePreview" style="display:none; margin-top:12px;">
                         <img id="imagePreviewImg" src="" alt="Aperçu" style="max-width:100%; max-height:200px; border-radius:8px; object-fit:contain;">
                         <button type="button" onclick="removeSelectedImage()" style="display:block; margin:8px auto 0; background:#e74c3c; color:white; border:none; border-radius:6px; padding:6px 14px; font-size:0.8rem; cursor:pointer;">
@@ -829,7 +910,6 @@
                 <input type="file" id="articleImageInput" accept="image/*" style="display:none;" onchange="handleImageSelect(event)">
                 <input type="hidden" id="articleImage" value="">
                 
-                <!-- URL alternative -->
                 <div style="margin-top:8px;">
                     <a href="#" onclick="toggleImageUrlInput(); return false;" style="color:#888; font-size:0.8rem; text-decoration:none;">
                         <i class="fas fa-link"></i> Utiliser une URL à la place
@@ -856,7 +936,7 @@
     </div>
 </div>
 
-<!-- ===== SCRIPTS ===== -->
+<!-- ===== SCRIPTS (identique à votre version) ===== -->
 <script>
 (function() {
     'use strict';
@@ -964,10 +1044,10 @@
                 <td style="padding:12px; text-align:center; font-weight:600;">${article.stock || 0}</td>
                 <td style="padding:12px;">${getArticleStatutBadge(article.statut || 'En stock')}</td>
                 <td style="padding:12px; text-align:center;">
-                    <button onclick="editArticle('${article.id}')" class="action-btn" style="padding:6px 12px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Modifier">
+                    <button onclick="editArticle('${article.id}')" class="action-btn edit" title="Modifier">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button onclick="deleteArticle('${article.id}')" class="action-btn" style="padding:6px 12px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Supprimer">
+                    <button onclick="deleteArticle('${article.id}')" class="action-btn delete" title="Supprimer">
                         <i class="fas fa-trash-alt"></i>
                     </button>
                 </td>
@@ -1081,7 +1161,7 @@
     }
 
     // ==========================================
-    // CHARGER LES ARTICLES DEPUIS SUPABASE
+    // CHARGER LES ARTICLES
     // ==========================================
     async function loadArticlesData() {
         try {
@@ -1121,7 +1201,7 @@
     }
 
     // ==========================================
-    // GESTION DES IMAGES - VERSION BASE64
+    // GESTION DES IMAGES - BASE64
     // ==========================================
 
     function handleImageSelect(event) {
@@ -1209,7 +1289,7 @@
     }
 
     // ==========================================
-    // MODAL : AJOUTER
+    // MODAL
     // ==========================================
     function openAddArticleModal() {
         document.getElementById('articleModalTitle').innerHTML = '<i class="fas fa-cube" style="color:#c9a84c;"></i> Ajouter un article';
@@ -1220,9 +1300,6 @@
         document.getElementById('articleModal').style.display = 'flex';
     }
 
-    // ==========================================
-    // MODAL : MODIFIER
-    // ==========================================
     function editArticle(id) {
         console.log('✏️ Modification de l\'article:', id);
         const article = allArticles.find(a => a.id === id);
@@ -1255,9 +1332,6 @@
         document.getElementById('articleModal').style.display = 'flex';
     }
 
-    // ==========================================
-    // MODAL : FERMER
-    // ==========================================
     function closeArticleModal() {
         document.getElementById('articleModal').style.display = 'none';
         document.getElementById('articleForm').reset();
@@ -1265,7 +1339,7 @@
     }
 
     // ==========================================
-    // SAUVEGARDER ARTICLE
+    // SAUVEGARDER
     // ==========================================
     async function saveArticle(event) {
         event.preventDefault();
@@ -1352,7 +1426,7 @@
     }
 
     // ==========================================
-    // SUPPRIMER ARTICLE
+    // SUPPRIMER
     // ==========================================
     async function deleteArticle(id) {
         if (!confirm('Voulez-vous vraiment supprimer cet article ?')) return;
@@ -1442,7 +1516,7 @@
     }
 
     // ==========================================
-    // EXPOSER LES FONCTIONS GLOBALEMENT
+    // EXPOSER LES FONCTIONS
     // ==========================================
     window.applyArticleFilters = applyArticleFilters;
     window.resetArticleFilters = resetArticleFilters;
