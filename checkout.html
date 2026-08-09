@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* ==========================================
+           STYLES DE BASE - CHECKOUT
+           ========================================== */
         .checkout-wrapper {
             display: flex;
             gap: 30px;
@@ -73,12 +76,15 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
         }
 
         .cart-item-checkout .item-name {
             font-weight: 600;
             color: var(--dark-gray);
             font-size: 0.95rem;
+            word-break: break-word;
         }
 
         .cart-item-checkout .item-total {
@@ -93,6 +99,12 @@
             font-size: 0.8rem;
             color: var(--gray);
             margin-top: 4px;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
         }
 
         .form-group label {
@@ -248,23 +260,342 @@
             cursor: not-allowed;
         }
 
-        @media (max-width: 768px) {
+        .security-badges {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            color: var(--gray);
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+        }
+
+        .security-badges span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .security-badges i {
+            color: var(--gold);
+        }
+
+        /* ========================================== */
+        /* RESPONSIVE - CHECKOUT                     */
+        /* ========================================== */
+
+        @media (max-width: 992px) {
             .checkout-wrapper {
                 flex-direction: column;
                 gap: 20px;
             }
+
             .checkout-cart-col {
                 position: static;
                 align-self: stretch;
             }
+
+            .checkout-form-col,
+            .checkout-cart-col {
+                flex: none;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .checkout-form-col > div,
+            .checkout-cart-col > div {
+                padding: 20px !important;
+            }
+
             .phone-group {
                 flex-direction: column;
             }
+
             .phone-group select {
                 width: 100%;
             }
+
             .grid-2-col {
                 grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .checkout-form-col .grid-2-col {
+                gap: 0;
+            }
+
+            .cart-item-checkout {
+                padding: 10px 0;
+                gap: 10px;
+            }
+
+            .cart-item-checkout .item-image {
+                width: 50px;
+                height: 50px;
+            }
+
+            .cart-item-checkout .item-name {
+                font-size: 0.85rem;
+            }
+
+            .cart-item-checkout .item-total {
+                font-size: 0.85rem;
+            }
+
+            .cart-item-checkout .item-details {
+                font-size: 0.7rem;
+            }
+
+            .security-badges {
+                gap: 16px;
+                font-size: 0.8rem;
+            }
+
+            .security-badges span {
+                gap: 4px;
+            }
+
+            .form-group label {
+                font-size: 0.8rem;
+            }
+
+            .form-group input,
+            .form-group select {
+                font-size: 0.85rem;
+                padding: 8px 12px;
+                height: 40px;
+            }
+
+            .pays-display {
+                height: 40px;
+                font-size: 0.85rem;
+                padding: 8px 12px;
+            }
+
+            .checkout-form-col h3,
+            .checkout-cart-col h3 {
+                font-size: 1.1rem !important;
+            }
+
+            #confirmOrderBtn {
+                font-size: 0.9rem !important;
+                padding: 12px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .checkout-form-col > div,
+            .checkout-cart-col > div {
+                padding: 16px !important;
+                border-radius: 12px !important;
+            }
+
+            .cart-item-checkout {
+                padding: 8px 0;
+                gap: 8px;
+            }
+
+            .cart-item-checkout .item-image {
+                width: 40px;
+                height: 40px;
+            }
+
+            .cart-item-checkout .item-name {
+                font-size: 0.8rem;
+            }
+
+            .cart-item-checkout .item-total {
+                font-size: 0.8rem;
+            }
+
+            .cart-item-checkout .item-details {
+                font-size: 0.65rem;
+            }
+
+            .security-badges {
+                gap: 12px;
+                font-size: 0.7rem;
+                flex-wrap: wrap;
+            }
+
+            .form-group {
+                margin-bottom: 10px;
+            }
+
+            .form-group label {
+                font-size: 0.75rem;
+            }
+
+            .form-group input,
+            .form-group select {
+                font-size: 0.8rem;
+                padding: 6px 10px;
+                height: 36px;
+                border-radius: 6px;
+            }
+
+            .pays-display {
+                height: 36px;
+                font-size: 0.8rem;
+                padding: 6px 10px;
+                border-radius: 6px;
+            }
+
+            .phone-group select {
+                height: 36px;
+                font-size: 0.8rem;
+                padding: 6px 10px;
+            }
+
+            .phone-group input {
+                height: 36px;
+                font-size: 0.8rem;
+                padding: 6px 10px;
+            }
+
+            #phoneHelp {
+                font-size: 0.7rem;
+            }
+
+            .checkout-form-col h3,
+            .checkout-cart-col h3 {
+                font-size: 1rem !important;
+                margin-bottom: 14px !important;
+            }
+
+            #confirmOrderBtn {
+                font-size: 0.85rem !important;
+                padding: 10px !important;
+                border-radius: 6px !important;
+                margin-top: 14px !important;
+            }
+
+            .loading-cart {
+                padding: 20px;
+            }
+
+            .loading-cart i {
+                font-size: 1.2rem;
+            }
+
+            .cart-empty {
+                padding: 20px;
+            }
+
+            .cart-empty i {
+                font-size: 1.5rem;
+            }
+
+            .checkout-wrapper {
+                gap: 14px;
+            }
+
+            .checkout-cart-col > div:last-child {
+                margin-top: 12px !important;
+                padding: 12px 16px !important;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .checkout-form-col > div,
+            .checkout-cart-col > div {
+                padding: 12px !important;
+            }
+
+            .cart-item-checkout .item-image {
+                width: 35px;
+                height: 35px;
+            }
+
+            .cart-item-checkout .item-name {
+                font-size: 0.7rem;
+            }
+
+            .cart-item-checkout .item-total {
+                font-size: 0.7rem;
+            }
+
+            .cart-item-checkout .item-details {
+                font-size: 0.6rem;
+            }
+
+            .form-group input,
+            .form-group select {
+                font-size: 0.75rem;
+                height: 34px;
+                padding: 5px 8px;
+            }
+
+            .pays-display {
+                height: 34px;
+                font-size: 0.75rem;
+                padding: 5px 8px;
+            }
+
+            .phone-group select {
+                height: 34px;
+                font-size: 0.75rem;
+                padding: 5px 8px;
+            }
+
+            .phone-group input {
+                height: 34px;
+                font-size: 0.75rem;
+                padding: 5px 8px;
+            }
+
+            #confirmOrderBtn {
+                font-size: 0.8rem !important;
+                padding: 8px !important;
+            }
+
+            .checkout-form-col h3,
+            .checkout-cart-col h3 {
+                font-size: 0.9rem !important;
+            }
+        }
+
+        /* Orientation paysage sur mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .checkout-wrapper {
+                flex-direction: row;
+                gap: 16px;
+            }
+
+            .checkout-form-col {
+                flex: 1.2;
+            }
+
+            .checkout-cart-col {
+                flex: 1;
+                position: static;
+            }
+
+            .checkout-form-col > div,
+            .checkout-cart-col > div {
+                padding: 16px !important;
+            }
+
+            .grid-2-col {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .phone-group {
+                flex-direction: row;
+            }
+
+            .phone-group select {
+                width: 80px;
+            }
+
+            .cart-item-checkout {
+                padding: 6px 0;
+            }
+
+            .cart-item-checkout .item-image {
+                width: 40px;
+                height: 40px;
             }
         }
     </style>
@@ -339,12 +670,12 @@
                                 </div>
                             </div>
 
-                            <div class="form-group" style="margin-top:12px;">
+                            <div class="form-group">
                                 <label>Email</label>
                                 <input type="email" id="email" required placeholder="Saisissez votre adresse e-mail">
                             </div>
 
-                            <div class="form-group" style="margin-top:12px;">
+                            <div class="form-group">
                                 <label>Téléphone (WhatsApp)</label>
                                 <div class="phone-group">
                                     <select id="indicatif" onchange="updatePhonePlaceholder(); updatePaysFromIndicatif();">
@@ -359,7 +690,7 @@
                                 <small id="phoneHelp" style="display:block; color:#888; font-size:0.8rem; margin-top:4px;">10 chiffres (ex: 01 23 45 67 89)</small>
                             </div>
 
-                            <div class="grid-2-col" style="margin-top:12px;">
+                            <div class="grid-2-col">
                                 <div class="form-group">
                                     <label>Pays</label>
                                     <div class="pays-display">
@@ -407,16 +738,16 @@
                         <button class="btn btn-primary" id="confirmOrderBtn" style="width:100%; justify-content:center; margin-top:20px; padding:14px; font-size:1rem; border:none; border-radius:8px; background:linear-gradient(135deg, var(--gold), var(--accent-dark)); color:white; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:10px;" disabled>
                             <i class="fab fa-whatsapp"></i> Finalisez votre achat sur WhatsApp
                         </button>
-                        <a href="panier.html" style="display:block; text-align:center; margin-top:12px; color:var(--gray); text-decoration:none;">
+                        <a href="panier.html" style="display:block; text-align:center; margin-top:12px; color:var(--gray); text-decoration:none; font-size:0.9rem;">
                             <i class="fas fa-arrow-left"></i> Retour au panier
                         </a>
                     </div>
 
                     <div style="background:var(--white); padding:16px 20px; border-radius:16px; box-shadow:var(--shadow); margin-top:16px; text-align:center;">
-                        <div style="display:flex; justify-content:center; gap:24px; color:var(--gray); font-size:0.9rem;">
-                            <span><i class="fas fa-lock" style="color:var(--gold);"></i> Sécurisé</span>
-                            <span><i class="fas fa-clock" style="color:var(--gold);"></i> 24/7</span>
-                            <span><i class="fas fa-headset" style="color:var(--gold);"></i> Support</span>
+                        <div class="security-badges">
+                            <span><i class="fas fa-lock"></i> Sécurisé</span>
+                            <span><i class="fas fa-clock"></i> 24/7</span>
+                            <span><i class="fas fa-headset"></i> Support</span>
                         </div>
                     </div>
                 </div>
@@ -466,6 +797,10 @@
             <p>&copy; 2026 Nati Shop — Tous droits réservés.</p>
         </div>
     </footer>
+
+    <!-- ========================================== -->
+    <!-- SCRIPTS                                    -->
+    <!-- ========================================== -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -848,12 +1183,25 @@
         }
 
         // ==========================================
+        // MENU MOBILE
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const nav = document.querySelector('.nav');
+            if (menuToggle && nav) {
+                menuToggle.addEventListener('click', function() {
+                    nav.classList.toggle('open');
+                    menuToggle.classList.toggle('active');
+                });
+            }
+        });
+
+        // ==========================================
         // INITIALISATION
         // ==========================================
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🛒 Page de paiement chargée (Nati Shop)');
             
-            // Migration automatique du panier
             migrateCart();
             
             loadProducts();
@@ -932,19 +1280,12 @@
                 const phoneNumber = '2290155555555';
                 const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
-                // Ouvrir WhatsApp
                 window.open(whatsappUrl, '_blank');
 
-                // 1. Vider le panier
                 clearCart();
-
-                // 2. Réinitialiser le formulaire
                 resetForm();
-
-                // 3. Mettre à jour l'affichage
                 renderCartItems();
 
-                // 4. Rediriger vers la page de confirmation après 1.5s
                 setTimeout(function() {
                     redirectToConfirmation();
                 }, 1500);
