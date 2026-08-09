@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* ==========================================
+           STYLES DE BASE - CONTACT
+           ========================================== */
         .contact-wrapper {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -28,6 +31,11 @@
             font-size: 1.8rem;
             margin-bottom: 10px;
             color: var(--dark-gray);
+        }
+
+        .contact-info .sub-text {
+            color: var(--gray);
+            margin-bottom: 30px;
         }
 
         .contact-item {
@@ -70,6 +78,7 @@
 
         .contact-item .contact-text {
             flex: 1;
+            min-width: 0;
         }
 
         .contact-item strong {
@@ -86,6 +95,7 @@
             font-weight: 500;
             margin: 0;
             font-size: 1rem;
+            word-break: break-word;
         }
 
         .contact-info .socials {
@@ -94,6 +104,7 @@
             margin-top: 20px;
             padding-top: 20px;
             border-top: 1px solid var(--light-gray);
+            flex-wrap: wrap;
         }
 
         .contact-info .socials a {
@@ -151,6 +162,7 @@
             transition: all 0.3s;
             background: var(--off-white);
             font-family: inherit;
+            box-sizing: border-box;
         }
 
         .contact-form input:focus,
@@ -249,12 +261,33 @@
 
         .success-page .btn-group .btn {
             min-width: 180px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            justify-content: center;
+        }
+
+        .success-page .btn-group .btn-primary {
+            background: linear-gradient(135deg, var(--gold), var(--accent-dark));
+            color: white;
+            border: none;
+        }
+
+        .success-page .btn-group .btn-primary:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 15px rgba(201, 168, 76, 0.4);
         }
 
         .btn-secondary {
             background: var(--off-white);
             color: var(--dark-gray);
             border: 2px solid var(--light-gray);
+            cursor: pointer;
         }
 
         .btn-secondary:hover {
@@ -273,10 +306,13 @@
             }
         }
 
-        /* Masquer le formulaire */
         .contact-form-wrapper.hidden {
             display: none;
         }
+
+        /* ========================================== */
+        /* RESPONSIVE - CONTACT                       */
+        /* ========================================== */
 
         @media (max-width: 992px) {
             .contact-wrapper {
@@ -290,11 +326,275 @@
             .contact-form {
                 padding: 24px;
             }
+
+            .contact-info h3 {
+                font-size: 1.4rem;
+            }
+
+            .contact-info .sub-text {
+                font-size: 0.9rem;
+            }
+
             .contact-item {
                 padding: 12px;
+                gap: 12px;
+                margin-bottom: 16px;
             }
+
+            .contact-item .icon-circle {
+                width: 36px;
+                height: 36px;
+                min-width: 36px;
+            }
+
+            .contact-item .icon-circle i {
+                font-size: 1rem;
+            }
+
+            .contact-item strong {
+                font-size: 0.7rem;
+            }
+
+            .contact-item p {
+                font-size: 0.9rem;
+            }
+
+            .contact-form label {
+                font-size: 0.85rem;
+            }
+
+            .contact-form input,
+            .contact-form select,
+            .contact-form textarea {
+                font-size: 0.9rem;
+                padding: 10px 14px;
+            }
+
+            .contact-form textarea {
+                min-height: 100px;
+            }
+
+            .contact-info .socials a {
+                width: 38px;
+                height: 38px;
+                font-size: 0.95rem;
+            }
+
+            .success-page {
+                padding: 40px 16px;
+            }
+
+            .success-page .success-icon {
+                font-size: 3rem;
+            }
+
+            .success-page h2 {
+                font-size: 1.5rem;
+            }
+
+            .success-page p {
+                font-size: 0.95rem;
+            }
+
             .success-page .btn-group .btn {
                 min-width: 140px;
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .contact-info,
+            .contact-form {
+                padding: 16px;
+                border-radius: 12px;
+            }
+
+            .contact-info h3 {
+                font-size: 1.2rem;
+            }
+
+            .contact-info .sub-text {
+                font-size: 0.85rem;
+                margin-bottom: 20px;
+            }
+
+            .contact-item {
+                padding: 10px;
+                gap: 10px;
+                margin-bottom: 12px;
+                border-radius: 8px;
+            }
+
+            .contact-item .icon-circle {
+                width: 32px;
+                height: 32px;
+                min-width: 32px;
+            }
+
+            .contact-item .icon-circle i {
+                font-size: 0.9rem;
+            }
+
+            .contact-item strong {
+                font-size: 0.65rem;
+            }
+
+            .contact-item p {
+                font-size: 0.85rem;
+            }
+
+            .contact-form .form-group {
+                margin-bottom: 14px;
+            }
+
+            .contact-form label {
+                font-size: 0.8rem;
+            }
+
+            .contact-form input,
+            .contact-form select,
+            .contact-form textarea {
+                font-size: 0.85rem;
+                padding: 8px 12px;
+                border-radius: 8px;
+            }
+
+            .contact-form textarea {
+                min-height: 80px;
+            }
+
+            .contact-info .socials {
+                gap: 8px;
+                padding-top: 14px;
+                margin-top: 14px;
+            }
+
+            .contact-info .socials a {
+                width: 34px;
+                height: 34px;
+                font-size: 0.85rem;
+            }
+
+            .contact-info .socials a:hover {
+                transform: translateY(-2px);
+            }
+
+            #submitBtn {
+                font-size: 0.9rem;
+                padding: 12px 20px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .success-page {
+                padding: 30px 12px;
+            }
+
+            .success-page .success-icon {
+                font-size: 2.5rem;
+                margin-bottom: 14px;
+            }
+
+            .success-page h2 {
+                font-size: 1.3rem;
+            }
+
+            .success-page p {
+                font-size: 0.85rem;
+            }
+
+            .success-page .success-message {
+                padding: 14px;
+                margin: 14px auto;
+                font-size: 0.85rem;
+            }
+
+            .success-page .btn-group {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .success-page .btn-group .btn {
+                min-width: unset;
+                width: 100%;
+                max-width: 280px;
+                padding: 10px 16px;
+                font-size: 0.85rem;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .contact-info,
+            .contact-form {
+                padding: 12px;
+            }
+
+            .contact-info h3 {
+                font-size: 1rem;
+            }
+
+            .contact-item {
+                padding: 8px;
+                gap: 8px;
+            }
+
+            .contact-item .icon-circle {
+                width: 28px;
+                height: 28px;
+                min-width: 28px;
+            }
+
+            .contact-item .icon-circle i {
+                font-size: 0.8rem;
+            }
+
+            .contact-item p {
+                font-size: 0.8rem;
+            }
+
+            .contact-form input,
+            .contact-form select,
+            .contact-form textarea {
+                font-size: 0.8rem;
+                padding: 6px 10px;
+            }
+
+            .contact-info .socials a {
+                width: 30px;
+                height: 30px;
+                font-size: 0.75rem;
+            }
+
+            .success-page h2 {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Orientation paysage sur mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .contact-wrapper {
+                gap: 20px;
+            }
+
+            .contact-info,
+            .contact-form {
+                padding: 20px;
+            }
+
+            .contact-item {
+                padding: 10px;
+                margin-bottom: 12px;
+            }
+
+            .contact-form textarea {
+                min-height: 80px;
+            }
+
+            .success-page {
+                padding: 30px 20px;
             }
         }
     </style>
@@ -352,7 +652,7 @@
             <!-- ===== CONTACT INFO ===== -->
             <div class="contact-info animate-fade-up">
                 <h3>Nous sommes là pour vous</h3>
-                <p style="color:var(--gray); margin-bottom:30px;">
+                <p class="sub-text">
                     Notre équipe est à votre écoute du lundi au vendredi, de 9h à 18h.
                 </p>
 
@@ -500,6 +800,10 @@
             <p>&copy; 2026 Nati Shop — Tous droits réservés.</p>
         </div>
     </footer>
+
+    <!-- ========================================== -->
+    <!-- SCRIPTS                                    -->
+    <!-- ========================================== -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
@@ -672,6 +976,16 @@
             migrateCart();
             
             loadContactData();
+
+            // Menu mobile
+            const menuToggle = document.getElementById('menuToggle');
+            const nav = document.querySelector('.nav');
+            if (menuToggle && nav) {
+                menuToggle.addEventListener('click', function() {
+                    nav.classList.toggle('open');
+                    menuToggle.classList.toggle('active');
+                });
+            }
 
             const form = document.getElementById('contactForm');
             const submitBtn = document.getElementById('submitBtn');
