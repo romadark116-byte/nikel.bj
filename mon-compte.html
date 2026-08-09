@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* ==========================================
+           STYLES DE BASE - MON COMPTE
+           ========================================== */
+        
         /* Menu latéral - style actif */
         .sidebar-menu ul {
             list-style: none;
@@ -130,10 +134,204 @@
             pointer-events: none !important;
         }
 
-        /* Responsive */
+        /* ========================================== */
+        /* RESPONSIVE - MON COMPTE                   */
+        /* ========================================== */
+
+        @media (max-width: 992px) {
+            .dashboard-layout {
+                grid-template-columns: 240px 1fr !important;
+                gap: 20px !important;
+            }
+
+            .sidebar-menu ul li a {
+                padding: 10px 14px;
+                font-size: 0.9rem;
+            }
+        }
+
         @media (max-width: 768px) {
             .dashboard-layout {
                 grid-template-columns: 1fr !important;
+                gap: 20px !important;
+            }
+
+            .sidebar {
+                padding: 16px !important;
+            }
+
+            .sidebar .avatar {
+                width: 60px !important;
+                height: 60px !important;
+                font-size: 2rem !important;
+            }
+
+            .sidebar .admin-name {
+                font-size: 1.1rem !important;
+            }
+
+            .sidebar .admin-email {
+                font-size: 0.8rem !important;
+            }
+
+            .sidebar-menu ul li a {
+                padding: 10px 12px;
+                font-size: 0.85rem;
+                gap: 10px;
+            }
+
+            .sidebar-menu ul li a i {
+                width: 18px;
+                font-size: 0.9rem;
+            }
+
+            .logout-link {
+                padding: 10px 12px;
+                font-size: 0.85rem;
+            }
+
+            /* Page header */
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .page-header p {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                padding: 12px !important;
+                border-radius: 12px !important;
+            }
+
+            .sidebar .avatar {
+                width: 50px !important;
+                height: 50px !important;
+                font-size: 1.6rem !important;
+                margin-bottom: 8px !important;
+            }
+
+            .sidebar .admin-name {
+                font-size: 1rem !important;
+            }
+
+            .sidebar .admin-email {
+                font-size: 0.75rem !important;
+            }
+
+            .sidebar-menu ul li a {
+                padding: 8px 10px;
+                font-size: 0.8rem;
+                gap: 8px;
+                border-radius: 8px;
+            }
+
+            .sidebar-menu ul li a i {
+                width: 16px;
+                font-size: 0.8rem;
+            }
+
+            .sidebar-menu ul li a .badge-notif {
+                font-size: 0.6rem;
+                padding: 1px 8px;
+                min-width: 16px;
+            }
+
+            .logout-link {
+                padding: 8px 10px;
+                font-size: 0.8rem;
+                margin-top: 8px;
+                padding-top: 8px;
+            }
+
+            .dashboard-layout {
+                gap: 14px !important;
+            }
+
+            .page-header h1 {
+                font-size: 1.3rem;
+            }
+
+            .page-header p {
+                font-size: 0.85rem;
+            }
+
+            #mainContent {
+                min-height: 300px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .sidebar {
+                padding: 10px !important;
+            }
+
+            .sidebar .avatar {
+                width: 44px !important;
+                height: 44px !important;
+                font-size: 1.4rem !important;
+            }
+
+            .sidebar .admin-name {
+                font-size: 0.9rem !important;
+            }
+
+            .sidebar .admin-email {
+                font-size: 0.7rem !important;
+            }
+
+            .sidebar-menu ul li a {
+                padding: 6px 8px;
+                font-size: 0.75rem;
+                gap: 6px;
+                border-radius: 6px;
+            }
+
+            .sidebar-menu ul li a i {
+                width: 14px;
+                font-size: 0.7rem;
+            }
+
+            .logout-link {
+                padding: 6px 8px;
+                font-size: 0.75rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.1rem;
+            }
+
+            .page-header p {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Orientation paysage sur mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .dashboard-layout {
+                grid-template-columns: 200px 1fr !important;
+                gap: 16px !important;
+            }
+
+            .sidebar {
+                padding: 12px !important;
+            }
+
+            .sidebar .avatar {
+                width: 48px !important;
+                height: 48px !important;
+                font-size: 1.5rem !important;
+            }
+
+            .sidebar-menu ul li a {
+                padding: 8px 10px;
+                font-size: 0.8rem;
+            }
+
+            .sidebar .admin-name {
+                font-size: 0.95rem !important;
             }
         }
     </style>
@@ -196,13 +394,13 @@
             <div class="dashboard-layout" style="display:grid; grid-template-columns:280px 1fr; gap:30px;">
                 
                 <!-- ===== SIDEBAR ===== -->
-                <div style="background:var(--white); border-radius:16px; box-shadow:var(--shadow); padding:24px; align-self:start;">
+                <div class="sidebar" style="background:var(--white); border-radius:16px; box-shadow:var(--shadow); padding:24px; align-self:start;">
                     <div style="text-align:center; padding-bottom:20px; border-bottom:1px solid var(--light-gray);">
-                        <div style="width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg, var(--gold), var(--accent-dark)); margin:0 auto 12px; display:flex; align-items:center; justify-content:center; font-size:2.5rem; color:white;">
+                        <div class="avatar" style="width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg, var(--gold), var(--accent-dark)); margin:0 auto 12px; display:flex; align-items:center; justify-content:center; font-size:2.5rem; color:white;">
                             <i class="fas fa-user"></i>
                         </div>
-                        <h4 id="adminName" style="font-family:'Playfair Display',serif;">Administrateur</h4>
-                        <p id="adminEmail" style="font-size:0.9rem; color:var(--gray);">admin@natishop.com</p>
+                        <h4 class="admin-name" id="adminName" style="font-family:'Playfair Display',serif;">Administrateur</h4>
+                        <p class="admin-email" id="adminEmail" style="font-size:0.9rem; color:var(--gray);">admin@natishop.com</p>
                     </div>
                     
                     <nav class="sidebar-menu">
@@ -624,6 +822,7 @@
             if (menuToggle && nav) {
                 menuToggle.addEventListener('click', function() {
                     nav.classList.toggle('open');
+                    menuToggle.classList.toggle('active');
                 });
             }
 
