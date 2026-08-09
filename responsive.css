@@ -1,4 +1,9 @@
 /* ===== RESPONSIVE - Nati Shop ===== */
+/* Version équilibrée : réduction progressive mais confortable */
+
+/* ======================================== */
+/* BASE - CORRECTIONS GLOBALES             */
+/* ======================================== */
 
 * {
     box-sizing: border-box;
@@ -26,12 +31,21 @@ img {
     overflow: hidden;
 }
 
-/* === Tablettes === */
+/* ======================================== */
+/* TABLETTES (max-width: 1024px)           */
+/* ======================================== */
+
 @media (max-width: 1024px) {
+    /* Réduction légère des titres */
     .hero-title {
-        font-size: 3.2rem;
+        font-size: 3.2rem; /* -6% */
     }
     
+    .section-title {
+        font-size: 2.2rem; /* -8% */
+    }
+    
+    /* Réduction des espacements */
     .about-grid {
         gap: 40px;
     }
@@ -46,9 +60,12 @@ img {
     }
 }
 
-/* === Mobiles === */
+/* ======================================== */
+/* MOBILES (max-width: 768px)              */
+/* ======================================== */
+
 @media (max-width: 768px) {
-    /* Menu Hamburger */
+    /* ===== MENU ===== */
     .menu-toggle {
         display: flex !important;
         align-items: center;
@@ -109,7 +126,7 @@ img {
         display: block;
     }
 
-    /* Boutons */
+    /* ===== BOUTONS ===== */
     .btn {
         padding: 14px 24px;
         min-height: 48px;
@@ -123,32 +140,32 @@ img {
         font-size: 0.95rem;
     }
 
-    /* Hero */
+    /* ===== HERO ===== */
     .hero {
         min-height: 450px;
     }
 
     .hero-title {
-        font-size: 2.6rem;
+        font-size: 2.6rem; /* -19% */
     }
 
     .hero-sub {
-        font-size: 1.05rem;
+        font-size: 1.05rem; /* -5% */
     }
 
-    /* Sections */
+    /* ===== SECTIONS ===== */
     .section {
-        padding: 50px 0;
+        padding: 50px 0; /* -37% */
     }
 
     .section-title {
-        font-size: 2rem;
+        font-size: 2rem; /* -17% */
     }
 
-    /* Grilles */
+    /* ===== GRILLES ===== */
     .product-grid {
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 18px;
     }
 
     .about-grid {
@@ -181,13 +198,14 @@ img {
 
     .benefits-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
+        gap: 20px;
     }
 
+    /* ===== FOOTER ===== */
     .footer-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
         gap: 30px;
-        text-align: center;
+        text-align: left;
     }
 
     .footer-grid h4 {
@@ -195,19 +213,19 @@ img {
     }
 
     .socials {
-        justify-content: center;
+        justify-content: flex-start;
     }
 
-    /* Page header */
+    /* ===== PAGE HEADER ===== */
     .page-header {
-        padding: 50px 0 40px;
+        padding: 40px 0 30px;
     }
 
     .page-header h1 {
-        font-size: 2.2rem;
+        font-size: 2.2rem; /* -12% */
     }
 
-    /* Filtres */
+    /* ===== FILTRES ===== */
     .filters {
         flex-direction: column;
         gap: 14px;
@@ -222,32 +240,52 @@ img {
         width: 100%;
     }
 
-    /* Panier */
+    /* ===== PANIER ===== */
     .cart-item {
         flex-wrap: wrap;
         gap: 12px;
+        padding: 16px;
     }
 
     .cart-item img {
-        width: 60px;
-        height: 60px;
+        width: 80px;
+        height: 80px;
+    }
+    
+    .cart-item-info h4 {
+        font-size: 0.95rem;
+    }
+    
+    .cart-item-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .cart-item-actions button {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
     }
 
-    /* Images produits */
+    /* ===== IMAGES PRODUITS ===== */
     .product-img {
-        height: 250px !important;
+        height: 220px !important;
     }
 }
 
-/* === Très petits mobiles === */
+/* ======================================== */
+/* TRÈS PETITS MOBILES (max-width: 480px)  */
+/* ======================================== */
+
 @media (max-width: 480px) {
+    /* ===== CONTENEUR ===== */
     .container {
         padding: 0 16px;
     }
 
-    /* Hero */
+    /* ===== HERO ===== */
     .hero-title {
-        font-size: 2rem;
+        font-size: 2rem; /* -38% mais reste lisible */
     }
 
     .hero {
@@ -259,72 +297,72 @@ img {
     }
 
     .hero-sub {
-        font-size: 0.95rem;
+        font-size: 0.95rem; /* -14% */
     }
 
-    /* Boutons */
+    /* ===== BOUTONS ===== */
     .btn {
-        padding: 14px 28px;
-        font-size: 0.9rem;
+        padding: 14px 24px;
+        font-size: 0.95rem;
         min-height: 48px;
     }
 
-    /* Grilles */
+    /* ===== GRILLES ===== */
     .product-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .product-img {
+        height: 180px !important;
+    }
+
+    .product-info {
+        padding: 12px;
+    }
+
+    .product-name {
+        font-size: 0.9rem;
+    }
+
+    .product-price {
+        font-size: 0.9rem;
+    }
+
+    .btn-add-cart {
+        font-size: 0.8rem;
+        padding: 10px 6px;
+        min-height: 40px;
+    }
+
+    /* ===== BÉNÉFICES ===== */
+    .benefits-grid {
         grid-template-columns: 1fr 1fr;
         gap: 14px;
     }
 
-    .product-img {
-        height: 200px !important;
-    }
-
-    .product-info {
-        padding: 16px;
-    }
-
-    .product-name {
-        font-size: 0.95rem;
-    }
-
-    .product-price {
-        font-size: 0.95rem;
-    }
-
-    .btn-add-cart {
-        font-size: 0.85rem;
-        padding: 12px 8px;
-        min-height: 44px;
-    }
-
-    /* Bénéfices */
-    .benefits-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-    }
-
     .benefit-item i {
-        font-size: 1.8rem;
-    }
-
-    .benefit-item h4 {
-        font-size: 0.9rem;
-    }
-
-    .benefit-item p {
-        font-size: 0.8rem;
-    }
-
-    /* Textes */
-    .section-title {
         font-size: 1.6rem;
     }
 
-    .page-header h1 {
-        font-size: 1.8rem;
+    .benefit-item h4 {
+        font-size: 0.85rem;
     }
 
-    /* Statistiques */
+    .benefit-item p {
+        font-size: 0.75rem;
+    }
+
+    /* ===== TEXTES ===== */
+    .section-title {
+        font-size: 1.6rem; /* -33% */
+    }
+
+    .page-header h1 {
+        font-size: 1.8rem; /* -28% */
+    }
+
+    /* ===== STATS ===== */
     .about-stats {
         grid-template-columns: 1fr;
         gap: 10px;
@@ -340,7 +378,7 @@ img {
         gap: 24px;
     }
 
-    /* FAQ */
+    /* ===== FAQ ===== */
     .faq-item {
         padding: 16px;
     }
@@ -349,14 +387,20 @@ img {
         font-size: 0.95rem;
     }
 
-    /* Newsletter */
+    /* ===== NEWSLETTER ===== */
     .newsletter input[type="email"] {
         font-size: 0.9rem;
         padding: 12px 14px;
         min-height: 48px;
     }
 
-    /* Footer */
+    /* ===== FOOTER ===== */
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        text-align: center;
+    }
+
     .footer-bottom p {
         font-size: 0.8rem;
     }
@@ -365,7 +409,11 @@ img {
         font-size: 1.2rem;
     }
 
-    /* Toast / Modal */
+    .socials {
+        justify-content: center;
+    }
+
+    /* ===== TOAST / MODAL ===== */
     .toast {
         max-width: 90%;
         right: 5%;
@@ -384,7 +432,7 @@ img {
         opacity: 0.6;
     }
 
-    /* Contact */
+    /* ===== CONTACT ===== */
     .contact-form {
         padding: 20px 16px;
     }
@@ -397,9 +445,9 @@ img {
         min-height: 48px;
     }
 
-    /* Corps */
+    /* ===== CORPS ===== */
     body {
-        font-size: 15px;
+        font-size: 15px; /* -6% seulement */
     }
 
     p,
@@ -408,15 +456,61 @@ img {
         font-size: 0.95rem;
         line-height: 1.6;
     }
+
+    /* ===== PANIER ===== */
+    .cart-item {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .cart-item img {
+        width: 70px;
+        height: 70px;
+    }
+
+    .cart-item-info h4 {
+        font-size: 0.9rem;
+    }
+
+    .cart-item-info .price {
+        font-size: 0.95rem;
+    }
+
+    .cart-item-actions button {
+        width: 36px;
+        height: 36px;
+        font-size: 0.85rem;
+    }
+
+    .cart-item-actions .qty {
+        font-size: 0.9rem;
+        min-width: 28px;
+    }
+
+    .cart-summary {
+        padding: 16px;
+    }
+
+    .cart-summary .total-line span:first-child {
+        font-size: 0.95rem;
+    }
+
+    .cart-summary .total-line span:last-child {
+        font-size: 1rem;
+    }
 }
 
-/* === Petit mobile (moins de 400px) === */
+/* ======================================== */
+/* PETIT MOBILE (max-width: 400px)         */
+/* ======================================== */
+
 @media (max-width: 400px) {
+    /* ===== CONTENEUR ===== */
     .container {
         padding: 0 12px;
     }
 
-    /* Header */
+    /* ===== HEADER ===== */
     .header-grid {
         grid-template-columns: auto 1fr auto;
         gap: 4px;
@@ -440,20 +534,20 @@ img {
     }
 
     .header-search input {
-        width: 140px !important;
+        width: 130px !important;
         font-size: 0.85rem;
         padding: 8px 12px;
-        min-height: 38px;
+        min-height: 36px;
     }
 
     .header-search input:focus {
-        width: 170px !important;
+        width: 160px !important;
     }
 
     .header-search button {
-        width: 36px;
-        height: 36px;
-        font-size: 0.85rem;
+        width: 34px;
+        height: 34px;
+        font-size: 0.8rem;
     }
 
     .badge {
@@ -464,9 +558,9 @@ img {
         right: -6px;
     }
 
-    /* Hero */
+    /* ===== HERO ===== */
     .hero-title {
-        font-size: 1.6rem;
+        font-size: 1.6rem; /* -50% mais OK car titre */
     }
 
     .hero-sub {
@@ -477,14 +571,14 @@ img {
         min-height: 320px;
     }
 
-    /* Grilles */
+    /* ===== GRILLES ===== */
     .product-grid {
         grid-template-columns: 1fr 1fr;
         gap: 10px;
     }
 
     .product-img {
-        height: 160px !important;
+        height: 150px !important;
     }
 
     .product-info {
@@ -492,20 +586,20 @@ img {
     }
 
     .product-name {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
     }
 
     .product-price {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
     }
 
     .btn-add-cart {
-        font-size: 0.75rem;
-        padding: 10px 6px;
-        min-height: 38px;
+        font-size: 0.7rem;
+        padding: 8px 4px;
+        min-height: 34px;
     }
 
-    /* Bénéfices */
+    /* ===== BÉNÉFICES ===== */
     .benefits-grid {
         grid-template-columns: 1fr 1fr;
         gap: 10px;
@@ -516,44 +610,45 @@ img {
     }
 
     .benefit-item i {
-        font-size: 1.4rem;
-    }
-
-    .benefit-item h4 {
-        font-size: 0.8rem;
-    }
-
-    .benefit-item p {
-        font-size: 0.7rem;
-    }
-
-    /* Sections */
-    .section {
-        padding: 35px 0;
-    }
-
-    .section-title {
         font-size: 1.3rem;
     }
 
-    /* Boutons */
-    .btn {
-        padding: 12px 20px;
-        font-size: 0.85rem;
-        min-height: 44px;
+    .benefit-item h4 {
+        font-size: 0.75rem;
     }
 
-    /* Panier */
+    .benefit-item p {
+        font-size: 0.65rem;
+    }
+
+    /* ===== SECTIONS ===== */
+    .section {
+        padding: 30px 0;
+    }
+
+    .section-title {
+        font-size: 1.3rem; /* -46% mais OK pour titre */
+    }
+
+    /* ===== BOUTONS ===== */
+    .btn {
+        padding: 12px 18px;
+        font-size: 0.85rem;
+        min-height: 40px;
+    }
+
+    /* ===== PANIER ===== */
     .cart-item {
         flex-direction: column;
         align-items: stretch;
-        padding: 12px 0;
+        padding: 12px 10px;
+        text-align: center;
     }
 
     .cart-item img {
         width: 100%;
         height: 120px;
-        object-fit: cover;
+        margin-bottom: 8px;
     }
 
     .cart-item-actions {
@@ -561,7 +656,12 @@ img {
         margin-top: 8px;
     }
 
-    /* Footer */
+    .cart-item-actions button {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* ===== FOOTER ===== */
     .footer-grid {
         gap: 20px;
     }
@@ -573,9 +673,63 @@ img {
     .footer-grid ul li a {
         font-size: 0.85rem;
     }
+
+    /* ===== CORPS ===== */
+    body {
+        font-size: 14px; /* ⚠️ LIMITE - pas en dessous */
+    }
+    
+    h1 {
+        font-size: 1.6rem;
+    }
+    
+    h2 {
+        font-size: 1.3rem;
+    }
+    
+    h3 {
+        font-size: 1.1rem;
+    }
 }
 
-/* === Orientation paysage sur mobile === */
+/* ======================================== */
+/* TRÈS PETIT MOBILE (max-width: 340px)    */
+/* ======================================== */
+
+@media (max-width: 340px) {
+    .product-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .product-img {
+        height: 200px !important;
+    }
+    
+    .benefits-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+    
+    .header-search input {
+        width: 100px !important;
+        font-size: 0.75rem;
+        padding: 6px 10px;
+    }
+    
+    .header-search input:focus {
+        width: 130px !important;
+    }
+    
+    .hero-title {
+        font-size: 1.4rem;
+    }
+}
+
+/* ======================================== */
+/* ORIENTATION PAYSAGE SUR MOBILE          */
+/* ======================================== */
+
 @media (max-width: 768px) and (orientation: landscape) {
     .hero {
         min-height: 300px;
@@ -591,7 +745,7 @@ img {
 
     .product-grid {
         grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
+        gap: 14px;
     }
 
     .nav {
@@ -600,7 +754,10 @@ img {
     }
 }
 
-/* === Écrans larges === */
+/* ======================================== */
+/* ÉCRANS LARGES (min-width: 1400px)       */
+/* ======================================== */
+
 @media (min-width: 1400px) {
     .container {
         max-width: 1320px;
@@ -620,7 +777,10 @@ img {
     }
 }
 
-/* === Impression === */
+/* ======================================== */
+/* IMPRESSION                              */
+/* ======================================== */
+
 @media print {
     .header,
     .footer,
@@ -673,7 +833,10 @@ img {
     }
 }
 
-/* === Accessibilité === */
+/* ======================================== */
+/* ACCESSIBILITÉ - RÉDUCTION MOUVEMENTS    */
+/* ======================================== */
+
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -692,7 +855,10 @@ img {
     }
 }
 
-/* === Mode sombre === */
+/* ======================================== */
+/* MODE SOMBRE (optionnel)                 */
+/* ======================================== */
+
 @media (prefers-color-scheme: dark) {
     .nav {
         background: rgba(26, 26, 26, 0.98);
