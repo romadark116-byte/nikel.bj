@@ -2,52 +2,52 @@
 <div id="ventesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:24px;">
+    <div class="ventes-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:24px; gap:12px;">
         <div>
             <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:#1a1a1a; margin-bottom:4px;">
                 <i class="fas fa-chart-line" style="color:#c9a84c;"></i> Suivi des ventes
             </h2>
             <p style="color:#888; font-size:0.95rem;">Gérez et suivez toutes vos commandes en un seul endroit.</p>
         </div>
-        <div style="display:flex; gap:8px;">
-            <button onclick="exportCSV()" style="padding:10px 20px; background:#27ae60; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                <i class="fas fa-file-export"></i> Exporter CSV
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button onclick="exportCSV()" style="padding:10px 20px; background:#27ae60; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; transition:all 0.3s; display:flex; align-items:center; gap:6px;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <i class="fas fa-file-export"></i> <span class="btn-text">Exporter CSV</span>
             </button>
-            <button onclick="rafraichirVentes()" style="padding:10px 20px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                <i class="fas fa-sync-alt"></i> Rafraîchir
+            <button onclick="rafraichirVentes()" style="padding:10px 20px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; transition:all 0.3s; display:flex; align-items:center; gap:6px;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <i class="fas fa-sync-alt"></i> <span class="btn-text">Rafraîchir</span>
             </button>
         </div>
     </div>
 
     <!-- ===== STATISTIQUES RAPIDES ===== -->
-    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
+    <div class="ventes-stats" style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
+        <div class="stat-card" style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total commandes</p>
             <p style="font-size:1.8rem; font-weight:700; color:#1a1a1a;" id="totalCommandes">0</p>
         </div>
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
+        <div class="stat-card" style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">✅ Soldées</p>
             <p style="font-size:1.8rem; font-weight:700; color:#27ae60;" id="totalSoldees">0</p>
         </div>
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
+        <div class="stat-card" style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">⏳ En attente</p>
             <p style="font-size:1.8rem; font-weight:700; color:#f39c12;" id="totalEnAttente">0</p>
         </div>
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #e74c3c;">
+        <div class="stat-card" style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #e74c3c;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">❌ Annulées</p>
             <p style="font-size:1.8rem; font-weight:700; color:#e74c3c;" id="totalAnnulees">0</p>
         </div>
     </div>
 
     <!-- ===== BARRE DE RECHERCHE & FILTRES ===== -->
-    <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
+    <div class="ventes-filters" style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
 
-        <div style="flex:2; min-width:200px;">
-            <input type="text" id="searchVentes" placeholder="🔍 Rechercher par nom, email ou téléphone..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onkeyup="applyVentesFilters()">
+        <div style="flex:2; min-width:180px;">
+            <input type="text" id="searchVentes" placeholder="🔍 Rechercher par nom, email ou téléphone..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s; box-sizing:border-box;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onkeyup="applyVentesFilters()">
         </div>
 
-        <div style="min-width:150px;">
-            <select id="filterStatut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s; cursor:pointer;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyVentesFilters()">
+        <div style="min-width:130px; flex:1;">
+            <select id="filterStatut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s; cursor:pointer; box-sizing:border-box;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyVentesFilters()">
                 <option value="all">📊 Tous les statuts</option>
                 <option value="soldé">✅ Soldé</option>
                 <option value="en attente">⏳ En attente</option>
@@ -55,22 +55,22 @@
             </select>
         </div>
 
-        <div style="min-width:150px;">
-            <input type="date" id="dateDebut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyVentesFilters()">
+        <div style="min-width:130px; flex:1;">
+            <input type="date" id="dateDebut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s; box-sizing:border-box;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyVentesFilters()">
         </div>
 
-        <div style="min-width:150px;">
-            <input type="date" id="dateFin" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyVentesFilters()">
+        <div style="min-width:130px; flex:1;">
+            <input type="date" id="dateFin" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s; box-sizing:border-box;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyVentesFilters()">
         </div>
 
-        <button onclick="resetVentesFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+        <button onclick="resetVentesFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888; white-space:nowrap;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
             <i class="fas fa-undo"></i> Réinitialiser
         </button>
     </div>
 
     <!-- ===== TABLEAU DES VENTES ===== -->
-    <div style="overflow-x:auto; border-radius:12px; border:1px solid #f0f0f0;">
-        <table style="width:100%; border-collapse:collapse; font-size:0.95rem;">
+    <div class="table-wrapper" style="overflow-x:auto; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch;">
+        <table style="width:100%; border-collapse:collapse; font-size:0.95rem; min-width:800px;">
             <thead>
                 <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
                     <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">#</th>
@@ -96,9 +96,9 @@
     </div>
 
     <!-- ===== PAGINATION ===== -->
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:12px;">
+    <div class="ventes-pagination" style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:12px;">
         <span style="color:#888; font-size:0.9rem;" id="ventesPaginationInfo">Affichage de 0 à 0 sur 0 entrées</span>
-        <div style="display:flex; gap:8px;">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button onclick="prevVentesPage()" id="prevVentesPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
                 <i class="fas fa-chevron-left"></i> Précédent
             </button>
@@ -109,6 +109,248 @@
         </div>
     </div>
 </div>
+
+<!-- ========================================== -->
+<!-- STYLES RESPONSIVES SPÉCIFIQUES            -->
+<!-- ========================================== -->
+<style>
+    /* Responsive - Suivi des ventes */
+    
+    @media (max-width: 768px) {
+        #ventesContainer {
+            padding: 16px !important;
+        }
+
+        /* Header */
+        .ventes-header {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+        }
+
+        .ventes-header h2 {
+            font-size: 1.3rem !important;
+        }
+
+        .ventes-header p {
+            font-size: 0.85rem !important;
+        }
+
+        .ventes-header button {
+            font-size: 0.85rem !important;
+            padding: 8px 14px !important;
+            width: 100% !important;
+            justify-content: center !important;
+        }
+
+        .ventes-header button .btn-text {
+            display: inline !important;
+        }
+
+        /* Statistiques : 2 colonnes */
+        .ventes-stats {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 10px !important;
+        }
+
+        .ventes-stats .stat-card {
+            padding: 12px !important;
+        }
+
+        .ventes-stats .stat-card p:first-child {
+            font-size: 0.7rem !important;
+        }
+
+        .ventes-stats .stat-card p:last-child {
+            font-size: 1.4rem !important;
+        }
+
+        /* Filtres */
+        .ventes-filters {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            padding: 12px !important;
+        }
+
+        .ventes-filters > div {
+            min-width: 100% !important;
+            flex: none !important;
+        }
+
+        .ventes-filters input,
+        .ventes-filters select {
+            font-size: 0.9rem !important;
+            padding: 8px 12px !important;
+        }
+
+        .ventes-filters button {
+            font-size: 0.85rem !important;
+            padding: 8px 14px !important;
+            width: 100% !important;
+            text-align: center !important;
+        }
+
+        /* Tableau */
+        .table-wrapper table {
+            min-width: 600px !important;
+            font-size: 0.85rem !important;
+        }
+
+        .table-wrapper th,
+        .table-wrapper td {
+            padding: 10px 8px !important;
+        }
+
+        .table-wrapper .action-btn {
+            padding: 3px 6px !important;
+            font-size: 0.65rem !important;
+        }
+
+        /* Pagination */
+        .ventes-pagination {
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+
+        .ventes-pagination span {
+            font-size: 0.8rem !important;
+        }
+
+        .ventes-pagination button {
+            padding: 6px 12px !important;
+            font-size: 0.8rem !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        #ventesContainer {
+            padding: 12px !important;
+        }
+
+        /* Statistiques : 2 colonnes */
+        .ventes-stats {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 8px !important;
+        }
+
+        .ventes-stats .stat-card {
+            padding: 10px !important;
+        }
+
+        .ventes-stats .stat-card p:first-child {
+            font-size: 0.6rem !important;
+        }
+
+        .ventes-stats .stat-card p:last-child {
+            font-size: 1.2rem !important;
+        }
+
+        /* Header */
+        .ventes-header h2 {
+            font-size: 1.1rem !important;
+        }
+
+        .ventes-header p {
+            font-size: 0.8rem !important;
+        }
+
+        .ventes-header button {
+            font-size: 0.8rem !important;
+            padding: 6px 12px !important;
+        }
+
+        /* Tableau */
+        .table-wrapper table {
+            min-width: 500px !important;
+            font-size: 0.8rem !important;
+        }
+
+        .table-wrapper th,
+        .table-wrapper td {
+            padding: 8px 6px !important;
+        }
+
+        .table-wrapper .action-btn {
+            padding: 2px 4px !important;
+            font-size: 0.6rem !important;
+        }
+
+        /* Pagination */
+        .ventes-pagination button {
+            padding: 4px 10px !important;
+            font-size: 0.7rem !important;
+        }
+
+        .ventes-pagination #ventesPageInfo {
+            font-size: 0.8rem !important;
+            padding: 0 8px !important;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .ventes-stats {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 6px !important;
+        }
+
+        .ventes-stats .stat-card {
+            padding: 8px !important;
+        }
+
+        .ventes-stats .stat-card p:first-child {
+            font-size: 0.55rem !important;
+        }
+
+        .ventes-stats .stat-card p:last-child {
+            font-size: 1rem !important;
+        }
+
+        .table-wrapper table {
+            min-width: 400px !important;
+            font-size: 0.7rem !important;
+        }
+
+        .table-wrapper th,
+        .table-wrapper td {
+            padding: 6px 4px !important;
+        }
+
+        .ventes-pagination button {
+            padding: 4px 8px !important;
+            font-size: 0.65rem !important;
+        }
+    }
+
+    /* Orientation paysage sur mobile */
+    @media (max-width: 768px) and (orientation: landscape) {
+        .ventes-stats {
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 8px !important;
+        }
+
+        .ventes-stats .stat-card {
+            padding: 8px !important;
+        }
+
+        .ventes-stats .stat-card p:last-child {
+            font-size: 1.2rem !important;
+        }
+
+        .ventes-filters {
+            flex-direction: row !important;
+            flex-wrap: wrap !important;
+        }
+
+        .ventes-filters > div {
+            min-width: 120px !important;
+            flex: 1 !important;
+        }
+
+        .table-wrapper table {
+            min-width: 500px !important;
+        }
+    }
+</style>
 
 <!-- ===== SCRIPTS ===== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -208,9 +450,9 @@
                     <td style="padding:12px; color:#888;">${v.ville || '—'}</td>
                     <td style="padding:12px; text-align:center;">${getStatutBadge(v.statut)}</td>
                     <td style="padding:12px; text-align:center;">
-                        <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:4px 10px; border:none; border-radius:6px; background:#27ae60; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
-                        <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:4px 10px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
-                        <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:4px 10px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
+                        <button onclick="updateStatut(${v.id}, 'soldé')" class="action-btn" style="padding:4px 10px; border:none; border-radius:6px; background:#27ae60; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
+                        <button onclick="updateStatut(${v.id}, 'en attente')" class="action-btn" style="padding:4px 10px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
+                        <button onclick="updateStatut(${v.id}, 'annulé')" class="action-btn" style="padding:4px 10px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
                     </td>
                 </tr>
             `).join('');
@@ -346,7 +588,7 @@
                 if (supabaseClient) {
                     const { error } = await supabaseClient
                         .from('clients')
-                        .update({ statut_produit: newStatut })  // ← Utilisation de statut_produit
+                        .update({ statut_produit: newStatut })
                         .eq('id', id);
 
                     if (error) {
@@ -381,7 +623,6 @@
             let csv = 'ID,Client,Email,Téléphone,Date,Total,Ville,Pays,Statut\n';
             allVentes.forEach(v => {
                 const client = `${v.prenom || ''} ${v.nom || ''}`.trim();
-                // Utiliser statut_produit ou statut en fallback
                 const statutValue = v.statut_produit || v.statut || '';
                 csv += `${v.id},"${client}","${v.email || ''}","${v.telephone || ''}","${formatDate(v.created_at)}","${v.total_achat || 0}","${v.ville || ''}","${v.pays || ''}","${statutValue}"\n`;
             });
@@ -412,7 +653,6 @@
             try {
                 console.log('📝 Chargement des données depuis Supabase...');
                 
-                // Vérifier si Supabase est disponible
                 if (!supabaseClient) {
                     console.warn('⚠️ Supabase non disponible, utilisation des données de test');
                     allVentes = getTestData();
@@ -423,7 +663,6 @@
                     return;
                 }
 
-                // Charger les données depuis la table clients
                 const { data, error } = await supabaseClient
                     .from('clients')
                     .select('*')
@@ -431,7 +670,6 @@
 
                 if (error) {
                     console.error('❌ Erreur chargement:', error);
-                    // Utiliser les données de test en cas d'erreur
                     allVentes = getTestData();
                     filteredVentes = [...allVentes];
                     renderVentes();
@@ -443,10 +681,9 @@
                 if (data && data.length > 0) {
                     console.log(`✅ ${data.length} clients chargés depuis Supabase`);
                     
-                    // Utiliser statut_produit comme source du statut
                     allVentes = data.map(c => ({
                         ...c,
-                        statut: c.statut_produit || 'en attente'  // ← Utilisation de statut_produit
+                        statut: c.statut_produit || 'en attente'
                     }));
                     
                     filteredVentes = [...allVentes];
