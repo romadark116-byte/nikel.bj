@@ -9,12 +9,16 @@
     <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* ==========================================
+           STYLES DE BASE - CONFIRMATION
+           ========================================== */
         .confirmation-icon {
             font-size: 4rem;
             color: var(--gold);
             margin-bottom: 16px;
             display: block;
         }
+
         .confirmation-card {
             background: var(--white);
             padding: 50px;
@@ -24,6 +28,17 @@
             margin: 0 auto;
             text-align: center;
         }
+
+        .confirmation-card h2 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 8px;
+        }
+
+        .confirmation-card .sub-text {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
         .order-number {
             background: var(--off-white);
             padding: 8px 20px;
@@ -34,6 +49,7 @@
             font-size: 1.1rem;
             margin: 12px 0;
         }
+
         .btn-group {
             display: flex;
             gap: 12px;
@@ -41,10 +57,42 @@
             margin-top: 24px;
             flex-wrap: wrap;
         }
+
         .btn-group .btn {
             min-width: 180px;
             justify-content: center;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
         }
+
+        .btn-group .btn-primary {
+            background: linear-gradient(135deg, var(--gold), var(--accent-dark));
+            color: white;
+            border: none;
+        }
+
+        .btn-group .btn-primary:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 15px rgba(201, 168, 76, 0.4);
+        }
+
+        .btn-group .btn-secondary {
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            background: transparent;
+        }
+
+        .btn-group .btn-secondary:hover {
+            background: var(--gold);
+            color: white;
+        }
+
         .success-steps {
             display: flex;
             flex-direction: column;
@@ -53,6 +101,7 @@
             margin: 16px 0;
             padding: 0;
         }
+
         .success-steps li {
             list-style: none;
             display: flex;
@@ -63,27 +112,226 @@
             border-radius: 8px;
             font-size: 0.95rem;
         }
+
         .success-steps li i {
             color: var(--gold);
             font-size: 1.2rem;
             width: 24px;
             text-align: center;
+            flex-shrink: 0;
         }
+
         .success-steps li .wa-icon {
             color: #25D366;
         }
+
+        .success-steps li .step-text {
+            word-break: break-word;
+        }
+
+        /* ========================================== */
+        /* RESPONSIVE - CONFIRMATION                  */
+        /* ========================================== */
+
         @media (max-width: 768px) {
             .confirmation-card {
-                padding: 24px;
+                padding: 30px 24px;
                 margin: 0 10px;
             }
+
+            .confirmation-icon {
+                font-size: 3.2rem;
+            }
+
+            .confirmation-card h2 {
+                font-size: 1.4rem;
+            }
+
+            .confirmation-card .sub-text {
+                font-size: 0.9rem;
+            }
+
+            .order-number {
+                font-size: 0.95rem;
+                padding: 6px 16px;
+            }
+
             .btn-group {
                 flex-direction: column;
                 align-items: center;
+                gap: 10px;
             }
+
             .btn-group .btn {
                 width: 100%;
                 max-width: 300px;
+                min-width: unset;
+                padding: 12px 20px;
+                font-size: 0.95rem;
+                justify-content: center;
+            }
+
+            .success-steps li {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+                gap: 10px;
+            }
+
+            .success-steps li i {
+                font-size: 1rem;
+                width: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .confirmation-card {
+                padding: 24px 16px;
+                margin: 0 6px;
+                border-radius: 12px;
+            }
+
+            .confirmation-icon {
+                font-size: 2.8rem;
+                margin-bottom: 12px;
+            }
+
+            .confirmation-card h2 {
+                font-size: 1.2rem;
+            }
+
+            .confirmation-card .sub-text {
+                font-size: 0.85rem;
+            }
+
+            .order-number {
+                font-size: 0.85rem;
+                padding: 5px 14px;
+                margin: 10px 0;
+            }
+
+            .btn-group {
+                margin-top: 18px;
+                gap: 8px;
+            }
+
+            .btn-group .btn {
+                font-size: 0.85rem;
+                padding: 10px 16px;
+                max-width: 100%;
+            }
+
+            .success-steps {
+                gap: 8px;
+                margin: 12px 0;
+            }
+
+            .success-steps li {
+                padding: 8px 10px;
+                font-size: 0.8rem;
+                gap: 8px;
+                border-radius: 6px;
+            }
+
+            .success-steps li i {
+                font-size: 0.9rem;
+                width: 18px;
+            }
+
+            /* Page header */
+            .page-header h1 {
+                font-size: 1.6rem;
+            }
+
+            .page-header p {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .confirmation-card {
+                padding: 18px 12px;
+                margin: 0 4px;
+            }
+
+            .confirmation-icon {
+                font-size: 2.2rem;
+                margin-bottom: 10px;
+            }
+
+            .confirmation-card h2 {
+                font-size: 1rem;
+            }
+
+            .confirmation-card .sub-text {
+                font-size: 0.8rem;
+            }
+
+            .order-number {
+                font-size: 0.75rem;
+                padding: 4px 12px;
+            }
+
+            .btn-group .btn {
+                font-size: 0.8rem;
+                padding: 8px 14px;
+            }
+
+            .success-steps li {
+                padding: 6px 8px;
+                font-size: 0.7rem;
+            }
+
+            .success-steps li i {
+                font-size: 0.8rem;
+                width: 16px;
+            }
+
+            .page-header h1 {
+                font-size: 1.3rem;
+            }
+
+            .page-header p {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Orientation paysage sur mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .confirmation-card {
+                padding: 24px 20px;
+                max-width: 90%;
+            }
+
+            .confirmation-icon {
+                font-size: 2.5rem;
+                margin-bottom: 10px;
+            }
+
+            .confirmation-card h2 {
+                font-size: 1.2rem;
+            }
+
+            .success-steps {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .success-steps li {
+                font-size: 0.8rem;
+                padding: 6px 10px;
+            }
+
+            .btn-group {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .btn-group .btn {
+                flex: 1;
+                min-width: 140px;
+                max-width: 200px;
+                padding: 10px 16px;
             }
         }
     </style>
@@ -143,10 +391,8 @@
                 <!-- Icône -->
                 <i class="fas fa-check-circle confirmation-icon"></i>
                 
-                <h2 style="font-family:'Playfair Display',serif; margin-bottom:8px;">
-                    Merci pour votre confiance ! 🙏
-                </h2>
-                <p style="color:var(--gray); font-size:0.95rem;">
+                <h2>Merci pour votre confiance ! 🙏</h2>
+                <p class="sub-text">
                     Nous avons bien reçu votre demande d'achat. 
                     <br>Nous vous attendons sur WhatsApp pour finaliser votre commande.
                 </p>
@@ -160,24 +406,24 @@
                 <ul class="success-steps">
                     <li>
                         <i class="fas fa-check-circle"></i>
-                        <span><strong>Demande envoyée</strong> — Nous avons bien reçu vos coordonnées</span>
+                        <span class="step-text"><strong>Demande envoyée</strong> — Nous avons bien reçu vos coordonnées</span>
                     </li>
                     <li>
                         <i class="fab fa-whatsapp wa-icon"></i>
-                        <span><strong>Finalisation sur WhatsApp</strong> — Nous vous contactons pour confirmer les détails</span>
+                        <span class="step-text"><strong>Finalisation sur WhatsApp</strong> — Nous vous contactons pour confirmer les détails</span>
                     </li>
                     <li>
                         <i class="fas fa-envelope" style="color:var(--gold);"></i>
-                        <span><strong>Confirmation par email</strong> — Vous recevrez une notification dès que votre achat sera finalisé</span>
+                        <span class="step-text"><strong>Confirmation par email</strong> — Vous recevrez une notification dès que votre achat sera finalisé</span>
                     </li>
                 </ul>
 
                 <!-- Boutons -->
                 <div class="btn-group">
-                    <a href="index.html" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:10px; padding:14px 28px; background:linear-gradient(135deg, var(--gold), var(--accent-dark)); color:white; border-radius:50px; text-decoration:none; font-weight:600; transition:all 0.3s;">
+                    <a href="index.html" class="btn btn-primary">
                         <i class="fas fa-home"></i> Retour à l'accueil
                     </a>
-                    <a href="boutique.html" class="btn btn-secondary" style="display:inline-flex; align-items:center; gap:10px; padding:14px 28px; border:2px solid var(--gold); color:var(--gold); border-radius:50px; text-decoration:none; font-weight:600; transition:all 0.3s; background:transparent;" onmouseover="this.style.background='var(--gold)';this.style.color='white';" onmouseout="this.style.background='transparent';this.style.color='var(--gold)';">
+                    <a href="boutique.html" class="btn btn-secondary">
                         <i class="fas fa-shopping-bag"></i> Continuer mes achats
                     </a>
                 </div>
@@ -228,6 +474,10 @@
         </div>
     </footer>
 
+    <!-- ========================================== -->
+    <!-- SCRIPTS                                    -->
+    <!-- ========================================== -->
+
     <script src="script.js"></script>
     <script>
         // ==========================================
@@ -259,20 +509,11 @@
                 orderNumberEl.textContent = order.orderNumber;
             }
         }
-        
+
         // ==========================================
-        // CHARGEMENT DE LA PAGE
+        // METTRE À JOUR LE BADGE DU PANIER
         // ==========================================
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🎉 Page de confirmation - Nati Shop');
-            
-            // Migration automatique du panier
-            migrateCart();
-            
-            // Mettre à jour le numéro de commande
-            updateOrderNumber();
-            
-            // Mettre à jour le badge du panier
+        function updateBadge() {
             const cart = JSON.parse(localStorage.getItem('nati_shop_cart')) || [];
             const total = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
             const badges = document.querySelectorAll('.badge');
@@ -280,16 +521,7 @@
                 badge.textContent = total;
                 badge.style.display = total > 0 ? 'flex' : 'none';
             });
-            
-            // Menu mobile
-            const menuToggle = document.getElementById('menuToggle');
-            const nav = document.querySelector('.nav');
-            if (menuToggle && nav) {
-                menuToggle.addEventListener('click', function() {
-                    nav.classList.toggle('open');
-                });
-            }
-        });
+        }
 
         // ==========================================
         // FONCTION DE RECHERCHE
@@ -305,8 +537,40 @@
             }
         }
 
-        // Ajouter l'écouteur pour la touche Entrée sur la recherche
+        // ==========================================
+        // MENU MOBILE
+        // ==========================================
+        function toggleMenu() {
+            const nav = document.querySelector('.nav');
+            const toggle = document.getElementById('menuToggle');
+            if (nav && toggle) {
+                nav.classList.toggle('open');
+                toggle.classList.toggle('active');
+            }
+        }
+
+        // ==========================================
+        // INITIALISATION
+        // ==========================================
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎉 Page de confirmation - Nati Shop');
+            
+            // Migration automatique du panier
+            migrateCart();
+            
+            // Mettre à jour le numéro de commande
+            updateOrderNumber();
+            
+            // Mettre à jour le badge du panier
+            updateBadge();
+            
+            // Menu mobile
+            const menuToggle = document.getElementById('menuToggle');
+            if (menuToggle) {
+                menuToggle.addEventListener('click', toggleMenu);
+            }
+
+            // Recherche avec touche Entrée
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('keypress', function(e) {
@@ -315,6 +579,13 @@
                     }
                 });
             }
+
+            // Écouter les changements du panier (si modifié depuis une autre page)
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'nati_shop_cart') {
+                    updateBadge();
+                }
+            });
         });
     </script>
 </body>
