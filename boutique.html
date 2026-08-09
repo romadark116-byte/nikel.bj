@@ -8,6 +8,432 @@
     <link rel="stylesheet" href="animations.css">
     <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* ==========================================
+           STYLES SPÉCIFIQUES - BOUTIQUE
+           ========================================== */
+        
+        /* Filtres */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .filter-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .filter-group label i {
+            color: var(--gold);
+            margin-right: 6px;
+        }
+
+        .filter-group select {
+            padding: 10px 14px;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: var(--off-white);
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .filter-group select:focus {
+            border-color: var(--gold);
+            outline: none;
+        }
+
+        /* Grille produits */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .product-image {
+            position: relative;
+            overflow: hidden;
+            height: 280px;
+            width: 100%;
+            background: #f5f5f5;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s;
+        }
+
+        .product-image .promo-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #e74c3c;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .product-info {
+            padding: 16px;
+        }
+
+        .product-info h3 {
+            margin: 0 0 6px 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .product-info .categorie {
+            margin: 0 0 4px 0;
+            color: #999;
+            font-size: 0.85rem;
+        }
+
+        .product-info .rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .product-info .rating .stars {
+            color: var(--gold);
+            font-size: 0.85rem;
+        }
+
+        .product-info .rating .count {
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+
+        .product-info .price {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin: 8px 0;
+        }
+
+        .product-info .price .old {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .product-info .price .current {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .product-info .btn-view {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 8px 20px;
+            border: 2px solid var(--gold);
+            border-radius: 50px;
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            background: transparent;
+        }
+
+        .product-info .btn-view:hover {
+            background: var(--gold);
+            color: white;
+        }
+
+        /* Message aucun produit */
+        .no-products {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .no-products i {
+            font-size: 3rem;
+            color: var(--gray);
+        }
+
+        .no-products h3 {
+            margin: 16px 0 8px 0;
+        }
+
+        .no-products p {
+            color: var(--gray);
+        }
+
+        /* ========================================== */
+        /* RESPONSIVE - BOUTIQUE                      */
+        /* ========================================== */
+
+        @media (max-width: 992px) {
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            /* Filtres */
+            .filters {
+                flex-direction: column;
+                gap: 12px;
+                padding: 16px;
+            }
+
+            .filter-group {
+                min-width: 100%;
+            }
+
+            .filter-group label {
+                font-size: 0.8rem;
+            }
+
+            .filter-group select {
+                font-size: 0.9rem;
+                padding: 8px 12px;
+            }
+
+            /* Grille */
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+                gap: 16px;
+            }
+
+            /* Cartes */
+            .product-image {
+                height: 200px;
+            }
+
+            .product-info {
+                padding: 12px;
+            }
+
+            .product-info h3 {
+                font-size: 0.9rem;
+            }
+
+            .product-info .categorie {
+                font-size: 0.75rem;
+            }
+
+            .product-info .price .current {
+                font-size: 1rem;
+            }
+
+            .product-info .price .old {
+                font-size: 0.8rem;
+            }
+
+            .product-info .btn-view {
+                font-size: 0.75rem;
+                padding: 6px 14px;
+            }
+
+            .product-info .rating .stars {
+                font-size: 0.75rem;
+            }
+
+            .product-info .rating .count {
+                font-size: 0.7rem;
+            }
+
+            .product-image .promo-badge {
+                font-size: 0.7rem;
+                padding: 3px 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .filters {
+                padding: 12px;
+                gap: 10px;
+            }
+
+            .filter-group select {
+                font-size: 0.85rem;
+                padding: 8px 10px;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .product-image {
+                height: 160px;
+            }
+
+            .product-info {
+                padding: 10px;
+            }
+
+            .product-info h3 {
+                font-size: 0.8rem;
+                margin-bottom: 2px;
+            }
+
+            .product-info .categorie {
+                font-size: 0.7rem;
+                margin-bottom: 2px;
+            }
+
+            .product-info .price {
+                margin: 4px 0;
+                flex-wrap: wrap;
+            }
+
+            .product-info .price .current {
+                font-size: 0.9rem;
+            }
+
+            .product-info .price .old {
+                font-size: 0.7rem;
+            }
+
+            .product-info .btn-view {
+                font-size: 0.7rem;
+                padding: 5px 12px;
+                margin-top: 4px;
+                width: 100%;
+                text-align: center;
+            }
+
+            .product-info .rating .stars {
+                font-size: 0.7rem;
+            }
+
+            .product-info .rating .count {
+                font-size: 0.65rem;
+            }
+
+            .product-image .promo-badge {
+                font-size: 0.6rem;
+                padding: 2px 8px;
+                top: 8px;
+                right: 8px;
+            }
+
+            .no-products {
+                padding: 40px 16px;
+            }
+
+            .no-products i {
+                font-size: 2.5rem;
+            }
+
+            .no-products h3 {
+                font-size: 1.1rem;
+            }
+
+            .no-products p {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .product-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .product-image {
+                height: 130px;
+            }
+
+            .product-info {
+                padding: 8px;
+            }
+
+            .product-info h3 {
+                font-size: 0.7rem;
+            }
+
+            .product-info .categorie {
+                font-size: 0.6rem;
+            }
+
+            .product-info .price .current {
+                font-size: 0.8rem;
+            }
+
+            .product-info .price .old {
+                font-size: 0.65rem;
+            }
+
+            .product-info .btn-view {
+                font-size: 0.6rem;
+                padding: 4px 8px;
+            }
+
+            .product-info .rating .stars {
+                font-size: 0.6rem;
+            }
+
+            .product-info .rating .count {
+                font-size: 0.55rem;
+            }
+
+            .filters {
+                padding: 10px;
+            }
+
+            .filter-group select {
+                font-size: 0.8rem;
+                padding: 6px 8px;
+            }
+        }
+
+        /* Orientation paysage sur mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .product-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 14px;
+            }
+
+            .product-image {
+                height: 150px;
+            }
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -218,10 +644,10 @@
 
             if (!products || products.length === 0) {
                 grid.innerHTML = `
-                    <div style="grid-column:1/-1;text-align:center;padding:60px 20px;">
-                        <i class="fas fa-search" style="font-size:3rem;color:var(--gray);"></i>
+                    <div class="no-products">
+                        <i class="fas fa-search"></i>
                         <h3>Aucun produit trouvé</h3>
-                        <p style="color:var(--gray);">Essayez de modifier vos filtres ou votre recherche.</p>
+                        <p>Essayez de modifier vos filtres ou votre recherche.</p>
                     </div>
                 `;
                 return;
@@ -237,30 +663,27 @@
                 const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
 
                 return `
-                    <div class="product-card" style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,0.08);transition:transform 0.3s;">
-                        <div class="product-image" style="position:relative;overflow:hidden;height:280px;width:100%;background:#f5f5f5;">
+                    <div class="product-card">
+                        <div class="product-image">
                             <img src="${imageUrl}" 
                                  alt="${p.nom}"
-                                 style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s;"
                                  onmouseover="this.style.transform='scale(1.05)'" 
                                  onmouseout="this.style.transform='scale(1)'"
                                  onerror="this.src='https://via.placeholder.com/400x400/1a1a1a/FFFFFF?text=Image'">
-                            ${promo > 0 ? `<span style="position:absolute;top:12px;right:12px;background:#e74c3c;color:white;padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:bold;z-index:10;">-${promo}%</span>` : ''}
+                            ${promo > 0 ? `<span class="promo-badge">-${promo}%</span>` : ''}
                         </div>
-                        <div class="product-info" style="padding:16px;">
-                            <h3 style="margin:0 0 6px 0;font-size:1rem;">${p.nom}</h3>
-                            <p style="margin:0 0 4px 0;color:#999;font-size:0.85rem;">${p.categorie || 'Collection'}</p>
-                            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
-                                <span style="color:var(--gold); font-size:0.85rem;">${'★'.repeat(fullStars)}${halfStar}${emptyStars > 0 ? '☆'.repeat(emptyStars) : ''}</span>
-                                <span style="color:var(--gray); font-size:0.8rem;">(${rating.toFixed(1)})</span>
+                        <div class="product-info">
+                            <h3>${p.nom}</h3>
+                            <p class="categorie">${p.categorie || 'Collection'}</p>
+                            <div class="rating">
+                                <span class="stars">${'★'.repeat(fullStars)}${halfStar}${emptyStars > 0 ? '☆'.repeat(emptyStars) : ''}</span>
+                                <span class="count">(${rating.toFixed(1)})</span>
                             </div>
-                            <div style="display:flex;gap:10px;align-items:center;margin:8px 0;">
-                                ${prixOriginal ? `<span style="text-decoration:line-through;color:#999;font-size:0.9rem;">${prixOriginal.toFixed(2)} FCFA</span>` : ''}
-                                <span style="font-size:1.2rem;font-weight:700;color:var(--gold);">${p.prix.toFixed(2)} FCFA</span>
+                            <div class="price">
+                                ${prixOriginal ? `<span class="old">${prixOriginal.toFixed(2)} FCFA</span>` : ''}
+                                <span class="current">${p.prix.toFixed(2)} FCFA</span>
                             </div>
-                            <a href="produit.html?id=${p.id}" style="display:inline-block;margin-top:8px;padding:8px 20px;border:2px solid var(--gold);border-radius:50px;color:var(--gold);text-decoration:none;font-size:0.85rem;transition:all 0.3s;background:transparent;" 
-                               onmouseover="this.style.background='var(--gold)';this.style.color='white';" 
-                               onmouseout="this.style.background='transparent';this.style.color='var(--gold)';">
+                            <a href="produit.html?id=${p.id}" class="btn-view">
                                 Voir le produit
                             </a>
                         </div>
@@ -326,12 +749,26 @@
             }
         }
 
+        // ==========================================
+        // MENU MOBILE
+        // ==========================================
         document.addEventListener('DOMContentLoaded', function() {
             const menuToggle = document.getElementById('menuToggle');
             const nav = document.querySelector('.nav');
             if (menuToggle && nav) {
                 menuToggle.addEventListener('click', function() {
                     nav.classList.toggle('open');
+                    menuToggle.classList.toggle('active');
+                });
+            }
+
+            // Recherche avec touche Entrée
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        handleSearch();
+                    }
                 });
             }
         });
@@ -339,7 +776,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Nati Shop - Boutique');
             
-            // Migration automatique du panier
             migrateCart();
             
             loadProducts().then(() => {
