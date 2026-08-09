@@ -1,4 +1,4 @@
-<!-- articles.html - Mes articles -->
+<!-- articles.html - Mes articles avec upload d'images -->
 <div id="articlesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
@@ -107,7 +107,7 @@
     </div>
 </div>
 
-<!-- ===== MODAL AJOUT / MODIFICATION ARTICLE ===== -->
+<!-- ===== MODAL AJOUT / MODIFICATION ARTICLE AVEC UPLOAD D'IMAGE ===== -->
 <div id="articleModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center; padding:16px;">
     <div style="background:white; border-radius:16px; padding:32px; max-width:550px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
@@ -191,12 +191,52 @@
                 <textarea id="articleDescription" rows="3" placeholder="Description du produit..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; resize:vertical; font-family:inherit; box-sizing:border-box;"></textarea>
             </div>
 
-            <!-- Image URL -->
+            <!-- ===== IMAGE - UPLOAD DEPUIS LA GALERIE ===== -->
             <div style="margin-bottom:14px;">
-                <label for="articleImage" style="display:block; font-weight:600; margin-bottom:4px; font-size:0.9rem; color:#1a1a1a;">
-                    <i class="fas fa-image"></i> URL de l'image
+                <label style="display:block; font-weight:600; margin-bottom:4px; font-size:0.9rem; color:#1a1a1a;">
+                    <i class="fas fa-image"></i> Image du produit
                 </label>
-                <input type="url" id="articleImage" placeholder="https://exemple.com/image.jpg" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; box-sizing:border-box;">
+                
+                <!-- Zone de drop/upload -->
+                <div id="imageUploadArea" style="border:2px dashed #e8e8e8; border-radius:12px; padding:20px; text-align:center; cursor:pointer; transition:all 0.3s; background:#fafafa;" 
+                     onclick="document.getElementById('articleImageInput').click()"
+                     ondragover="event.preventDefault(); this.style.borderColor='#c9a84c'; this.style.background='#f8f5eb'"
+                     ondragleave="this.style.borderColor='#e8e8e8'; this.style.background='#fafafa'"
+                     ondrop="event.preventDefault(); handleImageDrop(event)">
+                    
+                    <div id="imagePreviewContainer">
+                        <i class="fas fa-cloud-upload-alt" style="font-size:2rem; color:#c9a84c; display:block; margin-bottom:8px;"></i>
+                        <p style="color:#888; font-size:0.9rem; margin:0;">
+                            <strong style="color:#1a1a1a;">Cliquez pour choisir</strong> ou glissez une image
+                        </p>
+                        <p style="color:#aaa; font-size:0.8rem; margin-top:4px;">PNG, JPG, WEBP jusqu'à 5MB</p>
+                    </div>
+                    
+                    <!-- Aperçu de l'image -->
+                    <div id="imagePreview" style="display:none; margin-top:12px;">
+                        <img id="imagePreviewImg" src="" alt="Aperçu" style="max-width:100%; max-height:200px; border-radius:8px; object-fit:contain;">
+                        <button type="button" onclick="removeSelectedImage()" style="display:block; margin:8px auto 0; background:#e74c3c; color:white; border:none; border-radius:6px; padding:6px 14px; font-size:0.8rem; cursor:pointer;">
+                            <i class="fas fa-times"></i> Supprimer l'image
+                        </button>
+                    </div>
+                </div>
+                
+                <input type="file" id="articleImageInput" accept="image/*" style="display:none;" onchange="handleImageSelect(event)">
+                <input type="hidden" id="articleImage" value="">
+                <input type="hidden" id="articleImageFile" value="">
+                
+                <!-- URL alternative -->
+                <div style="margin-top:8px;">
+                    <a href="#" onclick="toggleImageUrlInput(); return false;" style="color:#888; font-size:0.8rem; text-decoration:none;">
+                        <i class="fas fa-link"></i> Utiliser une URL à la place
+                    </a>
+                    <div id="imageUrlInputContainer" style="display:none; margin-top:8px;">
+                        <input type="url" id="articleImageUrl" placeholder="https://exemple.com/image.jpg" style="width:100%; padding:8px 12px; border:2px solid #e8e8e8; border-radius:8px; font-size:0.9rem; background:#f8f8f8; box-sizing:border-box;">
+                        <button type="button" onclick="useImageUrl()" style="margin-top:6px; padding:6px 16px; background:#c9a84c; color:white; border:none; border-radius:6px; cursor:pointer; font-size:0.8rem;">
+                            Utiliser cette URL
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- Boutons -->
@@ -222,7 +262,6 @@
             padding: 16px !important;
         }
 
-        /* Statistiques : 2 colonnes sur mobile */
         .stats-grid {
             grid-template-columns: 1fr 1fr !important;
         }
@@ -239,7 +278,6 @@
             font-size: 1.4rem !important;
         }
 
-        /* Filtres : en colonne */
         .filters-row {
             flex-direction: column !important;
             align-items: stretch !important;
@@ -249,7 +287,6 @@
             min-width: 100% !important;
         }
 
-        /* Tableau : scroll horizontal */
         .table-wrapper {
             overflow-x: auto !important;
             -webkit-overflow-scrolling: touch !important;
@@ -270,13 +307,11 @@
             height: 40px !important;
         }
 
-        /* Actions : boutons plus petits */
         .table-wrapper .action-btn {
             padding: 4px 8px !important;
             font-size: 0.7rem !important;
         }
 
-        /* Pagination : plus compacte */
         .pagination-row {
             flex-direction: column !important;
             align-items: center !important;
@@ -292,7 +327,6 @@
             font-size: 0.8rem !important;
         }
 
-        /* Modal */
         #articleModal > div {
             padding: 20px !important;
             max-width: 95% !important;
@@ -318,7 +352,6 @@
             min-height: 44px !important;
         }
 
-        /* Titre de la page */
         .page-title h2 {
             font-size: 1.3rem !important;
         }
@@ -338,7 +371,6 @@
             padding: 12px !important;
         }
 
-        /* Statistiques : 2 colonnes */
         .stats-grid {
             grid-template-columns: 1fr 1fr !important;
             gap: 10px !important;
@@ -356,7 +388,6 @@
             font-size: 1.2rem !important;
         }
 
-        /* Filtres */
         .filters-row {
             padding: 12px !important;
         }
@@ -372,7 +403,6 @@
             padding: 8px 14px !important;
         }
 
-        /* Tableau */
         .table-wrapper table {
             min-width: 500px !important;
             font-size: 0.8rem !important;
@@ -393,7 +423,6 @@
             font-size: 0.65rem !important;
         }
 
-        /* Modal */
         #articleModal > div {
             padding: 16px !important;
         }
@@ -458,17 +487,46 @@
         }
     }
 
-    /* Classes utilitaires responsives */
-    @media (max-width: 768px) {
-        .hide-on-mobile {
-            display: none !important;
+    .hide-on-mobile {
+        display: none !important;
+    }
+    .full-width-on-mobile {
+        width: 100% !important;
+        flex: none !important;
+    }
+    .text-center-on-mobile {
+        text-align: center !important;
+    }
+
+    /* Toast notification */
+    .toast-nati {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: #1a1a1a;
+        color: white;
+        padding: 16px 24px;
+        border-radius: 14px;
+        font-weight: 500;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+        z-index: 9999;
+        max-width: 400px;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideUp 0.5s ease;
+        border-left: 4px solid #c9a84c;
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(100px);
+            opacity: 0;
         }
-        .full-width-on-mobile {
-            width: 100% !important;
-            flex: none !important;
-        }
-        .text-center-on-mobile {
-            text-align: center !important;
+        to {
+            transform: translateY(0);
+            opacity: 1;
         }
     }
 </style>
@@ -503,6 +561,10 @@
         let filteredArticles = [];
         let currentArticlePage = 1;
         const articlesPerPage = 10;
+
+        // Variables pour l'upload d'images
+        let selectedImageFile = null;
+        let selectedImagePreview = null;
 
         // ==========================================
         // FORMATER LE PRIX
@@ -733,6 +795,137 @@
         }
 
         // ==========================================
+        // GESTION DES IMAGES - UPLOAD VIA GALERIE
+        // ==========================================
+
+        // 📱 Sélection d'image depuis la galerie
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                processSelectedImage(file);
+            }
+        }
+
+        // 📱 Gestion du drag & drop
+        function handleImageDrop(event) {
+            const file = event.dataTransfer.files[0];
+            if (file) {
+                processSelectedImage(file);
+            }
+        }
+
+        // 📱 Traitement de l'image sélectionnée
+        function processSelectedImage(file) {
+            // Vérifier le type
+            const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+            if (!validTypes.includes(file.type)) {
+                showNotification('⚠️ Format non supporté. Utilisez JPG, PNG, WEBP ou GIF.', 'error');
+                return;
+            }
+
+            // Vérifier la taille (5MB max)
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification('⚠️ L\'image est trop lourde (max 5MB)', 'error');
+                return;
+            }
+
+            selectedImageFile = file;
+            
+            // Créer un aperçu
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                selectedImagePreview = e.target.result;
+                document.getElementById('imagePreviewImg').src = e.target.result;
+                document.getElementById('imagePreview').style.display = 'block';
+                document.getElementById('imagePreviewContainer').style.display = 'none';
+                document.getElementById('articleImage').value = '';
+                document.getElementById('articleImageUrl').value = '';
+                document.getElementById('imageUrlInputContainer').style.display = 'none';
+                
+                // Stocker le nom du fichier
+                document.getElementById('articleImageFile').value = file.name;
+            };
+            reader.readAsDataURL(file);
+            
+            showNotification('✅ Image sélectionnée: ' + file.name, 'success');
+        }
+
+        // 🗑️ Supprimer l'image sélectionnée
+        function removeSelectedImage() {
+            selectedImageFile = null;
+            selectedImagePreview = null;
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('imagePreviewContainer').style.display = 'block';
+            document.getElementById('articleImageInput').value = '';
+            document.getElementById('articleImage').value = '';
+            document.getElementById('articleImageFile').value = '';
+            document.getElementById('imageUrlInputContainer').style.display = 'none';
+        }
+
+        // 🔗 Basculer vers l'URL
+        function toggleImageUrlInput() {
+            const container = document.getElementById('imageUrlInputContainer');
+            container.style.display = container.style.display === 'none' ? 'block' : 'none';
+            if (container.style.display === 'block') {
+                removeSelectedImage();
+            }
+        }
+
+        // 🔗 Utiliser une URL
+        function useImageUrl() {
+            const url = document.getElementById('articleImageUrl').value.trim();
+            if (!url) {
+                showNotification('⚠️ Veuillez entrer une URL valide', 'error');
+                return;
+            }
+            document.getElementById('articleImage').value = url;
+            document.getElementById('imagePreviewImg').src = url;
+            document.getElementById('imagePreview').style.display = 'block';
+            document.getElementById('imagePreviewContainer').style.display = 'none';
+            document.getElementById('imageUrlInputContainer').style.display = 'none';
+            selectedImageFile = null;
+            showNotification('✅ URL d\'image définie', 'success');
+        }
+
+        // 📤 Upload de l'image vers Supabase
+        async function uploadArticleImage(file) {
+            if (!file) return null;
+            
+            try {
+                // Créer un nom unique
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+                const filePath = `produits/${fileName}`;
+
+                console.log('📤 Upload de l\'image vers Supabase...');
+
+                // Upload vers Supabase Storage
+                const { error: uploadError } = await supabaseClient.storage
+                    .from('images')
+                    .upload(filePath, file);
+
+                if (uploadError) {
+                    console.error('❌ Erreur upload:', uploadError);
+                    showNotification('❌ Erreur lors de l\'upload de l\'image', 'error');
+                    return null;
+                }
+
+                // Récupérer l'URL publique
+                const { data: urlData } = supabaseClient.storage
+                    .from('images')
+                    .getPublicUrl(filePath);
+
+                console.log('✅ Image uploadée:', urlData.publicUrl);
+                return urlData.publicUrl;
+
+            } catch (error) {
+                console.error('❌ Erreur upload image:', error);
+                showNotification('❌ Erreur lors de l\'upload de l\'image', 'error');
+                return null;
+            }
+        }
+
+        // ==========================================
         // MODAL : AJOUTER
         // ==========================================
         function openAddArticleModal() {
@@ -740,11 +933,12 @@
             document.getElementById('articleId').value = '';
             document.getElementById('articleForm').reset();
             document.getElementById('articleStatut').value = 'En stock';
+            removeSelectedImage();
             document.getElementById('articleModal').style.display = 'flex';
         }
 
         // ==========================================
-        // MODAL : MODIFIER
+        // MODAL : MODIFIER AVEC IMAGE
         // ==========================================
         function editArticle(id) {
             console.log('✏️ Modification de l\'article:', id);
@@ -763,7 +957,19 @@
             document.getElementById('articleStock').value = article.stock || 0;
             document.getElementById('articleStatut').value = article.statut || 'En stock';
             document.getElementById('articleDescription').value = article.description || '';
-            document.getElementById('articleImage').value = article.image_url || '';
+            
+            // Gérer l'image
+            removeSelectedImage(); // Réinitialiser
+            if (article.image_url) {
+                document.getElementById('articleImage').value = article.image_url;
+                document.getElementById('imagePreviewImg').src = article.image_url;
+                document.getElementById('imagePreview').style.display = 'block';
+                document.getElementById('imagePreviewContainer').style.display = 'none';
+            } else {
+                document.getElementById('imagePreviewContainer').style.display = 'block';
+                document.getElementById('imagePreview').style.display = 'none';
+            }
+            
             document.getElementById('articleModal').style.display = 'flex';
         }
 
@@ -773,10 +979,11 @@
         function closeArticleModal() {
             document.getElementById('articleModal').style.display = 'none';
             document.getElementById('articleForm').reset();
+            removeSelectedImage();
         }
 
         // ==========================================
-        // SAUVEGARDER ARTICLE (AJOUT OU MODIFICATION)
+        // SAUVEGARDER ARTICLE AVEC UPLOAD D'IMAGE
         // ==========================================
         async function saveArticle(event) {
             event.preventDefault();
@@ -787,6 +994,7 @@
             const stock = parseInt(document.getElementById('articleStock').value) || 0;
             const statut = document.getElementById('articleStatut').value || 'En stock';
 
+            // Préparer les données de l'article
             const articleData = {
                 nom: document.getElementById('articleNom').value.trim(),
                 categorie: document.getElementById('articleCategorie').value,
@@ -794,14 +1002,66 @@
                 prix_original: oldPrice,
                 stock: stock,
                 statut: statut,
-                description: document.getElementById('articleDescription').value.trim(),
-                image_url: document.getElementById('articleImage').value.trim()
+                description: document.getElementById('articleDescription').value.trim()
             };
 
+            // Gérer l'image
+            let imageUrl = document.getElementById('articleImage').value.trim();
+            
+            // Si une image est sélectionnée dans la galerie
+            if (selectedImageFile) {
+                showNotification('⏳ Upload de l\'image en cours...', 'info');
+                const uploadedUrl = await uploadArticleImage(selectedImageFile);
+                if (uploadedUrl) {
+                    imageUrl = uploadedUrl;
+                } else {
+                    showNotification('⚠️ L\'image n\'a pas été uploadée, mais l\'article est sauvegardé', 'error');
+                }
+            }
+            
+            // Si une URL a été saisie manuellement
+            if (!imageUrl && document.getElementById('articleImageUrl').value.trim()) {
+                imageUrl = document.getElementById('articleImageUrl').value.trim();
+            }
+            
+            articleData.image_url = imageUrl || null;
+
+            // Validation
+            if (!articleData.nom) {
+                showNotification('⚠️ Le nom du produit est requis', 'error');
+                return;
+            }
+
+            if (!articleData.prix || articleData.prix <= 0) {
+                showNotification('⚠️ Veuillez entrer un prix valide', 'error');
+                return;
+            }
+
             try {
+                const saveBtn = document.getElementById('saveArticleBtn');
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
+
                 if (id) {
                     // MODIFICATION
                     console.log('📝 Mise à jour de l\'article:', id);
+                    
+                    // Si une nouvelle image a été uploadée, on supprime l'ancienne
+                    const oldArticle = allArticles.find(a => a.id === id);
+                    if (oldArticle && selectedImageFile && oldArticle.image_url) {
+                        try {
+                            const oldPath = oldArticle.image_url.split('/').pop();
+                            if (oldPath) {
+                                await supabaseClient.storage
+                                    .from('images')
+                                    .remove([`produits/${oldPath}`]);
+                                console.log('🗑️ Ancienne image supprimée');
+                            }
+                        } catch (e) {
+                            console.warn('⚠️ Impossible de supprimer l\'ancienne image:', e);
+                        }
+                    }
+
                     const { error } = await supabaseClient
                         .from('produits')
                         .update(articleData)
@@ -810,6 +1070,8 @@
                     if (error) {
                         console.error('❌ Erreur mise à jour:', error);
                         showNotification('❌ Erreur lors de la modification', 'error');
+                        saveBtn.disabled = false;
+                        saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
                         return;
                     }
 
@@ -829,6 +1091,8 @@
                     if (error) {
                         console.error('❌ Erreur insertion:', error);
                         showNotification('❌ Erreur lors de l\'ajout', 'error');
+                        saveBtn.disabled = false;
+                        saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
                         return;
                     }
 
@@ -843,10 +1107,17 @@
                 renderArticleTable();
                 updateArticleStats();
                 updateArticlePaginationInfo();
+                
+                // Réinitialiser l'image
+                removeSelectedImage();
 
             } catch (err) {
                 console.error('❌ Erreur:', err);
                 showNotification('❌ Une erreur est survenue', 'error');
+            } finally {
+                const saveBtn = document.getElementById('saveArticleBtn');
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
             }
         }
 
@@ -858,6 +1129,10 @@
 
             try {
                 console.log('🗑️ Suppression de l\'article:', id);
+                
+                // Récupérer l'article pour supprimer l'image aussi
+                const article = allArticles.find(a => a.id === id);
+                
                 const { error } = await supabaseClient
                     .from('produits')
                     .delete()
@@ -867,6 +1142,21 @@
                     console.error('❌ Erreur suppression:', error);
                     showNotification('❌ Erreur lors de la suppression', 'error');
                     return;
+                }
+
+                // Supprimer l'image du storage si elle existe
+                if (article && article.image_url) {
+                    try {
+                        const oldPath = article.image_url.split('/').pop();
+                        if (oldPath) {
+                            await supabaseClient.storage
+                                .from('images')
+                                .remove([`produits/${oldPath}`]);
+                            console.log('🗑️ Image supprimée du storage');
+                        }
+                    } catch (e) {
+                        console.warn('⚠️ Impossible de supprimer l\'image:', e);
+                    }
                 }
 
                 allArticles = allArticles.filter(a => a.id !== id);
@@ -959,6 +1249,14 @@
         window.closeArticleModal = closeArticleModal;
         window.saveArticle = saveArticle;
         window.showNotification = showNotification;
+        
+        // Exposer les fonctions d'image
+        window.handleImageSelect = handleImageSelect;
+        window.handleImageDrop = handleImageDrop;
+        window.removeSelectedImage = removeSelectedImage;
+        window.toggleImageUrlInput = toggleImageUrlInput;
+        window.useImageUrl = useImageUrl;
+        window.uploadArticleImage = uploadArticleImage;
 
         // ==========================================
         // LANCEMENT
