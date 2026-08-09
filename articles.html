@@ -1,4 +1,4 @@
-<!-- articles.html - Mes articles avec upload d'images -->
+<!-- articles.html - Mes articles avec upload d'images (version base64) -->
 <div id="articlesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
@@ -191,7 +191,7 @@
                 <textarea id="articleDescription" rows="3" placeholder="Description du produit..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; resize:vertical; font-family:inherit; box-sizing:border-box;"></textarea>
             </div>
 
-            <!-- ===== IMAGE - UPLOAD DEPUIS LA GALERIE ===== -->
+            <!-- ===== IMAGE - UPLOAD DEPUIS LA GALERIE (VERSION BASE64) ===== -->
             <div style="margin-bottom:14px;">
                 <label style="display:block; font-weight:600; margin-bottom:4px; font-size:0.9rem; color:#1a1a1a;">
                     <i class="fas fa-image"></i> Image du produit
@@ -222,8 +222,8 @@
                 </div>
                 
                 <input type="file" id="articleImageInput" accept="image/*" style="display:none;" onchange="handleImageSelect(event)">
+                <!-- On stocke l'image en base64 directement dans ce champ -->
                 <input type="hidden" id="articleImage" value="">
-                <input type="hidden" id="articleImageFile" value="">
                 
                 <!-- URL alternative -->
                 <div style="margin-top:8px;">
@@ -329,32 +329,22 @@
 <!-- ===== SCRIPTS ===== -->
 <script>
 (function() {
+    'use strict';
+
     // ==========================================
     // RÉFÉRENCE SUPABASE
     // ==========================================
-    // On vérifie que supabaseClient existe
-    // Si tu l'as défini ailleurs, il sera utilisé
-    // Sinon, on le crée avec les identifiants par défaut
     if (!window.supabaseClient) {
         console.warn('⚠️ SupabaseClient non trouvé, création...');
-        // ⚠️ REMPLACE CES VALEURS PAR LES TIENNES ⚠️
-        const SUPABASE_URL = 'https://ton-projet.supabase.co';
-        const SUPABASE_ANON_KEY = 'ta-clé-anon-publique';
-        window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const SUPABASE_URL = 'https://ycjomnizzxbnasxbcbsv.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inljam9tbml6enhibmFzeGJjYnN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDAwMDAwMDAsImV4cCI6MjAxNTU3NjAwMH0.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+        window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     }
 
     const supabaseClient = window.supabaseClient;
 
     if (!supabaseClient) {
         console.error('❌ SupabaseClient non disponible !');
-        document.getElementById('articlesContainer').innerHTML = `
-            <div style="text-align:center; padding:60px; color:red;">
-                <i class="fas fa-exclamation-circle" style="font-size:3rem;"></i>
-                <h3>Erreur de connexion</h3>
-                <p>Impossible de se connecter à la base de données.</p>
-                <p style="font-size:0.9rem; color:#888;">Veuillez rafraîchir la page.</p>
-            </div>
-        `;
         return;
     }
 
@@ -368,9 +358,10 @@
     let currentArticlePage = 1;
     const articlesPerPage = 10;
 
-    // Variables pour l'upload d'images
+    // Variables pour l'upload d'images (version base64)
     let selectedImageFile = null;
     let selectedImagePreview = null;
+    let isBase64Image = false;
 
     // ==========================================
     // FORMATER LE PRIX
@@ -428,7 +419,7 @@
 
         tbody.innerHTML = pageItems.map(article => `
             <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
-                <td style="padding:12px; font-weight:600; color:#1a1a1a;">#${article.id.substring(0, 8)}</td>
+                <td style="padding:12px; font-weight:600; color:#1a1a1a;">#${article.id ? article.id.substring(0, 8) : '---'}</td>
                 <td style="padding:12px;">
                     <img src="${article.image_url || 'https://via.placeholder.com/50x50/1a1a1a/FFFFFF?text=Nati+Shop'}" 
                          alt="${article.nom}" 
@@ -601,7 +592,7 @@
     }
 
     // ==========================================
-    // GESTION DES IMAGES - UPLOAD VIA GALERIE
+    // GESTION DES IMAGES - UPLOAD VIA GALERIE (VERSION BASE64)
     // ==========================================
 
     // 📱 Sélection d'image depuis la galerie
@@ -620,7 +611,7 @@
         }
     }
 
-    // 📱 Traitement de l'image sélectionnée
+    // 📱 Traitement de l'image sélectionnée - CONVERTIT EN BASE64
     function processSelectedImage(file) {
         // Vérifier le type
         const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
@@ -637,19 +628,24 @@
 
         selectedImageFile = file;
         
-        // Créer un aperçu
+        // 🔑 CONVERSION EN BASE64 - L'IMAGE EST STOCKÉE DIRECTEMENT DANS LA BASE
         const reader = new FileReader();
         reader.onload = function(e) {
-            selectedImagePreview = e.target.result;
-            document.getElementById('imagePreviewImg').src = e.target.result;
+            const base64Data = e.target.result; // Données en base64
+            selectedImagePreview = base64Data;
+            
+            // Afficher l'aperçu
+            document.getElementById('imagePreviewImg').src = base64Data;
             document.getElementById('imagePreview').style.display = 'block';
             document.getElementById('imagePreviewContainer').style.display = 'none';
-            document.getElementById('articleImage').value = '';
+            
+            // 🔑 STOCKER LA VALEUR BASE64 DANS LE CHAMP CACHÉ
+            document.getElementById('articleImage').value = base64Data;
             document.getElementById('articleImageUrl').value = '';
             document.getElementById('imageUrlInputContainer').style.display = 'none';
             
-            // Stocker le nom du fichier
-            document.getElementById('articleImageFile').value = file.name;
+            isBase64Image = true;
+            console.log('✅ Image convertie en base64 (taille: ' + (base64Data.length / 1024).toFixed(2) + ' KB)');
         };
         reader.readAsDataURL(file);
         
@@ -660,11 +656,11 @@
     function removeSelectedImage() {
         selectedImageFile = null;
         selectedImagePreview = null;
+        isBase64Image = false;
         document.getElementById('imagePreview').style.display = 'none';
         document.getElementById('imagePreviewContainer').style.display = 'block';
         document.getElementById('articleImageInput').value = '';
         document.getElementById('articleImage').value = '';
-        document.getElementById('articleImageFile').value = '';
         document.getElementById('imageUrlInputContainer').style.display = 'none';
     }
 
@@ -690,94 +686,8 @@
         document.getElementById('imagePreviewContainer').style.display = 'none';
         document.getElementById('imageUrlInputContainer').style.display = 'none';
         selectedImageFile = null;
+        isBase64Image = false;
         showNotification('✅ URL d\'image définie', 'success');
-    }
-
-    // ==========================================
-    // UPLOAD D'IMAGE VERS SUPABASE (VERSION CORRIGÉE)
-    // ==========================================
-    async function uploadArticleImage(file) {
-        if (!file) {
-            console.warn('⚠️ Aucun fichier à uploader');
-            return null;
-        }
-
-        // Vérifier que supabaseClient existe
-        if (!window.supabaseClient) {
-            console.error('❌ SupabaseClient non disponible');
-            showNotification('❌ Erreur de connexion à Supabase', 'error');
-            return null;
-        }
-
-        try {
-            const supabase = window.supabaseClient;
-            
-            // 1. Vérifier que le bucket existe
-            console.log('🔍 Vérification du bucket "images"...');
-            const { data: buckets, error: listError } = await supabase.storage.listBuckets();
-            
-            if (listError) {
-                console.error('❌ Erreur listage:', listError);
-                showNotification('❌ Erreur de connexion au storage', 'error');
-                return null;
-            }
-
-            console.log('📋 Buckets disponibles:', buckets.map(b => ({ id: b.id, name: b.name, public: b.public })));
-
-            const bucketExists = buckets.some(b => b.id === 'images');
-            if (!bucketExists) {
-                console.error('❌ Bucket "images" inexistant');
-                showNotification('❌ Bucket "images" inexistant. Créez-le dans Storage.', 'error');
-                return null;
-            }
-            console.log('✅ Bucket "images" trouvé');
-
-            // 2. Upload de l'image
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 10)}.${fileExt}`;
-            const filePath = `produits/${fileName}`;
-
-            console.log('📤 Upload de l\'image...');
-            console.log('📄 Fichier:', file.name, (file.size / 1024).toFixed(2), 'KB');
-            console.log('📁 Chemin:', filePath);
-
-            const { data, error: uploadError } = await supabase.storage
-                .from('images')
-                .upload(filePath, file, {
-                    cacheControl: '3600',
-                    upsert: false,
-                    contentType: file.type
-                });
-
-            if (uploadError) {
-                console.error('❌ Erreur upload:', uploadError);
-                
-                if (uploadError.message.includes('row-level security')) {
-                    showNotification('❌ Erreur RLS. Configurez les politiques dans Storage > Policies', 'error');
-                } else if (uploadError.message.includes('bucket not found')) {
-                    showNotification('❌ Bucket "images" non trouvé', 'error');
-                } else {
-                    showNotification(`❌ Erreur: ${uploadError.message}`, 'error');
-                }
-                return null;
-            }
-
-            console.log('✅ Upload réussi!', data);
-
-            // 3. Récupérer l'URL publique
-            const { data: urlData } = supabase.storage
-                .from('images')
-                .getPublicUrl(filePath);
-
-            console.log('🔗 URL publique:', urlData.publicUrl);
-            showNotification('✅ Image uploadée avec succès!', 'success');
-            return urlData.publicUrl;
-
-        } catch (error) {
-            console.error('💥 Exception:', error);
-            showNotification(`❌ Erreur: ${error.message}`, 'error');
-            return null;
-        }
     }
 
     // ==========================================
@@ -838,7 +748,7 @@
     }
 
     // ==========================================
-    // SAUVEGARDER ARTICLE AVEC UPLOAD D'IMAGE
+    // SAUVEGARDER ARTICLE AVEC IMAGE EN BASE64
     // ==========================================
     async function saveArticle(event) {
         event.preventDefault();
@@ -860,26 +770,15 @@
             description: document.getElementById('articleDescription').value.trim()
         };
 
-        // Gérer l'image
-        let imageUrl = document.getElementById('articleImage').value.trim();
+        // 🔑 Gérer l'image - soit base64, soit URL
+        let imageData = document.getElementById('articleImage').value.trim();
         
-        // Si une image est sélectionnée dans la galerie
-        if (selectedImageFile) {
-            showNotification('⏳ Upload de l\'image en cours...', 'info');
-            const uploadedUrl = await uploadArticleImage(selectedImageFile);
-            if (uploadedUrl) {
-                imageUrl = uploadedUrl;
-            } else {
-                showNotification('⚠️ L\'image n\'a pas été uploadée', 'error');
-            }
+        // Si aucune image n'est définie, utiliser une image par défaut
+        if (!imageData) {
+            imageData = 'https://via.placeholder.com/300x300/1a1a1a/FFFFFF?text=Nati+Shop';
         }
         
-        // Si une URL a été saisie manuellement
-        if (!imageUrl && document.getElementById('articleImageUrl').value.trim()) {
-            imageUrl = document.getElementById('articleImageUrl').value.trim();
-        }
-        
-        articleData.image_url = imageUrl || null;
+        articleData.image_url = imageData;
 
         // Validation
         if (!articleData.nom) {
@@ -901,22 +800,6 @@
                 // MODIFICATION
                 console.log('📝 Mise à jour de l\'article:', id);
                 
-                // Si une nouvelle image a été uploadée, on supprime l'ancienne
-                const oldArticle = allArticles.find(a => a.id === id);
-                if (oldArticle && selectedImageFile && oldArticle.image_url) {
-                    try {
-                        const oldPath = oldArticle.image_url.split('/').pop();
-                        if (oldPath) {
-                            await supabaseClient.storage
-                                .from('images')
-                                .remove([`produits/${oldPath}`]);
-                            console.log('🗑️ Ancienne image supprimée');
-                        }
-                    } catch (e) {
-                        console.warn('⚠️ Impossible de supprimer l\'ancienne image:', e);
-                    }
-                }
-
                 const { error } = await supabaseClient
                     .from('produits')
                     .update(articleData)
@@ -985,9 +868,6 @@
         try {
             console.log('🗑️ Suppression de l\'article:', id);
             
-            // Récupérer l'article pour supprimer l'image aussi
-            const article = allArticles.find(a => a.id === id);
-            
             const { error } = await supabaseClient
                 .from('produits')
                 .delete()
@@ -997,21 +877,6 @@
                 console.error('❌ Erreur suppression:', error);
                 showNotification('❌ Erreur lors de la suppression', 'error');
                 return;
-            }
-
-            // Supprimer l'image du storage si elle existe
-            if (article && article.image_url) {
-                try {
-                    const oldPath = article.image_url.split('/').pop();
-                    if (oldPath) {
-                        await supabaseClient.storage
-                            .from('images')
-                            .remove([`produits/${oldPath}`]);
-                        console.log('🗑️ Image supprimée du storage');
-                    }
-                } catch (e) {
-                    console.warn('⚠️ Impossible de supprimer l\'image:', e);
-                }
             }
 
             allArticles = allArticles.filter(a => a.id !== id);
@@ -1071,67 +936,11 @@
     }
 
     // ==========================================
-    // BOUTON DE TEST
-    // ==========================================
-    function addTestButton() {
-        const container = document.querySelector('.upload-section') || document.body;
-        const btn = document.createElement('button');
-        btn.textContent = '🧪 TEST UPLOAD';
-        btn.style.cssText = `
-            padding: 10px 20px;
-            background: #9b59b6;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            margin: 5px;
-        `;
-        btn.onclick = async function() {
-            // Créer une image de test
-            const canvas = document.createElement('canvas');
-            canvas.width = 200;
-            canvas.height = 200;
-            const ctx = canvas.getContext('2d');
-            
-            const gradient = ctx.createLinearGradient(0, 0, 200, 200);
-            gradient.addColorStop(0, '#c9a84c');
-            gradient.addColorStop(1, '#a8892e');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, 200, 200);
-            
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 30px Arial';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('TEST', 100, 100);
-            ctx.font = '16px Arial';
-            ctx.fillText('Nati Shop', 100, 140);
-            
-            const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-            const file = new File([blob], `test-${Date.now()}.png`, { type: 'image/png' });
-            
-            console.log('🧪 Test upload avec image générée');
-            const result = await uploadArticleImage(file);
-            if (result) {
-                alert(`✅ SUCCÈS!\nURL: ${result}`);
-                window.open(result, '_blank');
-            } else {
-                alert('❌ ÉCHEC! Voir console pour détails');
-            }
-        };
-        container.appendChild(btn);
-    }
-
-    // ==========================================
     // INITIALISATION
     // ==========================================
     function init() {
         console.log('🚀 Chargement de articles.html (Nati Shop)...');
         loadArticlesData();
-        
-        // Ajouter le bouton de test après 1 seconde
-        setTimeout(addTestButton, 1000);
 
         document.getElementById('articleForm').addEventListener('submit', saveArticle);
 
@@ -1166,7 +975,6 @@
     window.removeSelectedImage = removeSelectedImage;
     window.toggleImageUrlInput = toggleImageUrlInput;
     window.useImageUrl = useImageUrl;
-    window.uploadArticleImage = uploadArticleImage;
 
     // ==========================================
     // LANCEMENT
