@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nati Shop · Tableau de bord</title>
     <style>
+        /* ==========================================
+           STYLES DE BASE - DASHBOARD
+           ========================================== */
+        
         /* ===== STATS CARDS ===== */
         .stats-grid {
             display: grid;
@@ -107,12 +111,14 @@
             overflow-x: auto;
             border-radius: 12px;
             border: 1px solid #f0f0f0;
+            -webkit-overflow-scrolling: touch;
         }
 
         .table-wrapper table {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.95rem;
+            min-width: 500px;
         }
 
         .table-wrapper table thead {
@@ -145,6 +151,7 @@
             align-items: center;
             gap: 6px;
             color: white;
+            white-space: nowrap;
         }
 
         .statut-badge.solde { background: #27ae60; }
@@ -154,7 +161,7 @@
         /* ===== TOP 5 FAVORIS ===== */
         .favoris-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 20px;
         }
 
@@ -226,6 +233,8 @@
             margin-bottom: 10px;
             padding-top: 8px;
             border-top: 1px solid #e8e8e8;
+            flex-wrap: wrap;
+            gap: 4px;
         }
 
         .favoris-card .product-info .favoris-stats span {
@@ -252,19 +261,348 @@
             margin-bottom: 12px;
         }
 
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 992px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
+        /* ========================================== */
+        /* RESPONSIVE - DASHBOARD                    */
+        /* ========================================== */
+
+        @media (max-width: 1200px) {
+            .favoris-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             }
         }
 
-        @media (max-width: 576px) {
+        @media (max-width: 992px) {
             .stats-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
             }
+
+            .stat-card {
+                padding: 20px 16px;
+            }
+
+            .stat-card .stat-value {
+                font-size: 1.8rem;
+            }
+
+            .favoris-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 16px;
+            }
+
+            .favoris-card img {
+                height: 150px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 16px 12px;
+                border-radius: 12px;
+            }
+
+            .stat-card .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .stat-card .stat-icon {
+                font-size: 1.4rem;
+                margin-bottom: 4px;
+            }
+
+            .stat-card .stat-label {
+                font-size: 0.75rem;
+            }
+
+            .section-card {
+                padding: 16px;
+                border-radius: 12px;
+            }
+
+            .section-card .section-header h3 {
+                font-size: 1rem;
+            }
+
+            .section-card .section-header a {
+                font-size: 0.8rem;
+            }
+
+            .table-wrapper table {
+                font-size: 0.85rem;
+                min-width: 400px;
+            }
+
+            .table-wrapper table th,
+            .table-wrapper table td {
+                padding: 10px 8px;
+            }
+
+            .favoris-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 12px;
+            }
+
+            .favoris-card img {
+                height: 120px;
+            }
+
+            .favoris-card .product-info {
+                padding: 10px;
+            }
+
+            .favoris-card .product-info h4 {
+                font-size: 0.85rem;
+            }
+
+            .favoris-card .product-info .price {
+                font-size: 0.85rem;
+            }
+
+            .favoris-card .product-info .favoris-stats {
+                font-size: 0.7rem;
+            }
+
+            .favoris-card .rank-badge {
+                width: 28px;
+                height: 28px;
+                font-size: 0.75rem;
+                top: 8px;
+                left: 8px;
+            }
+
+            .dashboard-page .container {
+                padding: 0 12px;
+            }
+
+            .dashboard-page h1 {
+                font-size: 1.5rem !important;
+            }
+
+            .dashboard-page p {
+                font-size: 0.85rem !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 14px 10px;
+                border-left-width: 3px;
+            }
+
+            .stat-card .stat-value {
+                font-size: 1.3rem;
+            }
+
+            .stat-card .stat-icon {
+                font-size: 1.2rem;
+                margin-bottom: 2px;
+            }
+
+            .stat-card .stat-label {
+                font-size: 0.65rem;
+            }
+
+            .section-card {
+                padding: 12px;
+                border-radius: 10px;
+            }
+
+            .section-card .section-header h3 {
+                font-size: 0.9rem;
+                gap: 6px;
+            }
+
+            .section-card .section-header a {
+                font-size: 0.7rem;
+            }
+
+            .table-wrapper table {
+                font-size: 0.75rem;
+                min-width: 320px;
+            }
+
+            .table-wrapper table th,
+            .table-wrapper table td {
+                padding: 8px 6px;
+            }
+
+            .table-wrapper table td .statut-badge {
+                font-size: 0.6rem;
+                padding: 3px 8px;
+            }
+
             .favoris-grid {
                 grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .favoris-card img {
+                height: 100px;
+            }
+
+            .favoris-card .product-info {
+                padding: 8px;
+            }
+
+            .favoris-card .product-info h4 {
+                font-size: 0.75rem;
+                margin-bottom: 2px;
+            }
+
+            .favoris-card .product-info .price {
+                font-size: 0.75rem;
+                margin-bottom: 6px;
+            }
+
+            .favoris-card .product-info .favoris-stats {
+                font-size: 0.6rem;
+                padding-top: 4px;
+                margin-bottom: 6px;
+            }
+
+            .favoris-card .rank-badge {
+                width: 24px;
+                height: 24px;
+                font-size: 0.65rem;
+                top: 6px;
+                left: 6px;
+            }
+
+            .favoris-card .product-info .category-badge {
+                font-size: 0.6rem !important;
+            }
+
+            .dashboard-page h1 {
+                font-size: 1.3rem !important;
+            }
+
+            .dashboard-page p {
+                font-size: 0.8rem !important;
+            }
+
+            .empty-state {
+                padding: 20px 10px;
+            }
+
+            .empty-state i {
+                font-size: 2rem;
+            }
+
+            .empty-state p {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .stat-card {
+                padding: 10px 8px;
+            }
+
+            .stat-card .stat-value {
+                font-size: 1.1rem;
+            }
+
+            .stat-card .stat-icon {
+                font-size: 1rem;
+            }
+
+            .stat-card .stat-label {
+                font-size: 0.6rem;
+            }
+
+            .favoris-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .favoris-card img {
+                height: 80px;
+            }
+
+            .favoris-card .product-info {
+                padding: 6px;
+            }
+
+            .favoris-card .product-info h4 {
+                font-size: 0.65rem;
+            }
+
+            .favoris-card .product-info .price {
+                font-size: 0.65rem;
+            }
+
+            .favoris-card .product-info .favoris-stats {
+                font-size: 0.55rem;
+            }
+
+            .favoris-card .rank-badge {
+                width: 20px;
+                height: 20px;
+                font-size: 0.55rem;
+                top: 4px;
+                left: 4px;
+            }
+
+            .table-wrapper table {
+                font-size: 0.65rem;
+                min-width: 280px;
+            }
+
+            .table-wrapper table th,
+            .table-wrapper table td {
+                padding: 6px 4px;
+            }
+
+            .section-card {
+                padding: 10px;
+            }
+
+            .section-card .section-header h3 {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Orientation paysage sur mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 12px 8px;
+            }
+
+            .stat-card .stat-value {
+                font-size: 1.4rem;
+            }
+
+            .favoris-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px;
+            }
+
+            .favoris-card img {
+                height: 120px;
+            }
+
+            .table-wrapper table {
+                min-width: 400px;
             }
         }
 
@@ -637,7 +975,7 @@
                             <div class="product-info">
                                 <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
                                     <span style="font-size:0.85rem;">${catIcon}</span>
-                                    <span style="color:#888;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;">${p.categorie || 'Non-classé'}</span>
+                                    <span class="category-badge" style="color:#888;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;">${p.categorie || 'Non-classé'}</span>
                                 </div>
                                 <h4>${p.nom}</h4>
                                 <p class="price">${parseFloat(p.prix).toFixed(2).replace('.', ',')} FCFA</p>
