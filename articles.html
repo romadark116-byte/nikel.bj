@@ -1,4 +1,609 @@
 <!-- articles.html - Mes articles avec upload d'images (version base64) -->
+<style>
+    /* ==========================================
+       STYLES DE BASE - ARTICLES
+       ========================================== */
+
+    /* ===== STATS CARDS ===== */
+    .articles-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .articles-stat-card {
+        background: #ffffff;
+        padding: 20px 16px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        text-align: center;
+        border-left: 4px solid #c9a84c;
+        transition: all 0.3s;
+    }
+
+    .articles-stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .articles-stat-card .stat-label {
+        color: #888;
+        font-size: 0.8rem;
+        margin-bottom: 4px;
+        font-weight: 500;
+    }
+
+    .articles-stat-card .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+
+    .articles-stat-card .stat-value.gold { color: #c9a84c; }
+    .articles-stat-card .stat-value.green { color: #27ae60; }
+    .articles-stat-card .stat-value.orange { color: #f39c12; }
+    .articles-stat-card .stat-value.red { color: #e74c3c; }
+
+    .articles-stat-card.border-gold { border-left-color: #c9a84c; }
+    .articles-stat-card.border-green { border-left-color: #27ae60; }
+    .articles-stat-card.border-orange { border-left-color: #f39c12; }
+    .articles-stat-card.border-red { border-left-color: #e74c3c; }
+
+    /* ===== FILTRES ===== */
+    .articles-filters-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 20px;
+        align-items: center;
+        background: #f8f8f8;
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .articles-filters-row .filter-group {
+        flex: 1;
+        min-width: 160px;
+    }
+
+    .articles-filters-row .filter-group:first-child {
+        flex: 2;
+        min-width: 180px;
+    }
+
+    .articles-filters-row input,
+    .articles-filters-row select {
+        width: 100%;
+        padding: 10px 14px;
+        border: 2px solid #e8e8e8;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+        background: #ffffff;
+        font-family: inherit;
+    }
+
+    .articles-filters-row input:focus,
+    .articles-filters-row select:focus {
+        border-color: #c9a84c;
+        outline: none;
+    }
+
+    .articles-filters-row .btn-reset-filter {
+        padding: 10px 20px;
+        background: transparent;
+        border: 2px solid #e8e8e8;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        color: #888;
+        white-space: nowrap;
+    }
+
+    .articles-filters-row .btn-reset-filter:hover {
+        border-color: #c9a84c;
+        color: #c9a84c;
+    }
+
+    /* ===== TABLEAU ===== */
+    .articles-table-wrapper {
+        overflow-x: auto;
+        border-radius: 12px;
+        border: 1px solid #f0f0f0;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .articles-table-wrapper table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+        min-width: 650px;
+    }
+
+    .articles-table-wrapper table thead {
+        background: #f8f8f8;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .articles-table-wrapper table th {
+        text-align: left;
+        padding: 14px 12px;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    .articles-table-wrapper table td {
+        padding: 12px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .articles-table-wrapper table tr:hover td {
+        background: #fafafa;
+    }
+
+    .articles-table-wrapper table td .statut-badge {
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: white;
+        white-space: nowrap;
+    }
+
+    /* ===== PAGINATION ===== */
+    .articles-pagination-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 16px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .articles-pagination-row .pagination-info {
+        color: #888;
+        font-size: 0.9rem;
+    }
+
+    .articles-pagination-row .pagination-buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .articles-pagination-row .pagination-buttons button {
+        padding: 8px 16px;
+        border: 2px solid #e8e8e8;
+        border-radius: 8px;
+        background: transparent;
+        cursor: pointer;
+        transition: all 0.3s;
+        color: #888;
+        font-size: 0.9rem;
+    }
+
+    .articles-pagination-row .pagination-buttons button:hover:not(:disabled) {
+        border-color: #c9a84c;
+        color: #c9a84c;
+    }
+
+    .articles-pagination-row .pagination-buttons button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
+    .articles-pagination-row .pagination-buttons .page-number {
+        display: flex;
+        align-items: center;
+        padding: 0 12px;
+        font-weight: 600;
+        color: #1a1a1a;
+        font-size: 0.95rem;
+    }
+
+    /* ===== TOAST ===== */
+    .toast-nati {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: #1a1a1a;
+        color: white;
+        padding: 16px 24px;
+        border-radius: 14px;
+        font-weight: 500;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+        z-index: 9999;
+        max-width: 400px;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideUp 0.5s ease;
+        border-left: 4px solid #c9a84c;
+    }
+
+    @keyframes slideUp {
+        from { transform: translateY(100px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* ========================================== */
+    /* RESPONSIVE - ARTICLES                     */
+    /* ========================================== */
+
+    @media (max-width: 1200px) {
+        .articles-stats-grid {
+            gap: 14px;
+        }
+        .articles-stat-card .stat-value {
+            font-size: 1.6rem;
+        }
+        .articles-table-wrapper table {
+            min-width: 600px;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .articles-stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .articles-stat-card {
+            padding: 16px 14px;
+        }
+        .articles-stat-card .stat-value {
+            font-size: 1.5rem;
+        }
+        .articles-stat-card .stat-label {
+            font-size: 0.75rem;
+        }
+        .articles-filters-row .filter-group {
+            min-width: 140px;
+        }
+        .articles-filters-row .filter-group:first-child {
+            min-width: 160px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .articles-stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .articles-stat-card {
+            padding: 14px 10px;
+            border-radius: 10px;
+            border-left-width: 3px;
+        }
+        .articles-stat-card .stat-value {
+            font-size: 1.3rem;
+        }
+        .articles-stat-card .stat-label {
+            font-size: 0.7rem;
+        }
+        .articles-filters-row {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 14px;
+            gap: 10px;
+        }
+        .articles-filters-row .filter-group {
+            min-width: 100%;
+        }
+        .articles-filters-row .filter-group:first-child {
+            min-width: 100%;
+        }
+        .articles-filters-row input,
+        .articles-filters-row select {
+            font-size: 0.85rem;
+            padding: 8px 12px;
+        }
+        .articles-filters-row .btn-reset-filter {
+            font-size: 0.85rem;
+            padding: 8px 16px;
+            width: 100%;
+            text-align: center;
+        }
+        .articles-table-wrapper table {
+            font-size: 0.85rem;
+            min-width: 500px;
+        }
+        .articles-table-wrapper table th,
+        .articles-table-wrapper table td {
+            padding: 10px 8px;
+        }
+        .articles-table-wrapper table td img {
+            width: 40px;
+            height: 40px;
+        }
+        .articles-table-wrapper table td .statut-badge {
+            font-size: 0.65rem;
+            padding: 3px 10px;
+        }
+        .articles-table-wrapper table .action-btn {
+            padding: 4px 8px;
+            font-size: 0.7rem;
+        }
+        .articles-pagination-row {
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .articles-pagination-row .pagination-info {
+            font-size: 0.8rem;
+        }
+        .articles-pagination-row .pagination-buttons button {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+        .articles-pagination-row .pagination-buttons .page-number {
+            font-size: 0.85rem;
+            padding: 0 8px;
+        }
+        /* Container principal */
+        #articlesContainer {
+            padding: 16px !important;
+        }
+        #articlesContainer h2 {
+            font-size: 1.3rem !important;
+        }
+        #articlesContainer p {
+            font-size: 0.85rem !important;
+        }
+        #articlesContainer .btn-add {
+            padding: 10px 18px !important;
+            font-size: 0.85rem !important;
+        }
+        /* Modal */
+        #articleModal > div {
+            padding: 20px !important;
+            max-width: 95% !important;
+            margin: 10px !important;
+        }
+        #articleModal h3 {
+            font-size: 1.2rem !important;
+        }
+        #articleModal .form-grid-2 {
+            grid-template-columns: 1fr !important;
+            gap: 0 !important;
+        }
+        #articleModal .btn-row {
+            flex-direction: column !important;
+        }
+        #articleModal .btn-row button {
+            flex: none !important;
+            width: 100% !important;
+            min-height: 44px !important;
+        }
+        #articleModal label {
+            font-size: 0.85rem !important;
+        }
+        #articleModal input,
+        #articleModal select,
+        #articleModal textarea {
+            font-size: 0.85rem !important;
+            padding: 8px 12px !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        #articlesContainer {
+            padding: 12px !important;
+        }
+        .articles-stats-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .articles-stat-card {
+            padding: 10px 8px;
+            border-radius: 8px;
+            border-left-width: 3px;
+        }
+        .articles-stat-card .stat-value {
+            font-size: 1.1rem;
+        }
+        .articles-stat-card .stat-label {
+            font-size: 0.6rem;
+        }
+        .articles-filters-row {
+            padding: 10px;
+            gap: 8px;
+        }
+        .articles-filters-row input,
+        .articles-filters-row select {
+            font-size: 0.8rem;
+            padding: 6px 10px;
+        }
+        .articles-filters-row .btn-reset-filter {
+            font-size: 0.75rem;
+            padding: 6px 12px;
+        }
+        .articles-table-wrapper table {
+            font-size: 0.75rem;
+            min-width: 400px;
+        }
+        .articles-table-wrapper table th,
+        .articles-table-wrapper table td {
+            padding: 8px 6px;
+        }
+        .articles-table-wrapper table td img {
+            width: 32px;
+            height: 32px;
+        }
+        .articles-table-wrapper table td .statut-badge {
+            font-size: 0.55rem;
+            padding: 2px 8px;
+        }
+        .articles-table-wrapper table .action-btn {
+            padding: 3px 6px;
+            font-size: 0.6rem;
+        }
+        .articles-pagination-row .pagination-info {
+            font-size: 0.7rem;
+        }
+        .articles-pagination-row .pagination-buttons button {
+            padding: 4px 10px;
+            font-size: 0.7rem;
+        }
+        .articles-pagination-row .pagination-buttons .page-number {
+            font-size: 0.75rem;
+            padding: 0 6px;
+        }
+        #articlesContainer h2 {
+            font-size: 1.1rem !important;
+        }
+        #articlesContainer p {
+            font-size: 0.75rem !important;
+        }
+        #articlesContainer .btn-add {
+            padding: 8px 14px !important;
+            font-size: 0.75rem !important;
+        }
+        #articleModal > div {
+            padding: 14px !important;
+        }
+        #articleModal h3 {
+            font-size: 1rem !important;
+        }
+        #articleModal label {
+            font-size: 0.75rem !important;
+        }
+        #articleModal input,
+        #articleModal select,
+        #articleModal textarea {
+            font-size: 0.8rem !important;
+            padding: 6px 10px !important;
+        }
+        #articleModal .btn-row button {
+            font-size: 0.8rem !important;
+            padding: 10px !important;
+            min-height: 40px !important;
+        }
+        #articleModal .file-upload-area {
+            padding: 12px !important;
+        }
+        #articleModal .file-upload-area i {
+            font-size: 1.5rem !important;
+        }
+        #articleModal .file-upload-area p {
+            font-size: 0.75rem !important;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .articles-stats-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+        .articles-stat-card {
+            padding: 8px 6px;
+        }
+        .articles-stat-card .stat-value {
+            font-size: 0.9rem;
+        }
+        .articles-stat-card .stat-label {
+            font-size: 0.55rem;
+        }
+        .articles-table-wrapper table {
+            font-size: 0.65rem;
+            min-width: 320px;
+        }
+        .articles-table-wrapper table th,
+        .articles-table-wrapper table td {
+            padding: 6px 4px;
+        }
+        .articles-table-wrapper table td img {
+            width: 28px;
+            height: 28px;
+        }
+        #articlesContainer {
+            padding: 8px !important;
+        }
+        #articlesContainer h2 {
+            font-size: 1rem !important;
+        }
+        #articlesContainer .btn-add {
+            padding: 6px 12px !important;
+            font-size: 0.7rem !important;
+        }
+        #articleModal > div {
+            padding: 10px !important;
+        }
+        #articleModal h3 {
+            font-size: 0.9rem !important;
+        }
+        #articleModal input,
+        #articleModal select,
+        #articleModal textarea {
+            font-size: 0.7rem !important;
+            padding: 5px 8px !important;
+        }
+    }
+
+    /* Orientation paysage sur mobile */
+    @media (max-width: 768px) and (orientation: landscape) {
+        .articles-stats-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        .articles-stat-card {
+            padding: 10px 8px;
+        }
+        .articles-stat-card .stat-value {
+            font-size: 1.2rem;
+        }
+        .articles-filters-row {
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+        .articles-filters-row .filter-group {
+            min-width: 120px;
+            flex: 1;
+        }
+        .articles-filters-row .filter-group:first-child {
+            min-width: 150px;
+            flex: 2;
+        }
+        .articles-filters-row .btn-reset-filter {
+            width: auto;
+            flex: 0 0 auto;
+        }
+        .articles-table-wrapper table {
+            min-width: 450px;
+        }
+        .articles-pagination-row {
+            flex-direction: row;
+        }
+    }
+
+    /* ===== ANIMATION ===== */
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .articles-stat-card {
+        animation: slideUp 0.5s ease forwards;
+    }
+    .articles-stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .articles-stat-card:nth-child(2) { animation-delay: 0.2s; }
+    .articles-stat-card:nth-child(3) { animation-delay: 0.3s; }
+    .articles-stat-card:nth-child(4) { animation-delay: 0.4s; }
+</style>
+
+<!-- ===== CONTENU ===== -->
 <div id="articlesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
@@ -9,38 +614,38 @@
             </h2>
             <p style="color:#888; font-size:0.95rem;">Gérez votre catalogue de produits.</p>
         </div>
-        <button onclick="openAddArticleModal()" style="padding:12px 24px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px; white-space:nowrap;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+        <button onclick="openAddArticleModal()" class="btn-add" style="padding:12px 24px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px; white-space:nowrap;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                 <i class="fas fa-plus"></i> Ajouter un article
             </button>
     </div>
 
     <!-- ===== STATISTIQUES RAPIDES ===== -->
-    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
-            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total articles</p>
-            <p style="font-size:1.8rem; font-weight:700; color:#1a1a1a;" id="totalArticles">0</p>
+    <div class="articles-stats-grid">
+        <div class="articles-stat-card border-gold">
+            <p class="stat-label">Total articles</p>
+            <p class="stat-value gold" id="totalArticles">0</p>
         </div>
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
-            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">En stock</p>
-            <p style="font-size:1.8rem; font-weight:700; color:#27ae60;" id="totalStock">0</p>
+        <div class="articles-stat-card border-green">
+            <p class="stat-label">En stock</p>
+            <p class="stat-value green" id="totalStock">0</p>
         </div>
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
-            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Rupture</p>
-            <p style="font-size:1.8rem; font-weight:700; color:#f39c12;" id="totalRupture">0</p>
+        <div class="articles-stat-card border-orange">
+            <p class="stat-label">Rupture</p>
+            <p class="stat-value orange" id="totalRupture">0</p>
         </div>
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #e74c3c;">
-            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">En solde</p>
-            <p style="font-size:1.8rem; font-weight:700; color:#e74c3c;" id="totalSoldes">0</p>
+        <div class="articles-stat-card border-red">
+            <p class="stat-label">En solde</p>
+            <p class="stat-value red" id="totalSoldes">0</p>
         </div>
     </div>
 
     <!-- ===== FILTRES & RECHERCHE ===== -->
-    <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
-        <div style="flex:2; min-width:180px;">
-            <input type="text" id="searchInputArticles" placeholder="🔍 Rechercher un produit..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#ffffff;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onkeyup="applyArticleFilters()">
+    <div class="articles-filters-row">
+        <div class="filter-group">
+            <input type="text" id="searchInputArticles" placeholder="🔍 Rechercher un produit..." onkeyup="applyArticleFilters()">
         </div>
-        <div style="min-width:140px; flex:1;">
-            <select id="filterCategorie" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer;" onchange="applyArticleFilters()">
+        <div class="filter-group">
+            <select id="filterCategorie" onchange="applyArticleFilters()">
                 <option value="all">📂 Toutes les catégories</option>
                 <option value="vêtements">👕 Vêtements</option>
                 <option value="accessoires">👜 Accessoires</option>
@@ -49,8 +654,8 @@
                 <option value="électronique">📱 Électronique</option>
             </select>
         </div>
-        <div style="min-width:140px; flex:1;">
-            <select id="filterStatutArticle" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer;" onchange="applyArticleFilters()">
+        <div class="filter-group">
+            <select id="filterStatutArticle" onchange="applyArticleFilters()">
                 <option value="all">📊 Tous les statuts</option>
                 <option value="En stock">✅ En stock</option>
                 <option value="Rupture de stock">⚠️ Rupture de stock</option>
@@ -61,24 +666,24 @@
                 <option value="soldes">🔥 En solde</option>
             </select>
         </div>
-        <button onclick="resetArticleFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888; white-space:nowrap;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+        <button class="btn-reset-filter" onclick="resetArticleFilters()">
             <i class="fas fa-undo"></i> Réinitialiser
         </button>
     </div>
 
     <!-- ===== TABLEAU DES ARTICLES ===== -->
-    <div style="overflow-x:auto; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch;">
-        <table style="width:100%; border-collapse:collapse; font-size:0.95rem; min-width:650px;">
+    <div class="articles-table-wrapper">
+        <table>
             <thead>
-                <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">ID</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Image</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Nom</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Catégorie</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Prix</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Stock</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Statut</th>
-                    <th style="text-align:center; padding:14px 12px; font-weight:600; color:#1a1a1a;">Actions</th>
+                <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Nom</th>
+                    <th>Catégorie</th>
+                    <th>Prix</th>
+                    <th>Stock</th>
+                    <th>Statut</th>
+                    <th style="text-align:center;">Actions</th>
                 </tr>
             </thead>
             <tbody id="articlesTableBody">
@@ -93,14 +698,14 @@
     </div>
 
     <!-- ===== PAGINATION ===== -->
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:12px;">
-        <span style="color:#888; font-size:0.9rem;" id="paginationInfo">Affichage de 0 à 0 sur 0 entrées</span>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button onclick="previousArticlePage()" id="prevArticlePage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+    <div class="articles-pagination-row">
+        <span class="pagination-info" id="paginationInfo">Affichage de 0 à 0 sur 0 entrées</span>
+        <div class="pagination-buttons">
+            <button onclick="previousArticlePage()" id="prevArticlePage">
                 <i class="fas fa-chevron-left"></i> Précédent
             </button>
-            <span id="articlePageInfo" style="display:flex; align-items:center; padding:0 12px; font-weight:600; color:#1a1a1a;">Page 1</span>
-            <button onclick="nextArticlePage()" id="nextArticlePage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+            <span class="page-number" id="articlePageInfo">Page 1</span>
+            <button onclick="nextArticlePage()" id="nextArticlePage">
                 Suivant <i class="fas fa-chevron-right"></i>
             </button>
         </div>
@@ -198,7 +803,7 @@
                 </label>
                 
                 <!-- Zone de drop/upload -->
-                <div id="imageUploadArea" style="border:2px dashed #e8e8e8; border-radius:12px; padding:20px; text-align:center; cursor:pointer; transition:all 0.3s; background:#fafafa;" 
+                <div id="imageUploadArea" class="file-upload-area" style="border:2px dashed #e8e8e8; border-radius:12px; padding:20px; text-align:center; cursor:pointer; transition:all 0.3s; background:#fafafa;" 
                      onclick="document.getElementById('articleImageInput').click()"
                      ondragover="event.preventDefault(); this.style.borderColor='#c9a84c'; this.style.background='#f8f5eb'"
                      ondragleave="this.style.borderColor='#e8e8e8'; this.style.background='#fafafa'"
@@ -222,7 +827,6 @@
                 </div>
                 
                 <input type="file" id="articleImageInput" accept="image/*" style="display:none;" onchange="handleImageSelect(event)">
-                <!-- On stocke l'image en base64 directement dans ce champ -->
                 <input type="hidden" id="articleImage" value="">
                 
                 <!-- URL alternative -->
@@ -240,7 +844,7 @@
             </div>
 
             <!-- Boutons -->
-            <div style="display:flex; gap:12px; margin-top:16px; flex-wrap:wrap;">
+            <div class="btn-row" style="display:flex; gap:12px; margin-top:16px; flex-wrap:wrap;">
                 <button type="submit" id="saveArticleBtn" style="flex:1; padding:12px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:600; cursor:pointer; transition:all 0.3s; min-height:48px;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                     <i class="fas fa-save"></i> Enregistrer
                 </button>
@@ -251,80 +855,6 @@
         </form>
     </div>
 </div>
-
-<!-- ========================================== -->
-<!-- STYLES RESPONSIVES SPÉCIFIQUES            -->
-<!-- ========================================== -->
-<style>
-    /* Responsive - Articles */
-    @media (max-width: 768px) {
-        #articlesContainer { padding: 16px !important; }
-        #articlesContainer .stats-grid { grid-template-columns: 1fr 1fr !important; }
-        #articlesContainer .stats-grid > div { padding: 12px !important; }
-        #articlesContainer .stats-grid p:first-child { font-size: 0.7rem !important; }
-        #articlesContainer .stats-grid p:last-child { font-size: 1.4rem !important; }
-        #articlesContainer .filters-row { flex-direction: column !important; align-items: stretch !important; }
-        #articlesContainer .filters-row > div { min-width: 100% !important; }
-        #articlesContainer .table-wrapper { overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; }
-        #articlesContainer .table-wrapper table { min-width: 600px !important; font-size: 0.85rem !important; }
-        #articlesContainer .table-wrapper th, #articlesContainer .table-wrapper td { padding: 10px 8px !important; }
-        #articlesContainer .table-wrapper td img { width: 40px !important; height: 40px !important; }
-        #articlesContainer .table-wrapper .action-btn { padding: 4px 8px !important; font-size: 0.7rem !important; }
-        #articlesContainer .pagination-row { flex-direction: column !important; align-items: center !important; gap: 8px !important; }
-        #articlesContainer .pagination-row span { font-size: 0.8rem !important; }
-        #articlesContainer .pagination-row button { padding: 6px 12px !important; font-size: 0.8rem !important; }
-        #articleModal > div { padding: 20px !important; max-width: 95% !important; margin: 10px !important; }
-        #articleModal h3 { font-size: 1.2rem !important; }
-        #articleModal .form-grid-2 { grid-template-columns: 1fr !important; gap: 0 !important; }
-        #articleModal .btn-row { flex-direction: column !important; }
-        #articleModal .btn-row button { flex: none !important; width: 100% !important; min-height: 44px !important; }
-    }
-
-    @media (max-width: 480px) {
-        #articlesContainer { padding: 12px !important; }
-        #articlesContainer .stats-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
-        #articlesContainer .stats-grid > div { padding: 10px !important; }
-        #articlesContainer .stats-grid p:first-child { font-size: 0.65rem !important; }
-        #articlesContainer .stats-grid p:last-child { font-size: 1.2rem !important; }
-        #articlesContainer .filters-row { padding: 12px !important; }
-        #articlesContainer .filters-row input, #articlesContainer .filters-row select { font-size: 0.85rem !important; padding: 8px 12px !important; }
-        #articlesContainer .filters-row button { font-size: 0.8rem !important; padding: 8px 14px !important; }
-        #articlesContainer .table-wrapper table { min-width: 500px !important; font-size: 0.8rem !important; }
-        #articlesContainer .table-wrapper th, #articlesContainer .table-wrapper td { padding: 8px 6px !important; }
-        #articlesContainer .table-wrapper td img { width: 32px !important; height: 32px !important; }
-        #articlesContainer .table-wrapper .action-btn { padding: 3px 6px !important; font-size: 0.65rem !important; }
-        #articleModal > div { padding: 16px !important; }
-        #articleModal h3 { font-size: 1.1rem !important; }
-        #articleModal label { font-size: 0.8rem !important; }
-        #articleModal input, #articleModal select, #articleModal textarea { font-size: 0.85rem !important; padding: 8px 12px !important; }
-        #articleModal .btn-row button { font-size: 0.85rem !important; padding: 10px !important; }
-    }
-
-    .toast-nati {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        background: #1a1a1a;
-        color: white;
-        padding: 16px 24px;
-        border-radius: 14px;
-        font-weight: 500;
-        box-shadow: 0 8px 40px rgba(0,0,0,0.25);
-        z-index: 9999;
-        max-width: 400px;
-        font-size: 0.95rem;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        animation: slideUp 0.5s ease;
-        border-left: 4px solid #c9a84c;
-    }
-
-    @keyframes slideUp {
-        from { transform: translateY(100px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-    }
-</style>
 
 <!-- ===== SCRIPTS ===== -->
 <script>
@@ -358,7 +888,6 @@
     let currentArticlePage = 1;
     const articlesPerPage = 10;
 
-    // Variables pour l'upload d'images (version base64)
     let selectedImageFile = null;
     let selectedImagePreview = null;
     let isBase64Image = false;
@@ -390,7 +919,7 @@
             'Bientôt disponible': { bg: '#1abc9c', icon: 'fa-arrow-right', text: 'Bientôt disponible' }
         };
         const s = statuts[statut] || statuts['En stock'];
-        return `<span style="background:${s.bg}; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+        return `<span class="statut-badge" style="background:${s.bg}; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
             <i class="fas ${s.icon}"></i> ${s.text}
         </span>`;
     }
@@ -592,10 +1121,9 @@
     }
 
     // ==========================================
-    // GESTION DES IMAGES - UPLOAD VIA GALERIE (VERSION BASE64)
+    // GESTION DES IMAGES - VERSION BASE64
     // ==========================================
 
-    // 📱 Sélection d'image depuis la galerie
     function handleImageSelect(event) {
         const file = event.target.files[0];
         if (file) {
@@ -603,7 +1131,6 @@
         }
     }
 
-    // 📱 Gestion du drag & drop
     function handleImageDrop(event) {
         const file = event.dataTransfer.files[0];
         if (file) {
@@ -611,16 +1138,13 @@
         }
     }
 
-    // 📱 Traitement de l'image sélectionnée - CONVERTIT EN BASE64
     function processSelectedImage(file) {
-        // Vérifier le type
         const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
         if (!validTypes.includes(file.type)) {
             showNotification('⚠️ Format non supporté. Utilisez JPG, PNG, WEBP ou GIF.', 'error');
             return;
         }
 
-        // Vérifier la taille (5MB max)
         if (file.size > 5 * 1024 * 1024) {
             showNotification('⚠️ L\'image est trop lourde (max 5MB)', 'error');
             return;
@@ -628,18 +1152,15 @@
 
         selectedImageFile = file;
         
-        // 🔑 CONVERSION EN BASE64 - L'IMAGE EST STOCKÉE DIRECTEMENT DANS LA BASE
         const reader = new FileReader();
         reader.onload = function(e) {
-            const base64Data = e.target.result; // Données en base64
+            const base64Data = e.target.result;
             selectedImagePreview = base64Data;
             
-            // Afficher l'aperçu
             document.getElementById('imagePreviewImg').src = base64Data;
             document.getElementById('imagePreview').style.display = 'block';
             document.getElementById('imagePreviewContainer').style.display = 'none';
             
-            // 🔑 STOCKER LA VALEUR BASE64 DANS LE CHAMP CACHÉ
             document.getElementById('articleImage').value = base64Data;
             document.getElementById('articleImageUrl').value = '';
             document.getElementById('imageUrlInputContainer').style.display = 'none';
@@ -652,7 +1173,6 @@
         showNotification('✅ Image sélectionnée: ' + file.name, 'success');
     }
 
-    // 🗑️ Supprimer l'image sélectionnée
     function removeSelectedImage() {
         selectedImageFile = null;
         selectedImagePreview = null;
@@ -664,7 +1184,6 @@
         document.getElementById('imageUrlInputContainer').style.display = 'none';
     }
 
-    // 🔗 Basculer vers l'URL
     function toggleImageUrlInput() {
         const container = document.getElementById('imageUrlInputContainer');
         container.style.display = container.style.display === 'none' ? 'block' : 'none';
@@ -673,7 +1192,6 @@
         }
     }
 
-    // 🔗 Utiliser une URL
     function useImageUrl() {
         const url = document.getElementById('articleImageUrl').value.trim();
         if (!url) {
@@ -703,7 +1221,7 @@
     }
 
     // ==========================================
-    // MODAL : MODIFIER AVEC IMAGE
+    // MODAL : MODIFIER
     // ==========================================
     function editArticle(id) {
         console.log('✏️ Modification de l\'article:', id);
@@ -723,8 +1241,7 @@
         document.getElementById('articleStatut').value = article.statut || 'En stock';
         document.getElementById('articleDescription').value = article.description || '';
         
-        // Gérer l'image
-        removeSelectedImage(); // Réinitialiser
+        removeSelectedImage();
         if (article.image_url) {
             document.getElementById('articleImage').value = article.image_url;
             document.getElementById('imagePreviewImg').src = article.image_url;
@@ -748,7 +1265,7 @@
     }
 
     // ==========================================
-    // SAUVEGARDER ARTICLE AVEC IMAGE EN BASE64
+    // SAUVEGARDER ARTICLE
     // ==========================================
     async function saveArticle(event) {
         event.preventDefault();
@@ -759,7 +1276,6 @@
         const stock = parseInt(document.getElementById('articleStock').value) || 0;
         const statut = document.getElementById('articleStatut').value || 'En stock';
 
-        // Préparer les données de l'article
         const articleData = {
             nom: document.getElementById('articleNom').value.trim(),
             categorie: document.getElementById('articleCategorie').value,
@@ -770,17 +1286,12 @@
             description: document.getElementById('articleDescription').value.trim()
         };
 
-        // 🔑 Gérer l'image - soit base64, soit URL
         let imageData = document.getElementById('articleImage').value.trim();
-        
-        // Si aucune image n'est définie, utiliser une image par défaut
         if (!imageData) {
             imageData = 'https://via.placeholder.com/300x300/1a1a1a/FFFFFF?text=Nati+Shop';
         }
-        
         articleData.image_url = imageData;
 
-        // Validation
         if (!articleData.nom) {
             showNotification('⚠️ Le nom du produit est requis', 'error');
             return;
@@ -797,21 +1308,12 @@
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
 
             if (id) {
-                // MODIFICATION
-                console.log('📝 Mise à jour de l\'article:', id);
-                
                 const { error } = await supabaseClient
                     .from('produits')
                     .update(articleData)
                     .eq('id', id);
 
-                if (error) {
-                    console.error('❌ Erreur mise à jour:', error);
-                    showNotification('❌ Erreur lors de la modification', 'error');
-                    saveBtn.disabled = false;
-                    saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
-                    return;
-                }
+                if (error) throw error;
 
                 const index = allArticles.findIndex(a => a.id === id);
                 if (index !== -1) {
@@ -819,20 +1321,12 @@
                 }
                 showNotification('✅ Article modifié avec succès !', 'success');
             } else {
-                // AJOUT
-                console.log('📝 Ajout d\'un nouvel article');
                 const { data, error } = await supabaseClient
                     .from('produits')
                     .insert([articleData])
                     .select();
 
-                if (error) {
-                    console.error('❌ Erreur insertion:', error);
-                    showNotification('❌ Erreur lors de l\'ajout', 'error');
-                    saveBtn.disabled = false;
-                    saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
-                    return;
-                }
+                if (error) throw error;
 
                 if (data && data.length > 0) {
                     allArticles.unshift(data[0]);
@@ -845,8 +1339,6 @@
             renderArticleTable();
             updateArticleStats();
             updateArticlePaginationInfo();
-            
-            // Réinitialiser l'image
             removeSelectedImage();
 
         } catch (err) {
@@ -866,18 +1358,12 @@
         if (!confirm('Voulez-vous vraiment supprimer cet article ?')) return;
 
         try {
-            console.log('🗑️ Suppression de l\'article:', id);
-            
             const { error } = await supabaseClient
                 .from('produits')
                 .delete()
                 .eq('id', id);
 
-            if (error) {
-                console.error('❌ Erreur suppression:', error);
-                showNotification('❌ Erreur lors de la suppression', 'error');
-                return;
-            }
+            if (error) throw error;
 
             allArticles = allArticles.filter(a => a.id !== id);
             filteredArticles = [...allArticles];
@@ -969,16 +1455,12 @@
     window.saveArticle = saveArticle;
     window.showNotification = showNotification;
     
-    // Exposer les fonctions d'image
     window.handleImageSelect = handleImageSelect;
     window.handleImageDrop = handleImageDrop;
     window.removeSelectedImage = removeSelectedImage;
     window.toggleImageUrlInput = toggleImageUrlInput;
     window.useImageUrl = useImageUrl;
 
-    // ==========================================
-    // LANCEMENT
-    // ==========================================
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
