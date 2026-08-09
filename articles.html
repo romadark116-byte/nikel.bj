@@ -1,9 +1,5 @@
 <!-- articles.html - Mes articles avec upload d'images (version base64) -->
 <style>
-    /* ==========================================
-       STYLES DE BASE - ARTICLES
-       ========================================== */
-
     /* ===== STATS CARDS ===== */
     .articles-stats-grid {
         display: grid;
@@ -19,12 +15,6 @@
         box-shadow: 0 2px 10px rgba(0,0,0,0.04);
         text-align: center;
         border-left: 4px solid #c9a84c;
-        transition: all 0.3s;
-    }
-
-    .articles-stat-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     }
 
     .articles-stat-card .stat-label {
@@ -79,15 +69,8 @@
         border: 2px solid #e8e8e8;
         border-radius: 10px;
         font-size: 0.95rem;
-        transition: all 0.3s;
         background: #ffffff;
         font-family: inherit;
-    }
-
-    .articles-filters-row input:focus,
-    .articles-filters-row select:focus {
-        border-color: #c9a84c;
-        outline: none;
     }
 
     .articles-filters-row .btn-reset-filter {
@@ -98,7 +81,6 @@
         font-size: 0.95rem;
         font-weight: 600;
         cursor: pointer;
-        transition: all 0.3s;
         color: #888;
         white-space: nowrap;
     }
@@ -111,23 +93,18 @@
     /* ===== TABLEAU AVEC SCROLL ===== */
     .articles-table-wrapper {
         overflow-x: auto;
-        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
         border-radius: 12px;
         border: 1px solid #f0f0f0;
-        -webkit-overflow-scrolling: touch;
-        position: relative;
-        /* Indicateur de scroll pour mobile */
-        scroll-behavior: smooth;
     }
 
     /* Indicateur de défilement sur mobile */
-    .articles-table-wrapper::after {
-        content: '↔ Faire glisser pour voir plus';
+    .articles-table-wrapper .scroll-indicator {
         display: none;
         text-align: center;
         padding: 8px;
         color: #aaa;
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         background: #f8f8f8;
         border-top: 1px solid #f0f0f0;
         font-style: italic;
@@ -138,7 +115,6 @@
         border-collapse: collapse;
         font-size: 0.95rem;
         min-width: 900px;
-        /* Augmenté pour voir toutes les colonnes */
     }
 
     .articles-table-wrapper table thead {
@@ -199,16 +175,8 @@
         background: #f39c12;
     }
 
-    .articles-table-wrapper table td .action-btn.edit:hover {
-        background: #e67e22;
-    }
-
     .articles-table-wrapper table td .action-btn.delete {
         background: #e74c3c;
-    }
-
-    .articles-table-wrapper table td .action-btn.delete:hover {
-        background: #c0392b;
     }
 
     /* ===== PAGINATION ===== */
@@ -289,40 +257,16 @@
     }
 
     /* ========================================== */
-    /* RESPONSIVE - ARTICLES                     */
+    /* RESPONSIVE                               */
     /* ========================================== */
-
-    @media (max-width: 1200px) {
-        .articles-stats-grid {
-            gap: 14px;
-        }
-        .articles-stat-card .stat-value {
-            font-size: 1.6rem;
-        }
-        .articles-table-wrapper table {
-            min-width: 800px;
-        }
-    }
 
     @media (max-width: 992px) {
         .articles-stats-grid {
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
         }
-        .articles-stat-card {
-            padding: 16px 14px;
-        }
         .articles-stat-card .stat-value {
             font-size: 1.5rem;
-        }
-        .articles-stat-card .stat-label {
-            font-size: 0.75rem;
-        }
-        .articles-filters-row .filter-group {
-            min-width: 140px;
-        }
-        .articles-filters-row .filter-group:first-child {
-            min-width: 160px;
         }
         .articles-table-wrapper table {
             min-width: 750px;
@@ -336,8 +280,6 @@
         }
         .articles-stat-card {
             padding: 14px 10px;
-            border-radius: 10px;
-            border-left-width: 3px;
         }
         .articles-stat-card .stat-value {
             font-size: 1.3rem;
@@ -345,11 +287,11 @@
         .articles-stat-card .stat-label {
             font-size: 0.7rem;
         }
+        
         .articles-filters-row {
             flex-direction: column;
             align-items: stretch;
             padding: 14px;
-            gap: 10px;
         }
         .articles-filters-row .filter-group {
             min-width: 100%;
@@ -357,26 +299,13 @@
         .articles-filters-row .filter-group:first-child {
             min-width: 100%;
         }
-        .articles-filters-row input,
-        .articles-filters-row select {
-            font-size: 0.85rem;
-            padding: 8px 12px;
-        }
         .articles-filters-row .btn-reset-filter {
-            font-size: 0.85rem;
-            padding: 8px 16px;
             width: 100%;
             text-align: center;
         }
         
-        /* === TABLEAU SCROLLABLE SUR MOBILE === */
-        .articles-table-wrapper {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            border-radius: 10px;
-        }
-        
-        .articles-table-wrapper::after {
+        /* === AFFICHAGE DE L'INDICATEUR DE SCROLL === */
+        .articles-table-wrapper .scroll-indicator {
             display: block;
         }
         
@@ -403,22 +332,12 @@
             padding: 4px 8px;
             font-size: 0.65rem;
         }
+        
         .articles-pagination-row {
             flex-direction: column;
             align-items: center;
-            gap: 8px;
         }
-        .articles-pagination-row .pagination-info {
-            font-size: 0.8rem;
-        }
-        .articles-pagination-row .pagination-buttons button {
-            padding: 6px 12px;
-            font-size: 0.8rem;
-        }
-        .articles-pagination-row .pagination-buttons .page-number {
-            font-size: 0.85rem;
-            padding: 0 8px;
-        }
+        
         #articlesContainer {
             padding: 16px !important;
         }
@@ -432,34 +351,22 @@
             padding: 10px 18px !important;
             font-size: 0.85rem !important;
         }
+        
         #articleModal > div {
             padding: 20px !important;
             max-width: 95% !important;
-            margin: 10px !important;
         }
         #articleModal h3 {
             font-size: 1.2rem !important;
         }
         #articleModal .form-grid-2 {
             grid-template-columns: 1fr !important;
-            gap: 0 !important;
         }
         #articleModal .btn-row {
             flex-direction: column !important;
         }
         #articleModal .btn-row button {
-            flex: none !important;
             width: 100% !important;
-            min-height: 44px !important;
-        }
-        #articleModal label {
-            font-size: 0.85rem !important;
-        }
-        #articleModal input,
-        #articleModal select,
-        #articleModal textarea {
-            font-size: 0.85rem !important;
-            padding: 8px 12px !important;
         }
     }
 
@@ -468,37 +375,16 @@
             padding: 12px !important;
         }
         .articles-stats-grid {
-            grid-template-columns: 1fr 1fr;
             gap: 8px;
         }
         .articles-stat-card {
             padding: 10px 8px;
-            border-radius: 8px;
-            border-left-width: 3px;
         }
         .articles-stat-card .stat-value {
             font-size: 1.1rem;
         }
         .articles-stat-card .stat-label {
             font-size: 0.6rem;
-        }
-        .articles-filters-row {
-            padding: 10px;
-            gap: 8px;
-        }
-        .articles-filters-row input,
-        .articles-filters-row select {
-            font-size: 0.8rem;
-            padding: 6px 10px;
-        }
-        .articles-filters-row .btn-reset-filter {
-            font-size: 0.75rem;
-            padding: 6px 12px;
-        }
-        
-        .articles-table-wrapper::after {
-            font-size: 0.65rem;
-            padding: 6px;
         }
         
         .articles-table-wrapper table {
@@ -524,35 +410,20 @@
             padding: 3px 6px;
             font-size: 0.6rem;
         }
-        .articles-pagination-row .pagination-info {
-            font-size: 0.7rem;
-        }
-        .articles-pagination-row .pagination-buttons button {
-            padding: 4px 10px;
-            font-size: 0.7rem;
-        }
-        .articles-pagination-row .pagination-buttons .page-number {
-            font-size: 0.75rem;
-            padding: 0 6px;
-        }
+        
         #articlesContainer h2 {
             font-size: 1.1rem !important;
-        }
-        #articlesContainer p {
-            font-size: 0.75rem !important;
         }
         #articlesContainer .btn-add {
             padding: 8px 14px !important;
             font-size: 0.75rem !important;
         }
+        
         #articleModal > div {
             padding: 14px !important;
         }
         #articleModal h3 {
             font-size: 1rem !important;
-        }
-        #articleModal label {
-            font-size: 0.75rem !important;
         }
         #articleModal input,
         #articleModal select,
@@ -560,130 +431,7 @@
             font-size: 0.8rem !important;
             padding: 6px 10px !important;
         }
-        #articleModal .btn-row button {
-            font-size: 0.8rem !important;
-            padding: 10px !important;
-            min-height: 40px !important;
-        }
-        #articleModal .file-upload-area {
-            padding: 12px !important;
-        }
-        #articleModal .file-upload-area i {
-            font-size: 1.5rem !important;
-        }
-        #articleModal .file-upload-area p {
-            font-size: 0.75rem !important;
-        }
     }
-
-    @media (max-width: 360px) {
-        .articles-stats-grid {
-            grid-template-columns: 1fr 1fr;
-            gap: 6px;
-        }
-        .articles-stat-card {
-            padding: 8px 6px;
-        }
-        .articles-stat-card .stat-value {
-            font-size: 0.9rem;
-        }
-        .articles-stat-card .stat-label {
-            font-size: 0.55rem;
-        }
-        .articles-table-wrapper table {
-            font-size: 0.6rem;
-            min-width: 500px;
-        }
-        .articles-table-wrapper table th,
-        .articles-table-wrapper table td {
-            padding: 6px 4px;
-        }
-        .articles-table-wrapper table th {
-            font-size: 0.55rem;
-        }
-        .articles-table-wrapper table td img {
-            width: 24px;
-            height: 24px;
-        }
-        #articlesContainer {
-            padding: 8px !important;
-        }
-        #articlesContainer h2 {
-            font-size: 1rem !important;
-        }
-        #articlesContainer .btn-add {
-            padding: 6px 12px !important;
-            font-size: 0.7rem !important;
-        }
-        #articleModal > div {
-            padding: 10px !important;
-        }
-        #articleModal h3 {
-            font-size: 0.9rem !important;
-        }
-        #articleModal input,
-        #articleModal select,
-        #articleModal textarea {
-            font-size: 0.7rem !important;
-            padding: 5px 8px !important;
-        }
-    }
-
-    /* Orientation paysage sur mobile */
-    @media (max-width: 768px) and (orientation: landscape) {
-        .articles-stats-grid {
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-        }
-        .articles-stat-card {
-            padding: 10px 8px;
-        }
-        .articles-stat-card .stat-value {
-            font-size: 1.2rem;
-        }
-        .articles-filters-row {
-            flex-direction: row;
-            flex-wrap: wrap;
-        }
-        .articles-filters-row .filter-group {
-            min-width: 120px;
-            flex: 1;
-        }
-        .articles-filters-row .filter-group:first-child {
-            min-width: 150px;
-            flex: 2;
-        }
-        .articles-filters-row .btn-reset-filter {
-            width: auto;
-            flex: 0 0 auto;
-        }
-        .articles-table-wrapper table {
-            min-width: 650px;
-        }
-        .articles-pagination-row {
-            flex-direction: row;
-        }
-    }
-
-    /* Animation */
-    @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .articles-stat-card {
-        animation: slideUp 0.5s ease forwards;
-    }
-    .articles-stat-card:nth-child(1) { animation-delay: 0.1s; }
-    .articles-stat-card:nth-child(2) { animation-delay: 0.2s; }
-    .articles-stat-card:nth-child(3) { animation-delay: 0.3s; }
-    .articles-stat-card:nth-child(4) { animation-delay: 0.4s; }
 </style>
 
 <!-- ===== CONTENU ===== -->
@@ -754,19 +502,20 @@
         </button>
     </div>
 
-    <!-- ===== TABLEAU DES ARTICLES AVEC SCROLL ===== -->
+    <!-- ===== TABLEAU AVEC SCROLL ===== -->
     <div class="articles-table-wrapper">
+        <div class="scroll-indicator">↔ Faire glisser pour voir toutes les colonnes</div>
         <table>
             <thead>
                 <tr>
-                    <th style="min-width:80px;">ID</th>
-                    <th style="min-width:70px;">Image</th>
-                    <th style="min-width:120px;">Nom</th>
-                    <th style="min-width:110px;">Catégorie</th>
-                    <th style="min-width:100px;">Prix</th>
-                    <th style="min-width:70px;text-align:center;">Stock</th>
-                    <th style="min-width:130px;">Statut</th>
-                    <th style="min-width:140px;text-align:center;">Actions</th>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Nom</th>
+                    <th>Catégorie</th>
+                    <th>Prix</th>
+                    <th style="text-align:center;">Stock</th>
+                    <th>Statut</th>
+                    <th style="text-align:center;">Actions</th>
                 </tr>
             </thead>
             <tbody id="articlesTableBody">
@@ -795,7 +544,7 @@
     </div>
 </div>
 
-<!-- ===== MODAL AJOUT / MODIFICATION ARTICLE ===== -->
+<!-- ===== MODAL ===== -->
 <div id="articleModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center; padding:16px;">
     <div style="background:white; border-radius:16px; padding:32px; max-width:550px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
@@ -810,7 +559,6 @@
         <form id="articleForm">
             <input type="hidden" id="articleId" value="">
             
-            <!-- Nom -->
             <div style="margin-bottom:14px;">
                 <label for="articleNom" style="display:block; font-weight:600; margin-bottom:4px; font-size:0.9rem; color:#1a1a1a;">
                     <i class="fas fa-tag"></i> Nom du produit
@@ -818,7 +566,6 @@
                 <input type="text" id="articleNom" placeholder="Ex: Nati Shop Sport Blanc" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; box-sizing:border-box;">
             </div>
 
-            <!-- Catégorie & Prix -->
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                 <div style="margin-bottom:14px;">
                     <label for="articleCategorie" style="display:block; font-weight:600; margin-bottom:4px; font-size:0.9rem; color:#1a1a1a;">
@@ -840,7 +587,6 @@
                 </div>
             </div>
 
-            <!-- Stock & Prix original -->
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                 <div style="margin-bottom:14px;">
                     <label for="articleStock" style="display:block; font-weight:600; margin-bottom:4px; font-size:0.9rem; color:#1a1a1a;">
@@ -856,7 +602,6 @@
                 </div>
             </div>
 
-            <!-- Statut -->
             <div style="margin-bottom:14px;">
                 <label for="articleStatut" style="display:block; font-weight:600; margin-bottom:4px; font-size:0.9rem; color:#1a1a1a;">
                     <i class="fas fa-info-circle"></i> Statut
@@ -871,7 +616,6 @@
                 </select>
             </div>
 
-            <!-- Description -->
             <div style="margin-bottom:14px;">
                 <label for="articleDescription" style="display:block; font-weight:600; margin-bottom:4px; font-size:0.9rem; color:#1a1a1a;">
                     <i class="fas fa-align-left"></i> Description
@@ -879,13 +623,13 @@
                 <textarea id="articleDescription" rows="3" placeholder="Description du produit..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; resize:vertical; font-family:inherit; box-sizing:border-box;"></textarea>
             </div>
 
-            <!-- ===== IMAGE - UPLOAD BASE64 ===== -->
+            <!-- ===== IMAGE ===== -->
             <div style="margin-bottom:14px;">
                 <label style="display:block; font-weight:600; margin-bottom:4px; font-size:0.9rem; color:#1a1a1a;">
                     <i class="fas fa-image"></i> Image du produit
                 </label>
                 
-                <div id="imageUploadArea" class="file-upload-area" style="border:2px dashed #e8e8e8; border-radius:12px; padding:20px; text-align:center; cursor:pointer; transition:all 0.3s; background:#fafafa;" 
+                <div id="imageUploadArea" style="border:2px dashed #e8e8e8; border-radius:12px; padding:20px; text-align:center; cursor:pointer; transition:all 0.3s; background:#fafafa;" 
                      onclick="document.getElementById('articleImageInput').click()"
                      ondragover="event.preventDefault(); this.style.borderColor='#c9a84c'; this.style.background='#f8f5eb'"
                      ondragleave="this.style.borderColor='#e8e8e8'; this.style.background='#fafafa'"
@@ -923,8 +667,7 @@
                 </div>
             </div>
 
-            <!-- Boutons -->
-            <div class="btn-row" style="display:flex; gap:12px; margin-top:16px; flex-wrap:wrap;">
+            <div style="display:flex; gap:12px; margin-top:16px; flex-wrap:wrap;">
                 <button type="submit" id="saveArticleBtn" style="flex:1; padding:12px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:600; cursor:pointer; transition:all 0.3s; min-height:48px;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                     <i class="fas fa-save"></i> Enregistrer
                 </button>
@@ -936,59 +679,43 @@
     </div>
 </div>
 
-<!-- ===== SCRIPTS (identique à votre version) ===== -->
+<!-- ===== SCRIPTS ===== -->
 <script>
 (function() {
     'use strict';
 
     // ==========================================
-    // RÉFÉRENCE SUPABASE
+    // SUPABASE
     // ==========================================
     if (!window.supabaseClient) {
-        console.warn('⚠️ SupabaseClient non trouvé, création...');
         const SUPABASE_URL = 'https://ycjomnizzxbnasxbcbsv.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inljam9tbml6enhibmFzeGJjYnN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDAwMDAwMDAsImV4cCI6MjAxNTU3NjAwMH0.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
         window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     }
 
     const supabaseClient = window.supabaseClient;
-
-    if (!supabaseClient) {
-        console.error('❌ SupabaseClient non disponible !');
-        return;
-    }
-
-    console.log('✅ SupabaseClient disponible dans articles.html');
+    if (!supabaseClient) return;
 
     // ==========================================
-    // VARIABLES GLOBALES
+    // VARIABLES
     // ==========================================
     let allArticles = [];
     let filteredArticles = [];
     let currentArticlePage = 1;
     const articlesPerPage = 10;
-
     let selectedImageFile = null;
-    let selectedImagePreview = null;
-    let isBase64Image = false;
 
     // ==========================================
-    // FORMATER LE PRIX
+    // FONCTIONS
     // ==========================================
     function formatPrice(price) {
         return parseFloat(price).toFixed(2).replace('.', ',') + ' FCFA';
     }
 
-    // ==========================================
-    // DÉTERMINER SI UN ARTICLE EST EN SOLDE
-    // ==========================================
     function isOnSale(article) {
         return article.prix_original && parseFloat(article.prix_original) > parseFloat(article.prix);
     }
 
-    // ==========================================
-    // AFFICHER LE STATUT AVEC COULEUR
-    // ==========================================
     function getArticleStatutBadge(statut) {
         const statuts = {
             'En stock': { bg: '#27ae60', icon: 'fa-check', text: 'En stock' },
@@ -1004,9 +731,6 @@
         </span>`;
     }
 
-    // ==========================================
-    // RENDU DU TABLEAU
-    // ==========================================
     function renderArticleTable() {
         const tbody = document.getElementById('articlesTableBody');
         
@@ -1043,7 +767,7 @@
                 </td>
                 <td style="padding:12px; text-align:center; font-weight:600;">${article.stock || 0}</td>
                 <td style="padding:12px;">${getArticleStatutBadge(article.statut || 'En stock')}</td>
-                <td style="padding:12px; text-align:center;">
+                <td style="padding:12px; text-align:center; white-space:nowrap;">
                     <button onclick="editArticle('${article.id}')" class="action-btn edit" title="Modifier">
                         <i class="fas fa-edit"></i>
                     </button>
@@ -1055,20 +779,11 @@
         `).join('');
     }
 
-    // ==========================================
-    // METTRE À JOUR LES STATISTIQUES
-    // ==========================================
     function updateArticleStats() {
         const total = allArticles.length;
-        const stock = allArticles.filter(a => 
-            a.statut === 'En stock' || a.statut === 'Bientôt disponible'
-        ).length;
-        const rupture = allArticles.filter(a => 
-            a.statut === 'Rupture de stock' || a.statut === 'Épuisé'
-        ).length;
-        const soldes = allArticles.filter(a => 
-            a.prix_original && parseFloat(a.prix_original) > parseFloat(a.prix)
-        ).length;
+        const stock = allArticles.filter(a => a.statut === 'En stock' || a.statut === 'Bientôt disponible').length;
+        const rupture = allArticles.filter(a => a.statut === 'Rupture de stock' || a.statut === 'Épuisé').length;
+        const soldes = allArticles.filter(a => a.prix_original && parseFloat(a.prix_original) > parseFloat(a.prix)).length;
 
         document.getElementById('totalArticles').textContent = total;
         document.getElementById('totalStock').textContent = stock;
@@ -1076,9 +791,6 @@
         document.getElementById('totalSoldes').textContent = soldes;
     }
 
-    // ==========================================
-    // METTRE À JOUR LES INFOS DE PAGINATION
-    // ==========================================
     function updateArticlePaginationInfo() {
         const total = filteredArticles.length;
         const start = (currentArticlePage - 1) * articlesPerPage + 1;
@@ -1093,9 +805,6 @@
         document.getElementById('nextArticlePage').disabled = currentArticlePage >= totalPages;
     }
 
-    // ==========================================
-    // PAGINATION
-    // ==========================================
     function previousArticlePage() {
         if (currentArticlePage > 1) {
             currentArticlePage--;
@@ -1113,9 +822,6 @@
         }
     }
 
-    // ==========================================
-    // FILTRES
-    // ==========================================
     function applyArticleFilters() {
         const searchTerm = document.getElementById('searchInputArticles').value.toLowerCase().trim();
         const categorie = document.getElementById('filterCategorie').value;
@@ -1160,103 +866,65 @@
         updateArticlePaginationInfo();
     }
 
-    // ==========================================
-    // CHARGER LES ARTICLES
-    // ==========================================
     async function loadArticlesData() {
         try {
-            console.log('📝 Chargement des articles depuis Supabase...');
-            
             const { data, error } = await supabaseClient
                 .from('produits')
                 .select('*')
                 .order('created_at', { ascending: false });
 
-            if (error) {
-                console.error('❌ Erreur chargement:', error);
-                showNotification('❌ Erreur de chargement des articles', 'error');
-                return;
-            }
+            if (error) throw error;
 
-            if (data && data.length > 0) {
-                console.log(`✅ ${data.length} articles chargés depuis Supabase`);
-                allArticles = data.map(p => ({
-                    ...p,
-                    statut: p.statut || 'En stock'
-                }));
-            } else {
-                console.warn('⚠️ Aucun article trouvé dans Supabase');
-                allArticles = [];
-            }
-
+            allArticles = data ? data.map(p => ({ ...p, statut: p.statut || 'En stock' })) : [];
             filteredArticles = [...allArticles];
             renderArticleTable();
             updateArticleStats();
             updateArticlePaginationInfo();
-
         } catch (err) {
             console.error('❌ Erreur:', err);
             showNotification('❌ Erreur de chargement des articles', 'error');
         }
     }
 
-    // ==========================================
-    // GESTION DES IMAGES - BASE64
-    // ==========================================
-
+    // ===== GESTION DES IMAGES =====
     function handleImageSelect(event) {
         const file = event.target.files[0];
-        if (file) {
-            processSelectedImage(file);
-        }
+        if (file) processSelectedImage(file);
     }
 
     function handleImageDrop(event) {
         const file = event.dataTransfer.files[0];
-        if (file) {
-            processSelectedImage(file);
-        }
+        if (file) processSelectedImage(file);
     }
 
     function processSelectedImage(file) {
         const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
         if (!validTypes.includes(file.type)) {
-            showNotification('⚠️ Format non supporté. Utilisez JPG, PNG, WEBP ou GIF.', 'error');
+            showNotification('⚠️ Format non supporté.', 'error');
             return;
         }
-
         if (file.size > 5 * 1024 * 1024) {
-            showNotification('⚠️ L\'image est trop lourde (max 5MB)', 'error');
+            showNotification('⚠️ Image trop lourde (max 5MB)', 'error');
             return;
         }
 
         selectedImageFile = file;
-        
         const reader = new FileReader();
         reader.onload = function(e) {
             const base64Data = e.target.result;
-            selectedImagePreview = base64Data;
-            
             document.getElementById('imagePreviewImg').src = base64Data;
             document.getElementById('imagePreview').style.display = 'block';
             document.getElementById('imagePreviewContainer').style.display = 'none';
-            
             document.getElementById('articleImage').value = base64Data;
             document.getElementById('articleImageUrl').value = '';
             document.getElementById('imageUrlInputContainer').style.display = 'none';
-            
-            isBase64Image = true;
-            console.log('✅ Image convertie en base64 (taille: ' + (base64Data.length / 1024).toFixed(2) + ' KB)');
         };
         reader.readAsDataURL(file);
-        
-        showNotification('✅ Image sélectionnée: ' + file.name, 'success');
+        showNotification('✅ Image sélectionnée', 'success');
     }
 
     function removeSelectedImage() {
         selectedImageFile = null;
-        selectedImagePreview = null;
-        isBase64Image = false;
         document.getElementById('imagePreview').style.display = 'none';
         document.getElementById('imagePreviewContainer').style.display = 'block';
         document.getElementById('articleImageInput').value = '';
@@ -1267,15 +935,13 @@
     function toggleImageUrlInput() {
         const container = document.getElementById('imageUrlInputContainer');
         container.style.display = container.style.display === 'none' ? 'block' : 'none';
-        if (container.style.display === 'block') {
-            removeSelectedImage();
-        }
+        if (container.style.display === 'block') removeSelectedImage();
     }
 
     function useImageUrl() {
         const url = document.getElementById('articleImageUrl').value.trim();
         if (!url) {
-            showNotification('⚠️ Veuillez entrer une URL valide', 'error');
+            showNotification('⚠️ Entrez une URL valide', 'error');
             return;
         }
         document.getElementById('articleImage').value = url;
@@ -1284,13 +950,10 @@
         document.getElementById('imagePreviewContainer').style.display = 'none';
         document.getElementById('imageUrlInputContainer').style.display = 'none';
         selectedImageFile = null;
-        isBase64Image = false;
-        showNotification('✅ URL d\'image définie', 'success');
+        showNotification('✅ URL définie', 'success');
     }
 
-    // ==========================================
-    // MODAL
-    // ==========================================
+    // ===== MODAL =====
     function openAddArticleModal() {
         document.getElementById('articleModalTitle').innerHTML = '<i class="fas fa-cube" style="color:#c9a84c;"></i> Ajouter un article';
         document.getElementById('articleId').value = '';
@@ -1301,7 +964,6 @@
     }
 
     function editArticle(id) {
-        console.log('✏️ Modification de l\'article:', id);
         const article = allArticles.find(a => a.id === id);
         if (!article) {
             showNotification('❌ Article non trouvé', 'error');
@@ -1324,11 +986,7 @@
             document.getElementById('imagePreviewImg').src = article.image_url;
             document.getElementById('imagePreview').style.display = 'block';
             document.getElementById('imagePreviewContainer').style.display = 'none';
-        } else {
-            document.getElementById('imagePreviewContainer').style.display = 'block';
-            document.getElementById('imagePreview').style.display = 'none';
         }
-        
         document.getElementById('articleModal').style.display = 'flex';
     }
 
@@ -1338,41 +996,31 @@
         removeSelectedImage();
     }
 
-    // ==========================================
-    // SAUVEGARDER
-    // ==========================================
     async function saveArticle(event) {
         event.preventDefault();
 
         const id = document.getElementById('articleId').value;
         const prix = parseFloat(document.getElementById('articlePrix').value) || 0;
-        const oldPrice = document.getElementById('articleOldPrice').value ? parseFloat(document.getElementById('articleOldPrice').value) : null;
-        const stock = parseInt(document.getElementById('articleStock').value) || 0;
-        const statut = document.getElementById('articleStatut').value || 'En stock';
 
         const articleData = {
             nom: document.getElementById('articleNom').value.trim(),
             categorie: document.getElementById('articleCategorie').value,
             prix: prix,
-            prix_original: oldPrice,
-            stock: stock,
-            statut: statut,
+            prix_original: document.getElementById('articleOldPrice').value ? parseFloat(document.getElementById('articleOldPrice').value) : null,
+            stock: parseInt(document.getElementById('articleStock').value) || 0,
+            statut: document.getElementById('articleStatut').value || 'En stock',
             description: document.getElementById('articleDescription').value.trim()
         };
 
         let imageData = document.getElementById('articleImage').value.trim();
-        if (!imageData) {
-            imageData = 'https://via.placeholder.com/300x300/1a1a1a/FFFFFF?text=Nati+Shop';
-        }
-        articleData.image_url = imageData;
+        articleData.image_url = imageData || 'https://via.placeholder.com/300x300/1a1a1a/FFFFFF?text=Nati+Shop';
 
         if (!articleData.nom) {
-            showNotification('⚠️ Le nom du produit est requis', 'error');
+            showNotification('⚠️ Le nom est requis', 'error');
             return;
         }
-
         if (!articleData.prix || articleData.prix <= 0) {
-            showNotification('⚠️ Veuillez entrer un prix valide', 'error');
+            showNotification('⚠️ Entrez un prix valide', 'error');
             return;
         }
 
@@ -1386,26 +1034,18 @@
                     .from('produits')
                     .update(articleData)
                     .eq('id', id);
-
                 if (error) throw error;
-
                 const index = allArticles.findIndex(a => a.id === id);
-                if (index !== -1) {
-                    allArticles[index] = { ...allArticles[index], ...articleData };
-                }
-                showNotification('✅ Article modifié avec succès !', 'success');
+                if (index !== -1) allArticles[index] = { ...allArticles[index], ...articleData };
+                showNotification('✅ Article modifié', 'success');
             } else {
                 const { data, error } = await supabaseClient
                     .from('produits')
                     .insert([articleData])
                     .select();
-
                 if (error) throw error;
-
-                if (data && data.length > 0) {
-                    allArticles.unshift(data[0]);
-                }
-                showNotification('✅ Article ajouté avec succès !', 'success');
+                if (data && data.length > 0) allArticles.unshift(data[0]);
+                showNotification('✅ Article ajouté', 'success');
             }
 
             closeArticleModal();
@@ -1414,10 +1054,9 @@
             updateArticleStats();
             updateArticlePaginationInfo();
             removeSelectedImage();
-
         } catch (err) {
             console.error('❌ Erreur:', err);
-            showNotification('❌ Une erreur est survenue', 'error');
+            showNotification('❌ Erreur: ' + err.message, 'error');
         } finally {
             const saveBtn = document.getElementById('saveArticleBtn');
             saveBtn.disabled = false;
@@ -1425,63 +1064,38 @@
         }
     }
 
-    // ==========================================
-    // SUPPRIMER
-    // ==========================================
     async function deleteArticle(id) {
-        if (!confirm('Voulez-vous vraiment supprimer cet article ?')) return;
-
+        if (!confirm('Supprimer cet article ?')) return;
         try {
             const { error } = await supabaseClient
                 .from('produits')
                 .delete()
                 .eq('id', id);
-
             if (error) throw error;
-
             allArticles = allArticles.filter(a => a.id !== id);
             filteredArticles = [...allArticles];
             renderArticleTable();
             updateArticleStats();
             updateArticlePaginationInfo();
-            showNotification('🗑️ Article supprimé avec succès', 'success');
-
+            showNotification('🗑️ Article supprimé', 'success');
         } catch (err) {
             console.error('❌ Erreur:', err);
-            showNotification('❌ Une erreur est survenue', 'error');
+            showNotification('❌ Erreur: ' + err.message, 'error');
         }
     }
 
-    // ==========================================
-    // NOTIFICATION
-    // ==========================================
     function showNotification(message, type = 'info') {
         document.querySelectorAll('.toast-nati').forEach(t => t.remove());
-        
-        const colors = {
-            success: '#27ae60',
-            error: '#e74c3c',
-            info: '#c9a84c'
-        };
-
+        const colors = { success: '#27ae60', error: '#e74c3c', info: '#c9a84c' };
         const toast = document.createElement('div');
         toast.className = 'toast-nati';
         toast.style.cssText = `
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #1a1a1a;
-            color: white;
-            padding: 16px 24px;
-            border-radius: 14px;
-            font-weight: 500;
+            position: fixed; bottom: 30px; right: 30px;
+            background: #1a1a1a; color: white; padding: 16px 24px;
+            border-radius: 14px; font-weight: 500;
             box-shadow: 0 8px 40px rgba(0,0,0,0.25);
-            z-index: 9999;
-            max-width: 400px;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            z-index: 9999; max-width: 400px; font-size: 0.95rem;
+            display: flex; align-items: center; gap: 12px;
             animation: slideUp 0.5s ease;
             border-left: 4px solid ${colors[type] || colors.info};
         `;
@@ -1495,29 +1109,18 @@
         }, 3000);
     }
 
-    // ==========================================
-    // INITIALISATION
-    // ==========================================
+    // ===== INIT =====
     function init() {
-        console.log('🚀 Chargement de articles.html (Nati Shop)...');
         loadArticlesData();
-
         document.getElementById('articleForm').addEventListener('submit', saveArticle);
-
         document.getElementById('articleModal').addEventListener('click', function(e) {
             if (e.target === this) closeArticleModal();
         });
-
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeArticleModal();
-            }
+            if (e.key === 'Escape') closeArticleModal();
         });
     }
 
-    // ==========================================
-    // EXPOSER LES FONCTIONS
-    // ==========================================
     window.applyArticleFilters = applyArticleFilters;
     window.resetArticleFilters = resetArticleFilters;
     window.previousArticlePage = previousArticlePage;
@@ -1528,7 +1131,6 @@
     window.closeArticleModal = closeArticleModal;
     window.saveArticle = saveArticle;
     window.showNotification = showNotification;
-    
     window.handleImageSelect = handleImageSelect;
     window.handleImageDrop = handleImageDrop;
     window.removeSelectedImage = removeSelectedImage;
@@ -1540,6 +1142,5 @@
     } else {
         init();
     }
-
 })();
 </script>
