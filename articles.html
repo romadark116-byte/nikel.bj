@@ -62,8 +62,8 @@
             </select>
         </div>
         <button onclick="resetArticleFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888; white-space:nowrap;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
-            <i class="fas fa-undo"></i> Réinitialiser
-        </button>
+                <i class="fas fa-undo"></i> Réinitialiser
+            </button>
     </div>
 
     <!-- ===== TABLEAU DES ARTICLES ===== -->
@@ -261,105 +261,83 @@
         #articlesContainer {
             padding: 16px !important;
         }
-
         .stats-grid {
             grid-template-columns: 1fr 1fr !important;
         }
-
         .stats-grid > div {
             padding: 12px !important;
         }
-
         .stats-grid p:first-child {
             font-size: 0.7rem !important;
         }
-
         .stats-grid p:last-child {
             font-size: 1.4rem !important;
         }
-
         .filters-row {
             flex-direction: column !important;
             align-items: stretch !important;
         }
-
         .filters-row > div {
             min-width: 100% !important;
         }
-
         .table-wrapper {
             overflow-x: auto !important;
             -webkit-overflow-scrolling: touch !important;
         }
-
         .table-wrapper table {
             min-width: 600px !important;
             font-size: 0.85rem !important;
         }
-
         .table-wrapper th,
         .table-wrapper td {
             padding: 10px 8px !important;
         }
-
         .table-wrapper td img {
             width: 40px !important;
             height: 40px !important;
         }
-
         .table-wrapper .action-btn {
             padding: 4px 8px !important;
             font-size: 0.7rem !important;
         }
-
         .pagination-row {
             flex-direction: column !important;
             align-items: center !important;
             gap: 8px !important;
         }
-
         .pagination-row span {
             font-size: 0.8rem !important;
         }
-
         .pagination-row button {
             padding: 6px 12px !important;
             font-size: 0.8rem !important;
         }
-
         #articleModal > div {
             padding: 20px !important;
             max-width: 95% !important;
             margin: 10px !important;
         }
-
         #articleModal h3 {
             font-size: 1.2rem !important;
         }
-
         #articleModal .form-grid-2 {
             grid-template-columns: 1fr !important;
             gap: 0 !important;
         }
-
         #articleModal .btn-row {
             flex-direction: column !important;
         }
-
         #articleModal .btn-row button {
             flex: none !important;
             width: 100% !important;
             min-height: 44px !important;
         }
-
         .page-title h2 {
             font-size: 1.3rem !important;
         }
-
         .page-title p {
             font-size: 0.85rem !important;
         }
-
         .page-title button {
             font-size: 0.85rem !important;
             padding: 10px 16px !important;
@@ -370,78 +348,62 @@
         #articlesContainer {
             padding: 12px !important;
         }
-
         .stats-grid {
             grid-template-columns: 1fr 1fr !important;
             gap: 10px !important;
         }
-
         .stats-grid > div {
             padding: 10px !important;
         }
-
         .stats-grid p:first-child {
             font-size: 0.65rem !important;
         }
-
         .stats-grid p:last-child {
             font-size: 1.2rem !important;
         }
-
         .filters-row {
             padding: 12px !important;
         }
-
         .filters-row input,
         .filters-row select {
             font-size: 0.85rem !important;
             padding: 8px 12px !important;
         }
-
         .filters-row button {
             font-size: 0.8rem !important;
             padding: 8px 14px !important;
         }
-
         .table-wrapper table {
             min-width: 500px !important;
             font-size: 0.8rem !important;
         }
-
         .table-wrapper th,
         .table-wrapper td {
             padding: 8px 6px !important;
         }
-
         .table-wrapper td img {
             width: 32px !important;
             height: 32px !important;
         }
-
         .table-wrapper .action-btn {
             padding: 3px 6px !important;
             font-size: 0.65rem !important;
         }
-
         #articleModal > div {
             padding: 16px !important;
         }
-
         #articleModal h3 {
             font-size: 1.1rem !important;
         }
-
         #articleModal label {
             font-size: 0.8rem !important;
         }
-
         #articleModal input,
         #articleModal select,
         #articleModal textarea {
             font-size: 0.85rem !important;
             padding: 8px 12px !important;
         }
-
         #articleModal .btn-row button {
             font-size: 0.85rem !important;
             padding: 10px !important;
@@ -453,34 +415,27 @@
             grid-template-columns: 1fr 1fr !important;
             gap: 8px !important;
         }
-
         .stats-grid > div {
             padding: 8px !important;
         }
-
         .stats-grid p:first-child {
             font-size: 0.6rem !important;
         }
-
         .stats-grid p:last-child {
             font-size: 1rem !important;
         }
-
         .table-wrapper table {
             min-width: 400px !important;
             font-size: 0.7rem !important;
         }
-
         .table-wrapper th,
         .table-wrapper td {
             padding: 6px 4px !important;
         }
-
         .table-wrapper td img {
             width: 28px !important;
             height: 28px !important;
         }
-
         .pagination-row button {
             padding: 4px 10px !important;
             font-size: 0.7rem !important;
@@ -887,40 +842,92 @@
             showNotification('✅ URL d\'image définie', 'success');
         }
 
-        // 📤 Upload de l'image vers Supabase
+        // ==========================================
+        // UPLOAD D'IMAGE VERS SUPABASE (VERSION CORRIGÉE)
+        // ==========================================
         async function uploadArticleImage(file) {
-            if (!file) return null;
+            if (!file) {
+                console.warn('⚠️ Aucun fichier à uploader');
+                return null;
+            }
             
             try {
                 // Créer un nom unique
                 const fileExt = file.name.split('.').pop();
-                const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+                const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 10)}.${fileExt}`;
                 const filePath = `produits/${fileName}`;
 
                 console.log('📤 Upload de l\'image vers Supabase...');
+                console.log('📄 Nom:', file.name);
+                console.log('📄 Taille:', (file.size / 1024).toFixed(2), 'KB');
+                console.log('📄 Type:', file.type);
+                console.log('📁 Chemin:', filePath);
 
-                // Upload vers Supabase Storage
-                const { error: uploadError } = await supabaseClient.storage
-                    .from('images')
-                    .upload(filePath, file);
-
-                if (uploadError) {
-                    console.error('❌ Erreur upload:', uploadError);
-                    showNotification('❌ Erreur lors de l\'upload de l\'image', 'error');
+                // VÉRIFICATION : Le bucket existe-t-il ?
+                const { data: buckets, error: bucketsError } = await supabaseClient.storage
+                    .listBuckets();
+                
+                if (bucketsError) {
+                    console.error('❌ Erreur listage buckets:', bucketsError);
+                    showNotification('❌ Impossible d\'accéder au storage', 'error');
                     return null;
                 }
+                
+                const bucketExists = buckets.some(b => b.id === 'images');
+                if (!bucketExists) {
+                    console.error('❌ Bucket "images" inexistant!');
+                    console.log('📋 Buckets disponibles:', buckets.map(b => b.id));
+                    showNotification('❌ Bucket "images" inexistant. Créez-le dans Supabase', 'error');
+                    return null;
+                }
+                
+                console.log('✅ Bucket "images" trouvé');
+
+                // TENTATIVE D'UPLOAD
+                const { data, error: uploadError } = await supabaseClient.storage
+                    .from('images')
+                    .upload(filePath, file, {
+                        cacheControl: '3600',
+                        upsert: false,
+                        contentType: file.type
+                    });
+
+                if (uploadError) {
+                    console.error('❌ Erreur upload détaillée:');
+                    console.error('  - Code:', uploadError.code);
+                    console.error('  - Message:', uploadError.message);
+                    console.error('  - Status:', uploadError.statusCode);
+                    
+                    // Messages d'erreur explicites
+                    if (uploadError.message && uploadError.message.includes('row-level security')) {
+                        showNotification('❌ Erreur RLS. Exécutez les politiques SQL dans Supabase.', 'error');
+                        console.log('📋 SOLUTION: Exécutez les politiques SQL dans Supabase');
+                    } else if (uploadError.message && uploadError.message.includes('bucket not found')) {
+                        showNotification('❌ Bucket "images" non trouvé. Créez-le dans Supabase.', 'error');
+                    } else if (uploadError.statusCode === 403) {
+                        showNotification('❌ Permission refusée (403). Vérifiez les politiques RLS.', 'error');
+                    } else if (uploadError.statusCode === 413) {
+                        showNotification('❌ Image trop lourde (max 5MB)', 'error');
+                    } else {
+                        showNotification(`❌ Erreur: ${uploadError.message || 'Erreur inconnue'}`, 'error');
+                    }
+                    return null;
+                }
+
+                console.log('✅ Upload réussi!', data);
 
                 // Récupérer l'URL publique
                 const { data: urlData } = supabaseClient.storage
                     .from('images')
                     .getPublicUrl(filePath);
 
-                console.log('✅ Image uploadée:', urlData.publicUrl);
+                console.log('🔗 URL publique:', urlData.publicUrl);
+                showNotification('✅ Image uploadée avec succès!', 'success');
                 return urlData.publicUrl;
 
             } catch (error) {
-                console.error('❌ Erreur upload image:', error);
-                showNotification('❌ Erreur lors de l\'upload de l\'image', 'error');
+                console.error('💥 Exception lors de l\'upload:', error);
+                showNotification(`❌ Erreur: ${error.message || 'Erreur inconnue'}`, 'error');
                 return null;
             }
         }
@@ -1015,7 +1022,7 @@
                 if (uploadedUrl) {
                     imageUrl = uploadedUrl;
                 } else {
-                    showNotification('⚠️ L\'image n\'a pas été uploadée, mais l\'article est sauvegardé', 'error');
+                    showNotification('⚠️ L\'image n\'a pas été uploadée', 'error');
                 }
             }
             
@@ -1216,11 +1223,67 @@
         }
 
         // ==========================================
+        // BOUTON DE TEST
+        // ==========================================
+        function addTestButton() {
+            const container = document.querySelector('.upload-section') || document.body;
+            const btn = document.createElement('button');
+            btn.textContent = '🧪 TEST UPLOAD';
+            btn.style.cssText = `
+                padding: 10px 20px;
+                background: #9b59b6;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: bold;
+                margin: 5px;
+            `;
+            btn.onclick = async function() {
+                // Créer une image de test
+                const canvas = document.createElement('canvas');
+                canvas.width = 200;
+                canvas.height = 200;
+                const ctx = canvas.getContext('2d');
+                
+                const gradient = ctx.createLinearGradient(0, 0, 200, 200);
+                gradient.addColorStop(0, '#c9a84c');
+                gradient.addColorStop(1, '#a8892e');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, 200, 200);
+                
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 30px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('TEST', 100, 100);
+                ctx.font = '16px Arial';
+                ctx.fillText('Nati Shop', 100, 140);
+                
+                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                const file = new File([blob], `test-${Date.now()}.png`, { type: 'image/png' });
+                
+                console.log('🧪 Test upload avec image générée');
+                const result = await uploadArticleImage(file);
+                if (result) {
+                    alert(`✅ SUCCÈS!\nURL: ${result}`);
+                    window.open(result, '_blank');
+                } else {
+                    alert('❌ ÉCHEC! Voir console pour détails');
+                }
+            };
+            container.appendChild(btn);
+        }
+
+        // ==========================================
         // INITIALISATION
         // ==========================================
         function init() {
             console.log('🚀 Chargement de articles.html (Nati Shop)...');
             loadArticlesData();
+            
+            // Ajouter le bouton de test après 1 seconde
+            setTimeout(addTestButton, 1000);
 
             document.getElementById('articleForm').addEventListener('submit', saveArticle);
 
@@ -1228,7 +1291,6 @@
                 if (e.target === this) closeArticleModal();
             });
 
-            // Fermer la modale avec Echap
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     closeArticleModal();
