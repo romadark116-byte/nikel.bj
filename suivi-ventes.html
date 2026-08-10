@@ -85,7 +85,12 @@
                 </tr>
             </thead>
             <tbody id="ventesTableBody">
-                <!-- Le contenu sera généré par JavaScript -->
+                <tr>
+                    <td colspan="9" style="text-align:center; padding:40px; color:#888;">
+                        <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
+                        Chargement des données...
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -108,438 +113,434 @@
 <!-- ===== SCRIPTS ===== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-    // ==========================================
-    // SUPABASE CONFIG - NON MODIFIÉ
-    // ==========================================
-    const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
-    
-    let supabaseClient = null;
-
-    // Initialiser Supabase
-    try {
-        if (window.supabase) {
-            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            window.supabaseClient = supabaseClient;
-            console.log('✅ Supabase initialisé dans suivi-ventes.html');
-        } else {
-            console.warn('⚠️ Supabase SDK non chargé');
-        }
-    } catch (e) {
-        console.error('❌ Erreur initialisation Supabase:', e);
-    }
-
-    // ==========================================
-    // VARIABLES
-    // ==========================================
-    let allVentes = [];
-    let filteredVentes = [];
-    let currentPage = 1;
-    const perPage = 10;
-
-    // ==========================================
-    // DONNÉES DE TEST (fallback)
-    // ==========================================
-    function getTestData() {
-        return [
-            { id: 1, prenom: 'Jean', nom: 'Dupont', email: 'jean@email.com', telephone: '0612345678', ville: 'Paris', pays: 'FR', created_at: new Date().toISOString(), total_achat: 398.00, statut_produit: 'soldé' },
-            { id: 2, prenom: 'Fleury', nom: 'HAMIDOU', email: 'f91631072@gmail.com', telephone: '0191647720', ville: 'Parakou', pays: 'BJ', created_at: new Date(Date.now() - 86400000).toISOString(), total_achat: 267.00, statut_produit: 'en attente' },
-            { id: 3, prenom: 'Marie', nom: 'Martin', email: 'marie@email.com', telephone: '0765432109', ville: 'Lyon', pays: 'FR', created_at: new Date(Date.now() - 172800000).toISOString(), total_achat: 159.00, statut_produit: 'annulé' },
-            { id: 4, prenom: 'Amadou', nom: 'Diallo', email: 'amadou@email.com', telephone: '779012345', ville: 'Dakar', pays: 'SN', created_at: new Date(Date.now() - 259200000).toISOString(), total_achat: 299.00, statut_produit: 'soldé' },
-            { id: 5, prenom: 'Sophie', nom: 'Bernard', email: 'sophie@email.com', telephone: '0612345987', ville: 'Marseille', pays: 'FR', created_at: new Date(Date.now() - 345600000).toISOString(), total_achat: 149.00, statut_produit: 'en attente' }
-        ];
-    }
-
-    // ==========================================
-    // FORMATER LA DATE
-    // ==========================================
-    function formatDate(dateString) {
-        if (!dateString) return '—';
-        const d = new Date(dateString);
-        if (isNaN(d.getTime())) return '—';
-        return d.toLocaleDateString('fr-FR') + ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-    }
-
-    // ==========================================
-    // BADGE STATUT
-    // ==========================================
-    function getStatutBadge(statut) {
-        const s = {
-            'soldé': { bg: '#27ae60', icon: 'fa-check', text: 'Soldé' },
-            'en attente': { bg: '#f39c12', icon: 'fa-clock', text: 'En attente' },
-            'annulé': { bg: '#e74c3c', icon: 'fa-times', text: 'Annulé' }
-        };
-        const st = s[statut] || s['en attente'];
-        return `<span style="background:${st.bg}; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-            <i class="fas ${st.icon}"></i> ${st.text}
-        </span>`;
-    }
-
-    // ==========================================
-    // RENDU TABLEAU - CORRIGÉ
-    // ==========================================
-    function renderVentes() {
-        const tbody = document.getElementById('ventesTableBody');
-        if (!tbody) {
-            console.error('❌ Table body non trouvé');
-            return;
-        }
+    (function() {
+        // ==========================================
+        // SUPABASE CONFIG
+        // ==========================================
+        const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
         
-        if (filteredVentes.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:40px; color:#888;">
-                <i class="fas fa-inbox" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
-                Aucune vente trouvée.
-            </td></tr>`;
-            updateVentesPaginationInfo();
-            return;
-        }
+        let supabaseClient = null;
 
-        const start = (currentPage - 1) * perPage;
-        const items = filteredVentes.slice(start, start + perPage);
-
-        tbody.innerHTML = items.map(v => `
-            <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
-                <td style="padding:12px; font-weight:600;">#${v.id}</td>
-                <td style="padding:12px; font-weight:500;">${v.prenom || ''} ${v.nom || ''}</td>
-                <td style="padding:12px; color:#888;">${v.email || '—'}</td>
-                <td style="padding:12px; color:#888;">${v.telephone || '—'}</td>
-                <td style="padding:12px; color:#888; font-size:0.9rem;">${formatDate(v.created_at)}</td>
-                <td style="padding:12px; font-weight:700; color:#c9a84c;">${v.total_achat ? v.total_achat.toFixed(2).replace('.', ',') + ' FCFA' : '—'}</td>
-                <td style="padding:12px; color:#888;">${v.ville || '—'}</td>
-                <td style="padding:12px; text-align:center;">${getStatutBadge(v.statut)}</td>
-                <td style="padding:12px; text-align:center;">
-                    <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:4px 10px; border:none; border-radius:6px; background:#27ae60; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
-                    <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:4px 10px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
-                    <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:4px 10px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
-                </td>
-            </tr>
-        `).join('');
-
-        updateVentesPaginationInfo();
-    }
-
-    // ==========================================
-    // STATISTIQUES
-    // ==========================================
-    function updateVentesStats() {
-        const total = allVentes.length;
-        const sold = allVentes.filter(v => v.statut === 'soldé').length;
-        const attente = allVentes.filter(v => v.statut === 'en attente').length;
-        const annul = allVentes.filter(v => v.statut === 'annulé').length;
-        
-        document.getElementById('totalCommandes').textContent = total;
-        document.getElementById('totalSoldees').textContent = sold;
-        document.getElementById('totalEnAttente').textContent = attente;
-        document.getElementById('totalAnnulees').textContent = annul;
-    }
-
-    // ==========================================
-    // PAGINATION - CORRIGÉE
-    // ==========================================
-    function updateVentesPaginationInfo() {
-        const total = filteredVentes.length;
-        const start = (currentPage - 1) * perPage + 1;
-        const end = Math.min(currentPage * perPage, total);
-        const totalPages = Math.ceil(total / perPage) || 1;
-
-        const infoEl = document.getElementById('ventesPaginationInfo');
-        const pageEl = document.getElementById('ventesPageInfo');
-        const prevBtn = document.getElementById('prevVentesPage');
-        const nextBtn = document.getElementById('nextVentesPage');
-        
-        if (infoEl) {
-            infoEl.textContent = `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
-        }
-        if (pageEl) {
-            pageEl.textContent = `Page ${currentPage} sur ${totalPages}`;
-        }
-        if (prevBtn) {
-            prevBtn.disabled = currentPage <= 1;
-        }
-        if (nextBtn) {
-            nextBtn.disabled = currentPage >= totalPages;
-        }
-    }
-
-    function prevVentesPage() {
-        if (currentPage > 1) {
-            currentPage--;
-            renderVentes();
-        }
-    }
-
-    function nextVentesPage() {
-        const totalPages = Math.ceil(filteredVentes.length / perPage);
-        if (currentPage < totalPages) {
-            currentPage++;
-            renderVentes();
-        }
-    }
-
-    // ==========================================
-    // FILTRES
-    // ==========================================
-    function applyVentesFilters() {
-        const search = document.getElementById('searchVentes').value.toLowerCase().trim();
-        const statut = document.getElementById('filterStatut').value;
-        const dateDebut = document.getElementById('dateDebut').value;
-        const dateFin = document.getElementById('dateFin').value;
-
-        filteredVentes = allVentes.filter(v => {
-            let match = true;
-            
-            if (search) {
-                const fullName = `${v.prenom || ''} ${v.nom || ''}`.toLowerCase();
-                const email = (v.email || '').toLowerCase();
-                const phone = (v.telephone || '').toLowerCase();
-                match = fullName.includes(search) || email.includes(search) || phone.includes(search);
-            }
-            
-            if (statut !== 'all') {
-                match = match && v.statut === statut;
-            }
-            
-            if (dateDebut && match) {
-                const d1 = new Date(dateDebut);
-                const dV = new Date(v.created_at);
-                if (d1 > dV) match = false;
-            }
-            if (dateFin && match) {
-                const d2 = new Date(dateFin);
-                const dV = new Date(v.created_at);
-                d2.setHours(23, 59, 59);
-                if (d2 < dV) match = false;
-            }
-            
-            return match;
-        });
-
-        currentPage = 1;
-        renderVentes();
-    }
-
-    function resetVentesFilters() {
-        document.getElementById('searchVentes').value = '';
-        document.getElementById('filterStatut').value = 'all';
-        document.getElementById('dateDebut').value = '';
-        document.getElementById('dateFin').value = '';
-        filteredVentes = [...allVentes];
-        currentPage = 1;
-        renderVentes();
-    }
-
-    // ==========================================
-    // METTRE À JOUR LE STATUT
-    // ==========================================
-    async function updateStatut(id, newStatut) {
-        const v = allVentes.find(item => item.id === id);
-        if (!v) return;
-
-        const oldStatut = v.statut;
-        v.statut = newStatut;
-        
-        const f = filteredVentes.find(item => item.id === id);
-        if (f) f.statut = newStatut;
-
-        renderVentes();
-        updateVentesStats();
-
+        // Initialiser Supabase
         try {
-            if (supabaseClient) {
-                const { error } = await supabaseClient
-                    .from('clients')
-                    .update({ statut_produit: newStatut })
-                    .eq('id', id);
-
-                if (error) {
-                    console.error('❌ Erreur mise à jour Supabase:', error);
-                    v.statut = oldStatut;
-                    if (f) f.statut = oldStatut;
-                    renderVentes();
-                    updateVentesStats();
-                    showNotification('❌ Erreur lors de la mise à jour', 'error');
-                    return;
-                }
-            }
-            
-            showNotification(`✅ Statut mis à jour : ${newStatut}`, 'success');
-
-        } catch (err) {
-            console.error('❌ Erreur:', err);
-            showNotification('❌ Erreur lors de la mise à jour', 'error');
-        }
-    }
-
-    // ==========================================
-    // EXPORTER CSV
-    // ==========================================
-    function exportCSV() {
-        if (allVentes.length === 0) {
-            showNotification('❌ Aucune donnée à exporter', 'error');
-            return;
-        }
-
-        let csv = 'ID,Client,Email,Téléphone,Date,Total,Ville,Pays,Statut\n';
-        allVentes.forEach(v => {
-            const client = `${v.prenom || ''} ${v.nom || ''}`.trim();
-            const statutValue = v.statut_produit || v.statut || '';
-            csv += `${v.id},"${client}","${v.email || ''}","${v.telephone || ''}","${formatDate(v.created_at)}","${v.total_achat || 0}","${v.ville || ''}","${v.pays || ''}","${statutValue}"\n`;
-        });
-
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `ventes_${new Date().toISOString().slice(0,10)}.csv`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        showNotification('✅ Export CSV effectué avec succès', 'success');
-    }
-
-    // ==========================================
-    // RAFRAÎCHIR
-    // ==========================================
-    function rafraichirVentes() {
-        loadVentesData();
-        showNotification('🔄 Données actualisées', 'info');
-    }
-
-    // ==========================================
-    // CHARGER LES DONNÉES DEPUIS SUPABASE
-    // ==========================================
-    async function loadVentesData() {
-        try {
-            console.log('📝 Chargement des données depuis Supabase...');
-            
-            if (!supabaseClient) {
-                console.warn('⚠️ Supabase non disponible, utilisation des données de test');
-                allVentes = getTestData();
-                filteredVentes = [...allVentes];
-                renderVentes();
-                updateVentesStats();
-                return;
-            }
-
-            const { data, error } = await supabaseClient
-                .from('clients')
-                .select('*')
-                .order('created_at', { ascending: false });
-
-            if (error) {
-                console.error('❌ Erreur chargement:', error);
-                allVentes = getTestData();
-                filteredVentes = [...allVentes];
-                renderVentes();
-                updateVentesStats();
-                return;
-            }
-
-            if (data && data.length > 0) {
-                console.log(`✅ ${data.length} clients chargés depuis Supabase`);
-                
-                allVentes = data.map(c => ({
-                    ...c,
-                    statut: c.statut_produit || 'en attente'
-                }));
-                
-                filteredVentes = [...allVentes];
-                renderVentes();
-                updateVentesStats();
+            if (window.supabase) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                window.supabaseClient = supabaseClient;
+                console.log('✅ Supabase initialisé dans suivi-ventes.html');
             } else {
-                console.warn('⚠️ Aucune donnée trouvée, utilisation des données de test');
-                allVentes = getTestData();
-                filteredVentes = [...allVentes];
-                renderVentes();
-                updateVentesStats();
+                console.warn('⚠️ Supabase SDK non chargé');
+            }
+        } catch (e) {
+            console.error('❌ Erreur initialisation Supabase:', e);
+        }
+
+        // ==========================================
+        // VARIABLES
+        // ==========================================
+        let allVentes = [];
+        let filteredVentes = [];
+        let currentPage = 1;
+        const perPage = 10;
+
+        // ==========================================
+        // DONNÉES DE TEST (fallback) - MISES À JOUR AVEC statut_produit
+        // ==========================================
+        function getTestData() {
+            return [
+                { id: 1, prenom: 'Jean', nom: 'Dupont', email: 'jean@email.com', telephone: '0612345678', ville: 'Paris', pays: 'FR', created_at: new Date().toISOString(), total_achat: 398.00, statut_produit: 'soldé' },
+                { id: 2, prenom: 'Fleury', nom: 'HAMIDOU', email: 'f91631072@gmail.com', telephone: '0191647720', ville: 'Parakou', pays: 'BJ', created_at: new Date(Date.now() - 86400000).toISOString(), total_achat: 267.00, statut_produit: 'en attente' },
+                { id: 3, prenom: 'Marie', nom: 'Martin', email: 'marie@email.com', telephone: '0765432109', ville: 'Lyon', pays: 'FR', created_at: new Date(Date.now() - 172800000).toISOString(), total_achat: 159.00, statut_produit: 'annulé' },
+                { id: 4, prenom: 'Amadou', nom: 'Diallo', email: 'amadou@email.com', telephone: '779012345', ville: 'Dakar', pays: 'SN', created_at: new Date(Date.now() - 259200000).toISOString(), total_achat: 299.00, statut_produit: 'soldé' },
+                { id: 5, prenom: 'Sophie', nom: 'Bernard', email: 'sophie@email.com', telephone: '0612345987', ville: 'Marseille', pays: 'FR', created_at: new Date(Date.now() - 345600000).toISOString(), total_achat: 149.00, statut_produit: 'en attente' }
+            ];
+        }
+
+        // ==========================================
+        // FORMATER LA DATE
+        // ==========================================
+        function formatDate(dateString) {
+            if (!dateString) return '—';
+            const d = new Date(dateString);
+            if (isNaN(d.getTime())) return '—';
+            return d.toLocaleDateString('fr-FR') + ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // ==========================================
+        // BADGE STATUT
+        // ==========================================
+        function getStatutBadge(statut) {
+            const s = {
+                'soldé': { bg: '#27ae60', icon: 'fa-check', text: 'Soldé' },
+                'en attente': { bg: '#f39c12', icon: 'fa-clock', text: 'En attente' },
+                'annulé': { bg: '#e74c3c', icon: 'fa-times', text: 'Annulé' }
+            };
+            const st = s[statut] || s['en attente'];
+            return `<span style="background:${st.bg}; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                <i class="fas ${st.icon}"></i> ${st.text}
+            </span>`;
+        }
+
+        // ==========================================
+        // RENDU TABLEAU
+        // ==========================================
+        function renderVentes() {
+            const tbody = document.getElementById('ventesTableBody');
+            if (filteredVentes.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:40px; color:#888;">
+                    <i class="fas fa-inbox" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
+                    Aucune vente trouvée.
+                </td></tr>`;
+                return;
             }
 
-        } catch (err) {
-            console.error('❌ Erreur:', err);
-            allVentes = getTestData();
+            const start = (currentPage - 1) * perPage;
+            const items = filteredVentes.slice(start, start + perPage);
+
+            tbody.innerHTML = items.map(v => `
+                <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
+                    <td style="padding:12px; font-weight:600;">#${v.id}</td>
+                    <td style="padding:12px; font-weight:500;">${v.prenom || ''} ${v.nom || ''}</td>
+                    <td style="padding:12px; color:#888;">${v.email || '—'}</td>
+                    <td style="padding:12px; color:#888;">${v.telephone || '—'}</td>
+                    <td style="padding:12px; color:#888; font-size:0.9rem;">${formatDate(v.created_at)}</td>
+                    <td style="padding:12px; font-weight:700; color:#c9a84c;">${v.total_achat ? v.total_achat.toFixed(2).replace('.', ',') + ' FCFA' : '—'}</td>
+                    <td style="padding:12px; color:#888;">${v.ville || '—'}</td>
+                    <td style="padding:12px; text-align:center;">${getStatutBadge(v.statut)}</td>
+                    <td style="padding:12px; text-align:center;">
+                        <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:4px 10px; border:none; border-radius:6px; background:#27ae60; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
+                        <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:4px 10px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
+                        <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:4px 10px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            updateVentesPaginationInfo();
+        }
+
+        // ==========================================
+        // STATISTIQUES
+        // ==========================================
+        function updateVentesStats() {
+            const total = allVentes.length;
+            const sold = allVentes.filter(v => v.statut === 'soldé').length;
+            const attente = allVentes.filter(v => v.statut === 'en attente').length;
+            const annul = allVentes.filter(v => v.statut === 'annulé').length;
+            
+            document.getElementById('totalCommandes').textContent = total;
+            document.getElementById('totalSoldees').textContent = sold;
+            document.getElementById('totalEnAttente').textContent = attente;
+            document.getElementById('totalAnnulees').textContent = annul;
+        }
+
+        // ==========================================
+        // PAGINATION
+        // ==========================================
+        function updateVentesPaginationInfo() {
+            const total = filteredVentes.length;
+            const start = (currentPage - 1) * perPage + 1;
+            const end = Math.min(currentPage * perPage, total);
+            const totalPages = Math.ceil(total / perPage) || 1;
+
+            document.getElementById('ventesPaginationInfo').textContent = 
+                `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
+            document.getElementById('ventesPageInfo').textContent = `Page ${currentPage} sur ${totalPages}`;
+
+            document.getElementById('prevVentesPage').disabled = currentPage <= 1;
+            document.getElementById('nextVentesPage').disabled = currentPage >= totalPages;
+        }
+
+        function prevVentesPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderVentes();
+                updateVentesPaginationInfo();
+            }
+        }
+
+        function nextVentesPage() {
+            const totalPages = Math.ceil(filteredVentes.length / perPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderVentes();
+                updateVentesPaginationInfo();
+            }
+        }
+
+        // ==========================================
+        // FILTRES
+        // ==========================================
+        function applyVentesFilters() {
+            const search = document.getElementById('searchVentes').value.toLowerCase().trim();
+            const statut = document.getElementById('filterStatut').value;
+            const dateDebut = document.getElementById('dateDebut').value;
+            const dateFin = document.getElementById('dateFin').value;
+
+            filteredVentes = allVentes.filter(v => {
+                let match = true;
+                
+                // Recherche
+                if (search) {
+                    const fullName = `${v.prenom || ''} ${v.nom || ''}`.toLowerCase();
+                    const email = (v.email || '').toLowerCase();
+                    const phone = (v.telephone || '').toLowerCase();
+                    match = fullName.includes(search) || email.includes(search) || phone.includes(search);
+                }
+                
+                // Statut
+                if (statut !== 'all') {
+                    match = match && v.statut === statut;
+                }
+                
+                // Dates
+                if (dateDebut && match) {
+                    const d1 = new Date(dateDebut);
+                    const dV = new Date(v.created_at);
+                    if (d1 > dV) match = false;
+                }
+                if (dateFin && match) {
+                    const d2 = new Date(dateFin);
+                    const dV = new Date(v.created_at);
+                    d2.setHours(23, 59, 59);
+                    if (d2 < dV) match = false;
+                }
+                
+                return match;
+            });
+
+            currentPage = 1;
+            renderVentes();
+            updateVentesPaginationInfo();
+        }
+
+        function resetVentesFilters() {
+            document.getElementById('searchVentes').value = '';
+            document.getElementById('filterStatut').value = 'all';
+            document.getElementById('dateDebut').value = '';
+            document.getElementById('dateFin').value = '';
             filteredVentes = [...allVentes];
+            currentPage = 1;
+            renderVentes();
+            updateVentesPaginationInfo();
+        }
+
+        // ==========================================
+        // METTRE À JOUR LE STATUT - UTILISE statut_produit
+        // ==========================================
+        async function updateStatut(id, newStatut) {
+            // Mettre à jour localement
+            const v = allVentes.find(item => item.id === id);
+            if (!v) return;
+
+            const oldStatut = v.statut;
+            v.statut = newStatut;
+            
+            const f = filteredVentes.find(item => item.id === id);
+            if (f) f.statut = newStatut;
+
             renderVentes();
             updateVentesStats();
+
+            // Mettre à jour dans Supabase avec statut_produit
+            try {
+                if (supabaseClient) {
+                    const { error } = await supabaseClient
+                        .from('clients')
+                        .update({ statut_produit: newStatut })  // ← Utilisation de statut_produit
+                        .eq('id', id);
+
+                    if (error) {
+                        console.error('❌ Erreur mise à jour Supabase:', error);
+                        // Revert local
+                        v.statut = oldStatut;
+                        if (f) f.statut = oldStatut;
+                        renderVentes();
+                        updateVentesStats();
+                        showNotification('❌ Erreur lors de la mise à jour', 'error');
+                        return;
+                    }
+                }
+                
+                showNotification(`✅ Statut mis à jour : ${newStatut}`, 'success');
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                showNotification('❌ Erreur lors de la mise à jour', 'error');
+            }
         }
-    }
 
-    // ==========================================
-    // NOTIFICATION
-    // ==========================================
-    function showNotification(message, type = 'info') {
-        document.querySelectorAll('.toast-nikel').forEach(t => t.remove());
+        // ==========================================
+        // EXPORTER CSV - UTILISE statut_produit
+        // ==========================================
+        function exportCSV() {
+            if (allVentes.length === 0) {
+                showNotification('❌ Aucune donnée à exporter', 'error');
+                return;
+            }
 
-        const colors = {
-            success: '#27ae60',
-            error: '#e74c3c',
-            info: '#c9a84c'
-        };
+            let csv = 'ID,Client,Email,Téléphone,Date,Total,Ville,Pays,Statut\n';
+            allVentes.forEach(v => {
+                const client = `${v.prenom || ''} ${v.nom || ''}`.trim();
+                // Utiliser statut_produit ou statut en fallback
+                const statutValue = v.statut_produit || v.statut || '';
+                csv += `${v.id},"${client}","${v.email || ''}","${v.telephone || ''}","${formatDate(v.created_at)}","${v.total_achat || 0}","${v.ville || ''}","${v.pays || ''}","${statutValue}"\n`;
+            });
 
-        const toast = document.createElement('div');
-        toast.className = 'toast-nikel';
-        toast.style.cssText = `
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #1a1a1a;
-            color: white;
-            padding: 16px 24px;
-            border-radius: 14px;
-            font-weight: 500;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.25);
-            z-index: 9999;
-            max-width: 400px;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            animation: slideUp 0.5s ease;
-            border-left: 4px solid ${colors[type] || colors.info};
-        `;
-        toast.innerHTML = `<span>${message}</span>`;
-        document.body.appendChild(toast);
-
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transform = 'translateY(20px)';
-            toast.style.transition = 'all 0.4s ease';
-            setTimeout(() => toast.remove(), 400);
-        }, 3000);
-    }
-
-    // ==========================================
-    // EXPOSER LES FONCTIONS GLOBALEMENT
-    // ==========================================
-    window.applyVentesFilters = applyVentesFilters;
-    window.resetVentesFilters = resetVentesFilters;
-    window.prevVentesPage = prevVentesPage;
-    window.nextVentesPage = nextVentesPage;
-    window.updateStatut = updateStatut;
-    window.exportCSV = exportCSV;
-    window.rafraichirVentes = rafraichirVentes;
-    window.showNotification = showNotification;
-    window.loadVentesData = loadVentesData;
-
-    // ==========================================
-    // INITIALISATION
-    // ==========================================
-    function init() {
-        console.log('🚀 Chargement de suivi-ventes.html...');
-        
-        // Vérification simple des éléments essentiels
-        const tbody = document.getElementById('ventesTableBody');
-        if (!tbody) {
-            console.error('❌ Table body non trouvé au chargement');
-            return;
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `ventes_${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('✅ Export CSV effectué avec succès', 'success');
         }
-        
-        loadVentesData();
-    }
 
-    // Démarrer l'application
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
+        // ==========================================
+        // RAFRAÎCHIR
+        // ==========================================
+        function rafraichirVentes() {
+            loadVentesData();
+            showNotification('🔄 Données actualisées', 'info');
+        }
+
+        // ==========================================
+        // CHARGER LES DONNÉES DEPUIS SUPABASE - UTILISE statut_produit
+        // ==========================================
+        async function loadVentesData() {
+            try {
+                console.log('📝 Chargement des données depuis Supabase...');
+                
+                // Vérifier si Supabase est disponible
+                if (!supabaseClient) {
+                    console.warn('⚠️ Supabase non disponible, utilisation des données de test');
+                    allVentes = getTestData();
+                    filteredVentes = [...allVentes];
+                    renderVentes();
+                    updateVentesStats();
+                    updateVentesPaginationInfo();
+                    return;
+                }
+
+                // Charger les données depuis la table clients
+                const { data, error } = await supabaseClient
+                    .from('clients')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error('❌ Erreur chargement:', error);
+                    // Utiliser les données de test en cas d'erreur
+                    allVentes = getTestData();
+                    filteredVentes = [...allVentes];
+                    renderVentes();
+                    updateVentesStats();
+                    updateVentesPaginationInfo();
+                    return;
+                }
+
+                if (data && data.length > 0) {
+                    console.log(`✅ ${data.length} clients chargés depuis Supabase`);
+                    
+                    // Utiliser statut_produit comme source du statut
+                    allVentes = data.map(c => ({
+                        ...c,
+                        statut: c.statut_produit || 'en attente'  // ← Utilisation de statut_produit
+                    }));
+                    
+                    filteredVentes = [...allVentes];
+                    renderVentes();
+                    updateVentesStats();
+                    updateVentesPaginationInfo();
+                } else {
+                    console.warn('⚠️ Aucune donnée trouvée, utilisation des données de test');
+                    allVentes = getTestData();
+                    filteredVentes = [...allVentes];
+                    renderVentes();
+                    updateVentesStats();
+                    updateVentesPaginationInfo();
+                }
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                allVentes = getTestData();
+                filteredVentes = [...allVentes];
+                renderVentes();
+                updateVentesStats();
+                updateVentesPaginationInfo();
+            }
+        }
+
+        // ==========================================
+        // NOTIFICATION
+        // ==========================================
+        function showNotification(message, type = 'info') {
+            document.querySelectorAll('.toast-nikel').forEach(t => t.remove());
+
+            const colors = {
+                success: '#27ae60',
+                error: '#e74c3c',
+                info: '#c9a84c'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-nikel';
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: #1a1a1a;
+                color: white;
+                padding: 16px 24px;
+                border-radius: 14px;
+                font-weight: 500;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+                z-index: 9999;
+                max-width: 400px;
+                font-size: 0.95rem;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                animation: slideUp 0.5s ease;
+                border-left: 4px solid ${colors[type] || colors.info};
+            `;
+            toast.innerHTML = `<span>${message}</span>`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // ==========================================
+        // EXPOSER LES FONCTIONS GLOBALEMENT
+        // ==========================================
+        window.applyVentesFilters = applyVentesFilters;
+        window.resetVentesFilters = resetVentesFilters;
+        window.prevVentesPage = prevVentesPage;
+        window.nextVentesPage = nextVentesPage;
+        window.updateStatut = updateStatut;
+        window.exportCSV = exportCSV;
+        window.rafraichirVentes = rafraichirVentes;
+        window.showNotification = showNotification;
+        window.loadVentesData = loadVentesData;
+
+        // ==========================================
+        // INITIALISATION
+        // ==========================================
+        function init() {
+            console.log('🚀 Chargement de suivi-ventes.html...');
+            loadVentesData();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
 </script>
