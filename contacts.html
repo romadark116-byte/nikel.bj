@@ -51,31 +51,19 @@
         </button>
     </div>
 
-    <!-- ===== TABLEAU AVEC SCROLL ===== -->
-    <div class="contacts-table-wrapper" style="overflow-x:auto; overflow-y:visible; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch;">
-        <table style="width:100%; border-collapse:collapse; font-size:0.85rem; min-width:900px;">
-            <thead>
-                <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">#</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Prénom</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Nom</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Email</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Téléphone</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Ville</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Pays</th>
-                    <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Statut</th>
-                    <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="contactsTableBody">
-                <tr>
-                    <td colspan="9" style="text-align:center; padding:40px; color:#888;">
-                        <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
-                        Chargement...
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <!-- ===== GRILLE CONTACTS (COMME FAVORIS) ===== -->
+    <div class="contacts-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:24px;" id="contactsGrid">
+        <div style="text-align:center; padding:40px; color:#888; grid-column:1/-1;">
+            <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
+            Chargement des contacts...
+        </div>
+    </div>
+
+    <!-- ===== MESSAGE AUCUN CONTACT ===== -->
+    <div id="emptyContacts" style="display:none; text-align:center; padding:60px 20px; color:#888;">
+        <i class="fas fa-address-book" style="font-size:3rem; color:#ddd; display:block; margin-bottom:16px;"></i>
+        <h3 style="color:#1a1a1a;">Aucun contact</h3>
+        <p style="color:#888;">Aucun contact n'a encore été ajouté.</p>
     </div>
 
     <!-- ===== PAGINATION ===== -->
@@ -93,7 +81,7 @@
     </div>
 </div>
 
-<!-- ===== MODAL ===== -->
+<!-- ===== MODAL (inchangée) ===== -->
 <div id="contactModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center; padding:16px;">
     <div style="background:white; border-radius:16px; padding:32px; max-width:550px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
@@ -206,8 +194,9 @@
     /* Responsive - Contacts (mêmes réglages que favoris) */
     
     @media (max-width: 992px) {
-        .contacts-table-wrapper table {
-            min-width: 800px !important;
+        .contacts-grid {
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+            gap: 20px !important;
         }
     }
 
@@ -280,35 +269,42 @@
             text-align: center !important;
         }
 
-        /* Tableau */
-        .contacts-table-wrapper {
-            overflow-x: auto !important;
-            -webkit-overflow-scrolling: touch !important;
+        /* Grille */
+        .contacts-grid {
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+            gap: 16px !important;
         }
 
-        .contacts-table-wrapper table {
-            min-width: 700px !important;
+        .contacts-grid .contact-card {
+            padding: 14px !important;
+        }
+
+        .contacts-grid .contact-card .contact-avatar {
+            width: 50px !important;
+            height: 50px !important;
+            font-size: 1.2rem !important;
+        }
+
+        .contacts-grid .contact-card h4 {
+            font-size: 0.9rem !important;
+        }
+
+        .contacts-grid .contact-card .contact-info {
             font-size: 0.75rem !important;
         }
 
-        .contacts-table-wrapper table th,
-        .contacts-table-wrapper table td {
-            padding: 8px 6px !important;
-            font-size: 0.7rem !important;
+        .contacts-grid .contact-card .contact-info i {
+            width: 14px !important;
         }
 
-        .contacts-table-wrapper table th {
-            white-space: nowrap !important;
-        }
-
-        .contacts-table-wrapper table td .statut-badge {
-            font-size: 0.55rem !important;
-            padding: 2px 6px !important;
-        }
-
-        .contacts-table-wrapper table td .action-btn {
+        .contacts-grid .contact-card .statut-badge {
             font-size: 0.6rem !important;
-            padding: 3px 6px !important;
+            padding: 2px 8px !important;
+        }
+
+        .contacts-grid .contact-card .action-btn {
+            font-size: 0.6rem !important;
+            padding: 3px 8px !important;
         }
 
         /* Pagination */
@@ -392,26 +388,44 @@
             padding: 8px 14px !important;
         }
 
-        /* Tableau */
-        .contacts-table-wrapper table {
-            min-width: 600px !important;
+        /* Grille */
+        .contacts-grid {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 12px !important;
+        }
+
+        .contacts-grid .contact-card {
+            padding: 12px !important;
+        }
+
+        .contacts-grid .contact-card .contact-avatar {
+            width: 40px !important;
+            height: 40px !important;
+            font-size: 1rem !important;
+        }
+
+        .contacts-grid .contact-card h4 {
+            font-size: 0.8rem !important;
+            margin-bottom: 2px !important;
+        }
+
+        .contacts-grid .contact-card .contact-info {
             font-size: 0.65rem !important;
         }
 
-        .contacts-table-wrapper table th,
-        .contacts-table-wrapper table td {
-            padding: 5px 4px !important;
+        .contacts-grid .contact-card .contact-info i {
+            width: 12px !important;
             font-size: 0.6rem !important;
         }
 
-        .contacts-table-wrapper table td .statut-badge {
+        .contacts-grid .contact-card .statut-badge {
             font-size: 0.5rem !important;
-            padding: 1px 4px !important;
+            padding: 1px 6px !important;
         }
 
-        .contacts-table-wrapper table td .action-btn {
+        .contacts-grid .contact-card .action-btn {
             font-size: 0.5rem !important;
-            padding: 2px 4px !important;
+            padding: 2px 6px !important;
         }
 
         /* Header */
@@ -437,6 +451,23 @@
         .contacts-pagination #pageInfo {
             font-size: 0.8rem !important;
             padding: 0 8px !important;
+        }
+
+        /* Empty state */
+        #emptyContacts {
+            padding: 40px 16px !important;
+        }
+
+        #emptyContacts i {
+            font-size: 2.5rem !important;
+        }
+
+        #emptyContacts h3 {
+            font-size: 1.1rem !important;
+        }
+
+        #emptyContacts p {
+            font-size: 0.85rem !important;
         }
 
         /* Modal */
@@ -485,15 +516,32 @@
             font-size: 1rem !important;
         }
 
-        .contacts-table-wrapper table {
-            min-width: 500px !important;
-            font-size: 0.55rem !important;
+        .contacts-grid {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 8px !important;
         }
 
-        .contacts-table-wrapper table th,
-        .contacts-table-wrapper table td {
-            padding: 4px 3px !important;
-            font-size: 0.5rem !important;
+        .contacts-grid .contact-card {
+            padding: 10px !important;
+        }
+
+        .contacts-grid .contact-card .contact-avatar {
+            width: 35px !important;
+            height: 35px !important;
+            font-size: 0.9rem !important;
+        }
+
+        .contacts-grid .contact-card h4 {
+            font-size: 0.7rem !important;
+        }
+
+        .contacts-grid .contact-card .contact-info {
+            font-size: 0.6rem !important;
+        }
+
+        .contacts-grid .contact-card .action-btn {
+            font-size: 0.45rem !important;
+            padding: 2px 4px !important;
         }
 
         .contacts-pagination button {
@@ -536,13 +584,14 @@
             flex: 1 !important;
         }
 
-        .contacts-table-wrapper table {
-            min-width: 600px !important;
+        .contacts-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 12px !important;
         }
     }
 </style>
 
-<!-- ===== SCRIPTS (inchangés) ===== -->
+<!-- ===== SCRIPTS MODIFIÉS ===== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     (function() {
@@ -618,7 +667,7 @@
         let allContacts = [];
         let filteredContacts = [];
         let currentPage = 1;
-        const itemsPerPage = 10;
+        const perPage = 6; // Comme favoris
 
         // ==========================================
         // FONCTIONS
@@ -666,6 +715,17 @@
             villeSelect.innerHTML = villes.map(v => `<option value="${v}">${v}</option>`).join('');
         }
 
+        function getInitiales(prenom, nom) {
+            const p = (prenom || '?')[0].toUpperCase();
+            const n = (nom || '?')[0].toUpperCase();
+            return p + n;
+        }
+
+        function getCouleurAvatar(id) {
+            const couleurs = ['#c9a84c', '#27ae60', '#f39c12', '#3498db', '#e74c3c', '#9b59b6', '#1abc9c', '#e67e22'];
+            return couleurs[id % couleurs.length];
+        }
+
         function getStatutBadge(statut) {
             if (statut === 'client') {
                 return `<span class="statut-badge" style="background:#27ae60; color:white; padding:3px 10px; border-radius:50px; font-size:0.7rem; font-weight:600; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;">
@@ -694,7 +754,7 @@
 
                 allContacts = data ? data.map(c => ({ ...c, statut: c.statut_contact || 'prospect' })) : [];
                 filteredContacts = [...allContacts];
-                renderTable();
+                renderContacts();
                 updateStats();
                 updatePaginationInfo();
 
@@ -702,56 +762,84 @@
                 console.error('❌ Erreur:', err);
                 allContacts = [];
                 filteredContacts = [];
-                renderTable();
+                renderContacts();
                 updateStats();
                 updatePaginationInfo();
             }
         }
 
         // ==========================================
-        // RENDU
+        // RENDU - GRILLE DE CARTES (comme favoris)
         // ==========================================
-        function renderTable() {
-            const tbody = document.getElementById('contactsTableBody');
-            if (!tbody) return;
-            
+        function renderContacts() {
+            const grid = document.getElementById('contactsGrid');
+            const empty = document.getElementById('emptyContacts');
+            const pagination = document.getElementById('contactsContainer').querySelector('.contacts-pagination');
+
+            if (allContacts.length === 0) {
+                grid.style.display = 'none';
+                empty.style.display = 'block';
+                if (pagination) pagination.style.display = 'none';
+                return;
+            }
+
+            grid.style.display = 'grid';
+            empty.style.display = 'none';
+            if (pagination) pagination.style.display = 'flex';
+
             if (filteredContacts.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="9" style="text-align:center; padding:40px; color:#888;">
-                            <i class="fas fa-inbox" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
-                            Aucun contact trouvé.
-                        </td>
-                    </tr>
+                grid.innerHTML = `
+                    <div style="text-align:center; padding:40px; color:#888; grid-column:1/-1;">
+                        <i class="fas fa-search" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
+                        Aucun contact ne correspond à votre recherche.
+                    </div>
                 `;
                 return;
             }
 
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = Math.min(startIndex + itemsPerPage, filteredContacts.length);
-            const pageItems = filteredContacts.slice(startIndex, endIndex);
+            const start = (currentPage - 1) * perPage;
+            const items = filteredContacts.slice(start, start + perPage);
 
-            tbody.innerHTML = pageItems.map(contact => {
-                const fullPhone = (contact.indicatif || '+229') + ' ' + (contact.telephone || '');
+            grid.innerHTML = items.map(c => {
+                const initiales = getInitiales(c.prenom, c.nom);
+                const couleur = getCouleurAvatar(c.id || 0);
+                const nomComplet = `${c.prenom || ''} ${c.nom || ''}`.trim() || 'Sans nom';
+
                 return `
-                <tr style="border-bottom:1px solid #f0f0f0;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
-                    <td style="padding:8px 6px; font-weight:600; font-size:0.8rem; text-align:center;">${contact.id}</td>
-                    <td style="padding:8px 6px; font-weight:500; font-size:0.8rem; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${contact.prenom || ''}">${contact.prenom || ''}</td>
-                    <td style="padding:8px 6px; font-weight:500; font-size:0.8rem; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${contact.nom || ''}">${contact.nom || ''}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${contact.email || '—'}">${contact.email || '—'}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap;">${fullPhone}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${contact.ville || '—'}">${contact.ville || '—'}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem;">${paysLabels[contact.pays] || contact.pays || '—'}</td>
-                    <td style="padding:8px 6px; text-align:center;">${getStatutBadge(contact.statut)}</td>
-                    <td style="padding:8px 6px; text-align:center; white-space:nowrap;">
-                        <button onclick="editContact(${contact.id})" class="action-btn" style="padding:3px 6px; border:none; border-radius:4px; background:#f39c12; color:white; cursor:pointer; font-size:0.65rem; margin:1px;" title="Modifier">
-                            <i class="fas fa-edit"></i>
+                <div class="contact-card" style="background:#ffffff; border-radius:12px; overflow:hidden; transition:all 0.3s; position:relative; border:1px solid #f0f0f0; box-shadow:0 2px 8px rgba(0,0,0,0.04); padding:16px;" 
+                     onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 30px rgba(0,0,0,0.12)';this.style.borderColor='#c9a84c'" 
+                     onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.04)';this.style.borderColor='#f0f0f0'">
+                    
+                    <!-- Avatar -->
+                    <div class="contact-avatar" style="width:60px; height:60px; border-radius:50%; background:${couleur}; display:flex; align-items:center; justify-content:center; font-size:1.4rem; font-weight:700; color:white; margin:0 auto 12px auto;">
+                        ${initiales}
+                    </div>
+
+                    <!-- Nom -->
+                    <h4 style="font-weight:600; font-size:1rem; margin:0 0 2px 0; text-align:center; color:#1a1a1a;">${nomComplet}</h4>
+                    
+                    <!-- Statut -->
+                    <div style="text-align:center; margin-bottom:10px;">
+                        ${getStatutBadge(c.statut)}
+                    </div>
+
+                    <!-- Infos -->
+                    <div class="contact-info" style="font-size:0.8rem; color:#555; display:flex; flex-direction:column; gap:4px; margin-bottom:12px;">
+                        ${c.email ? `<div style="display:flex; align-items:center; gap:8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"><i class="fas fa-envelope" style="width:16px; color:#888;"></i> <span title="${c.email}">${c.email}</span></div>` : ''}
+                        ${c.telephone ? `<div style="display:flex; align-items:center; gap:8px;"><i class="fas fa-phone" style="width:16px; color:#888;"></i> ${c.indicatif || '+229'} ${c.telephone}</div>` : ''}
+                        ${c.ville ? `<div style="display:flex; align-items:center; gap:8px;"><i class="fas fa-map-marker-alt" style="width:16px; color:#888;"></i> ${c.ville}${c.pays ? `, ${paysLabels[c.pays] || c.pays}` : ''}</div>` : ''}
+                    </div>
+
+                    <!-- Actions -->
+                    <div style="display:flex; gap:6px; justify-content:center; border-top:1px solid #f0f0f0; padding-top:10px;">
+                        <button onclick="editContact(${c.id})" class="action-btn" style="padding:4px 10px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.7rem; transition:all 0.3s; display:flex; align-items:center; gap:4px;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                            <i class="fas fa-edit"></i> Modifier
                         </button>
-                        <button onclick="deleteContact(${contact.id})" class="action-btn" style="padding:3px 6px; border:none; border-radius:4px; background:#e74c3c; color:white; cursor:pointer; font-size:0.65rem; margin:1px;" title="Supprimer">
-                            <i class="fas fa-trash-alt"></i>
+                        <button onclick="deleteContact(${c.id})" class="action-btn" style="padding:4px 10px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.7rem; transition:all 0.3s; display:flex; align-items:center; gap:4px;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                            <i class="fas fa-trash-alt"></i> Supprimer
                         </button>
-                    </td>
-                </tr>
+                    </div>
+                </div>
             `}).join('');
 
             updatePaginationInfo();
@@ -777,9 +865,9 @@
         // ==========================================
         function updatePaginationInfo() {
             const total = filteredContacts.length;
-            const start = (currentPage - 1) * itemsPerPage + 1;
-            const end = Math.min(currentPage * itemsPerPage, total);
-            const totalPages = Math.ceil(total / itemsPerPage) || 1;
+            const start = (currentPage - 1) * perPage + 1;
+            const end = Math.min(currentPage * perPage, total);
+            const totalPages = Math.ceil(total / perPage) || 1;
 
             document.getElementById('paginationInfo').textContent = 
                 `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
@@ -792,15 +880,15 @@
         function previousPage() {
             if (currentPage > 1) {
                 currentPage--;
-                renderTable();
+                renderContacts();
             }
         }
 
         function nextPage() {
-            const totalPages = Math.ceil(filteredContacts.length / itemsPerPage);
+            const totalPages = Math.ceil(filteredContacts.length / perPage);
             if (currentPage < totalPages) {
                 currentPage++;
-                renderTable();
+                renderContacts();
             }
         }
 
@@ -829,7 +917,7 @@
             });
 
             currentPage = 1;
-            renderTable();
+            renderContacts();
         }
 
         function resetFilters() {
@@ -837,11 +925,11 @@
             document.getElementById('filterType').value = 'all';
             filteredContacts = [...allContacts];
             currentPage = 1;
-            renderTable();
+            renderContacts();
         }
 
         // ==========================================
-        // MODAL
+        // MODAL (inchangée)
         // ==========================================
         function openAddModal() {
             document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus" style="color:#c9a84c;"></i> Ajouter un contact';
@@ -947,7 +1035,7 @@
 
                 closeModal();
                 filteredContacts = [...allContacts];
-                renderTable();
+                renderContacts();
                 updateStats();
                 updatePaginationInfo();
 
@@ -977,7 +1065,7 @@
 
                 allContacts = allContacts.filter(c => c.id !== id);
                 filteredContacts = [...allContacts];
-                renderTable();
+                renderContacts();
                 updateStats();
                 updatePaginationInfo();
                 showNotification('🗑️ Contact supprimé', 'info');
@@ -1054,7 +1142,7 @@
         // INIT
         // ==========================================
         function init() {
-            console.log('🚀 Chargement de contacts.html...');
+            console.log('🚀 Chargement de contacts.html (version grille)...');
             loadContactsData();
 
             document.getElementById('contactForm').addEventListener('submit', saveContact);
