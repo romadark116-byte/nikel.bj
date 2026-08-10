@@ -125,7 +125,7 @@
         const scrollContainer = document.getElementById('tableScrollContainer');
         if (scrollContainer) {
             scrollContainer.addEventListener('scroll', function() {
-                const indicator = document.querySelector('.scroll-indicator-text') || document.querySelector('[style*="Faites glisser"]');
+                const indicator = document.querySelector('[style*="Faites glisser"]');
                 if (indicator) {
                     const maxScroll = this.scrollWidth - this.clientWidth;
                     if (this.scrollLeft >= maxScroll - 10) {
