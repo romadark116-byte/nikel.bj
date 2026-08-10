@@ -1,4 +1,4 @@
-<!-- profil.html - Page Profil du vendeur (version base64) -->
+<!-- profil.html - Page Profil du vendeur (version base64 avec compression) -->
 <div id="profilContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
@@ -88,7 +88,7 @@
                 <input type="text" id="adresseBoutique" name="adresseBoutique" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'">
             </div>
 
-            <!-- ===== GALERIE PHOTO DE LA BOUTIQUE (VERSION BASE64) ===== -->
+            <!-- ===== GALERIE PHOTO DE LA BOUTIQUE ===== -->
             <div style="padding:16px; background:#f8f8f8; border-radius:12px; margin-bottom:16px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
                     <div>
@@ -102,7 +102,6 @@
                     </button>
                 </div>
 
-                <!-- Container des photos -->
                 <div id="galerieContainer" style="display:flex; flex-direction:column; gap:16px;">
                     <div id="galerieEmpty" style="text-align:center; padding:30px; color:#999; background:#fff; border-radius:8px; border:2px dashed #e0e0e0;">
                         <i class="fas fa-camera" style="font-size:2rem; display:block; margin-bottom:8px; color:#ddd;"></i>
@@ -112,14 +111,14 @@
                 </div>
             </div>
 
-            <!-- ===== GRAND TITRE (colonne titreb) ===== -->
+            <!-- ===== GRAND TITRE ===== -->
             <div class="form-group">
                 <label for="grandTitre" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-heading" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Grand titre</label>
                 <input type="text" id="grandTitre" name="grandTitre" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'" placeholder="Ex: L'élégance à votre portée">
                 <small style="color:#888; font-size:0.8rem;">Le titre principal qui apparaît sur votre page boutique.</small>
             </div>
 
-            <!-- ===== DESCRIPTION DE LA BOUTIQUE (colonne legende) ===== -->
+            <!-- ===== DESCRIPTION DE LA BOUTIQUE ===== -->
             <div class="form-group">
                 <label for="legendeBoutique" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-align-left" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Description de la boutique</label>
                 <textarea id="legendeBoutique" name="legendeBoutique" rows="3" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit; resize:vertical;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'" placeholder="Ex: Découvrez notre collection unique de prêt-à-porter haut de gamme..."></textarea>
@@ -144,14 +143,14 @@
                 </div>
             </div>
 
-            <!-- ===== TITRE PRO (colonne titre de admin_profiles) ===== -->
+            <!-- ===== TITRE PRO ===== -->
             <div class="form-group">
                 <label for="titrePro" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-user-tie" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Titre professionnel</label>
                 <input type="text" id="titrePro" name="titrePro" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'" placeholder="Ex: Designer de mode - Fondateur de NIKEL">
                 <small style="color:#888; font-size:0.8rem;">Votre titre professionnel qui apparaît sur votre profil.</small>
             </div>
 
-            <!-- ===== DESCRIPTION PRO (Bio) - colonne description de admin_profiles ===== -->
+            <!-- ===== DESCRIPTION PRO (Bio) ===== -->
             <div class="form-group">
                 <label for="bio" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#333;"><i class="fas fa-align-left" style="color:#c9a84c; margin-right:6px; width:16px;"></i> Description Pro (Bio)</label>
                 <textarea id="bio" name="bio" rows="4" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#f8f8f8; font-family:inherit; resize:vertical;" onfocus="this.style.borderColor='#c9a84c';this.style.background='#ffffff'" onblur="this.style.borderColor='#e8e8e8';this.style.background='#f8f8f8'" placeholder="Présentez-vous en quelques mots..."></textarea>
@@ -193,6 +192,51 @@
         // VARIABLES
         // ==========================================
         let galerieData = [];
+
+        // ==========================================
+        // COMPRESSION D'IMAGE
+        // ==========================================
+        function compressImage(file, maxWidth = 800, maxHeight = 800, quality = 0.7) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = function() {
+                        let width = img.width;
+                        let height = img.height;
+                        
+                        if (width > height) {
+                            if (width > maxWidth) {
+                                height = height * (maxWidth / width);
+                                width = maxWidth;
+                            }
+                        } else {
+                            if (height > maxHeight) {
+                                width = width * (maxHeight / height);
+                                height = maxHeight;
+                            }
+                        }
+                        
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+                        resolve(compressedBase64);
+                    };
+                    img.onerror = function() {
+                        reject(new Error('Erreur lors du chargement de l\'image'));
+                    };
+                };
+                reader.onerror = function() {
+                    reject(new Error('Erreur lors de la lecture du fichier'));
+                };
+            });
+        }
 
         // ==========================================
         // NOTIFICATION
@@ -238,34 +282,33 @@
         }
 
         // ==========================================
-        // CONVERTIR IMAGE EN BASE64
+        // CONVERTIR IMAGE EN BASE64 AVEC COMPRESSION
         // ==========================================
-        function convertImageToBase64(file) {
-            return new Promise((resolve, reject) => {
+        async function convertImageToBase64(file) {
+            try {
                 const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/gif'];
                 if (!validTypes.includes(file.type)) {
-                    reject(new Error('Format non supporté. Utilisez JPG, PNG, WEBP ou GIF'));
-                    return;
+                    throw new Error('Format non supporté. Utilisez JPG, PNG, WEBP ou GIF');
                 }
 
                 if (file.size > 5 * 1024 * 1024) {
-                    reject(new Error('Image trop grande. Maximum 5MB'));
-                    return;
+                    throw new Error('Image trop grande. Maximum 5MB');
                 }
 
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    resolve(e.target.result);
-                };
-                reader.onerror = function(e) {
-                    reject(new Error('Erreur lors de la lecture du fichier'));
-                };
-                reader.readAsDataURL(file);
-            });
+                // 🔑 COMPRESSER AVANT CONVERSION
+                const compressedBase64 = await compressImage(file, 800, 800, 0.7);
+                const sizeKB = (compressedBase64.length / 1024).toFixed(2);
+                console.log(`✅ Image compressée: ${sizeKB} KB`);
+                
+                return compressedBase64;
+            } catch (err) {
+                console.error('❌ Erreur conversion:', err);
+                throw err;
+            }
         }
 
         // ==========================================
-        // CHARGER LA GALERIE DEPUIS SUPABASE
+        // CHARGER LA GALERIE
         // ==========================================
         async function loadGalerie(adminId) {
             try {
@@ -323,7 +366,7 @@
         }
 
         // ==========================================
-        // AJOUTER UNE PHOTO À LA GALERIE (BASE64)
+        // AJOUTER UNE PHOTO AVEC COMPRESSION
         // ==========================================
         async function ajouterPhotoGalerie(file, titre = '', description = '') {
             const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
@@ -338,10 +381,10 @@
             }
 
             try {
-                showNotification('🔄 Traitement de l\'image...', 'info');
+                showNotification('🔄 Compression de l\'image...', 'info');
 
                 const base64Image = await convertImageToBase64(file);
-                console.log('✅ Image convertie en base64 (taille: ' + (base64Image.length / 1024).toFixed(2) + ' KB)');
+                console.log('✅ Image convertie en base64 compressée');
 
                 const { data, error } = await supabaseClient
                     .from('galerie')
@@ -448,17 +491,17 @@
         }
 
         // ==========================================
-        // CHANGER L'IMAGE D'UNE PHOTO (BASE64)
+        // CHANGER L'IMAGE AVEC COMPRESSION
         // ==========================================
         async function changerImagePhoto(id, event) {
             const file = event.target.files[0];
             if (!file) return;
 
             try {
-                showNotification('🔄 Traitement de la nouvelle image...', 'info');
+                showNotification('🔄 Compression de la nouvelle image...', 'info');
 
                 const base64Image = await convertImageToBase64(file);
-                console.log('✅ Nouvelle image convertie en base64');
+                console.log('✅ Nouvelle image compressée');
 
                 const { error } = await supabaseClient
                     .from('galerie')
@@ -596,7 +639,7 @@
                     document.getElementById('telephone').value = adminData.telephone || '';
                     document.getElementById('email').value = adminData.email || '';
                     
-                    // ✅ CHARGEMENT PHOTO DE PROFIL DEPUIS profil_tof_url
+                    // Chargement photo de profil depuis profil_tof_url
                     if (adminData.profil_tof_url) {
                         document.getElementById('profilePhoto').innerHTML = 
                             `<img src="${adminData.profil_tof_url}" style="width:100%;height:100%;object-fit:cover;">`;
@@ -660,7 +703,7 @@
                     document.getElementById('titrePro').value = proData.titre || '';
                     document.getElementById('bio').value = proData.description || '';
                     
-                    // ✅ CHARGEMENT PHOTO PROFESSIONNELLE DEPUIS pdg_tof_url
+                    // Chargement photo professionnelle depuis pdg_tof_url
                     if (proData.pdg_tof_url) {
                         document.getElementById('proPhoto').innerHTML = 
                             `<img src="${proData.pdg_tof_url}" style="width:100%;height:100%;object-fit:cover;">`;
@@ -706,7 +749,6 @@
                 console.log('📝 Sauvegarde des données...');
 
                 // 1. Mettre à jour les infos personnelles (admins)
-                // 🔑 Récupérer la photo de profil actuelle
                 const profilePhotoElement = document.getElementById('profilePhoto');
                 const profilePhotoImg = profilePhotoElement ? profilePhotoElement.querySelector('img') : null;
                 const profilePhotoUrl = profilePhotoImg ? profilePhotoImg.src : null;
@@ -719,7 +761,7 @@
                         ville: formData.ville,
                         pays: formData.pays,
                         telephone: formData.telephone,
-                        profil_tof_url: profilePhotoUrl // ✅ SAUVEGARDE DANS profil_tof_url
+                        profil_tof_url: profilePhotoUrl
                     })
                     .eq('email', adminSession.email);
 
@@ -760,7 +802,6 @@
                 }
 
                 // 3. Mettre à jour le profil pro (admin_profiles)
-                // 🔑 Récupérer la photo professionnelle actuelle
                 const proPhotoElement = document.getElementById('proPhoto');
                 const proPhotoImg = proPhotoElement ? proPhotoElement.querySelector('img') : null;
                 const proPhotoUrl = proPhotoImg ? proPhotoImg.src : null;
@@ -768,7 +809,7 @@
                 const proData = {
                     titre: formData.titrePro,
                     description: formData.bio,
-                    pdg_tof_url: proPhotoUrl, // ✅ SAUVEGARDE DANS pdg_tof_url
+                    pdg_tof_url: proPhotoUrl,
                     updated_at: new Date().toISOString()
                 };
 
@@ -815,24 +856,30 @@
         }
 
         // ==========================================
-        // GESTION DES PHOTOS (profil et pro) - BASE64
+        // GESTION DES PHOTOS AVEC COMPRESSION
         // ==========================================
-        function setupPhotoUpload(inputId, displayId, storageKey) {
+        function setupPhotoUploadWithCompression(inputId, displayId, storageKey) {
             const input = document.getElementById(inputId);
             const display = document.getElementById(displayId);
             
             if (input && display) {
-                input.addEventListener('change', function(e) {
+                input.addEventListener('change', async function(e) {
                     const file = this.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(event) {
-                            const base64Data = event.target.result;
-                            display.innerHTML = '<img src="' + base64Data + '" style="width:100%;height:100%;object-fit:cover;">';
-                            localStorage.setItem(storageKey, base64Data);
-                            showNotification('✅ Photo mise à jour', 'success');
-                        };
-                        reader.readAsDataURL(file);
+                    if (!file) return;
+                    
+                    try {
+                        showNotification('🔄 Compression en cours...', 'info');
+                        
+                        // 🔑 COMPRESSER L'IMAGE
+                        const compressedBase64 = await convertImageToBase64(file);
+                        
+                        display.innerHTML = '<img src="' + compressedBase64 + '" style="width:100%;height:100%;object-fit:cover;">';
+                        localStorage.setItem(storageKey, compressedBase64);
+                        
+                        showNotification('✅ Photo compressée et sauvegardée', 'success');
+                    } catch (err) {
+                        console.error('❌ Erreur:', err);
+                        showNotification('❌ Erreur lors du traitement', 'error');
                     }
                 });
             }
@@ -882,11 +929,11 @@
         // INITIALISATION
         // ==========================================
         function init() {
-            console.log('🚀 Démarrage de profil.html (version base64)...');
+            console.log('🚀 Démarrage de profil.html (version avec compression)...');
             
-            // Photos de profil
-            setupPhotoUpload('photoInput', 'profilePhoto', 'nikel_profile_photo');
-            setupPhotoUpload('proPhotoInput', 'proPhoto', 'nikel_pro_photo');
+            // Photos de profil avec compression
+            setupPhotoUploadWithCompression('photoInput', 'profilePhoto', 'nikel_profile_photo');
+            setupPhotoUploadWithCompression('proPhotoInput', 'proPhoto', 'nikel_pro_photo');
             
             // ==========================================
             // EXPOSER LES FONCTIONS GLOBALEMENT
