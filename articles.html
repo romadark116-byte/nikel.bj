@@ -1,4 +1,4 @@
-<!-- articles.html - Mes articles (tableau supprimé, zone vide) -->
+<!-- articles.html - Mes articles (version grille) -->
 <div id="articlesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
@@ -66,8 +66,20 @@
         </button>
     </div>
 
-    <!-- ===== ZONE VIDE - TABLEAU SUPPRIMÉ ===== -->
-    <!-- Le tableau a été retiré -->
+    <!-- ===== GRILLE ARTICLES ===== -->
+    <div class="articles-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:24px;" id="articlesGrid">
+        <div style="text-align:center; padding:40px; color:#888; grid-column:1/-1;">
+            <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
+            Chargement des articles...
+        </div>
+    </div>
+
+    <!-- ===== MESSAGE AUCUN ARTICLE ===== -->
+    <div id="emptyArticles" style="display:none; text-align:center; padding:60px 20px; color:#888;">
+        <i class="fas fa-cube" style="font-size:3rem; color:#ddd; display:block; margin-bottom:16px;"></i>
+        <h3 style="color:#1a1a1a;">Aucun article</h3>
+        <p style="color:#888;">Aucun article n'a encore été ajouté.</p>
+    </div>
 
     <!-- ===== PAGINATION ===== -->
     <div class="articles-pagination" style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:12px;">
@@ -84,7 +96,7 @@
     </div>
 </div>
 
-<!-- ===== MODAL (inchangée) ===== -->
+<!-- ===== MODAL ===== -->
 <div id="articleModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center; padding:16px;">
     <div style="background:white; border-radius:16px; padding:32px; max-width:550px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
@@ -223,10 +235,13 @@
 <!-- STYLES RESPONSIVES - IDENTIQUES À CONTACTS -->
 <!-- ========================================== -->
 <style>
-    /* Responsive - Articles (identique à contacts) */
+    /* Responsive - Articles (identique à contacts avec grille) */
     
     @media (max-width: 992px) {
-        /* Rien */
+        .articles-grid {
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+            gap: 20px !important;
+        }
     }
 
     @media (max-width: 768px) {
@@ -296,6 +311,42 @@
             padding: 8px 14px !important;
             width: 100% !important;
             text-align: center !important;
+        }
+
+        /* Grille */
+        .articles-grid {
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+            gap: 16px !important;
+        }
+
+        .articles-grid .article-card {
+            padding: 14px !important;
+        }
+
+        .articles-grid .article-card .article-image {
+            height: 140px !important;
+        }
+
+        .articles-grid .article-card h4 {
+            font-size: 0.9rem !important;
+        }
+
+        .articles-grid .article-card .article-price {
+            font-size: 0.9rem !important;
+        }
+
+        .articles-grid .article-card .article-info {
+            font-size: 0.75rem !important;
+        }
+
+        .articles-grid .article-card .statut-badge {
+            font-size: 0.6rem !important;
+            padding: 2px 8px !important;
+        }
+
+        .articles-grid .article-card .action-btn {
+            font-size: 0.6rem !important;
+            padding: 3px 8px !important;
         }
 
         /* Pagination */
@@ -380,6 +431,47 @@
             padding: 8px 14px !important;
         }
 
+        /* Grille */
+        .articles-grid {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 12px !important;
+        }
+
+        .articles-grid .article-card {
+            padding: 12px !important;
+        }
+
+        .articles-grid .article-card .article-image {
+            height: 110px !important;
+        }
+
+        .articles-grid .article-card h4 {
+            font-size: 0.8rem !important;
+            margin-bottom: 2px !important;
+        }
+
+        .articles-grid .article-card .article-price {
+            font-size: 0.8rem !important;
+        }
+
+        .articles-grid .article-card .article-price .old {
+            font-size: 0.65rem !important;
+        }
+
+        .articles-grid .article-card .article-info {
+            font-size: 0.65rem !important;
+        }
+
+        .articles-grid .article-card .statut-badge {
+            font-size: 0.5rem !important;
+            padding: 1px 6px !important;
+        }
+
+        .articles-grid .article-card .action-btn {
+            font-size: 0.5rem !important;
+            padding: 2px 6px !important;
+        }
+
         /* Header */
         .articles-header h2 {
             font-size: 1.1rem !important;
@@ -403,6 +495,23 @@
         .articles-pagination #articlePageInfo {
             font-size: 0.8rem !important;
             padding: 0 8px !important;
+        }
+
+        /* Empty state */
+        #emptyArticles {
+            padding: 40px 16px !important;
+        }
+
+        #emptyArticles i {
+            font-size: 2.5rem !important;
+        }
+
+        #emptyArticles h3 {
+            font-size: 1.1rem !important;
+        }
+
+        #emptyArticles p {
+            font-size: 0.85rem !important;
         }
 
         /* Modal */
@@ -452,6 +561,36 @@
             font-size: 1rem !important;
         }
 
+        .articles-grid {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 8px !important;
+        }
+
+        .articles-grid .article-card {
+            padding: 10px !important;
+        }
+
+        .articles-grid .article-card .article-image {
+            height: 90px !important;
+        }
+
+        .articles-grid .article-card h4 {
+            font-size: 0.7rem !important;
+        }
+
+        .articles-grid .article-card .article-price {
+            font-size: 0.7rem !important;
+        }
+
+        .articles-grid .article-card .article-info {
+            font-size: 0.6rem !important;
+        }
+
+        .articles-grid .article-card .action-btn {
+            font-size: 0.45rem !important;
+            padding: 2px 4px !important;
+        }
+
         .articles-pagination button {
             padding: 4px 8px !important;
             font-size: 0.65rem !important;
@@ -491,10 +630,19 @@
             min-width: 120px !important;
             flex: 1 !important;
         }
+
+        .articles-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 12px !important;
+        }
+
+        .articles-grid .article-card .article-image {
+            height: 120px !important;
+        }
     }
 </style>
 
-<!-- ===== SCRIPTS (JavaScript conservé pour les stats, filtres, etc.) ===== -->
+<!-- ===== SCRIPTS ===== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function() {
@@ -529,26 +677,145 @@
     let allArticles = [];
     let filteredArticles = [];
     let currentArticlePage = 1;
-    const articlesPerPage = 4; // Comme contacts (4 par page)
+    const perPage = 6; // Comme favoris
     let selectedImageFile = null;
 
     // ==========================================
     // FONCTIONS
     // ==========================================
     function formatPrice(price) {
-        return parseFloat(price).toFixed(2).replace('.', ',') + ' FCFA';
+        return parseFloat(price).toLocaleString('fr-FR') + ' FCFA';
     }
 
     function isOnSale(article) {
         return article.prix_original && parseFloat(article.prix_original) > parseFloat(article.prix);
     }
 
+    function getCategoryIcon(categorie) {
+        const icons = {
+            'vêtements': '👕',
+            'accessoires': '👜',
+            'chaussures': '👟',
+            'sport': '🏋️',
+            'électronique': '📱'
+        };
+        return icons[categorie] || '📦';
+    }
+
+    function getStatutBadge(statut) {
+        const statuts = {
+            'En stock': { bg: '#27ae60', icon: 'fa-check', text: 'En stock' },
+            'Rupture de stock': { bg: '#f39c12', icon: 'fa-times', text: 'Rupture de stock' },
+            'Sur commande': { bg: '#3498db', icon: 'fa-clock', text: 'Sur commande' },
+            'Précommande': { bg: '#9b59b6', icon: 'fa-hourglass-half', text: 'Précommande' },
+            'Épuisé': { bg: '#e74c3c', icon: 'fa-ban', text: 'Épuisé' },
+            'Bientôt disponible': { bg: '#1abc9c', icon: 'fa-arrow-right', text: 'Bientôt disponible' }
+        };
+        const s = statuts[statut] || statuts['En stock'];
+        return `<span class="statut-badge" style="background:${s.bg}; color:white; padding:3px 10px; border-radius:50px; font-size:0.7rem; font-weight:600; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;">
+            <i class="fas ${s.icon}"></i> ${s.text}
+        </span>`;
+    }
+
     // ==========================================
-    // RENDU - VIDEO (tableau supprimé)
+    // RENDU - GRILLE DE CARTES
     // ==========================================
-    function renderArticleTable() {
-        // Le tableau a été supprimé, cette fonction ne fait plus rien
-        console.log('📋 Tableau des articles supprimé, aucun rendu');
+    function renderArticles() {
+        const grid = document.getElementById('articlesGrid');
+        const empty = document.getElementById('emptyArticles');
+        const pagination = document.getElementById('articlesContainer').querySelector('.articles-pagination');
+
+        if (allArticles.length === 0) {
+            grid.style.display = 'none';
+            empty.style.display = 'block';
+            if (pagination) pagination.style.display = 'none';
+            return;
+        }
+
+        grid.style.display = 'grid';
+        empty.style.display = 'none';
+        if (pagination) pagination.style.display = 'flex';
+
+        if (filteredArticles.length === 0) {
+            grid.innerHTML = `
+                <div style="text-align:center; padding:40px; color:#888; grid-column:1/-1;">
+                    <i class="fas fa-search" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
+                    Aucun article ne correspond à votre recherche.
+                </div>
+            `;
+            return;
+        }
+
+        const start = (currentArticlePage - 1) * perPage;
+        const items = filteredArticles.slice(start, start + perPage);
+
+        grid.innerHTML = items.map(a => {
+            const discount = isOnSale(a) 
+                ? Math.round(((a.prix_original - a.prix) / a.prix_original) * 100) 
+                : null;
+
+            return `
+            <div class="article-card" style="background:#ffffff; border-radius:12px; overflow:hidden; transition:all 0.3s; position:relative; border:1px solid #f0f0f0; box-shadow:0 2px 8px rgba(0,0,0,0.04);" 
+                 onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 30px rgba(0,0,0,0.12)';this.style.borderColor='#c9a84c'" 
+                 onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.04)';this.style.borderColor='#f0f0f0'">
+                
+                <!-- Badge réduction -->
+                ${discount ? `<span class="discount-badge" style="position:absolute;top:10px;left:10px;background:#e74c3c;color:white;padding:4px 12px;border-radius:50px;font-size:0.7rem;font-weight:700;z-index:2;box-shadow:0 2px 8px rgba(231,76,60,0.3);">-${discount}%</span>` : ''}
+                
+                <!-- Badge stock -->
+                ${a.stock === 0 ? `<span style="position:absolute;top:10px;right:10px;background:#e74c3c;color:white;padding:4px 12px;border-radius:50px;font-size:0.7rem;font-weight:600;z-index:2;box-shadow:0 2px 8px rgba(0,0,0,0.15);">Rupture</span>` : ''}
+                ${a.stock > 0 && a.stock <= 3 ? `<span style="position:absolute;top:10px;right:10px;background:#f39c12;color:white;padding:4px 12px;border-radius:50px;font-size:0.7rem;font-weight:600;z-index:2;box-shadow:0 2px 8px rgba(0,0,0,0.15);">Stock limité</span>` : ''}
+
+                <!-- Image -->
+                <div class="article-image" style="position:relative;overflow:hidden;cursor:pointer;background:#f8f8f8;height:200px;">
+                    <img src="${a.image_url || 'https://via.placeholder.com/260x200/1a1a1a/FFFFFF?text=Nati+Shop'}" 
+                         style="width:100%; height:100%; object-fit:cover; transition:transform 0.5s;"
+                         onmouseover="this.style.transform='scale(1.05)'" 
+                         onmouseout="this.style.transform='scale(1)'"
+                         onerror="this.src='https://via.placeholder.com/260x200/1a1a1a/FFFFFF?text=Nati+Shop'">
+                </div>
+                
+                <div class="article-info" style="padding:14px;">
+                    <!-- Catégorie -->
+                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+                        <span style="font-size:0.85rem;">${getCategoryIcon(a.categorie)}</span>
+                        <span style="color:#888; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px;">${a.categorie || 'Non classé'}</span>
+                    </div>
+                    
+                    <!-- Nom -->
+                    <h4 style="font-weight:600; font-size:1rem; margin:0 0 6px 0; color:#1a1a1a;">${a.nom}</h4>
+                    
+                    <!-- Prix -->
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                        <span style="font-weight:700; color:#c9a84c; font-size:1.1rem;">${formatPrice(a.prix)}</span>
+                        ${a.prix_original && a.prix_original > a.prix ? 
+                            `<span style="text-decoration:line-through; color:#999; font-size:0.8rem;">${formatPrice(a.prix_original)}</span>` : ''}
+                    </div>
+
+                    <!-- Statut -->
+                    <div style="margin-bottom:8px;">
+                        ${getStatutBadge(a.statut)}
+                    </div>
+
+                    <!-- Stock -->
+                    <div style="font-size:0.75rem; color:#888; margin-bottom:10px;">
+                        <i class="fas fa-boxes"></i> Stock: ${a.stock || 0} unité${a.stock > 1 ? 's' : ''}
+                    </div>
+
+                    <!-- Actions -->
+                    <div style="display:flex; gap:6px; justify-content:center; border-top:1px solid #f0f0f0; padding-top:10px;">
+                        <button onclick="editArticle('${a.id}')" class="action-btn" style="padding:4px 10px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.7rem; transition:all 0.3s; display:flex; align-items:center; gap:4px;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                            <i class="fas fa-edit"></i> Modifier
+                        </button>
+                        <button onclick="deleteArticle('${a.id}')" class="action-btn" style="padding:4px 10px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.7rem; transition:all 0.3s; display:flex; align-items:center; gap:4px;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                            <i class="fas fa-trash-alt"></i> Supprimer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `}).join('');
+
+        updateArticlePaginationInfo();
     }
 
     // ==========================================
@@ -558,7 +825,7 @@
         const total = allArticles.length;
         const stock = allArticles.filter(a => a.statut === 'En stock' || a.statut === 'Bientôt disponible').length;
         const rupture = allArticles.filter(a => a.statut === 'Rupture de stock' || a.statut === 'Épuisé').length;
-        const soldes = allArticles.filter(a => a.prix_original && parseFloat(a.prix_original) > parseFloat(a.prix)).length;
+        const soldes = allArticles.filter(a => isOnSale(a)).length;
 
         document.getElementById('totalArticles').textContent = total;
         document.getElementById('totalStock').textContent = stock;
@@ -571,9 +838,9 @@
     // ==========================================
     function updateArticlePaginationInfo() {
         const total = filteredArticles.length;
-        const start = (currentArticlePage - 1) * articlesPerPage + 1;
-        const end = Math.min(currentArticlePage * articlesPerPage, total);
-        const totalPages = Math.ceil(total / articlesPerPage) || 1;
+        const start = (currentArticlePage - 1) * perPage + 1;
+        const end = Math.min(currentArticlePage * perPage, total);
+        const totalPages = Math.ceil(total / perPage) || 1;
 
         document.getElementById('paginationInfo').textContent = 
             `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
@@ -586,15 +853,15 @@
     function previousArticlePage() {
         if (currentArticlePage > 1) {
             currentArticlePage--;
-            updateArticlePaginationInfo();
+            renderArticles();
         }
     }
 
     function nextArticlePage() {
-        const totalPages = Math.ceil(filteredArticles.length / articlesPerPage);
+        const totalPages = Math.ceil(filteredArticles.length / perPage);
         if (currentArticlePage < totalPages) {
             currentArticlePage++;
-            updateArticlePaginationInfo();
+            renderArticles();
         }
     }
 
@@ -631,7 +898,7 @@
         });
 
         currentArticlePage = 1;
-        updateArticlePaginationInfo();
+        renderArticles();
     }
 
     function resetArticleFilters() {
@@ -640,7 +907,7 @@
         document.getElementById('filterStatutArticle').value = 'all';
         filteredArticles = [...allArticles];
         currentArticlePage = 1;
-        updateArticlePaginationInfo();
+        renderArticles();
     }
 
     // ==========================================
@@ -659,14 +926,14 @@
 
             allArticles = data ? data.map(p => ({ ...p, statut: p.statut || 'En stock' })) : [];
             filteredArticles = [...allArticles];
-            renderArticleTable();
+            renderArticles();
             updateArticleStats();
             updateArticlePaginationInfo();
         } catch (err) {
             console.error('❌ Erreur:', err);
             allArticles = [];
             filteredArticles = [];
-            renderArticleTable();
+            renderArticles();
             updateArticleStats();
             updateArticlePaginationInfo();
         }
@@ -836,6 +1103,7 @@
 
             closeArticleModal();
             filteredArticles = [...allArticles];
+            renderArticles();
             updateArticleStats();
             updateArticlePaginationInfo();
             removeSelectedImage();
@@ -859,6 +1127,7 @@
             if (error) throw error;
             allArticles = allArticles.filter(a => a.id !== id);
             filteredArticles = [...allArticles];
+            renderArticles();
             updateArticleStats();
             updateArticlePaginationInfo();
             showNotification('🗑️ Article supprimé', 'success');
@@ -916,7 +1185,7 @@
     // INIT
     // ==========================================
     function init() {
-        console.log('🚀 Chargement de articles.html (tableau supprimé)...');
+        console.log('🚀 Chargement de articles.html (version grille)...');
         loadArticlesData();
 
         document.getElementById('articleForm').addEventListener('submit', saveArticle);
