@@ -1,4 +1,4 @@
-<!-- suivi-ventes.html - Version corrigée avec responsive -->
+<!-- suivi-ventes.html - Version corrigée avec responsive ET données fonctionnelles -->
 <div id="ventesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
@@ -20,7 +20,7 @@
     </div>
 
     <!-- ===== STATISTIQUES RAPIDES ===== -->
-    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;" id="ventesStats">
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
         <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total commandes</p>
             <p style="font-size:1.8rem; font-weight:700; color:#1a1a1a;" id="totalCommandes">0</p>
@@ -40,7 +40,7 @@
     </div>
 
     <!-- ===== BARRE DE RECHERCHE & FILTRES ===== -->
-    <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;" id="ventesFilters">
+    <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
 
         <div style="flex:2; min-width:200px;">
             <input type="text" id="searchVentes" placeholder="🔍 Rechercher par nom, email ou téléphone..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onkeyup="applyVentesFilters()">
@@ -96,7 +96,7 @@
     </div>
 
     <!-- ===== PAGINATION ===== -->
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:12px;" id="ventesPagination">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:12px;">
         <span style="color:#888; font-size:0.9rem;" id="ventesPaginationInfo">Affichage de 0 à 0 sur 0 entrées</span>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button onclick="prevVentesPage()" id="prevVentesPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
@@ -130,30 +130,33 @@
         }
         
         /* Stats en 2 colonnes */
-        #ventesStats {
+        #ventesContainer > div:nth-child(2) {
             grid-template-columns: 1fr 1fr !important;
             gap: 10px !important;
         }
-        #ventesStats > div {
+        #ventesContainer > div:nth-child(2) > div {
             padding: 12px !important;
         }
-        #ventesStats p:first-child {
+        #ventesContainer > div:nth-child(2) p:first-child {
             font-size: 0.7rem !important;
         }
-        #ventesStats p:last-child {
+        #ventesContainer > div:nth-child(2) p:last-child {
             font-size: 1.3rem !important;
         }
         
         /* Filtres en colonne */
-        #ventesFilters {
+        #ventesContainer > div:nth-child(3) {
             flex-direction: column !important;
             align-items: stretch !important;
             padding: 12px !important;
         }
-        #ventesFilters > div {
+        #ventesContainer > div:nth-child(3) > div {
             min-width: 100% !important;
         }
-        #ventesFilters button {
+        #ventesContainer > div:nth-child(3) > div:last-child {
+            flex: none !important;
+        }
+        #ventesContainer > div:nth-child(3) button {
             width: 100%;
             text-align: center;
         }
@@ -173,15 +176,15 @@
         }
         
         /* Pagination */
-        #ventesPagination {
+        #ventesContainer > div:nth-child(5) {
             flex-direction: column !important;
             align-items: center !important;
             gap: 8px !important;
         }
-        #ventesPagination span:first-child {
+        #ventesContainer > div:nth-child(5) span:first-child {
             font-size: 0.8rem !important;
         }
-        #ventesPagination button {
+        #ventesContainer > div:nth-child(5) button {
             padding: 6px 12px !important;
             font-size: 0.8rem !important;
         }
@@ -190,28 +193,28 @@
     @media (max-width: 480px) {
         #ventesContainer { padding: 12px !important; }
         
-        #ventesStats {
+        #ventesContainer > div:nth-child(2) {
             gap: 8px !important;
         }
-        #ventesStats > div {
+        #ventesContainer > div:nth-child(2) > div {
             padding: 10px !important;
         }
-        #ventesStats p:first-child {
+        #ventesContainer > div:nth-child(2) p:first-child {
             font-size: 0.6rem !important;
         }
-        #ventesStats p:last-child {
+        #ventesContainer > div:nth-child(2) p:last-child {
             font-size: 1.1rem !important;
         }
         
-        #ventesFilters {
+        #ventesContainer > div:nth-child(3) {
             padding: 10px !important;
         }
-        #ventesFilters input,
-        #ventesFilters select {
+        #ventesContainer > div:nth-child(3) input,
+        #ventesContainer > div:nth-child(3) select {
             font-size: 0.8rem !important;
             padding: 8px 12px !important;
         }
-        #ventesFilters button {
+        #ventesContainer > div:nth-child(3) button {
             font-size: 0.8rem !important;
             padding: 8px 14px !important;
         }
@@ -230,5 +233,435 @@
 <!-- ===== SCRIPTS ===== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-    // ... (le reste du code JavaScript reste identique) ...
+    (function() {
+        // ==========================================
+        // SUPABASE CONFIG
+        // ==========================================
+        const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
+        
+        let supabaseClient = null;
+
+        // Initialiser Supabase
+        try {
+            if (window.supabase) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                window.supabaseClient = supabaseClient;
+                console.log('✅ Supabase initialisé dans suivi-ventes.html');
+            } else {
+                console.warn('⚠️ Supabase SDK non chargé');
+            }
+        } catch (e) {
+            console.error('❌ Erreur initialisation Supabase:', e);
+        }
+
+        // ==========================================
+        // VARIABLES
+        // ==========================================
+        let allVentes = [];
+        let filteredVentes = [];
+        let currentPage = 1;
+        const perPage = 10;
+
+        // ==========================================
+        // DONNÉES DE TEST (fallback)
+        // ==========================================
+        function getTestData() {
+            return [
+                { id: 1, prenom: 'Jean', nom: 'Dupont', email: 'jean@email.com', telephone: '0612345678', ville: 'Paris', pays: 'FR', created_at: new Date().toISOString(), total_achat: 398.00, statut_produit: 'soldé' },
+                { id: 2, prenom: 'Fleury', nom: 'HAMIDOU', email: 'f91631072@gmail.com', telephone: '0191647720', ville: 'Parakou', pays: 'BJ', created_at: new Date(Date.now() - 86400000).toISOString(), total_achat: 267.00, statut_produit: 'en attente' },
+                { id: 3, prenom: 'Marie', nom: 'Martin', email: 'marie@email.com', telephone: '0765432109', ville: 'Lyon', pays: 'FR', created_at: new Date(Date.now() - 172800000).toISOString(), total_achat: 159.00, statut_produit: 'annulé' },
+                { id: 4, prenom: 'Amadou', nom: 'Diallo', email: 'amadou@email.com', telephone: '779012345', ville: 'Dakar', pays: 'SN', created_at: new Date(Date.now() - 259200000).toISOString(), total_achat: 299.00, statut_produit: 'soldé' },
+                { id: 5, prenom: 'Sophie', nom: 'Bernard', email: 'sophie@email.com', telephone: '0612345987', ville: 'Marseille', pays: 'FR', created_at: new Date(Date.now() - 345600000).toISOString(), total_achat: 149.00, statut_produit: 'en attente' }
+            ];
+        }
+
+        // ==========================================
+        // FORMATER LA DATE
+        // ==========================================
+        function formatDate(dateString) {
+            if (!dateString) return '—';
+            const d = new Date(dateString);
+            if (isNaN(d.getTime())) return '—';
+            return d.toLocaleDateString('fr-FR') + ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // ==========================================
+        // BADGE STATUT
+        // ==========================================
+        function getStatutBadge(statut) {
+            const s = {
+                'soldé': { bg: '#27ae60', icon: 'fa-check', text: 'Soldé' },
+                'en attente': { bg: '#f39c12', icon: 'fa-clock', text: 'En attente' },
+                'annulé': { bg: '#e74c3c', icon: 'fa-times', text: 'Annulé' }
+            };
+            const st = s[statut] || s['en attente'];
+            return `<span style="background:${st.bg}; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                <i class="fas ${st.icon}"></i> ${st.text}
+            </span>`;
+        }
+
+        // ==========================================
+        // RENDU TABLEAU
+        // ==========================================
+        function renderVentes() {
+            const tbody = document.getElementById('ventesTableBody');
+            if (!tbody) return;
+            
+            if (filteredVentes.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:40px; color:#888;">
+                    <i class="fas fa-inbox" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
+                    Aucune vente trouvée.
+                </td></tr>`;
+                updateVentesPaginationInfo();
+                return;
+            }
+
+            const start = (currentPage - 1) * perPage;
+            const items = filteredVentes.slice(start, start + perPage);
+
+            tbody.innerHTML = items.map(v => `
+                <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
+                    <td style="padding:12px; font-weight:600;">#${v.id}</td>
+                    <td style="padding:12px; font-weight:500;">${v.prenom || ''} ${v.nom || ''}</td>
+                    <td style="padding:12px; color:#888;">${v.email || '—'}</td>
+                    <td style="padding:12px; color:#888;">${v.telephone || '—'}</td>
+                    <td style="padding:12px; color:#888; font-size:0.9rem;">${formatDate(v.created_at)}</td>
+                    <td style="padding:12px; font-weight:700; color:#c9a84c;">${v.total_achat ? v.total_achat.toFixed(2).replace('.', ',') + ' FCFA' : '—'}</td>
+                    <td style="padding:12px; color:#888;">${v.ville || '—'}</td>
+                    <td style="padding:12px; text-align:center;">${getStatutBadge(v.statut)}</td>
+                    <td style="padding:12px; text-align:center;">
+                        <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:4px 10px; border:none; border-radius:6px; background:#27ae60; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
+                        <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:4px 10px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
+                        <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:4px 10px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            updateVentesPaginationInfo();
+        }
+
+        // ==========================================
+        // STATISTIQUES
+        // ==========================================
+        function updateVentesStats() {
+            const total = allVentes.length;
+            const sold = allVentes.filter(v => v.statut === 'soldé').length;
+            const attente = allVentes.filter(v => v.statut === 'en attente').length;
+            const annul = allVentes.filter(v => v.statut === 'annulé').length;
+            
+            document.getElementById('totalCommandes').textContent = total;
+            document.getElementById('totalSoldees').textContent = sold;
+            document.getElementById('totalEnAttente').textContent = attente;
+            document.getElementById('totalAnnulees').textContent = annul;
+        }
+
+        // ==========================================
+        // PAGINATION
+        // ==========================================
+        function updateVentesPaginationInfo() {
+            const total = filteredVentes.length;
+            const start = (currentPage - 1) * perPage + 1;
+            const end = Math.min(currentPage * perPage, total);
+            const totalPages = Math.ceil(total / perPage) || 1;
+
+            const infoEl = document.getElementById('ventesPaginationInfo');
+            const pageEl = document.getElementById('ventesPageInfo');
+            const prevBtn = document.getElementById('prevVentesPage');
+            const nextBtn = document.getElementById('nextVentesPage');
+            
+            if (infoEl) {
+                infoEl.textContent = `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
+            }
+            if (pageEl) {
+                pageEl.textContent = `Page ${currentPage} sur ${totalPages}`;
+            }
+            if (prevBtn) {
+                prevBtn.disabled = currentPage <= 1;
+            }
+            if (nextBtn) {
+                nextBtn.disabled = currentPage >= totalPages;
+            }
+        }
+
+        function prevVentesPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderVentes();
+            }
+        }
+
+        function nextVentesPage() {
+            const totalPages = Math.ceil(filteredVentes.length / perPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderVentes();
+            }
+        }
+
+        // ==========================================
+        // FILTRES
+        // ==========================================
+        function applyVentesFilters() {
+            const search = document.getElementById('searchVentes').value.toLowerCase().trim();
+            const statut = document.getElementById('filterStatut').value;
+            const dateDebut = document.getElementById('dateDebut').value;
+            const dateFin = document.getElementById('dateFin').value;
+
+            filteredVentes = allVentes.filter(v => {
+                let match = true;
+                
+                if (search) {
+                    const fullName = `${v.prenom || ''} ${v.nom || ''}`.toLowerCase();
+                    const email = (v.email || '').toLowerCase();
+                    const phone = (v.telephone || '').toLowerCase();
+                    match = fullName.includes(search) || email.includes(search) || phone.includes(search);
+                }
+                
+                if (statut !== 'all') {
+                    match = match && v.statut === statut;
+                }
+                
+                if (dateDebut && match) {
+                    const d1 = new Date(dateDebut);
+                    const dV = new Date(v.created_at);
+                    if (d1 > dV) match = false;
+                }
+                if (dateFin && match) {
+                    const d2 = new Date(dateFin);
+                    const dV = new Date(v.created_at);
+                    d2.setHours(23, 59, 59);
+                    if (d2 < dV) match = false;
+                }
+                
+                return match;
+            });
+
+            currentPage = 1;
+            renderVentes();
+        }
+
+        function resetVentesFilters() {
+            document.getElementById('searchVentes').value = '';
+            document.getElementById('filterStatut').value = 'all';
+            document.getElementById('dateDebut').value = '';
+            document.getElementById('dateFin').value = '';
+            filteredVentes = [...allVentes];
+            currentPage = 1;
+            renderVentes();
+        }
+
+        // ==========================================
+        // METTRE À JOUR LE STATUT
+        // ==========================================
+        async function updateStatut(id, newStatut) {
+            const v = allVentes.find(item => item.id === id);
+            if (!v) return;
+
+            const oldStatut = v.statut;
+            v.statut = newStatut;
+            
+            const f = filteredVentes.find(item => item.id === id);
+            if (f) f.statut = newStatut;
+
+            renderVentes();
+            updateVentesStats();
+
+            try {
+                if (supabaseClient) {
+                    const { error } = await supabaseClient
+                        .from('clients')
+                        .update({ statut_produit: newStatut })
+                        .eq('id', id);
+
+                    if (error) {
+                        console.error('❌ Erreur mise à jour Supabase:', error);
+                        v.statut = oldStatut;
+                        if (f) f.statut = oldStatut;
+                        renderVentes();
+                        updateVentesStats();
+                        showNotification('❌ Erreur lors de la mise à jour', 'error');
+                        return;
+                    }
+                }
+                
+                showNotification(`✅ Statut mis à jour : ${newStatut}`, 'success');
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                showNotification('❌ Erreur lors de la mise à jour', 'error');
+            }
+        }
+
+        // ==========================================
+        // EXPORTER CSV
+        // ==========================================
+        function exportCSV() {
+            if (allVentes.length === 0) {
+                showNotification('❌ Aucune donnée à exporter', 'error');
+                return;
+            }
+
+            let csv = 'ID,Client,Email,Téléphone,Date,Total,Ville,Pays,Statut\n';
+            allVentes.forEach(v => {
+                const client = `${v.prenom || ''} ${v.nom || ''}`.trim();
+                const statutValue = v.statut_produit || v.statut || '';
+                csv += `${v.id},"${client}","${v.email || ''}","${v.telephone || ''}","${formatDate(v.created_at)}","${v.total_achat || 0}","${v.ville || ''}","${v.pays || ''}","${statutValue}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `ventes_${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('✅ Export CSV effectué avec succès', 'success');
+        }
+
+        // ==========================================
+        // RAFRAÎCHIR
+        // ==========================================
+        function rafraichirVentes() {
+            loadVentesData();
+            showNotification('🔄 Données actualisées', 'info');
+        }
+
+        // ==========================================
+        // CHARGER LES DONNÉES DEPUIS SUPABASE
+        // ==========================================
+        async function loadVentesData() {
+            try {
+                console.log('📝 Chargement des données depuis Supabase...');
+                
+                if (!supabaseClient) {
+                    console.warn('⚠️ Supabase non disponible, utilisation des données de test');
+                    allVentes = getTestData();
+                    filteredVentes = [...allVentes];
+                    renderVentes();
+                    updateVentesStats();
+                    return;
+                }
+
+                const { data, error } = await supabaseClient
+                    .from('clients')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error('❌ Erreur chargement:', error);
+                    allVentes = getTestData();
+                    filteredVentes = [...allVentes];
+                    renderVentes();
+                    updateVentesStats();
+                    return;
+                }
+
+                if (data && data.length > 0) {
+                    console.log(`✅ ${data.length} clients chargés depuis Supabase`);
+                    
+                    allVentes = data.map(c => ({
+                        ...c,
+                        statut: c.statut_produit || 'en attente'
+                    }));
+                    
+                    filteredVentes = [...allVentes];
+                    renderVentes();
+                    updateVentesStats();
+                } else {
+                    console.warn('⚠️ Aucune donnée trouvée, utilisation des données de test');
+                    allVentes = getTestData();
+                    filteredVentes = [...allVentes];
+                    renderVentes();
+                    updateVentesStats();
+                }
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                allVentes = getTestData();
+                filteredVentes = [...allVentes];
+                renderVentes();
+                updateVentesStats();
+            }
+        }
+
+        // ==========================================
+        // NOTIFICATION
+        // ==========================================
+        function showNotification(message, type = 'info') {
+            document.querySelectorAll('.toast-nikel').forEach(t => t.remove());
+
+            const colors = {
+                success: '#27ae60',
+                error: '#e74c3c',
+                info: '#c9a84c'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-nikel';
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: #1a1a1a;
+                color: white;
+                padding: 16px 24px;
+                border-radius: 14px;
+                font-weight: 500;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+                z-index: 9999;
+                max-width: 400px;
+                font-size: 0.95rem;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                animation: slideUp 0.5s ease;
+                border-left: 4px solid ${colors[type] || colors.info};
+            `;
+            toast.innerHTML = `<span>${message}</span>`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // ==========================================
+        // EXPOSER LES FONCTIONS GLOBALEMENT
+        // ==========================================
+        window.applyVentesFilters = applyVentesFilters;
+        window.resetVentesFilters = resetVentesFilters;
+        window.prevVentesPage = prevVentesPage;
+        window.nextVentesPage = nextVentesPage;
+        window.updateStatut = updateStatut;
+        window.exportCSV = exportCSV;
+        window.rafraichirVentes = rafraichirVentes;
+        window.showNotification = showNotification;
+        window.loadVentesData = loadVentesData;
+
+        // ==========================================
+        // INITIALISATION
+        // ==========================================
+        function init() {
+            console.log('🚀 Chargement de suivi-ventes.html...');
+            
+            const tbody = document.getElementById('ventesTableBody');
+            if (!tbody) {
+                console.error('❌ Table body non trouvé');
+                return;
+            }
+            
+            loadVentesData();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
 </script>
