@@ -10,22 +10,22 @@
             <p style="color:#888; font-size:0.95rem;">Gérez votre liste de clients et prospects.</p>
         </div>
         <button onclick="openAddModal()" style="padding:12px 24px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px; white-space:nowrap;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
-            <i class="fas fa-plus"></i> Ajouter un contact
-        </button>
+                <i class="fas fa-plus"></i> Ajouter un contact
+            </button>
     </div>
 
-    <!-- ===== STATISTIQUES RAPIDES - 4 COLONNES ===== -->
-    <div id="contactsStats" style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
+    <!-- ===== STATISTIQUES RAPIDES ===== -->
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
         <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total contacts</p>
             <p style="font-size:1.8rem; font-weight:700; color:#1a1a1a;" id="totalContacts">0</p>
         </div>
         <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
-            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Clients</p>
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">✅ Clients</p>
             <p style="font-size:1.8rem; font-weight:700; color:#27ae60;" id="totalClients">0</p>
         </div>
         <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
-            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Prospects</p>
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">⭐ Prospects</p>
             <p style="font-size:1.8rem; font-weight:700; color:#f39c12;" id="totalProspects">0</p>
         </div>
         <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #3498db;">
@@ -34,37 +34,40 @@
         </div>
     </div>
 
-    <!-- ===== BARRE DE RECHERCHE ===== -->
+    <!-- ===== BARRE DE RECHERCHE & FILTRES ===== -->
     <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
+
         <div style="flex:2; min-width:180px;">
-            <input type="text" id="searchInputContacts" placeholder="🔍 Rechercher par nom, email ou téléphone..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#ffffff; box-sizing:border-box;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onkeyup="applyFilters()">
+            <input type="text" id="searchInputContacts" placeholder="🔍 Rechercher par nom, email ou téléphone..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onkeyup="applyFilters()">
         </div>
+
         <div style="min-width:130px; flex:1;">
-            <select id="filterType" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer; box-sizing:border-box;" onchange="applyFilters()">
+            <select id="filterType" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.9rem; background:#ffffff; outline:none; transition:border-color 0.3s; cursor:pointer;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyFilters()">
                 <option value="all">👥 Tous les contacts</option>
                 <option value="client">✅ Clients</option>
                 <option value="prospect">⭐ Prospects</option>
             </select>
         </div>
-        <button onclick="resetFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888; white-space:nowrap;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+
+        <button onclick="resetFilters()" style="padding:10px 16px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.9rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888; white-space:nowrap;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
             <i class="fas fa-undo"></i> Réinitialiser
         </button>
     </div>
 
     <!-- ===== TABLEAU DES CONTACTS ===== -->
-    <div style="overflow-x:auto; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch;">
-        <table style="width:100%; border-collapse:collapse; font-size:0.95rem; min-width:700px;">
+    <div style="overflow-x:auto; overflow-y:visible; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch;">
+        <table style="width:100%; border-collapse:collapse; font-size:0.85rem; min-width:900px; table-layout:auto;">
             <thead>
                 <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">ID</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Prénom</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Nom</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Email</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Téléphone</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Ville</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Pays</th>
-                    <th style="text-align:center; padding:14px 12px; font-weight:600; color:#1a1a1a;">Statut</th>
-                    <th style="text-align:center; padding:14px 12px; font-weight:600; color:#1a1a1a;">Actions</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:40px; white-space:nowrap;">#</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:90px; white-space:nowrap;">Prénom</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:90px; white-space:nowrap;">Nom</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:150px; white-space:nowrap;">Email</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:140px; white-space:nowrap;">Téléphone</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:90px; white-space:nowrap;">Ville</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:100px; white-space:nowrap;">Pays</th>
+                    <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; width:100px; white-space:nowrap;">Statut</th>
+                    <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; width:120px; white-space:nowrap;">Actions</th>
                 </tr>
             </thead>
             <tbody id="contactsTableBody">
@@ -220,311 +223,226 @@
     </div>
 </div>
 
-<!-- ========================================== -->
-<!-- STYLES RESPONSIVES SPÉCIFIQUES            -->
-<!-- ========================================== -->
+<!-- ===== STYLES RESPONSIVE ===== -->
 <style>
-    /* Responsive - Contacts */
-    
+    /* RESPONSIVE - MOBILE */
     @media (max-width: 768px) {
-        #contactsContainer {
-            padding: 16px !important;
+        #contactsContainer { padding: 16px !important; }
+        
+        /* Titre */
+        #contactsContainer > div:first-child { 
+            flex-direction: column !important; 
+            align-items: stretch !important;
         }
-
-        /* Statistiques : 2 colonnes sur mobile */
-        #contactsStats {
+        #contactsContainer > div:first-child > div:last-child {
+            width: 100%;
+        }
+        #contactsContainer > div:first-child button {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        /* Stats en 2 colonnes */
+        #contactsContainer > div:nth-child(2) {
             grid-template-columns: 1fr 1fr !important;
             gap: 10px !important;
         }
-
-        #contactsStats > div {
+        #contactsContainer > div:nth-child(2) > div {
             padding: 12px !important;
         }
-
-        #contactsStats p:first-child {
+        #contactsContainer > div:nth-child(2) p:first-child {
             font-size: 0.7rem !important;
         }
-
-        #contactsStats p:last-child {
-            font-size: 1.4rem !important;
+        #contactsContainer > div:nth-child(2) p:last-child {
+            font-size: 1.3rem !important;
         }
-
+        
         /* Filtres en colonne */
-        .contacts-filters,
-        .filters-row {
+        #contactsContainer > div:nth-child(3) {
             flex-direction: column !important;
             align-items: stretch !important;
             padding: 12px !important;
         }
-
-        .contacts-filters > div,
-        .filters-row > div {
+        #contactsContainer > div:nth-child(3) > div {
             min-width: 100% !important;
             flex: none !important;
         }
-
-        .contacts-filters input,
-        .contacts-filters select,
-        .filters-row input,
-        .filters-row select {
-            font-size: 0.9rem !important;
-            padding: 8px 12px !important;
+        #contactsContainer > div:nth-child(3) button {
+            width: 100%;
+            text-align: center;
         }
-
-        .contacts-filters button,
-        .filters-row button {
-            font-size: 0.85rem !important;
-            padding: 8px 14px !important;
-            width: 100% !important;
-            text-align: center !important;
+        
+        /* Tableau - scroll horizontal */
+        #contactsContainer > div:nth-child(4) {
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
         }
-
-        /* Tableau */
-        .table-wrapper table {
-            min-width: 600px !important;
-            font-size: 0.85rem !important;
+        #contactsContainer > div:nth-child(4) table {
+            min-width: 700px !important;
+            font-size: 0.75rem !important;
         }
-
-        .table-wrapper th,
-        .table-wrapper td {
-            padding: 10px 8px !important;
-        }
-
-        .table-wrapper .action-btn {
-            padding: 4px 8px !important;
+        #contactsContainer > div:nth-child(4) table th,
+        #contactsContainer > div:nth-child(4) table td {
+            padding: 8px 6px !important;
             font-size: 0.7rem !important;
         }
-
+        #contactsContainer > div:nth-child(4) table th {
+            white-space: nowrap !important;
+            font-size: 0.7rem !important;
+        }
+        #contactsContainer > div:nth-child(4) table td .statut-badge {
+            font-size: 0.55rem !important;
+            padding: 2px 6px !important;
+        }
+        #contactsContainer > div:nth-child(4) table td .action-btn {
+            font-size: 0.6rem !important;
+            padding: 3px 6px !important;
+        }
+        
         /* Pagination */
-        .pagination-row {
+        #contactsContainer > div:nth-child(5) {
             flex-direction: column !important;
             align-items: center !important;
             gap: 8px !important;
         }
-
-        .pagination-row span {
+        #contactsContainer > div:nth-child(5) span:first-child {
             font-size: 0.8rem !important;
+            text-align: center !important;
         }
-
-        .pagination-row button {
+        #contactsContainer > div:nth-child(5) button {
             padding: 6px 12px !important;
             font-size: 0.8rem !important;
         }
-
+        
         /* Modal */
         #contactModal > div {
             padding: 20px !important;
             max-width: 95% !important;
             margin: 10px !important;
         }
-
         #contactModal h3 {
             font-size: 1.2rem !important;
         }
-
-        #contactModal .form-grid-2 {
-            grid-template-columns: 1fr !important;
-            gap: 0 !important;
-        }
-
-        #contactModal .modal-actions {
-            flex-direction: column !important;
-        }
-
-        #contactModal .modal-actions button {
-            flex: none !important;
-            width: 100% !important;
-            min-height: 44px !important;
-        }
-
         #contactModal label {
-            font-size: 0.8rem !important;
+            font-size: 0.85rem !important;
         }
-
         #contactModal input,
         #contactModal select {
             font-size: 0.85rem !important;
             padding: 8px 12px !important;
         }
+        #contactModal > div > div:first-child {
+            flex-wrap: wrap;
+        }
     }
 
     @media (max-width: 480px) {
-        #contactsContainer {
-            padding: 12px !important;
-        }
-
-        /* Statistiques : 2 colonnes */
-        #contactsStats {
-            grid-template-columns: 1fr 1fr !important;
+        #contactsContainer { padding: 12px !important; }
+        
+        #contactsContainer > div:nth-child(2) {
             gap: 8px !important;
         }
-
-        #contactsStats > div {
+        #contactsContainer > div:nth-child(2) > div {
             padding: 10px !important;
         }
-
-        #contactsStats p:first-child {
+        #contactsContainer > div:nth-child(2) p:first-child {
             font-size: 0.6rem !important;
         }
-
-        #contactsStats p:last-child {
-            font-size: 1.2rem !important;
+        #contactsContainer > div:nth-child(2) p:last-child {
+            font-size: 1.1rem !important;
         }
-
-        /* Tableau */
-        .table-wrapper table {
-            min-width: 500px !important;
+        
+        #contactsContainer > div:nth-child(3) {
+            padding: 10px !important;
+        }
+        #contactsContainer > div:nth-child(3) input,
+        #contactsContainer > div:nth-child(3) select {
             font-size: 0.8rem !important;
+            padding: 8px 12px !important;
         }
-
-        .table-wrapper th,
-        .table-wrapper td {
-            padding: 8px 6px !important;
+        #contactsContainer > div:nth-child(3) button {
+            font-size: 0.8rem !important;
+            padding: 8px 14px !important;
         }
-
-        .table-wrapper .action-btn {
-            padding: 3px 6px !important;
+        
+        #contactsContainer > div:nth-child(4) table {
+            min-width: 600px !important;
             font-size: 0.65rem !important;
         }
-
+        #contactsContainer > div:nth-child(4) table th,
+        #contactsContainer > div:nth-child(4) table td {
+            padding: 5px 4px !important;
+            font-size: 0.6rem !important;
+        }
+        #contactsContainer > div:nth-child(4) table td .statut-badge {
+            font-size: 0.5rem !important;
+            padding: 1px 4px !important;
+        }
+        #contactsContainer > div:nth-child(4) table td .action-btn {
+            font-size: 0.5rem !important;
+            padding: 2px 4px !important;
+        }
+        
         /* Modal */
         #contactModal > div {
             padding: 16px !important;
         }
-
         #contactModal h3 {
             font-size: 1.1rem !important;
         }
-
         #contactModal label {
             font-size: 0.75rem !important;
         }
-
         #contactModal input,
         #contactModal select {
             font-size: 0.8rem !important;
             padding: 6px 10px !important;
         }
-
-        #contactModal .modal-actions button {
-            font-size: 0.85rem !important;
-            padding: 10px !important;
-            min-height: 40px !important;
+        #contactModal .btn-row {
+            flex-direction: column !important;
         }
-
-        /* Pagination */
-        .pagination-row button {
-            padding: 4px 10px !important;
-            font-size: 0.7rem !important;
-        }
-
-        .pagination-row #pageInfo {
-            font-size: 0.8rem !important;
-            padding: 0 8px !important;
-        }
-    }
-
-    @media (max-width: 360px) {
-        #contactsStats {
-            grid-template-columns: 1fr 1fr !important;
-            gap: 6px !important;
-        }
-
-        #contactsStats > div {
-            padding: 8px !important;
-        }
-
-        #contactsStats p:first-child {
-            font-size: 0.55rem !important;
-        }
-
-        #contactsStats p:last-child {
-            font-size: 1rem !important;
-        }
-
-        .table-wrapper table {
-            min-width: 400px !important;
-            font-size: 0.7rem !important;
-        }
-
-        .table-wrapper th,
-        .table-wrapper td {
-            padding: 6px 4px !important;
-        }
-
-        .pagination-row button {
-            padding: 4px 8px !important;
-            font-size: 0.65rem !important;
-        }
-
-        #contactModal > div {
-            padding: 12px !important;
-        }
-
-        #contactModal h3 {
-            font-size: 1rem !important;
-        }
-
-        #contactModal input,
-        #contactModal select {
-            font-size: 0.75rem !important;
-            padding: 5px 8px !important;
-        }
-    }
-
-    /* Orientation paysage sur mobile */
-    @media (max-width: 768px) and (orientation: landscape) {
-        #contactsStats {
-            grid-template-columns: repeat(4, 1fr) !important;
-            gap: 8px !important;
-        }
-
-        #contactsStats > div {
-            padding: 8px !important;
-        }
-
-        #contactsStats p:last-child {
-            font-size: 1.2rem !important;
-        }
-
-        .contacts-filters {
-            flex-direction: row !important;
-            flex-wrap: wrap !important;
-        }
-
-        .contacts-filters > div {
-            min-width: 120px !important;
-            flex: 1 !important;
-        }
-
-        .table-wrapper table {
-            min-width: 500px !important;
+        #contactModal .btn-row button {
+            width: 100% !important;
         }
     }
 </style>
 
 <!-- ===== SCRIPTS ===== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     (function() {
+        'use strict';
+
         // ==========================================
-        // RÉFÉRENCE SUPABASE
+        // SUPABASE CONFIG
         // ==========================================
-        const supabaseClient = window.supabaseClient;
+        const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
+        
+        let supabaseClient = null;
+
+        try {
+            if (window.supabase) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                window.supabaseClient = supabaseClient;
+                console.log('✅ Supabase initialisé dans contacts.html');
+            } else {
+                console.warn('⚠️ Supabase SDK non chargé');
+            }
+        } catch (e) {
+            console.error('❌ Erreur initialisation Supabase:', e);
+        }
 
         if (!supabaseClient) {
-            console.error('❌ SupabaseClient non disponible !');
             document.getElementById('contactsContainer').innerHTML = `
                 <div style="text-align:center; padding:60px; color:red;">
                     <i class="fas fa-exclamation-circle" style="font-size:3rem;"></i>
                     <h3>Erreur de connexion</h3>
                     <p>Impossible de se connecter à la base de données.</p>
-                    <p style="font-size:0.9rem; color:#888;">Veuillez rafraîchir la page.</p>
                 </div>
             `;
             return;
         }
-
-        console.log('✅ SupabaseClient disponible dans contacts.html');
 
         // ==========================================
         // CONFIGURATION DES NUMÉROS DE TÉLÉPHONE
@@ -548,14 +466,6 @@
             '+225': { code: 'CI', nom: "Côte d'Ivoire" }
         };
 
-        const paysToIndicatif = {
-            'BJ': '+229',
-            'TG': '+228',
-            'NE': '+227',
-            'BF': '+226',
-            'CI': '+225'
-        };
-
         const paysLabels = {
             'BJ': 'Bénin',
             'TG': 'Togo',
@@ -573,7 +483,15 @@
         };
 
         // ==========================================
-        // METTRE À JOUR LE PAYS SELON L'INDICATIF
+        // VARIABLES GLOBALES
+        // ==========================================
+        let allContacts = [];
+        let filteredContacts = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
+
+        // ==========================================
+        // FONCTIONS UTILITAIRES
         // ==========================================
         function updatePaysFromIndicatif() {
             const indicatif = document.getElementById('indicatif').value;
@@ -586,9 +504,6 @@
             }
         }
 
-        // ==========================================
-        // METTRE À JOUR LE PLACEHOLDER DU TÉLÉPHONE
-        // ==========================================
         function updatePhonePlaceholder() {
             const indicatif = document.getElementById('indicatif').value;
             const config = phoneConfig[indicatif];
@@ -597,7 +512,6 @@
             
             if (config && phoneInput) {
                 phoneInput.placeholder = config.placeholder;
-                phoneInput.removeAttribute('maxlength');
                 if (phoneHelp) {
                     phoneHelp.textContent = config.help;
                 }
@@ -606,9 +520,6 @@
             }
         }
 
-        // ==========================================
-        // VALIDER ET FORMATER LE NUMÉRO DE TÉLÉPHONE
-        // ==========================================
         function validatePhone(input) {
             let value = input.value.replace(/\D/g, '');
             
@@ -641,9 +552,6 @@
             }
         }
 
-        // ==========================================
-        // VALIDER AVANT SOUMISSION
-        // ==========================================
         function validatePhoneBeforeSubmit() {
             const indicatif = document.getElementById('indicatif').value;
             const phoneInput = document.getElementById('telephone');
@@ -671,9 +579,6 @@
             return true;
         }
 
-        // ==========================================
-        // METTRE À JOUR LES VILLES
-        // ==========================================
         function updateVilles() {
             const paysCode = document.getElementById('pays').value;
             const villes = villesParPays[paysCode] || ['Cotonou', 'Porto-Novo', 'Parakou', 'Abomey-Calavi', 'Djougou'];
@@ -682,49 +587,22 @@
         }
 
         // ==========================================
-        // BADGE STATUT - Utilise statut_contact
+        // BADGE STATUT
         // ==========================================
         function getStatutBadge(statut) {
             if (statut === 'client') {
-                return `<span style="background:#27ae60; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                return `<span class="statut-badge" style="background:#27ae60; color:white; padding:3px 10px; border-radius:50px; font-size:0.7rem; font-weight:600; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;">
                     <i class="fas fa-check"></i> Client
                 </span>`;
             } else {
-                return `<span style="background:#f39c12; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                return `<span class="statut-badge" style="background:#f39c12; color:white; padding:3px 10px; border-radius:50px; font-size:0.7rem; font-weight:600; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;">
                     <i class="fas fa-star"></i> Prospect
                 </span>`;
             }
         }
 
         // ==========================================
-        // MIGRATION DU PANIER (ANCIENNE VERSION)
-        // ==========================================
-        function migrateCart() {
-            const oldCart = localStorage.getItem('nikel_cart');
-            if (oldCart) {
-                try {
-                    const cartData = JSON.parse(oldCart);
-                    if (cartData && Array.isArray(cartData) && cartData.length > 0) {
-                        localStorage.setItem('nati_shop_cart', oldCart);
-                        console.log('🔄 Panier migré avec succès !');
-                    }
-                    localStorage.removeItem('nikel_cart');
-                } catch (e) {
-                    console.warn('⚠️ Ancien panier non valide, ignoré.');
-                }
-            }
-        }
-
-        // ==========================================
-        // VARIABLES GLOBALES
-        // ==========================================
-        let allContacts = [];
-        let filteredContacts = [];
-        let currentPage = 1;
-        const itemsPerPage = 10;
-
-        // ==========================================
-        // CHARGER LES DONNÉES - Utilise statut_contact
+        // CHARGER LES DONNÉES
         // ==========================================
         async function loadContactsData() {
             try {
@@ -749,11 +627,10 @@
                     console.log(`✅ ${data.length} contacts chargés depuis Supabase`);
                     allContacts = data.map(c => ({
                         ...c,
-                        statut: c.statut_contact || 'prospect',
-                        indicatif: c.indicatif || paysToIndicatif[c.pays] || '+229'
+                        statut: c.statut_contact || 'prospect'
                     }));
                 } else {
-                    console.warn('⚠️ Aucun contact trouvé dans Supabase');
+                    console.warn('⚠️ Aucun contact trouvé');
                     allContacts = [];
                 }
 
@@ -777,6 +654,7 @@
         // ==========================================
         function renderTable() {
             const tbody = document.getElementById('contactsTableBody');
+            if (!tbody) return;
             
             if (filteredContacts.length === 0) {
                 tbody.innerHTML = `
@@ -787,6 +665,7 @@
                         </td>
                     </tr>
                 `;
+                updatePaginationInfo();
                 return;
             }
 
@@ -798,24 +677,26 @@
                 const fullPhone = (contact.indicatif || '+229') + ' ' + (contact.telephone || '');
                 return `
                 <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
-                    <td style="padding:12px; font-weight:600; color:#1a1a1a;">#${contact.id}</td>
-                    <td style="padding:12px; font-weight:500;">${contact.prenom || ''}</td>
-                    <td style="padding:12px; font-weight:500;">${contact.nom || ''}</td>
-                    <td style="padding:12px; color:#888;">${contact.email || '—'}</td>
-                    <td style="padding:12px;">${fullPhone}</td>
-                    <td style="padding:12px;">${contact.ville || '—'}</td>
-                    <td style="padding:12px;">${paysLabels[contact.pays] || contact.pays || '—'}</td>
-                    <td style="padding:12px; text-align:center;">${getStatutBadge(contact.statut)}</td>
-                    <td style="padding:12px; text-align:center;">
-                        <button onclick="editContact(${contact.id})" class="action-btn" style="padding:6px 12px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Modifier">
+                    <td style="padding:8px 6px; font-weight:600; font-size:0.8rem; text-align:center;">${contact.id}</td>
+                    <td style="padding:8px 6px; font-weight:500; font-size:0.8rem; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${contact.prenom || ''}">${contact.prenom || ''}</td>
+                    <td style="padding:8px 6px; font-weight:500; font-size:0.8rem; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${contact.nom || ''}">${contact.nom || ''}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${contact.email || '—'}">${contact.email || '—'}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap;">${fullPhone}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${contact.ville || '—'}">${contact.ville || '—'}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem;">${paysLabels[contact.pays] || contact.pays || '—'}</td>
+                    <td style="padding:8px 6px; text-align:center;">${getStatutBadge(contact.statut)}</td>
+                    <td style="padding:8px 6px; text-align:center; white-space:nowrap;">
+                        <button onclick="editContact(${contact.id})" class="action-btn" style="padding:3px 6px; border:none; border-radius:4px; background:#f39c12; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Modifier">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button onclick="deleteContact(${contact.id})" class="action-btn" style="padding:6px 12px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Supprimer">
+                        <button onclick="deleteContact(${contact.id})" class="action-btn" style="padding:3px 6px; border:none; border-radius:4px; background:#e74c3c; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Supprimer">
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     </td>
                 </tr>
             `}).join('');
+
+            updatePaginationInfo();
         }
 
         // ==========================================
@@ -840,21 +721,31 @@
             const total = filteredContacts.length;
             const start = (currentPage - 1) * itemsPerPage + 1;
             const end = Math.min(currentPage * itemsPerPage, total);
-            const totalPages = Math.ceil(total / itemsPerPage);
+            const totalPages = Math.ceil(total / itemsPerPage) || 1;
 
-            document.getElementById('paginationInfo').textContent = 
-                `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
-            document.getElementById('pageInfo').textContent = `Page ${currentPage} sur ${totalPages || 1}`;
-
-            document.getElementById('prevPage').disabled = currentPage <= 1;
-            document.getElementById('nextPage').disabled = currentPage >= totalPages;
+            const infoEl = document.getElementById('paginationInfo');
+            const pageEl = document.getElementById('pageInfo');
+            const prevBtn = document.getElementById('prevPage');
+            const nextBtn = document.getElementById('nextPage');
+            
+            if (infoEl) {
+                infoEl.textContent = `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
+            }
+            if (pageEl) {
+                pageEl.textContent = `Page ${currentPage} sur ${totalPages}`;
+            }
+            if (prevBtn) {
+                prevBtn.disabled = currentPage <= 1;
+            }
+            if (nextBtn) {
+                nextBtn.disabled = currentPage >= totalPages;
+            }
         }
 
         function previousPage() {
             if (currentPage > 1) {
                 currentPage--;
                 renderTable();
-                updatePaginationInfo();
             }
         }
 
@@ -863,7 +754,6 @@
             if (currentPage < totalPages) {
                 currentPage++;
                 renderTable();
-                updatePaginationInfo();
             }
         }
 
@@ -893,7 +783,6 @@
 
             currentPage = 1;
             renderTable();
-            updatePaginationInfo();
         }
 
         function resetFilters() {
@@ -902,11 +791,10 @@
             filteredContacts = [...allContacts];
             currentPage = 1;
             renderTable();
-            updatePaginationInfo();
         }
 
         // ==========================================
-        // MODAL : AJOUTER
+        // MODAL
         // ==========================================
         function openAddModal() {
             document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus" style="color:#c9a84c;"></i> Ajouter un contact';
@@ -921,14 +809,12 @@
             updatePhonePlaceholder();
         }
 
-        // ==========================================
-        // MODAL : MODIFIER
-        // ==========================================
         function editContact(id) {
             const contact = allContacts.find(c => c.id === id);
-            if (!contact) return;
-
-            console.log('📝 Modification du contact:', contact);
+            if (!contact) {
+                showNotification('❌ Contact non trouvé', 'error');
+                return;
+            }
 
             document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-edit" style="color:#c9a84c;"></i> Modifier le contact';
             document.getElementById('contactId').value = contact.id;
@@ -937,7 +823,7 @@
             document.getElementById('nom').value = contact.nom || '';
             document.getElementById('email').value = contact.email || '';
             
-            const indicatif = contact.indicatif || paysToIndicatif[contact.pays] || '+229';
+            const indicatif = contact.indicatif || '+229';
             const numero = contact.telephone || '';
             document.getElementById('indicatif').value = indicatif;
             document.getElementById('telephone').value = numero;
@@ -951,20 +837,15 @@
             document.getElementById('contactModal').style.display = 'flex';
             updateVilles();
             updatePhonePlaceholder();
-            
-            showNotification('📋 Données chargées, vous pouvez les modifier', 'info');
         }
 
-        // ==========================================
-        // MODAL : FERMER
-        // ==========================================
         function closeModal() {
             document.getElementById('contactModal').style.display = 'none';
             document.getElementById('contactForm').reset();
         }
 
         // ==========================================
-        // SAUVEGARDER CONTACT - Utilise statut_contact
+        // SAUVEGARDER CONTACT
         // ==========================================
         async function saveContact(event) {
             event.preventDefault();
@@ -991,17 +872,17 @@
             };
 
             try {
+                const saveBtn = document.getElementById('saveContactBtn');
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
+
                 if (id) {
                     const { error } = await supabaseClient
                         .from('clients')
                         .update(contactData)
                         .eq('id', parseInt(id));
 
-                    if (error) {
-                        console.error('❌ Erreur mise à jour:', error);
-                        showNotification('❌ Erreur lors de la modification', 'error');
-                        return;
-                    }
+                    if (error) throw error;
 
                     const index = allContacts.findIndex(c => c.id === parseInt(id));
                     if (index !== -1) {
@@ -1018,11 +899,7 @@
                         .insert([contactData])
                         .select();
 
-                    if (error) {
-                        console.error('❌ Erreur insertion:', error);
-                        showNotification('❌ Erreur lors de l\'ajout', 'error');
-                        return;
-                    }
+                    if (error) throw error;
 
                     if (data && data.length > 0) {
                         allContacts.push({
@@ -1041,7 +918,11 @@
 
             } catch (err) {
                 console.error('❌ Erreur:', err);
-                showNotification('❌ Une erreur est survenue', 'error');
+                showNotification('❌ Erreur: ' + err.message, 'error');
+            } finally {
+                const saveBtn = document.getElementById('saveContactBtn');
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
             }
         }
 
@@ -1057,11 +938,7 @@
                     .delete()
                     .eq('id', id);
 
-                if (error) {
-                    console.error('❌ Erreur suppression:', error);
-                    showNotification('❌ Erreur lors de la suppression', 'error');
-                    return;
-                }
+                if (error) throw error;
 
                 allContacts = allContacts.filter(c => c.id !== id);
                 filteredContacts = [...allContacts];
@@ -1072,7 +949,7 @@
 
             } catch (err) {
                 console.error('❌ Erreur:', err);
-                showNotification('❌ Une erreur est survenue', 'error');
+                showNotification('❌ Erreur: ' + err.message, 'error');
             }
         }
 
@@ -1111,36 +988,13 @@
             `;
             toast.innerHTML = `<span>${message}</span>`;
             document.body.appendChild(toast);
+
             setTimeout(() => {
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateY(20px)';
                 toast.style.transition = 'all 0.4s ease';
                 setTimeout(() => toast.remove(), 400);
             }, 3000);
-        }
-
-        // ==========================================
-        // INITIALISATION
-        // ==========================================
-        function init() {
-            console.log('🚀 Chargement de contacts.html (Nati Shop)...');
-            
-            migrateCart();
-            
-            loadContactsData();
-
-            document.getElementById('contactForm').addEventListener('submit', saveContact);
-
-            document.getElementById('contactModal').addEventListener('click', function(e) {
-                if (e.target === this) closeModal();
-            });
-
-            // Fermer la modale avec Echap
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeModal();
-                }
-            });
         }
 
         // ==========================================
@@ -1162,8 +1016,32 @@
         window.validatePhone = validatePhone;
 
         // ==========================================
-        // LANCEMENT
+        // INITIALISATION
         // ==========================================
+        function init() {
+            console.log('🚀 Chargement de contacts.html...');
+            
+            const tbody = document.getElementById('contactsTableBody');
+            if (!tbody) {
+                console.error('❌ Table body non trouvé');
+                return;
+            }
+            
+            loadContactsData();
+
+            document.getElementById('contactForm').addEventListener('submit', saveContact);
+
+            document.getElementById('contactModal').addEventListener('click', function(e) {
+                if (e.target === this) closeModal();
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+            });
+        }
+
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', init);
         } else {
