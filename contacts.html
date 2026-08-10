@@ -47,8 +47,9 @@
             </select>
         </div>
         <button onclick="resetFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888; white-space:nowrap;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
-            <i class="fas fa-undo"></i> Réinitialiser
-        </button>
+                <i class="fas fa-undo"></i> Réinitialiser
+            </button>
+        </div>
     </div>
 
     <!-- ===== ZONE VIDE - TABLEAU SUPPRIMÉ ===== -->
@@ -524,7 +525,7 @@
         let allContacts = [];
         let filteredContacts = [];
         let currentPage = 1;
-        const itemsPerPage = 10;
+        const itemsPerPage = 4; // ✅ MODIFIÉ : 4 contacts par page
 
         // ==========================================
         // FONCTIONS
@@ -917,7 +918,7 @@
         // INIT
         // ==========================================
         function init() {
-            console.log('🚀 Chargement de contacts.html (tableau supprimé)...');
+            console.log('🚀 Chargement de contacts.html (tableau supprimé, 4 par page)...');
             loadContactsData();
 
             document.getElementById('contactForm').addEventListener('submit', saveContact);
