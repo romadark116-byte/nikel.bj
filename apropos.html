@@ -9,11 +9,7 @@
     <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ==========================================
-           STYLES DE BASE - À PROPOS
-           ========================================== */
-
-        /* Section Fondateur */
+        /* ===== STYLES ===== */
         .founder-section {
             background: var(--white);
             border-radius: 16px;
@@ -104,7 +100,6 @@
             font-style: italic;
         }
 
-        /* Indicateur de chargement */
         .loading-spinner {
             display: flex;
             justify-content: center;
@@ -125,9 +120,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* ==========================================
-           GALERIE D'IMAGES
-           ========================================== */
         .gallery-container {
             position: relative;
             width: 100%;
@@ -182,7 +174,6 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* Boutons de navigation */
         .gallery-btn {
             position: absolute;
             top: 50%;
@@ -208,15 +199,9 @@
             transform: translateY(-50%) scale(1.1);
         }
 
-        .gallery-btn.prev {
-            left: 16px;
-        }
+        .gallery-btn.prev { left: 16px; }
+        .gallery-btn.next { right: 16px; }
 
-        .gallery-btn.next {
-            right: 16px;
-        }
-
-        /* Indicateurs (dots) */
         .gallery-dots {
             position: absolute;
             bottom: 16px;
@@ -247,7 +232,6 @@
             background: rgba(255,255,255,0.8);
         }
 
-        /* Conteneur principal de la section about */
         .about-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -255,15 +239,9 @@
             align-items: start;
         }
 
-        .about-text {
-            padding-right: 20px;
-        }
+        .about-text { padding-right: 20px; }
+        .about-image { width: 100%; }
 
-        .about-image {
-            width: 100%;
-        }
-
-        /* Message si aucune image */
         .gallery-empty {
             display: flex;
             flex-direction: column;
@@ -282,7 +260,6 @@
             color: var(--light-gray);
         }
 
-        /* Valeurs */
         .values-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -321,7 +298,6 @@
             margin: 0;
         }
 
-        /* Statistiques */
         .about-stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -332,327 +308,97 @@
             border-radius: 12px;
         }
 
-        .about-stats div {
-            text-align: center;
-        }
-
+        .about-stats div { text-align: center; }
         .about-stats strong {
             display: block;
             font-size: 1.8rem;
             color: var(--gold);
             font-weight: 700;
         }
-
         .about-stats span {
             font-size: 0.85rem;
             color: var(--gray);
         }
 
-        /* ========================================== */
-        /* RESPONSIVE - À PROPOS                      */
-        /* ========================================== */
-
-        /* Tablettes et petits écrans */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 1024px) {
-            .values-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 24px;
-            }
-
-            .founder-grid {
-                grid-template-columns: 220px 1fr;
-                gap: 30px;
-            }
+            .values-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+            .founder-grid { grid-template-columns: 220px 1fr; gap: 30px; }
         }
 
-        /* Mobiles (max-width: 768px) */
         @media (max-width: 768px) {
-            .about-grid {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
-            .about-text {
-                padding-right: 0;
-            }
-
-            .gallery-container {
-                aspect-ratio: 16/9;
-            }
-
-            .founder-grid {
-                grid-template-columns: 1fr;
-                gap: 24px;
-            }
-
-            .founder-photo {
-                max-width: 280px;
-                margin: 0 auto;
-            }
-
-            .founder-section {
-                padding: 24px;
-                margin-top: 20px;
-            }
-
-            .founder-info h3 {
-                font-size: 1.5rem;
-                text-align: center;
-            }
-
-            .founder-info .title {
-                text-align: center;
-            }
-
-            .founder-info .bio {
-                font-size: 0.95rem;
-            }
-
-            .founder-info .signature {
-                text-align: center;
-                font-size: 1.2rem;
-            }
-
-            .gallery-btn {
-                width: 36px;
-                height: 36px;
-                font-size: 0.9rem;
-            }
-
-            .gallery-btn.prev {
-                left: 8px;
-            }
-
-            .gallery-btn.next {
-                right: 8px;
-            }
-
-            .gallery-dots {
-                gap: 8px;
-                bottom: 12px;
-            }
-
-            .gallery-dot {
-                width: 8px;
-                height: 8px;
-            }
-
-            .gallery-slide .slide-caption h4 {
-                font-size: 1rem;
-            }
-
-            .gallery-slide .slide-caption p {
-                font-size: 0.8rem;
-            }
-
-            .values-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 16px;
-            }
-
-            .value-card {
-                padding: 20px;
-            }
-
-            .value-card i {
-                font-size: 2rem;
-            }
-
-            .value-card h4 {
-                font-size: 1rem;
-            }
-
-            .value-card p {
-                font-size: 0.85rem;
-            }
-
-            .about-stats {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 12px;
-                padding: 16px;
-            }
-
-            .about-stats strong {
-                font-size: 1.4rem;
-            }
-
-            .about-stats span {
-                font-size: 0.75rem;
-            }
+            .about-grid { grid-template-columns: 1fr; gap: 30px; }
+            .about-text { padding-right: 0; }
+            .gallery-container { aspect-ratio: 16/9; }
+            .founder-grid { grid-template-columns: 1fr; gap: 24px; }
+            .founder-photo { max-width: 280px; margin: 0 auto; }
+            .founder-section { padding: 24px; margin-top: 20px; }
+            .founder-info h3 { font-size: 1.5rem; text-align: center; }
+            .founder-info .title { text-align: center; }
+            .founder-info .bio { font-size: 0.95rem; }
+            .founder-info .signature { text-align: center; font-size: 1.2rem; }
+            .gallery-btn { width: 36px; height: 36px; font-size: 0.9rem; }
+            .gallery-btn.prev { left: 8px; }
+            .gallery-btn.next { right: 8px; }
+            .gallery-dots { gap: 8px; bottom: 12px; }
+            .gallery-dot { width: 8px; height: 8px; }
+            .gallery-slide .slide-caption h4 { font-size: 1rem; }
+            .gallery-slide .slide-caption p { font-size: 0.8rem; }
+            .values-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+            .value-card { padding: 20px; }
+            .value-card i { font-size: 2rem; }
+            .value-card h4 { font-size: 1rem; }
+            .value-card p { font-size: 0.85rem; }
+            .about-stats { grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 16px; }
+            .about-stats strong { font-size: 1.4rem; }
+            .about-stats span { font-size: 0.75rem; }
         }
 
-        /* Très petits mobiles (max-width: 480px) */
         @media (max-width: 480px) {
-            .founder-section {
-                padding: 16px;
-                margin-top: 16px;
-            }
-
-            .founder-photo {
-                max-width: 200px;
-            }
-
-            .founder-photo .social-overlay {
-                padding: 12px;
-                gap: 12px;
-            }
-
-            .founder-photo .social-overlay a {
-                font-size: 1rem;
-            }
-
-            .founder-info h3 {
-                font-size: 1.3rem;
-            }
-
-            .founder-info .title {
-                font-size: 0.85rem;
-            }
-
-            .founder-info .bio {
-                font-size: 0.9rem;
-                line-height: 1.6;
-            }
-
-            .founder-info .signature {
-                font-size: 1rem;
-            }
-
-            .gallery-container {
-                aspect-ratio: 4/3;
-            }
-
-            .gallery-btn {
-                width: 32px;
-                height: 32px;
-                font-size: 0.8rem;
-            }
-
-            .gallery-slide .slide-caption {
-                padding: 20px 16px 14px;
-            }
-
-            .gallery-slide .slide-caption h4 {
-                font-size: 0.9rem;
-            }
-
-            .gallery-slide .slide-caption p {
-                font-size: 0.75rem;
-            }
-
-            .gallery-dots {
-                gap: 6px;
-                bottom: 10px;
-            }
-
-            .gallery-dot {
-                width: 6px;
-                height: 6px;
-            }
-
-            .values-grid {
-                grid-template-columns: 1fr;
-                gap: 14px;
-            }
-
-            .value-card {
-                padding: 16px;
-            }
-
-            .value-card i {
-                font-size: 1.8rem;
-            }
-
-            .value-card h4 {
-                font-size: 0.95rem;
-            }
-
-            .value-card p {
-                font-size: 0.85rem;
-            }
-
-            .about-stats {
-                grid-template-columns: 1fr;
-                gap: 10px;
-                padding: 14px;
-            }
-
-            .about-stats strong {
-                font-size: 1.2rem;
-            }
-
-            .about-stats span {
-                font-size: 0.8rem;
-            }
-
-            .section-title {
-                font-size: 1.5rem;
-            }
+            .founder-section { padding: 16px; margin-top: 16px; }
+            .founder-photo { max-width: 200px; }
+            .founder-photo .social-overlay { padding: 12px; gap: 12px; }
+            .founder-photo .social-overlay a { font-size: 1rem; }
+            .founder-info h3 { font-size: 1.3rem; }
+            .founder-info .title { font-size: 0.85rem; }
+            .founder-info .bio { font-size: 0.9rem; line-height: 1.6; }
+            .founder-info .signature { font-size: 1rem; }
+            .gallery-container { aspect-ratio: 4/3; }
+            .gallery-btn { width: 32px; height: 32px; font-size: 0.8rem; }
+            .gallery-slide .slide-caption { padding: 20px 16px 14px; }
+            .gallery-slide .slide-caption h4 { font-size: 0.9rem; }
+            .gallery-slide .slide-caption p { font-size: 0.75rem; }
+            .gallery-dots { gap: 6px; bottom: 10px; }
+            .gallery-dot { width: 6px; height: 6px; }
+            .values-grid { grid-template-columns: 1fr; gap: 14px; }
+            .value-card { padding: 16px; }
+            .value-card i { font-size: 1.8rem; }
+            .value-card h4 { font-size: 0.95rem; }
+            .value-card p { font-size: 0.85rem; }
+            .about-stats { grid-template-columns: 1fr; gap: 10px; padding: 14px; }
+            .about-stats strong { font-size: 1.2rem; }
+            .about-stats span { font-size: 0.8rem; }
+            .section-title { font-size: 1.5rem; }
         }
 
-        /* Très petit mobile (max-width: 360px) */
         @media (max-width: 360px) {
-            .founder-photo {
-                max-width: 160px;
-            }
-
-            .founder-info h3 {
-                font-size: 1.1rem;
-            }
-
-            .founder-info .bio {
-                font-size: 0.85rem;
-            }
-
-            .gallery-btn {
-                width: 28px;
-                height: 28px;
-                font-size: 0.7rem;
-            }
-
-            .gallery-btn.prev {
-                left: 4px;
-            }
-
-            .gallery-btn.next {
-                right: 4px;
-            }
-
-            .value-card {
-                padding: 14px;
-            }
-
-            .value-card i {
-                font-size: 1.5rem;
-            }
-
-            .value-card h4 {
-                font-size: 0.85rem;
-            }
-
-            .value-card p {
-                font-size: 0.8rem;
-            }
+            .founder-photo { max-width: 160px; }
+            .founder-info h3 { font-size: 1.1rem; }
+            .founder-info .bio { font-size: 0.85rem; }
+            .gallery-btn { width: 28px; height: 28px; font-size: 0.7rem; }
+            .gallery-btn.prev { left: 4px; }
+            .gallery-btn.next { right: 4px; }
+            .value-card { padding: 14px; }
+            .value-card i { font-size: 1.5rem; }
+            .value-card h4 { font-size: 0.85rem; }
+            .value-card p { font-size: 0.8rem; }
         }
 
-        /* Orientation paysage sur mobile */
         @media (max-width: 768px) and (orientation: landscape) {
-            .founder-grid {
-                grid-template-columns: 180px 1fr;
-                gap: 20px;
-            }
-
-            .founder-photo {
-                max-width: 180px;
-            }
-
-            .gallery-container {
-                aspect-ratio: 16/8;
-            }
-
-            .values-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .founder-grid { grid-template-columns: 180px 1fr; gap: 20px; }
+            .founder-photo { max-width: 180px; }
+            .gallery-container { aspect-ratio: 16/8; }
+            .values-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
@@ -673,10 +419,7 @@
             </nav>
             <div class="header-actions">
                 <div class="header-search" style="display:flex; align-items:center; gap:8px;">
-                    <input type="text" 
-                           id="searchInput" 
-                           placeholder="Rechercher..." 
-                           style="padding:8px 16px; border:2px solid var(--light-gray); border-radius:50px; font-size:0.9rem; outline:none; transition:all 0.3s; width:160px; background:var(--off-white);"
+                    <input type="text" id="searchInput" placeholder="Rechercher..." style="padding:8px 16px; border:2px solid var(--light-gray); border-radius:50px; font-size:0.9rem; outline:none; transition:all 0.3s; width:160px; background:var(--off-white);"
                            onfocus="this.style.width='220px'; this.style.borderColor='var(--gold)'" 
                            onblur="this.style.width='160px'; this.style.borderColor='var(--light-gray)'">
                     <button onclick="handleSearch()" style="background:linear-gradient(135deg, var(--gold), var(--accent-dark)); border:none; border-radius:50%; width:38px; height:38px; color:white; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; justify-content:center;">
@@ -708,38 +451,23 @@
     <section class="section">
         <div class="container">
             <div class="founder-section">
-                <!-- Indicateur de chargement -->
                 <div id="loadingIndicator" class="loading-spinner">
                     <i class="fas fa-spinner"></i>
                     <span>Chargement des informations...</span>
                 </div>
 
-                <!-- Contenu du fondateur (caché par défaut) -->
                 <div id="founderContent" style="display: none;">
                     <div class="founder-grid">
-                        <!-- Photo du fondateur -->
                         <div class="founder-photo">
-                            <img src="" 
-                                 alt="Fondateur de Nati Shop"
-                                 id="founderImage"
-                                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Fleury+HAMIDOU&size=400&background=c9a84c&color=fff&font-size=0.5'">
+                            <img src="" alt="Fondateur de Nati Shop" id="founderImage">
                             <div class="social-overlay">
-                                <a href="https://www.instagram.com/nati_shop_officiel/" target="_blank" title="Instagram">
-                                    <i class="fab fa-instagram"></i>
-                                </a>
-                                <a href="https://www.linkedin.com/company/nati-shop" target="_blank" title="LinkedIn">
-                                    <i class="fab fa-linkedin-in"></i>
-                                </a>
-                                <a href="https://twitter.com/nati_shop" target="_blank" title="Twitter">
-                                    <i class="fab fa-twitter"></i>
-                                </a>
-                                <a href="https://www.tiktok.com/@nati_shop_officiel" target="_blank" title="TikTok">
-                                    <i class="fab fa-tiktok"></i>
-                                </a>
+                                <a href="https://www.instagram.com/nati_shop_officiel/" target="_blank"><i class="fab fa-instagram"></i></a>
+                                <a href="https://www.linkedin.com/company/nati-shop" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="https://twitter.com/nati_shop" target="_blank"><i class="fab fa-twitter"></i></a>
+                                <a href="https://www.tiktok.com/@nati_shop_officiel" target="_blank"><i class="fab fa-tiktok"></i></a>
                             </div>
                         </div>
 
-                        <!-- Informations du fondateur -->
                         <div class="founder-info">
                             <h3 id="founderName">Fleury HAMIDOU</h3>
                             <span class="title" id="founderTitle">👑 Fondateur &amp; CEO</span>
@@ -766,7 +494,7 @@
         </div>
     </section>
 
-    <!-- ===== SECTION HISTOIRE ET VALEURS AVEC GALERIE ===== -->
+    <!-- ===== SECTION HISTOIRE ET VALEURS ===== -->
     <section class="section">
         <div class="container about-grid">
             <div class="about-text animate-fade-up">
@@ -783,21 +511,15 @@
                 </a>
             </div>
 
-            <!-- ===== GALERIE D'IMAGES DYNAMIQUE ===== -->
             <div class="about-image animate-slide-left">
                 <div class="gallery-container" id="galleryContainer">
-                    <!-- Les slides seront générées dynamiquement par JavaScript -->
                     <div id="gallerySlides"></div>
-
-                    <!-- Boutons de navigation -->
-                    <button class="gallery-btn prev" onclick="changeSlide(-1)" aria-label="Image précédente" id="prevBtn" style="display:none;">
+                    <button class="gallery-btn prev" onclick="changeSlide(-1)" id="prevBtn" style="display:none;">
                         <i class="fas fa-chevron-left"></i>
                     </button>
-                    <button class="gallery-btn next" onclick="changeSlide(1)" aria-label="Image suivante" id="nextBtn" style="display:none;">
+                    <button class="gallery-btn next" onclick="changeSlide(1)" id="nextBtn" style="display:none;">
                         <i class="fas fa-chevron-right"></i>
                     </button>
-
-                    <!-- Indicateurs (dots) -->
                     <div class="gallery-dots" id="galleryDots"></div>
                 </div>
             </div>
@@ -904,6 +626,7 @@
     </footer>
 
     <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // ==========================================
         // CONFIGURATION SUPABASE
@@ -916,14 +639,61 @@
         let autoSlideInterval;
 
         // ==========================================
-        // CHARGER LA GALERIE DEPUIS SUPABASE
+        // COMPRESSION D'IMAGE
+        // ==========================================
+        function compressImageFromData(imageData, maxWidth = 400, maxHeight = 400, quality = 0.6) {
+            return new Promise((resolve, reject) => {
+                // Si l'image est déjà compressée ou petite, la retourner directement
+                if (imageData.length < 100000) {
+                    resolve(imageData);
+                    return;
+                }
+
+                const img = new Image();
+                img.crossOrigin = 'Anonymous';
+                img.src = imageData;
+                
+                img.onload = function() {
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height = height * (maxWidth / width);
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width = width * (maxHeight / height);
+                            height = maxHeight;
+                        }
+                    }
+                    
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    const compressed = canvas.toDataURL('image/jpeg', quality);
+                    console.log(`📊 Compression: ${(imageData.length/1024).toFixed(1)}KB → ${(compressed.length/1024).toFixed(1)}KB`);
+                    resolve(compressed);
+                };
+                
+                img.onerror = function() {
+                    console.warn('⚠️ Erreur compression, utilisation de l\'original');
+                    resolve(imageData);
+                };
+            });
+        }
+
+        // ==========================================
+        // CHARGER LA GALERIE
         // ==========================================
         async function loadGallery() {
             try {
                 const { createClient } = supabase;
                 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-                console.log('🔄 Chargement de la galerie...');
 
                 const { data: images, error } = await supabaseClient
                     .from('galerie')
@@ -932,42 +702,33 @@
                     .order('ordre', { ascending: true });
 
                 if (error) {
-                    console.error('❌ Erreur chargement galerie:', error);
+                    console.error('❌ Erreur galerie:', error);
                     return;
                 }
 
                 galleryImages = images || [];
-                console.log(`✅ ${galleryImages.length} images chargées pour la galerie`);
+                console.log(`✅ ${galleryImages.length} images galerie`);
 
                 if (galleryImages.length > 0) {
                     renderGallery(galleryImages);
                 } else {
                     showEmptyGallery();
                 }
-
             } catch (error) {
                 console.error('❌ Erreur:', error);
                 showEmptyGallery();
             }
         }
 
-        // ==========================================
-        // AFFICHER LA GALERIE
-        // ==========================================
         function renderGallery(images) {
             const slidesContainer = document.getElementById('gallerySlides');
             const dotsContainer = document.getElementById('galleryDots');
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
+            document.getElementById('prevBtn').style.display = 'flex';
+            document.getElementById('nextBtn').style.display = 'flex';
 
-            // Afficher les boutons
-            prevBtn.style.display = 'flex';
-            nextBtn.style.display = 'flex';
-
-            // Générer les slides
             slidesContainer.innerHTML = images.map((img, index) => `
                 <div class="gallery-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
-                    <img src="${img.image_url}" alt="${img.titre || 'Image de la boutique'}">
+                    <img src="${img.image_url}" alt="${img.titre || 'Image'}">
                     ${(img.titre || img.description) ? `
                         <div class="slide-caption">
                             ${img.titre ? `<h4>${img.titre}</h4>` : ''}
@@ -977,83 +738,50 @@
                 </div>
             `).join('');
 
-            // Générer les dots
             dotsContainer.innerHTML = images.map((_, index) => `
                 <span class="gallery-dot ${index === 0 ? 'active' : ''}" onclick="goToSlide(${index})"></span>
             `).join('');
 
-            // Réinitialiser le slide actuel
             currentSlide = 0;
-
-            // Démarrer le défilement automatique
             startAutoSlide();
         }
 
-        // ==========================================
-        // AFFICHER UN MESSAGE SI AUCUNE IMAGE
-        // ==========================================
         function showEmptyGallery() {
-            const slidesContainer = document.getElementById('gallerySlides');
-            const dotsContainer = document.getElementById('galleryDots');
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-
-            prevBtn.style.display = 'none';
-            nextBtn.style.display = 'none';
-            dotsContainer.innerHTML = '';
-
-            slidesContainer.innerHTML = `
+            document.getElementById('gallerySlides').innerHTML = `
                 <div class="gallery-empty">
                     <i class="fas fa-images"></i>
-                    <h3>Aucune image dans la galerie</h3>
-                    <p>Le vendeur n'a pas encore ajouté de photos de la boutique.</p>
+                    <h3>Aucune image</h3>
+                    <p>Le vendeur n'a pas encore ajouté de photos.</p>
                 </div>
             `;
+            document.getElementById('prevBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('galleryDots').innerHTML = '';
         }
 
-        // ==========================================
-        // FONCTIONS DE NAVIGATION
-        // ==========================================
         function changeSlide(direction) {
             if (galleryImages.length === 0) return;
-            
-            const totalSlides = galleryImages.length;
-            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+            currentSlide = (currentSlide + direction + galleryImages.length) % galleryImages.length;
             updateGallery();
             resetAutoSlide();
         }
 
         function goToSlide(index) {
             if (galleryImages.length === 0) return;
-            
             currentSlide = index;
             updateGallery();
             resetAutoSlide();
         }
 
         function updateGallery() {
-            const slides = document.querySelectorAll('.gallery-slide');
-            const dots = document.querySelectorAll('.gallery-dot');
-
-            slides.forEach((slide, index) => {
-                slide.classList.toggle('active', index === currentSlide);
-            });
-
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('active', index === currentSlide);
-            });
+            document.querySelectorAll('.gallery-slide').forEach((s, i) => s.classList.toggle('active', i === currentSlide));
+            document.querySelectorAll('.gallery-dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
         }
 
-        // ==========================================
-        // DÉFILEMENT AUTOMATIQUE
-        // ==========================================
         function startAutoSlide() {
             if (galleryImages.length <= 1) return;
-            
             stopAutoSlide();
-            autoSlideInterval = setInterval(() => {
-                changeSlide(1);
-            }, 4000);
+            autoSlideInterval = setInterval(() => changeSlide(1), 4000);
         }
 
         function stopAutoSlide() {
@@ -1065,49 +793,15 @@
 
         function resetAutoSlide() {
             stopAutoSlide();
-            if (galleryImages.length > 1) {
-                startAutoSlide();
-            }
+            if (galleryImages.length > 1) startAutoSlide();
         }
 
         // ==========================================
-        // PAUSE AU SURVOL
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', function() {
-            const galleryContainer = document.getElementById('galleryContainer');
-            
-            if (galleryContainer) {
-                galleryContainer.addEventListener('mouseenter', () => {
-                    stopAutoSlide();
-                });
-                
-                galleryContainer.addEventListener('mouseleave', () => {
-                    if (galleryImages.length > 1) {
-                        startAutoSlide();
-                    }
-                });
-            }
-
-            // Navigation au clavier
-            document.addEventListener('keydown', (e) => {
-                if (galleryImages.length === 0) return;
-                
-                if (e.key === 'ArrowLeft') {
-                    changeSlide(-1);
-                } else if (e.key === 'ArrowRight') {
-                    changeSlide(1);
-                }
-            });
-        });
-
-        // ==========================================
-        // CHARGER LES DONNÉES DU FONDATEUR
+        // CHARGER LE FONDATEUR AVEC COMPRESSION
         // ==========================================
         document.addEventListener('DOMContentLoaded', async function() {
-            // Charger la galerie en premier
             await loadGallery();
 
-            // Puis charger les données du fondateur
             try {
                 const { createClient } = supabase;
                 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -1115,37 +809,28 @@
                 const loadingIndicator = document.getElementById('loadingIndicator');
                 const founderContent = document.getElementById('founderContent');
                 const imageEl = document.getElementById('founderImage');
-                const nameEl = document.getElementById('founderName');
-                const titleEl = document.getElementById('founderTitle');
-                const signatureEl = document.getElementById('founderSignature');
-                const bioEls = [
-                    document.getElementById('founderBio1'),
-                    document.getElementById('founderBio2'),
-                    document.getElementById('founderBio3')
-                ];
 
-                console.log('🔄 Chargement des données du fondateur...');
+                console.log('🔄 Chargement du fondateur...');
 
-                // ✅ Récupérer le premier admin (ou celui avec l'email spécifique)
+                // Récupérer le premier admin
                 const { data: admins, error: adminsError } = await supabaseClient
                     .from('admins')
                     .select('*')
                     .limit(1);
 
                 if (adminsError) {
-                    console.error('❌ Erreur chargement admin:', adminsError);
+                    console.error('❌ Erreur admin:', adminsError);
                     throw adminsError;
                 }
 
                 if (!admins || admins.length === 0) {
-                    console.warn('⚠️ Aucun administrateur trouvé');
-                    throw new Error('Aucun administrateur trouvé');
+                    throw new Error('Aucun admin');
                 }
 
                 const admin = admins[0];
-                console.log('✅ Administrateur trouvé:', admin.email);
+                console.log('✅ Admin:', admin.email);
 
-                // ✅ Récupérer le profil admin_profiles lié à cet admin
+                // Récupérer le profil
                 const { data: profiles, error: profileError } = await supabaseClient
                     .from('admin_profiles')
                     .select('*')
@@ -1153,92 +838,84 @@
                     .limit(1);
 
                 if (profileError) {
-                    console.error('❌ Erreur chargement admin_profiles:', profileError);
+                    console.error('❌ Erreur profil:', profileError);
                 }
 
                 const profile = (profiles && profiles.length > 0) ? profiles[0] : {};
-                console.log('✅ Profil trouvé:', profile);
+                console.log('✅ Profil:', profile);
 
-                // --- METTRE À JOUR LA PHOTO AVEC pdg_tof_url ---
+                // 🔑 Récupérer et compresser l'image si nécessaire
                 let photoUrl = profile.pdg_tof_url || null;
-                
-                // Si aucune photo dans pdg_tof_url, utiliser l'avatar par défaut
-                if (!photoUrl || photoUrl.trim() === '') {
+
+                if (photoUrl && photoUrl.trim() !== '') {
+                    console.log('📸 Chargement de l\'image...');
+                    
+                    // Si c'est du base64 trop lourd, le compresser
+                    if (photoUrl.startsWith('data:image') && photoUrl.length > 150000) {
+                        console.log('🔄 Compression du base64...');
+                        try {
+                            photoUrl = await compressImageFromData(photoUrl, 400, 400, 0.6);
+                            console.log('✅ Base64 compressé avec succès');
+                        } catch (e) {
+                            console.warn('⚠️ Compression échouée, utilisation de l\'original');
+                        }
+                    }
+                    
+                    imageEl.src = photoUrl;
+                } else {
+                    console.warn('⚠️ pdg_tof_url vide, fallback avatar');
                     const fullName = `${admin.prenom || ''} ${admin.nom || ''}`.trim();
-                    photoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName || 'Fondateur')}&size=400&background=c9a84c&color=fff&font-size=0.5`;
+                    imageEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName || 'Fondateur')}&size=400&background=c9a84c&color=fff&font-size=0.5`;
                 }
 
-                const cacheBuster = new Date().getTime();
-                imageEl.src = `${photoUrl}${photoUrl.includes('?') ? '&' : '?'}_=${cacheBuster}`;
-                console.log('📸 Photo chargée depuis pdg_tof_url:', photoUrl);
-                
+                // Gestion d'erreur de chargement
                 imageEl.onerror = function() {
-                    console.warn('⚠️ Erreur chargement image, fallback vers avatar');
+                    console.error('❌ ÉCHEC chargement image !');
                     const fullName = `${admin.prenom || ''} ${admin.nom || ''}`.trim();
-                    this.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName || 'Fondateur')}&size=400&background=c9a84c&color=fff&font-size=0.5&_=${cacheBuster}`;
+                    this.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName || 'Fondateur')}&size=400&background=c9a84c&color=fff&font-size=0.5`;
                 };
 
-                // --- METTRE À JOUR LE NOM ---
+                // Remplir les infos
                 if (admin.prenom && admin.nom) {
-                    nameEl.textContent = `${admin.prenom} ${admin.nom.toUpperCase()}`;
-                } else if (admin.nom) {
-                    nameEl.textContent = admin.nom;
-                } else if (admin.prenom) {
-                    nameEl.textContent = admin.prenom;
+                    document.getElementById('founderName').textContent = `${admin.prenom} ${admin.nom.toUpperCase()}`;
                 }
 
-                // --- METTRE À JOUR LES AUTRES CHAMPS ---
-                if (profile.titre && profile.titre.trim() !== '') {
-                    titleEl.textContent = profile.titre;
+                if (profile.titre) {
+                    document.getElementById('founderTitle').textContent = profile.titre;
                 }
 
-                if (profile.signature && profile.signature.trim() !== '') {
-                    signatureEl.textContent = `✨ ${profile.signature}`;
+                if (profile.signature) {
+                    document.getElementById('founderSignature').textContent = `✨ ${profile.signature}`;
                 }
 
                 if (profile.description) {
                     try {
-                        let description = profile.description;
-                        
-                        if (typeof description === 'string' && description.trim().startsWith('[')) {
-                            description = JSON.parse(description);
+                        let desc = profile.description;
+                        if (typeof desc === 'string' && desc.trim().startsWith('[')) {
+                            desc = JSON.parse(desc);
                         }
-                        
-                        if (Array.isArray(description)) {
-                            description.forEach((text, index) => {
-                                if (bioEls[index]) {
-                                    bioEls[index].innerHTML = text;
-                                }
+                        if (Array.isArray(desc)) {
+                            ['founderBio1', 'founderBio2', 'founderBio3'].forEach((id, i) => {
+                                if (desc[i]) document.getElementById(id).innerHTML = desc[i];
                             });
-                        } else if (typeof description === 'string') {
-                            if (bioEls[0]) {
-                                bioEls[0].innerHTML = description;
-                            }
+                        } else {
+                            document.getElementById('founderBio1').innerHTML = desc;
                         }
                     } catch (e) {
-                        if (bioEls[0]) {
-                            bioEls[0].innerHTML = profile.description;
-                        }
+                        document.getElementById('founderBio1').innerHTML = profile.description;
                     }
                 }
-
-                const fullName = `${admin.prenom || ''} ${admin.nom || ''}`.trim();
-                imageEl.alt = `${fullName || 'Fondateur'} - Fondateur de ${admin.boutique_nom || 'Nati Shop'}`;
 
                 loadingIndicator.style.display = 'none';
                 founderContent.style.display = 'block';
 
-                console.log('✅ Affichage terminé');
-
             } catch (error) {
-                console.error('❌ Erreur générale:', error);
-                
+                console.error('❌ Erreur:', error);
                 const loadingIndicator = document.getElementById('loadingIndicator');
                 loadingIndicator.innerHTML = `
                     <i class="fas fa-exclamation-circle" style="color: var(--gold);"></i>
-                    <span>Impossible de charger les données. Affichage des valeurs par défaut.</span>
+                    <span>Erreur de chargement. Affichage des valeurs par défaut.</span>
                 `;
-                
                 setTimeout(() => {
                     loadingIndicator.style.display = 'none';
                     document.getElementById('founderContent').style.display = 'block';
@@ -1247,19 +924,15 @@
         });
 
         // ==========================================
-        // FONCTION DE RECHERCHE
+        // RECHERCHE
         // ==========================================
         function handleSearch() {
-            const input = document.getElementById('searchInput');
-            const query = input.value.trim();
+            const query = document.getElementById('searchInput').value.trim();
             if (query) {
                 window.location.href = `boutique.html?search=${encodeURIComponent(query)}`;
             }
         }
 
-        // ==========================================
-        // MENU MOBILE
-        // ==========================================
         document.addEventListener('DOMContentLoaded', function() {
             const menuToggle = document.getElementById('menuToggle');
             const nav = document.querySelector('.nav');
@@ -1273,15 +946,24 @@
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        handleSearch();
-                    }
+                    if (e.key === 'Enter') handleSearch();
                 });
             }
+
+            const galleryContainer = document.getElementById('galleryContainer');
+            if (galleryContainer) {
+                galleryContainer.addEventListener('mouseenter', stopAutoSlide);
+                galleryContainer.addEventListener('mouseleave', () => {
+                    if (galleryImages.length > 1) startAutoSlide();
+                });
+            }
+
+            document.addEventListener('keydown', (e) => {
+                if (galleryImages.length === 0) return;
+                if (e.key === 'ArrowLeft') changeSlide(-1);
+                if (e.key === 'ArrowRight') changeSlide(1);
+            });
         });
     </script>
-
-    <!-- Ajouter le SDK Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </body>
 </html>
