@@ -125,7 +125,7 @@
                 <small style="color:#888; font-size:0.8rem;">Une courte description qui apparaît sous le grand titre.</small>
             </div>
 
-            <!-- ===== PHOTO PROFESSIONNELLE (pdg_tof_url) ===== -->
+            <!-- Photo professionnelle -->
             <div style="display:flex; align-items:center; gap:20px; padding:16px; background:#f8f8f8; border-radius:12px; margin-bottom:16px; flex-wrap:wrap;">
                 <div style="position:relative; width:80px; height:80px; flex-shrink:0;">
                     <div id="proPhoto" style="width:80px; height:80px; border-radius:12px; background:linear-gradient(135deg, #2d2d2d, #1a1a1a); display:flex; align-items:center; justify-content:center; font-size:2rem; color:white; overflow:hidden; border:2px solid #e8e8e8;">
@@ -139,7 +139,6 @@
                 <div>
                     <h4 style="font-size:0.95rem; margin-bottom:2px; color:#1a1a1a;">Photo professionnelle</h4>
                     <p style="font-size:0.85rem; color:#888;">Photo qui apparaîtra sur vos cartes professionnelles.</p>
-                    <p style="font-size:0.8rem; color:#888;">Stockée dans la colonne <strong>pdg_tof_url</strong> de la table admin_profiles</p>
                 </div>
             </div>
 
@@ -254,7 +253,7 @@
 
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    resolve(e.target.result);
+                    resolve(e.target.result); // Données en base64
                 };
                 reader.onerror = function(e) {
                     reject(new Error('Erreur lors de la lecture du fichier'));
@@ -279,6 +278,7 @@
 
                 if (error) {
                     console.error('❌ Erreur chargement galerie:', error);
+                    // Fallback sans est_active
                     const { data: fallbackData, error: fallbackError } = await supabaseClient
                         .from('galerie')
                         .select('*')
@@ -339,6 +339,7 @@
             try {
                 showNotification('🔄 Traitement de l\'image...', 'info');
 
+                // 🔑 CONVERTIR L'IMAGE EN BASE64
                 const base64Image = await convertImageToBase64(file);
                 console.log('✅ Image convertie en base64 (taille: ' + (base64Image.length / 1024).toFixed(2) + ' KB)');
 
@@ -346,7 +347,7 @@
                     .from('galerie')
                     .insert({
                         admin_id: adminSession.id,
-                        image_url: base64Image,
+                        image_url: base64Image, // Stockage en base64
                         titre: titre || `Photo ${galerieData.length + 1}`,
                         description: description || '',
                         ordre: galerieData.length + 1,
@@ -456,6 +457,7 @@
             try {
                 showNotification('🔄 Traitement de la nouvelle image...', 'info');
 
+                // 🔑 CONVERTIR L'IMAGE EN BASE64
                 const base64Image = await convertImageToBase64(file);
                 console.log('✅ Nouvelle image convertie en base64');
 
@@ -511,9 +513,13 @@
 
             let html = '';
             galerieData.forEach((photo, index) => {
+                // Vérifier si l'image est en base64 ou une URL
+                const isBase64 = photo.image && photo.image.startsWith('data:image');
+                
                 html += `
                     <div data-photo-id="${photo.id}" style="background:#ffffff; border-radius:10px; padding:16px; border:1px solid #e8e8e8; transition:all 0.3s; position:relative;" onmouseover="this.style.borderColor='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8'">
                         <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start;">
+                            <!-- Miniature -->
                             <div style="position:relative; width:120px; height:120px; flex-shrink:0; border-radius:8px; overflow:hidden; background:#f0f0f0; border:1px solid #e8e8e8;">
                                 ${photo.image ? 
                                     `<img src="${photo.image}" style="width:100%;height:100%;object-fit:cover;">` :
@@ -528,6 +534,7 @@
                                 <input type="file" id="changeImage_${photo.id}" accept="image/*" style="display:none;" onchange="window.changerImagePhoto('${photo.id}', event)">
                             </div>
 
+                            <!-- Infos -->
                             <div style="flex:1; min-width:200px;">
                                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
                                     <div style="grid-column:1/2;">
@@ -549,6 +556,7 @@
                                 </div>
                             </div>
 
+                            <!-- Numéro / badge -->
                             <div style="position:absolute; top:8px; right:12px; background:#c9a84c; color:white; padding:2px 12px; border-radius:50px; font-size:0.7rem; font-weight:600;">
                                 #${index + 1}
                             </div>
@@ -653,16 +661,9 @@
                     document.getElementById('titrePro').value = proData.titre || '';
                     document.getElementById('bio').value = proData.description || '';
                     
-                    // ==========================================
-                    // 🔑 CHARGEMENT DE LA PHOTO PROFESSIONNELLE
-                    // DEPUIS LA COLONNE pdg_tof_url
-                    // ==========================================
-                    if (proData.pdg_tof_url) {
-                        console.log('📸 Photo professionnelle trouvée (pdg_tof_url)');
+                    if (proData.photo_url) {
                         document.getElementById('proPhoto').innerHTML = 
-                            `<img src="${proData.pdg_tof_url}" style="width:100%;height:100%;object-fit:cover;">`;
-                    } else {
-                        console.warn('⚠️ Aucune photo professionnelle (pdg_tof_url)');
+                            `<img src="${proData.photo_url}" style="width:100%;height:100%;object-fit:cover;">`;
                     }
                 } else {
                     console.warn('⚠️ Aucun profil pro trouvé, création...');
@@ -753,14 +754,9 @@
                 }
 
                 // 3. Mettre à jour le profil pro (admin_profiles)
-                // Récupérer la photo professionnelle actuelle
-                const currentProPhoto = document.getElementById('proPhoto').querySelector('img');
-                const proPhotoUrl = currentProPhoto ? currentProPhoto.src : null;
-
                 const proData = {
                     titre: formData.titrePro,
                     description: formData.bio,
-                    pdg_tof_url: proPhotoUrl, // 🔑 Sauvegarde dans pdg_tof_url
                     updated_at: new Date().toISOString()
                 };
 
@@ -776,7 +772,7 @@
                         .update(proData)
                         .eq('admin_id', adminSession.id);
                     if (error) throw error;
-                    console.log('✅ Profil pro mis à jour (pdg_tof_url inclus)');
+                    console.log('✅ Profil pro mis à jour');
                 } else {
                     const { error } = await supabaseClient
                         .from('admin_profiles')
@@ -785,7 +781,7 @@
                             ...proData
                         }]);
                     if (error) throw error;
-                    console.log('✅ Profil pro créé (pdg_tof_url inclus)');
+                    console.log('✅ Profil pro créé');
                 }
 
                 // Mettre à jour la session
@@ -808,7 +804,7 @@
         // ==========================================
         // GESTION DES PHOTOS (profil et pro) - BASE64
         // ==========================================
-        function setupPhotoUpload(inputId, displayId, storageKey, tableColumn) {
+        function setupPhotoUpload(inputId, displayId, storageKey) {
             const input = document.getElementById(inputId);
             const display = document.getElementById(displayId);
             
@@ -821,12 +817,7 @@
                             const base64Data = event.target.result;
                             display.innerHTML = '<img src="' + base64Data + '" style="width:100%;height:100%;object-fit:cover;">';
                             localStorage.setItem(storageKey, base64Data);
-                            showNotification('✅ Photo mise à jour (stockée en base64)', 'success');
-                            
-                            // 🔑 Mise à jour automatique de la colonne pdg_tof_url
-                            if (tableColumn === 'pdg_tof_url') {
-                                console.log('📸 Photo professionnelle mise à jour (pdg_tof_url)');
-                            }
+                            showNotification('✅ Photo mise à jour', 'success');
                         };
                         reader.readAsDataURL(file);
                     }
@@ -881,9 +872,8 @@
             console.log('🚀 Démarrage de profil.html (version base64)...');
             
             // Photos de profil
-            setupPhotoUpload('photoInput', 'profilePhoto', 'nikel_profile_photo', 'photo_url');
-            // Photo professionnelle avec colonne pdg_tof_url
-            setupPhotoUpload('proPhotoInput', 'proPhoto', 'nikel_pro_photo', 'pdg_tof_url');
+            setupPhotoUpload('photoInput', 'profilePhoto', 'nikel_profile_photo');
+            setupPhotoUpload('proPhotoInput', 'proPhoto', 'nikel_pro_photo');
             
             // ==========================================
             // EXPOSER LES FONCTIONS GLOBALEMENT
