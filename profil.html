@@ -178,15 +178,36 @@
         'use strict';
 
         // ==========================================
-        // SUPABASE CONFIG
+        // SUPABASE CONFIG - RÉCUPÉRATION DYNAMIQUE
         // ==========================================
-        const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
-        
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        window.supabaseClient = supabaseClient;
+        let supabaseClient = window.supabaseClient;
 
-        console.log('✅ Supabase initialisé dans profil.html');
+        // Si window.supabaseClient n'existe pas, on le crée
+        if (!supabaseClient) {
+            console.warn('⚠️ SupabaseClient non trouvé, création...');
+            const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
+            const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
+            
+            // Vérifier que supabase est disponible
+            if (typeof supabase !== 'undefined' && supabase.createClient) {
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                window.supabaseClient = supabaseClient;
+                console.log('✅ SupabaseClient créé dans profil.html');
+            } else {
+                console.error('❌ Supabase SDK non chargé !');
+                document.getElementById('profilContainer').innerHTML = `
+                    <div style="text-align:center; padding:60px; color:red;">
+                        <i class="fas fa-exclamation-circle" style="font-size:3rem;"></i>
+                        <h3>Erreur de connexion</h3>
+                        <p>Impossible de se connecter à la base de données.</p>
+                        <p style="font-size:0.9rem; color:#888;">Veuillez rafraîchir la page.</p>
+                    </div>
+                `;
+                return;
+            }
+        }
+
+        console.log('✅ Supabase disponible dans profil.html');
 
         // ==========================================
         // VARIABLES
@@ -295,7 +316,6 @@
                     throw new Error('Image trop grande. Maximum 5MB');
                 }
 
-                // 🔑 COMPRESSER AVANT CONVERSION
                 const compressedBase64 = await compressImage(file, 800, 800, 0.7);
                 const sizeKB = (compressedBase64.length / 1024).toFixed(2);
                 console.log(`✅ Image compressée: ${sizeKB} KB`);
@@ -369,7 +389,7 @@
         // AJOUTER UNE PHOTO AVEC COMPRESSION
         // ==========================================
         async function ajouterPhotoGalerie(file, titre = '', description = '') {
-            const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
+            const adminSession = JSON.parse(localStorage.getItem('nati_shop_admin'));
             if (!adminSession || !adminSession.id) {
                 showNotification('⚠️ Vous devez être connecté', 'error');
                 return;
@@ -608,9 +628,11 @@
         // CHARGER LES DONNÉES
         // ==========================================
         async function loadAdminData() {
-            const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
+            // Utiliser nati_shop_admin au lieu de nikel_admin
+            const adminSession = JSON.parse(localStorage.getItem('nati_shop_admin'));
             if (!adminSession || !adminSession.email) {
                 console.warn('⚠️ Aucun admin connecté');
+                showNotification('⚠️ Veuillez vous connecter', 'error');
                 return;
             }
 
@@ -663,25 +685,6 @@
                     document.getElementById('adresseBoutique').value = data.adresse || '';
                     document.getElementById('grandTitre').value = data.titreb || '';
                     document.getElementById('legendeBoutique').value = data.legende || '';
-                } else {
-                    console.warn('⚠️ Aucune boutique trouvée, création...');
-                    const { error: createError } = await supabaseClient
-                        .from('boutique')
-                        .insert([{
-                            admin_id: adminSession.id,
-                            nom: 'NIKEL',
-                            adresse: '123 rue de l\'Élégance, 75001 Paris',
-                            titreb: 'L\'élégance à votre portée',
-                            legende: 'Découvrez notre collection unique de prêt-à-porter haut de gamme.'
-                        }]);
-
-                    if (createError) {
-                        console.error('❌ Erreur création boutique:', createError);
-                    } else {
-                        console.log('✅ Boutique créée avec succès');
-                        await loadAdminData();
-                        return;
-                    }
                 }
 
                 // 3. Charger la galerie
@@ -708,23 +711,6 @@
                         document.getElementById('proPhoto').innerHTML = 
                             `<img src="${proData.pdg_tof_url}" style="width:100%;height:100%;object-fit:cover;">`;
                     }
-                } else {
-                    console.warn('⚠️ Aucun profil pro trouvé, création...');
-                    const { error: createError } = await supabaseClient
-                        .from('admin_profiles')
-                        .insert([{
-                            admin_id: adminSession.id,
-                            titre: 'Designer de mode - Fondateur de NIKEL',
-                            description: 'Passionné par la mode et le design, j\'ai fondé NIKEL en 2020 pour offrir une alternative élégante et accessible.'
-                        }]);
-
-                    if (createError) {
-                        console.error('❌ Erreur création admin_profiles:', createError);
-                    } else {
-                        console.log('✅ Profil pro créé avec succès');
-                        await loadAdminData();
-                        return;
-                    }
                 }
 
                 showNotification('✅ Données chargées avec succès', 'success');
@@ -739,7 +725,7 @@
         // SAUVEGARDER LES DONNÉES
         // ==========================================
         async function saveAllData(formData) {
-            const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
+            const adminSession = JSON.parse(localStorage.getItem('nati_shop_admin'));
             if (!adminSession || !adminSession.email) {
                 showNotification('⚠️ Vous devez être connecté', 'error');
                 return false;
@@ -838,12 +824,12 @@
                 }
 
                 // Mettre à jour la session
-                const updatedAdmin = JSON.parse(localStorage.getItem('nikel_admin'));
+                const updatedAdmin = JSON.parse(localStorage.getItem('nati_shop_admin'));
                 updatedAdmin.prenom = formData.prenom;
                 updatedAdmin.nom = formData.nom;
                 updatedAdmin.telephone = formData.telephone;
                 updatedAdmin.profil_tof_url = profilePhotoUrl;
-                localStorage.setItem('nikel_admin', JSON.stringify(updatedAdmin));
+                localStorage.setItem('nati_shop_admin', JSON.stringify(updatedAdmin));
 
                 showNotification('✅ Profil mis à jour avec succès !', 'success');
                 return true;
@@ -870,7 +856,6 @@
                     try {
                         showNotification('🔄 Compression en cours...', 'info');
                         
-                        // 🔑 COMPRESSER L'IMAGE
                         const compressedBase64 = await convertImageToBase64(file);
                         
                         display.innerHTML = '<img src="' + compressedBase64 + '" style="width:100%;height:100%;object-fit:cover;">';
@@ -970,11 +955,13 @@
                 });
             }
             
+            // Charger les données après un court délai
             setTimeout(async () => {
                 await loadAdminData();
             }, 500);
         }
 
+        // Démarrer l'initialisation
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', init);
         } else {
