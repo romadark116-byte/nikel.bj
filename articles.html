@@ -1,4 +1,4 @@
-<!-- articles.html - Mes articles -->
+<!-- articles.html - Mes articles (tableau supprimé, zone vide) -->
 <div id="articlesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
@@ -66,31 +66,8 @@
         </button>
     </div>
 
-    <!-- ===== TABLEAU AVEC SCROLL HORIZONTAL ===== -->
-    <div class="articles-table-wrapper" style="overflow-x:auto; overflow-y:visible; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch;">
-        <table style="width:100%; border-collapse:collapse; font-size:0.95rem; min-width:900px;">
-            <thead>
-                <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap;">ID</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Image</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Nom</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Catégorie</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Prix</th>
-                    <th style="text-align:center; padding:14px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Stock</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Statut</th>
-                    <th style="text-align:center; padding:14px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="articlesTableBody">
-                <tr>
-                    <td colspan="8" style="text-align:center; padding:40px; color:#888;">
-                        <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
-                        Chargement des articles...
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <!-- ===== ZONE VIDE - TABLEAU SUPPRIMÉ ===== -->
+    <!-- Le tableau a été retiré -->
 
     <!-- ===== PAGINATION ===== -->
     <div class="articles-pagination" style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:12px;">
@@ -107,7 +84,7 @@
     </div>
 </div>
 
-<!-- ===== MODAL ===== -->
+<!-- ===== MODAL (inchangée) ===== -->
 <div id="articleModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center; padding:16px;">
     <div style="background:white; border-radius:16px; padding:32px; max-width:550px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
@@ -243,15 +220,13 @@
 </div>
 
 <!-- ========================================== -->
-<!-- STYLES RESPONSIVES SPÉCIFIQUES            -->
+<!-- STYLES RESPONSIVES - IDENTIQUES À CONTACTS -->
 <!-- ========================================== -->
 <style>
-    /* Responsive - Articles (identique à favoris) */
+    /* Responsive - Articles (identique à contacts) */
     
     @media (max-width: 992px) {
-        .articles-table-wrapper table {
-            min-width: 800px !important;
-        }
+        /* Rien */
     }
 
     @media (max-width: 768px) {
@@ -321,38 +296,6 @@
             padding: 8px 14px !important;
             width: 100% !important;
             text-align: center !important;
-        }
-
-        /* Tableau */
-        .articles-table-wrapper {
-            overflow-x: auto !important;
-            -webkit-overflow-scrolling: touch !important;
-        }
-
-        .articles-table-wrapper table {
-            min-width: 700px !important;
-            font-size: 0.75rem !important;
-        }
-
-        .articles-table-wrapper table th,
-        .articles-table-wrapper table td {
-            padding: 8px 6px !important;
-            font-size: 0.7rem !important;
-        }
-
-        .articles-table-wrapper table th {
-            white-space: nowrap !important;
-            font-size: 0.7rem !important;
-        }
-
-        .articles-table-wrapper table td .statut-badge {
-            font-size: 0.55rem !important;
-            padding: 2px 6px !important;
-        }
-
-        .articles-table-wrapper table td .action-btn {
-            font-size: 0.6rem !important;
-            padding: 3px 6px !important;
         }
 
         /* Pagination */
@@ -437,28 +380,6 @@
             padding: 8px 14px !important;
         }
 
-        /* Tableau */
-        .articles-table-wrapper table {
-            min-width: 600px !important;
-            font-size: 0.65rem !important;
-        }
-
-        .articles-table-wrapper table th,
-        .articles-table-wrapper table td {
-            padding: 5px 4px !important;
-            font-size: 0.6rem !important;
-        }
-
-        .articles-table-wrapper table td .statut-badge {
-            font-size: 0.5rem !important;
-            padding: 1px 4px !important;
-        }
-
-        .articles-table-wrapper table td .action-btn {
-            font-size: 0.5rem !important;
-            padding: 2px 4px !important;
-        }
-
         /* Header */
         .articles-header h2 {
             font-size: 1.1rem !important;
@@ -504,11 +425,11 @@
             padding: 6px 10px !important;
         }
 
-        #articleModal .btn-row {
+        #articleModal > div > div:last-child {
             flex-direction: column !important;
         }
 
-        #articleModal .btn-row button {
+        #articleModal > div > div:last-child button {
             width: 100% !important;
         }
     }
@@ -529,17 +450,6 @@
 
         .articles-stats .stat-card p:last-child {
             font-size: 1rem !important;
-        }
-
-        .articles-table-wrapper table {
-            min-width: 500px !important;
-            font-size: 0.55rem !important;
-        }
-
-        .articles-table-wrapper table th,
-        .articles-table-wrapper table td {
-            padding: 4px 3px !important;
-            font-size: 0.5rem !important;
         }
 
         .articles-pagination button {
@@ -581,14 +491,11 @@
             min-width: 120px !important;
             flex: 1 !important;
         }
-
-        .articles-table-wrapper table {
-            min-width: 600px !important;
-        }
     }
 </style>
 
-<!-- ===== SCRIPTS ===== -->
+<!-- ===== SCRIPTS (JavaScript conservé pour les stats, filtres, etc.) ===== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function() {
     'use strict';
@@ -596,14 +503,25 @@
     // ==========================================
     // SUPABASE
     // ==========================================
-    if (!window.supabaseClient) {
+    let supabaseClient = window.supabaseClient;
+
+    if (!supabaseClient) {
         const SUPABASE_URL = 'https://ycjomnizzxbnasxbcbsv.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inljam9tbml6enhibmFzeGJjYnN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDAwMDAwMDAsImV4cCI6MjAxNTU3NjAwMH0.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
-        window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        window.supabaseClient = supabaseClient;
     }
 
-    const supabaseClient = window.supabaseClient;
-    if (!supabaseClient) return;
+    if (!supabaseClient) {
+        document.getElementById('articlesContainer').innerHTML = `
+            <div style="text-align:center; padding:60px; color:red;">
+                <i class="fas fa-exclamation-circle" style="font-size:3rem;"></i>
+                <h3>Erreur de connexion</h3>
+                <p>Impossible de se connecter à la base de données.</p>
+            </div>
+        `;
+        return;
+    }
 
     // ==========================================
     // VARIABLES
@@ -611,7 +529,7 @@
     let allArticles = [];
     let filteredArticles = [];
     let currentArticlePage = 1;
-    const articlesPerPage = 10;
+    const articlesPerPage = 4; // Comme contacts (4 par page)
     let selectedImageFile = null;
 
     // ==========================================
@@ -625,69 +543,17 @@
         return article.prix_original && parseFloat(article.prix_original) > parseFloat(article.prix);
     }
 
-    function getArticleStatutBadge(statut) {
-        const statuts = {
-            'En stock': { bg: '#27ae60', icon: 'fa-check', text: 'En stock' },
-            'Rupture de stock': { bg: '#f39c12', icon: 'fa-times', text: 'Rupture de stock' },
-            'Sur commande': { bg: '#3498db', icon: 'fa-clock', text: 'Sur commande' },
-            'Précommande': { bg: '#9b59b6', icon: 'fa-hourglass-half', text: 'Précommande' },
-            'Épuisé': { bg: '#e74c3c', icon: 'fa-ban', text: 'Épuisé' },
-            'Bientôt disponible': { bg: '#1abc9c', icon: 'fa-arrow-right', text: 'Bientôt disponible' }
-        };
-        const s = statuts[statut] || statuts['En stock'];
-        return `<span class="statut-badge" style="background:${s.bg}; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-            <i class="fas ${s.icon}"></i> ${s.text}
-        </span>`;
-    }
-
+    // ==========================================
+    // RENDU - VIDEO (tableau supprimé)
+    // ==========================================
     function renderArticleTable() {
-        const tbody = document.getElementById('articlesTableBody');
-        
-        if (filteredArticles.length === 0) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="8" style="text-align:center; padding:40px; color:#888;">
-                        <i class="fas fa-box-open" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
-                        Aucun article trouvé.
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-
-        const startIndex = (currentArticlePage - 1) * articlesPerPage;
-        const endIndex = Math.min(startIndex + articlesPerPage, filteredArticles.length);
-        const pageItems = filteredArticles.slice(startIndex, endIndex);
-
-        tbody.innerHTML = pageItems.map(article => `
-            <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
-                <td style="padding:12px; font-weight:600; color:#1a1a1a;">#${article.id ? article.id.substring(0, 8) : '---'}</td>
-                <td style="padding:12px;">
-                    <img src="${article.image_url || 'https://via.placeholder.com/50x50/1a1a1a/FFFFFF?text=Nati+Shop'}" 
-                         alt="${article.nom}" 
-                         style="width:50px; height:50px; object-fit:cover; border-radius:8px;"
-                         onerror="this.src='https://via.placeholder.com/50x50/1a1a1a/FFFFFF?text=Nati+Shop'">
-                </td>
-                <td style="padding:12px; font-weight:500;">${article.nom}</td>
-                <td style="padding:12px; color:#888;">${article.categorie || '—'}</td>
-                <td style="padding:12px; font-weight:700; color:#c9a84c;">
-                    ${formatPrice(article.prix)}
-                    ${article.prix_original ? `<span style="font-size:0.8rem; color:#999; text-decoration:line-through; display:block;">${formatPrice(article.prix_original)}</span>` : ''}
-                </td>
-                <td style="padding:12px; text-align:center; font-weight:600;">${article.stock || 0}</td>
-                <td style="padding:12px;">${getArticleStatutBadge(article.statut || 'En stock')}</td>
-                <td style="padding:12px; text-align:center; white-space:nowrap;">
-                    <button onclick="editArticle('${article.id}')" class="action-btn" style="padding:6px 12px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Modifier">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button onclick="deleteArticle('${article.id}')" class="action-btn" style="padding:6px 12px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Supprimer">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                </td>
-            </tr>
-        `).join('');
+        // Le tableau a été supprimé, cette fonction ne fait plus rien
+        console.log('📋 Tableau des articles supprimé, aucun rendu');
     }
 
+    // ==========================================
+    // STATISTIQUES
+    // ==========================================
     function updateArticleStats() {
         const total = allArticles.length;
         const stock = allArticles.filter(a => a.statut === 'En stock' || a.statut === 'Bientôt disponible').length;
@@ -700,15 +566,18 @@
         document.getElementById('totalSoldes').textContent = soldes;
     }
 
+    // ==========================================
+    // PAGINATION
+    // ==========================================
     function updateArticlePaginationInfo() {
         const total = filteredArticles.length;
         const start = (currentArticlePage - 1) * articlesPerPage + 1;
         const end = Math.min(currentArticlePage * articlesPerPage, total);
-        const totalPages = Math.ceil(total / articlesPerPage);
+        const totalPages = Math.ceil(total / articlesPerPage) || 1;
 
         document.getElementById('paginationInfo').textContent = 
             `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
-        document.getElementById('articlePageInfo').textContent = `Page ${currentArticlePage} sur ${totalPages || 1}`;
+        document.getElementById('articlePageInfo').textContent = `Page ${currentArticlePage} sur ${totalPages}`;
 
         document.getElementById('prevArticlePage').disabled = currentArticlePage <= 1;
         document.getElementById('nextArticlePage').disabled = currentArticlePage >= totalPages;
@@ -717,7 +586,6 @@
     function previousArticlePage() {
         if (currentArticlePage > 1) {
             currentArticlePage--;
-            renderArticleTable();
             updateArticlePaginationInfo();
         }
     }
@@ -726,11 +594,13 @@
         const totalPages = Math.ceil(filteredArticles.length / articlesPerPage);
         if (currentArticlePage < totalPages) {
             currentArticlePage++;
-            renderArticleTable();
             updateArticlePaginationInfo();
         }
     }
 
+    // ==========================================
+    // FILTRES
+    // ==========================================
     function applyArticleFilters() {
         const searchTerm = document.getElementById('searchInputArticles').value.toLowerCase().trim();
         const categorie = document.getElementById('filterCategorie').value;
@@ -761,7 +631,6 @@
         });
 
         currentArticlePage = 1;
-        renderArticleTable();
         updateArticlePaginationInfo();
     }
 
@@ -771,12 +640,16 @@
         document.getElementById('filterStatutArticle').value = 'all';
         filteredArticles = [...allArticles];
         currentArticlePage = 1;
-        renderArticleTable();
         updateArticlePaginationInfo();
     }
 
+    // ==========================================
+    // CHARGER LES DONNÉES
+    // ==========================================
     async function loadArticlesData() {
         try {
+            console.log('📝 Chargement des articles...');
+            
             const { data, error } = await supabaseClient
                 .from('produits')
                 .select('*')
@@ -791,7 +664,11 @@
             updateArticlePaginationInfo();
         } catch (err) {
             console.error('❌ Erreur:', err);
-            showNotification('❌ Erreur de chargement des articles', 'error');
+            allArticles = [];
+            filteredArticles = [];
+            renderArticleTable();
+            updateArticleStats();
+            updateArticlePaginationInfo();
         }
     }
 
@@ -959,7 +836,6 @@
 
             closeArticleModal();
             filteredArticles = [...allArticles];
-            renderArticleTable();
             updateArticleStats();
             updateArticlePaginationInfo();
             removeSelectedImage();
@@ -983,7 +859,6 @@
             if (error) throw error;
             allArticles = allArticles.filter(a => a.id !== id);
             filteredArticles = [...allArticles];
-            renderArticleTable();
             updateArticleStats();
             updateArticlePaginationInfo();
             showNotification('🗑️ Article supprimé', 'success');
@@ -1018,18 +893,9 @@
         }, 3000);
     }
 
-    // ===== INIT =====
-    function init() {
-        loadArticlesData();
-        document.getElementById('articleForm').addEventListener('submit', saveArticle);
-        document.getElementById('articleModal').addEventListener('click', function(e) {
-            if (e.target === this) closeArticleModal();
-        });
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeArticleModal();
-        });
-    }
-
+    // ==========================================
+    // EXPOSER LES FONCTIONS
+    // ==========================================
     window.applyArticleFilters = applyArticleFilters;
     window.resetArticleFilters = resetArticleFilters;
     window.previousArticlePage = previousArticlePage;
@@ -1045,6 +911,24 @@
     window.removeSelectedImage = removeSelectedImage;
     window.toggleImageUrlInput = toggleImageUrlInput;
     window.useImageUrl = useImageUrl;
+
+    // ==========================================
+    // INIT
+    // ==========================================
+    function init() {
+        console.log('🚀 Chargement de articles.html (tableau supprimé)...');
+        loadArticlesData();
+
+        document.getElementById('articleForm').addEventListener('submit', saveArticle);
+
+        document.getElementById('articleModal').addEventListener('click', function(e) {
+            if (e.target === this) closeArticleModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeArticleModal();
+        });
+    }
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
