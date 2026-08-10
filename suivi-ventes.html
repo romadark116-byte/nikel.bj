@@ -1,38 +1,124 @@
-<!-- ===== TABLEAU DES VENTES - SCROLLABLE HORIZONTALEMENT ===== -->
-<div style="overflow-x:auto; overflow-y:visible; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch; scroll-behavior:smooth; padding:0 0 0 0;" id="tableScrollContainer">
-    <table style="width:100%; border-collapse:collapse; font-size:0.85rem; min-width:1300px; table-layout:fixed;">
-        <thead>
-            <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
-                <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:40px; min-width:40px; white-space:nowrap; position:sticky; left:0; background:#f8f8f8; z-index:10;">#</th>
-                <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:140px; min-width:140px; white-space:nowrap;">Client</th>
-                <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:200px; min-width:200px; white-space:nowrap;">Email</th>
-                <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:140px; min-width:140px; white-space:nowrap;">Téléphone</th>
-                <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:170px; min-width:170px; white-space:nowrap;">Date</th>
-                <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:120px; min-width:120px; white-space:nowrap;">Total</th>
-                <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:130px; min-width:130px; white-space:nowrap;">Ville</th>
-                <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:100px; min-width:100px; white-space:nowrap;">Pays</th>
-                <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; width:130px; min-width:130px; white-space:nowrap;">Statut</th>
-                <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; width:180px; min-width:180px; white-space:nowrap;">Actions</th>
-            </tr>
-        </thead>
-        <tbody id="ventesTableBody">
-            <tr>
-                <td colspan="10" style="text-align:center; padding:40px; color:#888;">
-                    <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
-                    Chargement des données...
-                </td>
-            </tr>
-        </tbody>
-    </table>
+<!-- suivi-ventes.html - Version avec tableau scrollable horizontalement -->
+<div id="ventesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
+
+    <!-- ===== TITRE ===== -->
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:24px;">
+        <div>
+            <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:#1a1a1a; margin-bottom:4px;">
+                <i class="fas fa-chart-line" style="color:#c9a84c;"></i> Suivi des ventes
+            </h2>
+            <p style="color:#888; font-size:0.95rem;">Gérez et suivez toutes vos commandes en un seul endroit.</p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button onclick="exportCSV()" style="padding:10px 20px; background:#27ae60; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <i class="fas fa-file-export"></i> Exporter CSV
+            </button>
+            <button onclick="rafraichirVentes()" style="padding:10px 20px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <i class="fas fa-sync-alt"></i> Rafraîchir
+            </button>
+        </div>
+    </div>
+
+    <!-- ===== STATISTIQUES RAPIDES ===== -->
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total commandes</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#1a1a1a;" id="totalCommandes">0</p>
+        </div>
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">✅ Soldées</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#27ae60;" id="totalSoldees">0</p>
+        </div>
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">⏳ En attente</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#f39c12;" id="totalEnAttente">0</p>
+        </div>
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #e74c3c;">
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">❌ Annulées</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#e74c3c;" id="totalAnnulees">0</p>
+        </div>
+    </div>
+
+    <!-- ===== BARRE DE RECHERCHE & FILTRES ===== -->
+    <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
+
+        <div style="flex:2; min-width:180px;">
+            <input type="text" id="searchVentes" placeholder="🔍 Rechercher..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onkeyup="applyVentesFilters()">
+        </div>
+
+        <div style="min-width:130px; flex:1;">
+            <select id="filterStatut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.9rem; background:#ffffff; outline:none; transition:border-color 0.3s; cursor:pointer;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyVentesFilters()">
+                <option value="all">📊 Tous</option>
+                <option value="soldé">✅ Soldé</option>
+                <option value="en attente">⏳ En attente</option>
+                <option value="annulé">❌ Annulé</option>
+            </select>
+        </div>
+
+        <div style="min-width:130px; flex:1;">
+            <input type="date" id="dateDebut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.9rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyVentesFilters()">
+        </div>
+
+        <div style="min-width:130px; flex:1;">
+            <input type="date" id="dateFin" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.9rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyVentesFilters()">
+        </div>
+
+        <button onclick="resetVentesFilters()" style="padding:10px 16px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.9rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888; white-space:nowrap;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+            <i class="fas fa-undo"></i> Réinitialiser
+        </button>
+    </div>
+
+    <!-- ===== TABLEAU DES VENTES - SCROLLABLE HORIZONTALEMENT ===== -->
+    <div style="overflow-x:auto; overflow-y:visible; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch; scroll-behavior:smooth; padding:0 0 0 0;" id="tableScrollContainer">
+        <table style="width:100%; border-collapse:collapse; font-size:0.85rem; min-width:1300px; table-layout:fixed;">
+            <thead>
+                <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:40px; min-width:40px; white-space:nowrap; position:sticky; left:0; background:#f8f8f8; z-index:10;">#</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:140px; min-width:140px; white-space:nowrap;">Client</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:200px; min-width:200px; white-space:nowrap;">Email</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:140px; min-width:140px; white-space:nowrap;">Téléphone</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:170px; min-width:170px; white-space:nowrap;">Date</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:120px; min-width:120px; white-space:nowrap;">Total</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:130px; min-width:130px; white-space:nowrap;">Ville</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:100px; min-width:100px; white-space:nowrap;">Pays</th>
+                    <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; width:130px; min-width:130px; white-space:nowrap;">Statut</th>
+                    <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; width:180px; min-width:180px; white-space:nowrap;">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="ventesTableBody">
+                <tr>
+                    <td colspan="10" style="text-align:center; padding:40px; color:#888;">
+                        <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
+                        Chargement des données...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ===== INDICATEUR DE SCROLL ===== -->
+    <div style="display:flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.6rem 0 0.3rem; font-size:0.8rem; color:#94a3b8; user-select:none; border-top:1px solid #f0f0f0; margin-top:0;">
+        <i class="fas fa-chevron-left" style="opacity:0.5;"></i>
+        <span>👆 Faites glisser ou scroll horizontalement pour voir toutes les colonnes</span>
+        <i class="fas fa-chevron-right" style="opacity:0.5;"></i>
+    </div>
+
+    <!-- ===== PAGINATION ===== -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:12px;">
+        <span style="color:#888; font-size:0.9rem;" id="ventesPaginationInfo">Affichage de 0 à 0 sur 0 entrées</span>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button onclick="prevVentesPage()" id="prevVentesPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+                <i class="fas fa-chevron-left"></i> Précédent
+            </button>
+            <span id="ventesPageInfo" style="display:flex; align-items:center; padding:0 12px; font-weight:600; color:#1a1a1a;">Page 1</span>
+            <button onclick="nextVentesPage()" id="nextVentesPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+                Suivant <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
 </div>
 
-<!-- ===== INDICATEUR DE SCROLL ===== -->
-<div style="display:flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.6rem 0 0.3rem; font-size:0.8rem; color:#94a3b8; user-select:none; border-top:1px solid #f0f0f0; margin-top:0;">
-    <i class="fas fa-chevron-left" style="opacity:0.5;"></i>
-    <span>👆 Faites glisser ou scroll horizontalement pour voir toutes les colonnes</span>
-    <i class="fas fa-chevron-right" style="opacity:0.5;"></i>
-</div>
-
+<!-- ===== STYLES RESPONSIVE ===== -->
 <style>
     /* ===== INDICATEUR DE SCROLL ANIMÉ ===== */
     @keyframes pulseScroll {
@@ -48,9 +134,55 @@
     #ventesTableBody tr:hover {
         background: #fafafa !important;
     }
-    
-    /* ===== RESPONSIVE MOBILE ===== */
+
+    /* RESPONSIVE - MOBILE */
     @media (max-width: 768px) {
+        #ventesContainer { padding: 16px !important; }
+        
+        /* Titre */
+        #ventesContainer > div:first-child { 
+            flex-direction: column !important; 
+            align-items: stretch !important;
+        }
+        #ventesContainer > div:first-child > div:last-child {
+            width: 100%;
+        }
+        #ventesContainer > div:first-child button {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        /* Stats en 2 colonnes */
+        #ventesContainer > div:nth-child(2) {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 10px !important;
+        }
+        #ventesContainer > div:nth-child(2) > div {
+            padding: 12px !important;
+        }
+        #ventesContainer > div:nth-child(2) p:first-child {
+            font-size: 0.7rem !important;
+        }
+        #ventesContainer > div:nth-child(2) p:last-child {
+            font-size: 1.3rem !important;
+        }
+        
+        /* Filtres en colonne */
+        #ventesContainer > div:nth-child(3) {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            padding: 12px !important;
+        }
+        #ventesContainer > div:nth-child(3) > div {
+            min-width: 100% !important;
+            flex: none !important;
+        }
+        #ventesContainer > div:nth-child(3) button {
+            width: 100%;
+            text-align: center;
+        }
+        
+        /* Tableau - scroll horizontal */
         #tableScrollContainer {
             overflow-x: auto !important;
             -webkit-overflow-scrolling: touch !important;
@@ -83,13 +215,57 @@
             padding: 2px 5px !important;
         }
         
-        .scroll-indicator-text {
+        /* Indicateur scroll */
+        #ventesContainer > div:nth-child(5) {
             font-size: 0.65rem !important;
             padding: 0.4rem 0 0.3rem !important;
         }
+        
+        /* Pagination */
+        #ventesContainer > div:nth-child(6) {
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+        #ventesContainer > div:nth-child(6) span:first-child {
+            font-size: 0.8rem !important;
+            text-align: center !important;
+        }
+        #ventesContainer > div:nth-child(6) button {
+            padding: 6px 12px !important;
+            font-size: 0.8rem !important;
+        }
     }
-    
+
     @media (max-width: 480px) {
+        #ventesContainer { padding: 12px !important; }
+        
+        #ventesContainer > div:nth-child(2) {
+            gap: 8px !important;
+        }
+        #ventesContainer > div:nth-child(2) > div {
+            padding: 10px !important;
+        }
+        #ventesContainer > div:nth-child(2) p:first-child {
+            font-size: 0.6rem !important;
+        }
+        #ventesContainer > div:nth-child(2) p:last-child {
+            font-size: 1.1rem !important;
+        }
+        
+        #ventesContainer > div:nth-child(3) {
+            padding: 10px !important;
+        }
+        #ventesContainer > div:nth-child(3) input,
+        #ventesContainer > div:nth-child(3) select {
+            font-size: 0.8rem !important;
+            padding: 8px 12px !important;
+        }
+        #ventesContainer > div:nth-child(3) button {
+            font-size: 0.8rem !important;
+            padding: 8px 14px !important;
+        }
+        
         #tableScrollContainer table {
             min-width: 750px !important;
             font-size: 0.65rem !important;
@@ -111,17 +287,429 @@
             padding: 2px 4px !important;
         }
         
-        .scroll-indicator-text {
+        #ventesContainer > div:nth-child(5) {
             font-size: 0.55rem !important;
             padding: 0.3rem 0 0.2rem !important;
         }
     }
 </style>
 
-<!-- ===== SCRIPT POUR LA DÉTECTION DU SCROLL ===== -->
+<!-- ===== SCRIPTS ===== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     (function() {
-        // Détection du scroll horizontal pour assombrir l'indicateur
+        'use strict';
+
+        // ==========================================
+        // SUPABASE CONFIG
+        // ==========================================
+        const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
+        
+        let supabaseClient = null;
+
+        try {
+            if (window.supabase) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                window.supabaseClient = supabaseClient;
+                console.log('✅ Supabase initialisé');
+            } else {
+                console.warn('⚠️ Supabase SDK non chargé');
+            }
+        } catch (e) {
+            console.error('❌ Erreur initialisation Supabase:', e);
+        }
+
+        // ==========================================
+        // VARIABLES
+        // ==========================================
+        let allVentes = [];
+        let filteredVentes = [];
+        let currentPage = 1;
+        const perPage = 10;
+
+        // ==========================================
+        // DONNÉES DE TEST
+        // ==========================================
+        function getTestData() {
+            return [
+                { id: 13, prenom: 'gagaga', nom: 'j\'çità', email: 'fzeihfihfzefi@gmail.com', telephone: '0126252555', ville: 'Cotonou', pays: 'BJ', created_at: new Date('2026-08-09T11:31:00').toISOString(), total_achat: null, statut_produit: 'en attente' },
+                { id: 12, prenom: 'Saint', nom: 'Michel', email: 'saintmichel91647720@gmail.com', telephone: '0195931369', ville: 'Cotonou', pays: 'BJ', created_at: new Date('2026-07-16T08:58:00').toISOString(), total_achat: null, statut_produit: 'en attente' },
+                { id: 1, prenom: 'Jean', nom: 'Dupont', email: 'jean@email.com', telephone: '0612345678', ville: 'Paris', pays: 'FR', created_at: new Date('2026-08-01T10:00:00').toISOString(), total_achat: 398.00, statut_produit: 'soldé' },
+                { id: 2, prenom: 'Fleury', nom: 'HAMIDOU', email: 'f91631072@gmail.com', telephone: '0191647720', ville: 'Parakou', pays: 'BJ', created_at: new Date(Date.now() - 86400000).toISOString(), total_achat: 267.00, statut_produit: 'en attente' },
+                { id: 3, prenom: 'Marie', nom: 'Martin', email: 'marie@email.com', telephone: '0765432109', ville: 'Lyon', pays: 'FR', created_at: new Date(Date.now() - 172800000).toISOString(), total_achat: 159.00, statut_produit: 'annulé' },
+                { id: 4, prenom: 'Amadou', nom: 'Diallo', email: 'amadou@email.com', telephone: '779012345', ville: 'Dakar', pays: 'SN', created_at: new Date(Date.now() - 259200000).toISOString(), total_achat: 299.00, statut_produit: 'soldé' },
+                { id: 5, prenom: 'Sophie', nom: 'Bernard', email: 'sophie@email.com', telephone: '0612345987', ville: 'Marseille', pays: 'FR', created_at: new Date(Date.now() - 345600000).toISOString(), total_achat: 149.00, statut_produit: 'en attente' },
+                { id: 6, prenom: 'Abdoulaye', nom: 'Sow', email: 'abdoulaye@email.com', telephone: '771234567', ville: 'Dakar', pays: 'SN', created_at: new Date(Date.now() - 432000000).toISOString(), total_achat: 450.00, statut_produit: 'soldé' },
+                { id: 7, prenom: 'Claire', nom: 'Petit', email: 'claire@email.com', telephone: '0687654321', ville: 'Nice', pays: 'FR', created_at: new Date(Date.now() - 518400000).toISOString(), total_achat: 89.00, statut_produit: 'en attente' },
+                { id: 8, prenom: 'Moussa', nom: 'Camara', email: 'moussa@email.com', telephone: '620123456', ville: 'Abidjan', pays: 'CI', created_at: new Date(Date.now() - 604800000).toISOString(), total_achat: 320.00, statut_produit: 'annulé' }
+            ];
+        }
+
+        // ==========================================
+        // FORMATER LA DATE
+        // ==========================================
+        function formatDate(dateString) {
+            if (!dateString) return '—';
+            const d = new Date(dateString);
+            if (isNaN(d.getTime())) return '—';
+            return d.toLocaleDateString('fr-FR') + ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // ==========================================
+        // BADGE STATUT
+        // ==========================================
+        function getStatutBadge(statut) {
+            const s = {
+                'soldé': { bg: '#27ae60', icon: 'fa-check', text: 'Soldé' },
+                'en attente': { bg: '#f39c12', icon: 'fa-clock', text: 'En attente' },
+                'annulé': { bg: '#e74c3c', icon: 'fa-times', text: 'Annulé' }
+            };
+            const st = s[statut] || s['en attente'];
+            return `<span class="statut-badge" style="background:${st.bg}; color:white; padding:3px 10px; border-radius:50px; font-size:0.7rem; font-weight:600; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;">
+                <i class="fas ${st.icon}"></i> ${st.text}
+            </span>`;
+        }
+
+        // ==========================================
+        // RENDU TABLEAU
+        // ==========================================
+        function renderVentes() {
+            const tbody = document.getElementById('ventesTableBody');
+            if (!tbody) return;
+            
+            if (filteredVentes.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:40px; color:#888;">
+                    <i class="fas fa-inbox" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
+                    Aucune vente trouvée.
+                </td></tr>`;
+                updateVentesPaginationInfo();
+                return;
+            }
+
+            const start = (currentPage - 1) * perPage;
+            const items = filteredVentes.slice(start, start + perPage);
+
+            tbody.innerHTML = items.map(v => `
+                <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
+                    <td style="padding:8px 6px; font-weight:600; font-size:0.8rem; text-align:center; position:sticky; left:0; background:white; z-index:5;">${v.id}</td>
+                    <td style="padding:8px 6px; font-weight:500; font-size:0.8rem; max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${v.prenom || ''} ${v.nom || ''}">${v.prenom || ''} ${v.nom || ''}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${v.email || '—'}">${v.email || '—'}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap;">${v.telephone || '—'}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap;">${formatDate(v.created_at)}</td>
+                    <td style="padding:8px 6px; font-weight:700; color:#c9a84c; font-size:0.8rem; white-space:nowrap;">${v.total_achat ? v.total_achat.toFixed(0).replace('.', ',') + ' FCFA' : '—'}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${v.ville || '—'}">${v.ville || '—'}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap;">${v.pays || '—'}</td>
+                    <td style="padding:8px 6px; text-align:center;">${getStatutBadge(v.statut)}</td>
+                    <td style="padding:8px 6px; text-align:center; white-space:nowrap;">
+                        <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:3px 6px; border:none; border-radius:4px; background:#27ae60; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
+                        <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:3px 6px; border:none; border-radius:4px; background:#f39c12; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
+                        <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:3px 6px; border:none; border-radius:4px; background:#e74c3c; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            updateVentesPaginationInfo();
+        }
+
+        // ==========================================
+        // STATISTIQUES
+        // ==========================================
+        function updateVentesStats() {
+            const total = allVentes.length;
+            const sold = allVentes.filter(v => v.statut === 'soldé').length;
+            const attente = allVentes.filter(v => v.statut === 'en attente').length;
+            const annul = allVentes.filter(v => v.statut === 'annulé').length;
+            
+            document.getElementById('totalCommandes').textContent = total;
+            document.getElementById('totalSoldees').textContent = sold;
+            document.getElementById('totalEnAttente').textContent = attente;
+            document.getElementById('totalAnnulees').textContent = annul;
+        }
+
+        // ==========================================
+        // PAGINATION
+        // ==========================================
+        function updateVentesPaginationInfo() {
+            const total = filteredVentes.length;
+            const start = (currentPage - 1) * perPage + 1;
+            const end = Math.min(currentPage * perPage, total);
+            const totalPages = Math.ceil(total / perPage) || 1;
+
+            const infoEl = document.getElementById('ventesPaginationInfo');
+            const pageEl = document.getElementById('ventesPageInfo');
+            const prevBtn = document.getElementById('prevVentesPage');
+            const nextBtn = document.getElementById('nextVentesPage');
+            
+            if (infoEl) {
+                infoEl.textContent = `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
+            }
+            if (pageEl) {
+                pageEl.textContent = `Page ${currentPage} sur ${totalPages}`;
+            }
+            if (prevBtn) {
+                prevBtn.disabled = currentPage <= 1;
+                prevBtn.style.opacity = currentPage <= 1 ? '0.5' : '1';
+                prevBtn.style.cursor = currentPage <= 1 ? 'not-allowed' : 'pointer';
+            }
+            if (nextBtn) {
+                nextBtn.disabled = currentPage >= totalPages;
+                nextBtn.style.opacity = currentPage >= totalPages ? '0.5' : '1';
+                nextBtn.style.cursor = currentPage >= totalPages ? 'not-allowed' : 'pointer';
+            }
+        }
+
+        function prevVentesPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderVentes();
+                document.getElementById('tableScrollContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function nextVentesPage() {
+            const totalPages = Math.ceil(filteredVentes.length / perPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderVentes();
+                document.getElementById('tableScrollContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // ==========================================
+        // FILTRES
+        // ==========================================
+        function applyVentesFilters() {
+            const search = document.getElementById('searchVentes').value.toLowerCase().trim();
+            const statut = document.getElementById('filterStatut').value;
+            const dateDebut = document.getElementById('dateDebut').value;
+            const dateFin = document.getElementById('dateFin').value;
+
+            filteredVentes = allVentes.filter(v => {
+                let match = true;
+                
+                if (search) {
+                    const fullName = `${v.prenom || ''} ${v.nom || ''}`.toLowerCase();
+                    const email = (v.email || '').toLowerCase();
+                    const phone = (v.telephone || '').toLowerCase();
+                    match = fullName.includes(search) || email.includes(search) || phone.includes(search);
+                }
+                
+                if (statut !== 'all') {
+                    match = match && v.statut === statut;
+                }
+                
+                if (dateDebut && match) {
+                    const d1 = new Date(dateDebut);
+                    const dV = new Date(v.created_at);
+                    if (d1 > dV) match = false;
+                }
+                if (dateFin && match) {
+                    const d2 = new Date(dateFin);
+                    const dV = new Date(v.created_at);
+                    d2.setHours(23, 59, 59);
+                    if (d2 < dV) match = false;
+                }
+                
+                return match;
+            });
+
+            currentPage = 1;
+            renderVentes();
+        }
+
+        function resetVentesFilters() {
+            document.getElementById('searchVentes').value = '';
+            document.getElementById('filterStatut').value = 'all';
+            document.getElementById('dateDebut').value = '';
+            document.getElementById('dateFin').value = '';
+            filteredVentes = [...allVentes];
+            currentPage = 1;
+            renderVentes();
+        }
+
+        // ==========================================
+        // METTRE À JOUR LE STATUT
+        // ==========================================
+        async function updateStatut(id, newStatut) {
+            const v = allVentes.find(item => item.id === id);
+            if (!v) return;
+
+            const oldStatut = v.statut;
+            v.statut = newStatut;
+            
+            const f = filteredVentes.find(item => item.id === id);
+            if (f) f.statut = newStatut;
+
+            renderVentes();
+            updateVentesStats();
+
+            try {
+                if (supabaseClient) {
+                    const { error } = await supabaseClient
+                        .from('clients')
+                        .update({ statut_produit: newStatut })
+                        .eq('id', id);
+
+                    if (error) {
+                        console.error('❌ Erreur mise à jour Supabase:', error);
+                        v.statut = oldStatut;
+                        if (f) f.statut = oldStatut;
+                        renderVentes();
+                        updateVentesStats();
+                        showNotification('❌ Erreur lors de la mise à jour', 'error');
+                        return;
+                    }
+                }
+                
+                showNotification(`✅ Statut mis à jour : ${newStatut}`, 'success');
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                showNotification('❌ Erreur lors de la mise à jour', 'error');
+            }
+        }
+
+        // ==========================================
+        // EXPORTER CSV
+        // ==========================================
+        function exportCSV() {
+            if (allVentes.length === 0) {
+                showNotification('❌ Aucune donnée à exporter', 'error');
+                return;
+            }
+
+            let csv = 'ID,Client,Email,Téléphone,Date,Total,Ville,Pays,Statut\n';
+            allVentes.forEach(v => {
+                const client = `${v.prenom || ''} ${v.nom || ''}`.trim();
+                const statutValue = v.statut_produit || v.statut || '';
+                csv += `${v.id},"${client}","${v.email || ''}","${v.telephone || ''}","${formatDate(v.created_at)}","${v.total_achat || 0}","${v.ville || ''}","${v.pays || ''}","${statutValue}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `ventes_${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('✅ Export CSV effectué avec succès', 'success');
+        }
+
+        // ==========================================
+        // RAFRAÎCHIR
+        // ==========================================
+        function rafraichirVentes() {
+            loadVentesData();
+            showNotification('🔄 Données actualisées', 'info');
+        }
+
+        // ==========================================
+        // CHARGER LES DONNÉES
+        // ==========================================
+        async function loadVentesData() {
+            try {
+                console.log('📝 Chargement des données...');
+                
+                if (!supabaseClient) {
+                    console.warn('⚠️ Supabase non disponible, utilisation des données de test');
+                    allVentes = getTestData();
+                    filteredVentes = [...allVentes];
+                    renderVentes();
+                    updateVentesStats();
+                    return;
+                }
+
+                const { data, error } = await supabaseClient
+                    .from('clients')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error('❌ Erreur chargement:', error);
+                    allVentes = getTestData();
+                    filteredVentes = [...allVentes];
+                    renderVentes();
+                    updateVentesStats();
+                    return;
+                }
+
+                if (data && data.length > 0) {
+                    console.log(`✅ ${data.length} clients chargés`);
+                    
+                    allVentes = data.map(c => ({
+                        ...c,
+                        statut: c.statut_produit || 'en attente'
+                    }));
+                    
+                    filteredVentes = [...allVentes];
+                    renderVentes();
+                    updateVentesStats();
+                } else {
+                    console.warn('⚠️ Aucune donnée, utilisation des données de test');
+                    allVentes = getTestData();
+                    filteredVentes = [...allVentes];
+                    renderVentes();
+                    updateVentesStats();
+                }
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                allVentes = getTestData();
+                filteredVentes = [...allVentes];
+                renderVentes();
+                updateVentesStats();
+            }
+        }
+
+        // ==========================================
+        // NOTIFICATION
+        // ==========================================
+        function showNotification(message, type = 'info') {
+            document.querySelectorAll('.toast-nikel').forEach(t => t.remove());
+
+            const colors = {
+                success: '#27ae60',
+                error: '#e74c3c',
+                info: '#c9a84c'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-nikel';
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: #1a1a1a;
+                color: white;
+                padding: 16px 24px;
+                border-radius: 14px;
+                font-weight: 500;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+                z-index: 9999;
+                max-width: 400px;
+                font-size: 0.95rem;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                animation: slideUp 0.5s ease;
+                border-left: 4px solid ${colors[type] || colors.info};
+            `;
+            toast.innerHTML = `<span>${message}</span>`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                toast.style.transition = 'all 0.4s ease';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // ==========================================
+        // DÉTECTION DU SCROLL HORIZONTAL
+        // ==========================================
         const scrollContainer = document.getElementById('tableScrollContainer');
         if (scrollContainer) {
             scrollContainer.addEventListener('scroll', function() {
@@ -135,6 +723,40 @@
                     }
                 }
             });
+        }
+
+        // ==========================================
+        // EXPOSER LES FONCTIONS
+        // ==========================================
+        window.applyVentesFilters = applyVentesFilters;
+        window.resetVentesFilters = resetVentesFilters;
+        window.prevVentesPage = prevVentesPage;
+        window.nextVentesPage = nextVentesPage;
+        window.updateStatut = updateStatut;
+        window.exportCSV = exportCSV;
+        window.rafraichirVentes = rafraichirVentes;
+        window.showNotification = showNotification;
+        window.loadVentesData = loadVentesData;
+
+        // ==========================================
+        // INITIALISATION
+        // ==========================================
+        function init() {
+            console.log('🚀 Chargement de suivi-ventes.html...');
+            
+            const tbody = document.getElementById('ventesTableBody');
+            if (!tbody) {
+                console.error('❌ Table body non trouvé');
+                return;
+            }
+            
+            loadVentesData();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
         }
     })();
 </script>
