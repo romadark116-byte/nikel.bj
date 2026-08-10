@@ -1,4 +1,4 @@
-<!-- suivi-ventes.html - Version corrigée avec responsive ET données fonctionnelles -->
+<!-- suivi-ventes.html - Version corrigée avec affichage complet -->
 <div id="ventesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
@@ -70,18 +70,18 @@
 
     <!-- ===== TABLEAU DES VENTES ===== -->
     <div style="overflow-x:auto; overflow-y:visible; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch;">
-        <table style="width:100%; border-collapse:collapse; font-size:0.95rem; min-width:900px;">
+        <table style="width:100%; border-collapse:collapse; font-size:0.9rem; min-width:1200px; table-layout:fixed;">
             <thead>
                 <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap;">#</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Client</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Email</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Téléphone</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Date</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Total</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Ville</th>
-                    <th style="text-align:center; padding:14px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Statut</th>
-                    <th style="text-align:center; padding:14px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Actions</th>
+                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:50px;">#</th>
+                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:150px;">Client</th>
+                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:200px;">Email</th>
+                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:130px;">Téléphone</th>
+                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:160px;">Date</th>
+                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:100px;">Total</th>
+                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:120px;">Ville</th>
+                    <th style="text-align:center; padding:12px 10px; font-weight:600; color:#1a1a1a; width:120px;">Statut</th>
+                    <th style="text-align:center; padding:12px 10px; font-weight:600; color:#1a1a1a; width:160px;">Actions</th>
                 </tr>
             </thead>
             <tbody id="ventesTableBody">
@@ -167,12 +167,22 @@
             -webkit-overflow-scrolling: touch !important;
         }
         #ventesContainer > div:nth-child(4) table {
-            min-width: 700px !important;
+            min-width: 900px !important;
             font-size: 0.8rem !important;
         }
         #ventesContainer > div:nth-child(4) table th,
         #ventesContainer > div:nth-child(4) table td {
-            padding: 10px 8px !important;
+            padding: 8px 6px !important;
+            font-size: 0.75rem !important;
+            word-break: break-word !important;
+        }
+        #ventesContainer > div:nth-child(4) table td .statut-badge {
+            font-size: 0.6rem !important;
+            padding: 2px 8px !important;
+        }
+        #ventesContainer > div:nth-child(4) table td button {
+            font-size: 0.65rem !important;
+            padding: 3px 6px !important;
         }
         
         /* Pagination */
@@ -183,6 +193,7 @@
         }
         #ventesContainer > div:nth-child(5) span:first-child {
             font-size: 0.8rem !important;
+            text-align: center !important;
         }
         #ventesContainer > div:nth-child(5) button {
             padding: 6px 12px !important;
@@ -220,12 +231,13 @@
         }
         
         #ventesContainer > div:nth-child(4) table {
-            min-width: 550px !important;
+            min-width: 700px !important;
             font-size: 0.7rem !important;
         }
         #ventesContainer > div:nth-child(4) table th,
         #ventesContainer > div:nth-child(4) table td {
-            padding: 8px 6px !important;
+            padding: 6px 4px !important;
+            font-size: 0.65rem !important;
         }
     }
 </style>
@@ -268,7 +280,9 @@
         // ==========================================
         function getTestData() {
             return [
-                { id: 1, prenom: 'Jean', nom: 'Dupont', email: 'jean@email.com', telephone: '0612345678', ville: 'Paris', pays: 'FR', created_at: new Date().toISOString(), total_achat: 398.00, statut_produit: 'soldé' },
+                { id: 13, prenom: 'gagaga', nom: 'j\'çità', email: 'fzeihfihfzefi@gmail.com', telephone: '0126252555', ville: 'Cotonou', pays: 'BJ', created_at: new Date('2026-08-09T11:31:00').toISOString(), total_achat: null, statut_produit: 'en attente' },
+                { id: 12, prenom: 'Saint', nom: 'Michel', email: 'saintmichel91647720@gmail.com', telephone: '0195931369', ville: 'Cotonou', pays: 'BJ', created_at: new Date('2026-07-16T08:58:00').toISOString(), total_achat: null, statut_produit: 'en attente' },
+                { id: 1, prenom: 'Jean', nom: 'Dupont', email: 'jean@email.com', telephone: '0612345678', ville: 'Paris', pays: 'FR', created_at: new Date('2026-08-01T10:00:00').toISOString(), total_achat: 398.00, statut_produit: 'soldé' },
                 { id: 2, prenom: 'Fleury', nom: 'HAMIDOU', email: 'f91631072@gmail.com', telephone: '0191647720', ville: 'Parakou', pays: 'BJ', created_at: new Date(Date.now() - 86400000).toISOString(), total_achat: 267.00, statut_produit: 'en attente' },
                 { id: 3, prenom: 'Marie', nom: 'Martin', email: 'marie@email.com', telephone: '0765432109', ville: 'Lyon', pays: 'FR', created_at: new Date(Date.now() - 172800000).toISOString(), total_achat: 159.00, statut_produit: 'annulé' },
                 { id: 4, prenom: 'Amadou', nom: 'Diallo', email: 'amadou@email.com', telephone: '779012345', ville: 'Dakar', pays: 'SN', created_at: new Date(Date.now() - 259200000).toISOString(), total_achat: 299.00, statut_produit: 'soldé' },
@@ -296,17 +310,20 @@
                 'annulé': { bg: '#e74c3c', icon: 'fa-times', text: 'Annulé' }
             };
             const st = s[statut] || s['en attente'];
-            return `<span style="background:${st.bg}; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+            return `<span class="statut-badge" style="background:${st.bg}; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px; white-space:nowrap;">
                 <i class="fas ${st.icon}"></i> ${st.text}
             </span>`;
         }
 
         // ==========================================
-        // RENDU TABLEAU
+        // RENDU TABLEAU - CORRIGÉ POUR AFFICHER COMPLET
         // ==========================================
         function renderVentes() {
             const tbody = document.getElementById('ventesTableBody');
-            if (!tbody) return;
+            if (!tbody) {
+                console.error('❌ Table body non trouvé');
+                return;
+            }
             
             if (filteredVentes.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:40px; color:#888;">
@@ -322,18 +339,18 @@
 
             tbody.innerHTML = items.map(v => `
                 <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
-                    <td style="padding:12px; font-weight:600;">#${v.id}</td>
-                    <td style="padding:12px; font-weight:500;">${v.prenom || ''} ${v.nom || ''}</td>
-                    <td style="padding:12px; color:#888;">${v.email || '—'}</td>
-                    <td style="padding:12px; color:#888;">${v.telephone || '—'}</td>
-                    <td style="padding:12px; color:#888; font-size:0.9rem;">${formatDate(v.created_at)}</td>
-                    <td style="padding:12px; font-weight:700; color:#c9a84c;">${v.total_achat ? v.total_achat.toFixed(2).replace('.', ',') + ' FCFA' : '—'}</td>
-                    <td style="padding:12px; color:#888;">${v.ville || '—'}</td>
-                    <td style="padding:12px; text-align:center;">${getStatutBadge(v.statut)}</td>
-                    <td style="padding:12px; text-align:center;">
-                        <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:4px 10px; border:none; border-radius:6px; background:#27ae60; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
-                        <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:4px 10px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
-                        <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:4px 10px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
+                    <td style="padding:10px 8px; font-weight:600; font-size:0.85rem;">#${v.id}</td>
+                    <td style="padding:10px 8px; font-weight:500; font-size:0.85rem; word-break:break-word;">${v.prenom || ''} ${v.nom || ''}</td>
+                    <td style="padding:10px 8px; color:#555; font-size:0.8rem; word-break:break-word;">${v.email || '—'}</td>
+                    <td style="padding:10px 8px; color:#555; font-size:0.8rem; white-space:nowrap;">${v.telephone || '—'}</td>
+                    <td style="padding:10px 8px; color:#555; font-size:0.8rem; white-space:nowrap;">${formatDate(v.created_at)}</td>
+                    <td style="padding:10px 8px; font-weight:700; color:#c9a84c; font-size:0.85rem; white-space:nowrap;">${v.total_achat ? v.total_achat.toFixed(0).replace('.', ',') + ' FCFA' : '—'}</td>
+                    <td style="padding:10px 8px; color:#555; font-size:0.8rem;">${v.ville || '—'}</td>
+                    <td style="padding:10px 8px; text-align:center;">${getStatutBadge(v.statut)}</td>
+                    <td style="padding:10px 8px; text-align:center; white-space:nowrap;">
+                        <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:4px 8px; border:none; border-radius:6px; background:#27ae60; color:white; cursor:pointer; font-size:0.7rem; margin:1px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
+                        <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:4px 8px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.7rem; margin:1px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
+                        <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:4px 8px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.7rem; margin:1px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
                     </td>
                 </tr>
             `).join('');
