@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Suivi des ventes · Supabase</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
 
         body {
             background: #f4f6fa;
-            padding: 2rem 1.5rem;
+            padding: 1rem;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -228,7 +228,7 @@
             color: #c9a84c;
         }
 
-        /* ===== TABLEAU SCROLLABLE ===== */
+        /* ===== TABLEAU SCROLLABLE - CORRIGÉ POUR MOBILE ===== */
         .table-wrapper {
             position: relative;
             background: white;
@@ -245,6 +245,15 @@
             padding: 0.5rem 1rem 1rem 1rem;
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
+            /* IMPORTANT pour iOS */
+            touch-action: pan-x pan-y;
+            /* Permet le geste de glissement */
+            cursor: grab;
+            /* Indique qu'on peut glisser */
+        }
+
+        .table-scroll:active {
+            cursor: grabbing;
         }
 
         /* Indicateur de scroll (ombre) */
@@ -260,6 +269,7 @@
             display: block;
             float: right;
             height: 100%;
+            min-height: 50px;
         }
 
         .table-scroll table {
@@ -268,6 +278,8 @@
             border-collapse: separate;
             border-spacing: 0;
             font-size: 0.85rem;
+            /* IMPORTANT: permet le scroll sur mobile */
+            display: table;
         }
 
         .table-scroll thead th {
@@ -401,6 +413,7 @@
             border-top: 1px solid #f1f5f9;
             margin: 0 1rem;
             user-select: none;
+            -webkit-user-select: none;
         }
 
         .scroll-indicator i {
@@ -507,7 +520,7 @@
             }
         }
 
-        /* ===== RESPONSIVE ===== */
+        /* ===== RESPONSIVE MOBILE - CORRIGÉ ===== */
         @media (max-width: 768px) {
             #ventesContainer {
                 padding: 0;
@@ -562,39 +575,47 @@
                 text-align: center;
             }
 
+            /* ===== CORRECTION POUR MOBILE ===== */
             .table-scroll {
                 padding: 0.5rem 0.5rem 1rem 0.5rem;
+                /* S'assurer que le scroll est actif */
+                overflow-x: scroll !important;
+                -webkit-overflow-scrolling: touch !important;
+                touch-action: pan-x !important;
             }
 
             .table-scroll table {
-                min-width: 900px;
-                font-size: 0.75rem;
+                min-width: 900px !important;
+                font-size: 0.75rem !important;
+                /* Largeur fixe pour forcer le scroll */
+                width: 900px !important;
             }
 
             .table-scroll table th,
             .table-scroll table td {
-                padding: 8px 8px;
-                font-size: 0.7rem;
+                padding: 8px 8px !important;
+                font-size: 0.7rem !important;
+                white-space: nowrap !important;
             }
 
             .table-scroll table th {
-                white-space: nowrap;
-                font-size: 0.7rem;
+                white-space: nowrap !important;
+                font-size: 0.7rem !important;
             }
 
             .table-scroll table td .statut-badge {
-                font-size: 0.55rem;
-                padding: 2px 8px;
+                font-size: 0.55rem !important;
+                padding: 2px 8px !important;
             }
 
             .table-scroll table td .btn-action {
-                font-size: 0.6rem;
-                padding: 2px 6px;
+                font-size: 0.6rem !important;
+                padding: 2px 6px !important;
             }
 
             .scroll-indicator {
-                font-size: 0.65rem;
-                padding: 0.4rem 0 0.3rem;
+                font-size: 0.65rem !important;
+                padding: 0.4rem 0 0.3rem !important;
             }
 
             .pagination {
@@ -615,6 +636,10 @@
         }
 
         @media (max-width: 480px) {
+            body {
+                padding: 0.5rem;
+            }
+
             .stats-grid {
                 gap: 8px;
             }
@@ -646,30 +671,32 @@
                 padding: 8px 14px;
             }
 
+            /* ===== CORRECTION POUR PETIT MOBILE ===== */
             .table-scroll table {
-                min-width: 750px;
-                font-size: 0.65rem;
+                min-width: 750px !important;
+                width: 750px !important;
+                font-size: 0.65rem !important;
             }
 
             .table-scroll table th,
             .table-scroll table td {
-                padding: 5px 6px;
-                font-size: 0.6rem;
+                padding: 5px 6px !important;
+                font-size: 0.6rem !important;
             }
 
             .table-scroll table td .statut-badge {
-                font-size: 0.5rem;
-                padding: 1px 6px;
+                font-size: 0.5rem !important;
+                padding: 1px 6px !important;
             }
 
             .table-scroll table td .btn-action {
-                font-size: 0.5rem;
-                padding: 2px 4px;
+                font-size: 0.5rem !important;
+                padding: 2px 4px !important;
             }
 
             .scroll-indicator {
-                font-size: 0.55rem;
-                padding: 0.3rem 0 0.2rem;
+                font-size: 0.55rem !important;
+                padding: 0.3rem 0 0.2rem !important;
             }
         }
     </style>
@@ -773,7 +800,7 @@
 
             <div class="scroll-indicator">
                 <i class="fas fa-chevron-left"></i>
-                <span>Faites glisser ou scroll horizontalement</span>
+                <span>👆 Faites glisser vers la droite</span>
                 <i class="fas fa-chevron-right"></i>
             </div>
         </div>
