@@ -398,7 +398,7 @@
         }
 
         // ==========================================
-        // RENDU TABLEAU
+        // RENDU TABLEAU - AVEC TOUTES LES 10 COLONNES
         // ==========================================
         function renderVentes() {
             const tbody = document.getElementById('ventesTableBody');
@@ -418,16 +418,16 @@
 
             tbody.innerHTML = items.map(v => `
                 <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
-                    <td style="padding:8px 6px; font-weight:600; font-size:0.8rem; text-align:center; position:sticky; left:0; background:white; z-index:5;">${v.id}</td>
-                    <td style="padding:8px 6px; font-weight:500; font-size:0.8rem; max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${v.prenom || ''} ${v.nom || ''}">${v.prenom || ''} ${v.nom || ''}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${v.email || '—'}">${v.email || '—'}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap;">${v.telephone || '—'}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap;">${formatDate(v.created_at)}</td>
-                    <td style="padding:8px 6px; font-weight:700; color:#c9a84c; font-size:0.8rem; white-space:nowrap;">${v.total_achat ? v.total_achat.toFixed(0).replace('.', ',') + ' FCFA' : '—'}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${v.ville || '—'}">${v.ville || '—'}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap;">${v.pays || '—'}</td>
-                    <td style="padding:8px 6px; text-align:center;">${getStatutBadge(v.statut)}</td>
-                    <td style="padding:8px 6px; text-align:center; white-space:nowrap;">
+                    <td style="padding:8px 6px; font-weight:600; font-size:0.8rem; text-align:center; position:sticky; left:0; background:white; z-index:5; width:50px; min-width:50px;">${v.id}</td>
+                    <td style="padding:8px 6px; font-weight:500; font-size:0.8rem; white-space:nowrap; width:160px; min-width:160px;" title="${v.prenom || ''} ${v.nom || ''}">${v.prenom || ''} ${v.nom || ''}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap; width:230px; min-width:230px;" title="${v.email || '—'}">${v.email || '—'}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap; width:160px; min-width:160px;">${v.telephone || '—'}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap; width:190px; min-width:190px;">${formatDate(v.created_at)}</td>
+                    <td style="padding:8px 6px; font-weight:700; color:#c9a84c; font-size:0.8rem; white-space:nowrap; width:140px; min-width:140px;">${v.total_achat ? v.total_achat.toFixed(0).replace('.', ',') + ' FCFA' : '—'}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap; width:150px; min-width:150px;" title="${v.ville || '—'}">${v.ville || '—'}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap; width:120px; min-width:120px;">${v.pays || '—'}</td>
+                    <td style="padding:8px 6px; text-align:center; width:150px; min-width:150px;">${getStatutBadge(v.statut)}</td>
+                    <td style="padding:8px 6px; text-align:center; white-space:nowrap; width:200px; min-width:200px;">
                         <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:3px 6px; border:none; border-radius:4px; background:#27ae60; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
                         <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:3px 6px; border:none; border-radius:4px; background:#f39c12; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
                         <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:3px 6px; border:none; border-radius:4px; background:#e74c3c; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
