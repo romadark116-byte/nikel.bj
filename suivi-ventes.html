@@ -70,20 +70,20 @@
 
     <!-- ===== TABLEAU DES VENTES - SCROLLABLE HORIZONTALEMENT ===== -->
     <div style="overflow-x:auto; overflow-y:visible; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch; scroll-behavior:smooth; padding:0; width:100%; max-width:100%;" id="tableScrollContainer">
-        <div style="width:1400px; min-width:1400px;">
-            <table style="width:100%; border-collapse:collapse; font-size:0.85rem; table-layout:fixed;">
+        <div style="width:max-content; min-width:100%;">
+            <table style="border-collapse:collapse; font-size:0.85rem;">
                 <thead>
                     <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
-                        <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:50px; min-width:50px; white-space:nowrap; position:sticky; left:0; background:#f8f8f8; z-index:10;">#</th>
-                        <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:150px; min-width:150px; white-space:nowrap;">Client</th>
-                        <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:220px; min-width:220px; white-space:nowrap;">Email</th>
-                        <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:150px; min-width:150px; white-space:nowrap;">Téléphone</th>
-                        <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:180px; min-width:180px; white-space:nowrap;">Date</th>
-                        <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:130px; min-width:130px; white-space:nowrap;">Total</th>
-                        <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:140px; min-width:140px; white-space:nowrap;">Ville</th>
-                        <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:110px; min-width:110px; white-space:nowrap;">Pays</th>
-                        <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; width:140px; min-width:140px; white-space:nowrap;">Statut</th>
-                        <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; width:180px; min-width:180px; white-space:nowrap;">Actions</th>
+                        <th style="text-align:left; padding:10px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap; position:sticky; left:0; background:#f8f8f8; z-index:10; min-width:50px;">#</th>
+                        <th style="text-align:left; padding:10px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap; min-width:140px;">Client</th>
+                        <th style="text-align:left; padding:10px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap; min-width:200px;">Email</th>
+                        <th style="text-align:left; padding:10px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap; min-width:140px;">Téléphone</th>
+                        <th style="text-align:left; padding:10px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap; min-width:170px;">Date</th>
+                        <th style="text-align:left; padding:10px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap; min-width:120px;">Total</th>
+                        <th style="text-align:left; padding:10px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap; min-width:130px;">Ville</th>
+                        <th style="text-align:left; padding:10px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap; min-width:100px;">Pays</th>
+                        <th style="text-align:center; padding:10px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap; min-width:120px;">Statut</th>
+                        <th style="text-align:center; padding:10px 12px; font-weight:600; color:#1a1a1a; white-space:nowrap; min-width:200px;">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="ventesTableBody">
@@ -120,7 +120,7 @@
     </div>
 </div>
 
-<!-- ===== STYLES RESPONSIVE ===== -->
+<!-- ===== STYLES ===== -->
 <style>
     /* ===== INDICATEUR DE SCROLL ANIMÉ ===== */
     @keyframes pulseScroll {
@@ -128,7 +128,7 @@
         50% { opacity: 1; transform: translateX(6px); }
     }
     
-    /* ===== FORCER LE SCROLL SUR MOBILE ===== */
+    /* ===== FORCER LE SCROLL ===== */
     #tableScrollContainer {
         overflow-x: auto !important;
         -webkit-overflow-scrolling: touch !important;
@@ -207,24 +207,20 @@
         }
         
         /* Tableau - scroll horizontal */
-        #tableScrollContainer > div {
-            width: 1000px !important;
-            min-width: 1000px !important;
-        }
-        
         #tableScrollContainer table {
             font-size: 0.75rem !important;
         }
         
         #tableScrollContainer table th,
         #tableScrollContainer table td {
-            padding: 8px 6px !important;
+            padding: 8px 8px !important;
             font-size: 0.7rem !important;
         }
         
         #tableScrollContainer table th {
             white-space: nowrap !important;
             font-size: 0.7rem !important;
+            min-width: 80px !important;
         }
         
         #tableScrollContainer table td .statut-badge {
@@ -288,19 +284,18 @@
             padding: 8px 14px !important;
         }
         
-        #tableScrollContainer > div {
-            width: 850px !important;
-            min-width: 850px !important;
-        }
-        
         #tableScrollContainer table {
             font-size: 0.65rem !important;
         }
         
         #tableScrollContainer table th,
         #tableScrollContainer table td {
-            padding: 5px 4px !important;
+            padding: 5px 5px !important;
             font-size: 0.6rem !important;
+        }
+        
+        #tableScrollContainer table th {
+            min-width: 60px !important;
         }
         
         #tableScrollContainer table td .statut-badge {
@@ -418,19 +413,19 @@
 
             tbody.innerHTML = items.map(v => `
                 <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
-                    <td style="padding:8px 6px; font-weight:600; font-size:0.8rem; text-align:center; position:sticky; left:0; background:white; z-index:5;">${v.id}</td>
-                    <td style="padding:8px 6px; font-weight:500; font-size:0.8rem; max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${v.prenom || ''} ${v.nom || ''}">${v.prenom || ''} ${v.nom || ''}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${v.email || '—'}">${v.email || '—'}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap;">${v.telephone || '—'}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap;">${formatDate(v.created_at)}</td>
-                    <td style="padding:8px 6px; font-weight:700; color:#c9a84c; font-size:0.8rem; white-space:nowrap;">${v.total_achat ? v.total_achat.toFixed(0).replace('.', ',') + ' FCFA' : '—'}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${v.ville || '—'}">${v.ville || '—'}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap;">${v.pays || '—'}</td>
-                    <td style="padding:8px 6px; text-align:center;">${getStatutBadge(v.statut)}</td>
-                    <td style="padding:8px 6px; text-align:center; white-space:nowrap;">
-                        <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:3px 6px; border:none; border-radius:4px; background:#27ae60; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
-                        <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:3px 6px; border:none; border-radius:4px; background:#f39c12; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
-                        <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:3px 6px; border:none; border-radius:4px; background:#e74c3c; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
+                    <td style="padding:8px 10px; font-weight:600; font-size:0.85rem; text-align:center; position:sticky; left:0; background:white; z-index:5; min-width:50px;">${v.id}</td>
+                    <td style="padding:8px 10px; font-weight:500; font-size:0.85rem; white-space:nowrap; min-width:140px;" title="${v.prenom || ''} ${v.nom || ''}">${v.prenom || ''} ${v.nom || ''}</td>
+                    <td style="padding:8px 10px; color:#555; font-size:0.8rem; white-space:nowrap; min-width:200px;" title="${v.email || '—'}">${v.email || '—'}</td>
+                    <td style="padding:8px 10px; color:#555; font-size:0.8rem; white-space:nowrap; min-width:140px;">${v.telephone || '—'}</td>
+                    <td style="padding:8px 10px; color:#555; font-size:0.8rem; white-space:nowrap; min-width:170px;">${formatDate(v.created_at)}</td>
+                    <td style="padding:8px 10px; font-weight:700; color:#c9a84c; font-size:0.85rem; white-space:nowrap; min-width:120px;">${v.total_achat ? v.total_achat.toFixed(0).replace('.', ',') + ' FCFA' : '—'}</td>
+                    <td style="padding:8px 10px; color:#555; font-size:0.8rem; white-space:nowrap; min-width:130px;" title="${v.ville || '—'}">${v.ville || '—'}</td>
+                    <td style="padding:8px 10px; color:#555; font-size:0.8rem; white-space:nowrap; min-width:100px;">${v.pays || '—'}</td>
+                    <td style="padding:8px 10px; text-align:center; min-width:120px;">${getStatutBadge(v.statut)}</td>
+                    <td style="padding:8px 10px; text-align:center; white-space:nowrap; min-width:200px;">
+                        <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:3px 8px; border:none; border-radius:4px; background:#27ae60; color:white; cursor:pointer; font-size:0.7rem; margin:2px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅ Soldé</button>
+                        <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:3px 8px; border:none; border-radius:4px; background:#f39c12; color:white; cursor:pointer; font-size:0.7rem; margin:2px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳ Attente</button>
+                        <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:3px 8px; border:none; border-radius:4px; background:#e74c3c; color:white; cursor:pointer; font-size:0.7rem; margin:2px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌ Annulé</button>
                     </td>
                 </tr>
             `).join('');
