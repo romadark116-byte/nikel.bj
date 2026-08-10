@@ -54,20 +54,26 @@
         </button>
     </div>
 
-    <!-- ===== TABLEAU DES CONTACTS ===== -->
-    <div class="contacts-table-wrapper" style="overflow-x:auto; overflow-y:visible; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch;">
+    <!-- ===== TABLEAU DES CONTACTS AVEC SCROLL HORIZONTAL ===== -->
+    <div class="contacts-table-wrapper" style="overflow-x:auto; overflow-y:visible; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch; position:relative;">
+
+        <!-- Indicateur de défilement pour mobile -->
+        <div class="scroll-indicator" style="display:none; text-align:center; padding:8px; color:#aaa; font-size:0.7rem; background:#f8f8f8; border-top:1px solid #f0f0f0; font-style:italic;">
+            ↔ Faire glisser pour voir toutes les colonnes
+        </div>
+
         <table style="width:100%; border-collapse:collapse; font-size:0.85rem; min-width:900px; table-layout:auto;">
             <thead>
                 <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">#</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Prénom</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Nom</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Email</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Téléphone</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Ville</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Pays</th>
-                    <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Statut</th>
-                    <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Actions</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap; min-width:40px;">#</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap; min-width:80px;">Prénom</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap; min-width:80px;">Nom</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap; min-width:160px;">Email</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap; min-width:130px;">Téléphone</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap; min-width:90px;">Ville</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap; min-width:100px;">Pays</th>
+                    <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap; min-width:100px;">Statut</th>
+                    <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap; min-width:120px;">Actions</th>
                 </tr>
             </thead>
             <tbody id="contactsTableBody">
@@ -224,10 +230,10 @@
 </div>
 
 <!-- ========================================== -->
-<!-- STYLES RESPONSIVES - IDENTIQUE À FAVORIS  -->
+<!-- STYLES RESPONSIVES - SCROLL HORIZONTAL     -->
 <!-- ========================================== -->
 <style>
-    /* Responsive - Contacts (identique à favoris) */
+    /* Responsive - Contacts avec scroll horizontal */
     
     @media (max-width: 992px) {
         .contacts-table-wrapper table {
@@ -304,10 +310,15 @@
             text-align: center !important;
         }
 
-        /* Tableau */
+        /* ===== TABLEAU AVEC SCROLL ===== */
         .contacts-table-wrapper {
             overflow-x: auto !important;
             -webkit-overflow-scrolling: touch !important;
+            border-radius: 10px !important;
+        }
+
+        .contacts-table-wrapper .scroll-indicator {
+            display: block !important;
         }
 
         .contacts-table-wrapper table {
@@ -418,7 +429,12 @@
             padding: 8px 14px !important;
         }
 
-        /* Tableau */
+        /* ===== TABLEAU SCROLL ===== */
+        .contacts-table-wrapper .scroll-indicator {
+            font-size: 0.65rem !important;
+            padding: 6px !important;
+        }
+
         .contacts-table-wrapper table {
             min-width: 600px !important;
             font-size: 0.65rem !important;
@@ -509,6 +525,11 @@
 
         .contacts-stats .stat-card p:last-child {
             font-size: 1rem !important;
+        }
+
+        .contacts-table-wrapper .scroll-indicator {
+            font-size: 0.55rem !important;
+            padding: 4px !important;
         }
 
         .contacts-table-wrapper table {
