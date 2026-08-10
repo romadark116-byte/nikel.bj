@@ -8,7 +8,7 @@
 
     <form id="profileForm" style="display:flex; flex-direction:column; gap:30px;">
 
-        <!-- ===== SECTION 1 : PHOTO DE PROFIL (colonne profil_tof_url de admins) ===== -->
+        <!-- ===== SECTION 1 : PHOTO DE PROFIL ===== -->
         <div style="display:flex; align-items:center; gap:24px; padding:20px; background:#f8f8f8; border-radius:12px; flex-wrap:wrap;">
             <div style="position:relative; width:100px; height:100px; flex-shrink:0;">
                 <div id="profilePhoto" style="width:100px; height:100px; border-radius:50%; background:linear-gradient(135deg, #c9a84c, #a8892e); display:flex; align-items:center; justify-content:center; font-size:3rem; color:white; overflow:hidden; border:3px solid #c9a84c;">
@@ -125,7 +125,7 @@
                 <small style="color:#888; font-size:0.8rem;">Une courte description qui apparaît sous le grand titre.</small>
             </div>
 
-            <!-- ===== PHOTO PROFESSIONNELLE (colonne pdg_tof_url de admin_profiles) ===== -->
+            <!-- ===== PHOTO PROFESSIONNELLE ===== -->
             <div style="display:flex; align-items:center; gap:20px; padding:16px; background:#f8f8f8; border-radius:12px; margin-bottom:16px; flex-wrap:wrap;">
                 <div style="position:relative; width:80px; height:80px; flex-shrink:0;">
                     <div id="proPhoto" style="width:80px; height:80px; border-radius:12px; background:linear-gradient(135deg, #2d2d2d, #1a1a1a); display:flex; align-items:center; justify-content:center; font-size:2rem; color:white; overflow:hidden; border:2px solid #e8e8e8;">
@@ -189,7 +189,6 @@
             font-size: 1rem !important;
         }
 
-        /* Grid 2 colonnes -> 1 colonne */
         #profilContainer .form-grid-2 {
             grid-template-columns: 1fr !important;
             gap: 0 !important;
@@ -211,7 +210,6 @@
             border-radius: 8px !important;
         }
 
-        /* Photo de profil */
         #profilContainer .photo-section {
             flex-direction: column !important;
             align-items: center !important;
@@ -230,7 +228,6 @@
             font-size: 2.5rem !important;
         }
 
-        /* Galerie */
         #profilContainer .galerie-item {
             flex-direction: column !important;
             align-items: stretch !important;
@@ -249,7 +246,6 @@
             grid-template-columns: 1fr !important;
         }
 
-        /* Boutons */
         #profilContainer .btn-save,
         #profilContainer .btn-reset {
             width: 100% !important;
@@ -258,7 +254,6 @@
             font-size: 0.9rem !important;
         }
 
-        /* Ajouter photo */
         #profilContainer .ajouter-photo-header {
             flex-direction: column !important;
             align-items: flex-start !important;
@@ -472,378 +467,27 @@
         }
 
         // ==========================================
-        // UPLOAD D'IMAGE VERS SUPABASE STORAGE
+        // GESTION DES PHOTOS (base64 - sans bucket)
         // ==========================================
-        async function uploadImageToStorage(file, adminId, folder = 'profils') {
-            try {
-                const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/gif'];
-                if (!validTypes.includes(file.type)) {
-                    showNotification('❌ Format non supporté. Utilisez JPG, PNG, WEBP ou GIF', 'error');
-                    return null;
-                }
-
-                if (file.size > 5 * 1024 * 1024) {
-                    showNotification('❌ Image trop grande. Maximum 5MB', 'error');
-                    return null;
-                }
-
-                const fileExt = file.name.split('.').pop();
-                const fileName = `${folder}/${adminId}/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
-                
-                console.log('📤 Upload de l\'image:', fileName);
-
-                const { data, error } = await supabaseClient.storage
-                    .from('profils')
-                    .upload(fileName, file, {
-                        cacheControl: '3600',
-                        upsert: false,
-                        contentType: file.type
-                    });
-
-                if (error) {
-                    console.error('❌ Erreur upload:', error);
-                    showNotification('❌ Erreur upload: ' + error.message, 'error');
-                    return null;
-                }
-
-                const { data: urlData } = supabaseClient.storage
-                    .from('profils')
-                    .getPublicUrl(fileName);
-
-                console.log('✅ Image uploadée:', urlData.publicUrl);
-                return urlData.publicUrl;
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                showNotification('❌ Erreur upload: ' + err.message, 'error');
-                return null;
-            }
-        }
-
-        // ==========================================
-        // CHARGER LA GALERIE DEPUIS SUPABASE
-        // ==========================================
-        async function loadGalerie(adminId) {
-            try {
-                console.log('📝 Chargement de la galerie pour admin:', adminId);
-
-                const { data, error } = await supabaseClient
-                    .from('galerie')
-                    .select('*')
-                    .eq('admin_id', adminId)
-                    .eq('est_active', true)
-                    .order('ordre', { ascending: true });
-
-                if (error) {
-                    console.error('❌ Erreur chargement galerie:', error);
-                    // Fallback sans est_active
-                    const { data: fallbackData, error: fallbackError } = await supabaseClient
-                        .from('galerie')
-                        .select('*')
-                        .eq('admin_id', adminId)
-                        .order('ordre', { ascending: true });
-
-                    if (fallbackError) {
-                        console.error('❌ Erreur fallback:', fallbackError);
-                        return;
-                    }
-                    if (fallbackData) {
-                        galerieData = fallbackData.map(item => ({
-                            id: item.id,
-                            image: item.image_url,
-                            titre: item.titre || '',
-                            description: item.description || '',
-                            ordre: item.ordre || 0,
-                            est_active: item.est_active
-                        }));
-                        renderGalerie();
-                    }
-                    return;
-                }
-
-                console.log(`✅ ${data.length} photos chargées`);
-
-                galerieData = data.map(item => ({
-                    id: item.id,
-                    image: item.image_url,
-                    titre: item.titre || '',
-                    description: item.description || '',
-                    ordre: item.ordre || 0,
-                    est_active: item.est_active
-                }));
-
-                renderGalerie();
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-            }
-        }
-
-        // ==========================================
-        // AJOUTER UNE PHOTO À LA GALERIE
-        // ==========================================
-        async function ajouterPhotoGalerie(file, titre = '', description = '') {
-            const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
-            if (!adminSession || !adminSession.id) {
-                showNotification('⚠️ Vous devez être connecté', 'error');
-                return;
-            }
-
-            if (galerieData.length >= 5) {
-                showNotification('⚠️ Maximum 5 photos atteint', 'error');
-                return;
-            }
-
-            try {
-                showNotification('📤 Upload en cours...', 'info');
-
-                const imageUrl = await uploadImageToStorage(file, adminSession.id, 'galerie');
-                if (!imageUrl) return;
-
-                const { data, error } = await supabaseClient
-                    .from('galerie')
-                    .insert({
-                        admin_id: adminSession.id,
-                        image_url: imageUrl,
-                        titre: titre || `Photo ${galerieData.length + 1}`,
-                        description: description || '',
-                        ordre: galerieData.length + 1,
-                        est_active: true
-                    })
-                    .select()
-                    .single();
-
-                if (error) {
-                    console.error('❌ Erreur insertion galerie:', error);
-                    showNotification('❌ Erreur: ' + error.message, 'error');
-                    return;
-                }
-
-                console.log('✅ Photo ajoutée:', data);
-
-                galerieData.push({
-                    id: data.id,
-                    image: data.image_url,
-                    titre: data.titre || '',
-                    description: data.description || '',
-                    ordre: data.ordre || 0,
-                    est_active: data.est_active
-                });
-
-                renderGalerie();
-                showNotification('✅ Photo ajoutée avec succès !', 'success');
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                showNotification('❌ Erreur: ' + err.message, 'error');
-            }
-        }
-
-        // ==========================================
-        // SUPPRIMER UNE PHOTO
-        // ==========================================
-        async function supprimerPhoto(id) {
-            if (!confirm('Voulez-vous vraiment supprimer cette photo ?')) {
-                return;
-            }
-
-            try {
-                const photo = galerieData.find(p => p.id === id);
-                if (!photo) return;
-
-                // Soft delete : marquer comme inactive
-                const { error } = await supabaseClient
-                    .from('galerie')
-                    .update({ est_active: false })
-                    .eq('id', id);
-
-                if (error) {
-                    console.error('❌ Erreur suppression:', error);
-                    showNotification('❌ Erreur: ' + error.message, 'error');
-                    return;
-                }
-
-                // Supprimer du Storage (optionnel)
-                if (photo.image) {
-                    try {
-                        const path = photo.image.split('/storage/v1/object/public/profils/')[1];
-                        if (path) {
-                            await supabaseClient.storage
-                                .from('profils')
-                                .remove([path]);
-                            console.log('🗑️ Image supprimée du Storage');
-                        }
-                    } catch (storageErr) {
-                        console.warn('⚠️ Erreur suppression Storage:', storageErr);
-                    }
-                }
-
-                galerieData = galerieData.filter(p => p.id !== id);
-                renderGalerie();
-                showNotification('🗑️ Photo supprimée', 'info');
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                showNotification('❌ Erreur: ' + err.message, 'error');
-            }
-        }
-
-        // ==========================================
-        // MODIFIER LE TITRE ET LA DESCRIPTION
-        // ==========================================
-        async function modifierPhoto(id, titre, description) {
-            try {
-                const { error } = await supabaseClient
-                    .from('galerie')
-                    .update({
-                        titre: titre,
-                        description: description,
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('id', id);
-
-                if (error) {
-                    console.error('❌ Erreur modification:', error);
-                    showNotification('❌ Erreur: ' + error.message, 'error');
-                    return;
-                }
-
-                const photo = galerieData.find(p => p.id === id);
-                if (photo) {
-                    photo.titre = titre;
-                    photo.description = description;
-                }
-
-                renderGalerie();
-                showNotification('✅ Modifications enregistrées', 'success');
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                showNotification('❌ Erreur: ' + err.message, 'error');
-            }
-        }
-
-        // ==========================================
-        // CHANGER L'IMAGE D'UNE PHOTO
-        // ==========================================
-        async function changerImagePhoto(id, event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
-            if (!adminSession || !adminSession.id) {
-                showNotification('⚠️ Vous devez être connecté', 'error');
-                return;
-            }
-
-            try {
-                showNotification('📤 Upload en cours...', 'info');
-
-                const imageUrl = await uploadImageToStorage(file, adminSession.id, 'galerie');
-                if (!imageUrl) return;
-
-                const { error } = await supabaseClient
-                    .from('galerie')
-                    .update({
-                        image_url: imageUrl,
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('id', id);
-
-                if (error) {
-                    console.error('❌ Erreur mise à jour image:', error);
-                    showNotification('❌ Erreur: ' + error.message, 'error');
-                    return;
-                }
-
-                const photo = galerieData.find(p => p.id === id);
-                if (photo) {
-                    photo.image = imageUrl;
-                }
-
-                renderGalerie();
-                showNotification('✅ Image mise à jour', 'success');
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                showNotification('❌ Erreur: ' + err.message, 'error');
-            }
-        }
-
-        // ==========================================
-        // RENDRE LA GALERIE
-        // ==========================================
-        function renderGalerie() {
-            const container = document.getElementById('galerieContainer');
-            const emptyMsg = document.getElementById('galerieEmpty');
+        function setupPhotoUpload(inputId, displayId, storageKey) {
+            const input = document.getElementById(inputId);
+            const display = document.getElementById(displayId);
             
-            if (galerieData.length === 0) {
-                if (!emptyMsg) {
-                    container.innerHTML = `
-                        <div id="galerieEmpty" style="text-align:center; padding:30px; color:#999; background:#fff; border-radius:8px; border:2px dashed #e0e0e0;">
-                            <i class="fas fa-camera" style="font-size:2rem; display:block; margin-bottom:8px; color:#ddd;"></i>
-                            <p style="margin:0;">Aucune photo dans la galerie</p>
-                            <p style="font-size:0.85rem; margin:4px 0 0 0;">Cliquez sur "Ajouter une photo" pour commencer</p>
-                        </div>
-                    `;
-                } else {
-                    container.innerHTML = emptyMsg.outerHTML;
-                }
-                return;
+            if (input && display) {
+                input.addEventListener('change', function(e) {
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            display.innerHTML = '<img src="' + event.target.result + '" style="width:100%;height:100%;object-fit:cover;">';
+                            localStorage.setItem(storageKey, event.target.result);
+                            showNotification('✅ Photo mise à jour !', 'success');
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                    this.value = '';
+                });
             }
-
-            let html = '';
-            galerieData.forEach((photo, index) => {
-                html += `
-                    <div class="galerie-item" data-photo-id="${photo.id}" style="background:#ffffff; border-radius:10px; padding:16px; border:1px solid #e8e8e8; transition:all 0.3s; position:relative;" onmouseover="this.style.borderColor='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8'">
-                        <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start;">
-                            <!-- Miniature -->
-                            <div class="galerie-image" style="position:relative; width:120px; height:120px; flex-shrink:0; border-radius:8px; overflow:hidden; background:#f0f0f0; border:1px solid #e8e8e8;">
-                                ${photo.image ? 
-                                    `<img src="${photo.image}" style="width:100%;height:100%;object-fit:cover;">` :
-                                    `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:0.8rem;flex-direction:column;">
-                                        <i class="fas fa-image" style="font-size:2rem;margin-bottom:4px;"></i>
-                                        <span>Aucune image</span>
-                                    </div>`
-                                }
-                                <label for="changeImage_${photo.id}" style="position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,0.7);color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.7rem;border:2px solid white;transition:all 0.3s;" onmouseover="this.style.background='rgba(201,168,76,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">
-                                    <i class="fas fa-camera"></i>
-                                </label>
-                                <input type="file" id="changeImage_${photo.id}" accept="image/*" style="display:none;" onchange="window.changerImagePhoto('${photo.id}', event)">
-                            </div>
-
-                            <!-- Infos -->
-                            <div class="galerie-info" style="flex:1; min-width:200px;">
-                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                                    <div style="grid-column:1/2;">
-                                        <label style="font-size:0.8rem; color:#888; font-weight:600;">Titre</label>
-                                        <input type="text" id="titre_${photo.id}" value="${photo.titre || ''}" style="width:100%; padding:6px 10px; border:1px solid #e8e8e8; border-radius:6px; font-size:0.9rem; font-family:inherit; box-sizing:border-box;" placeholder="Titre de la photo">
-                                    </div>
-                                    <div style="grid-column:2/3;">
-                                        <label style="font-size:0.8rem; color:#888; font-weight:600;">Description</label>
-                                        <input type="text" id="desc_${photo.id}" value="${photo.description || ''}" style="width:100%; padding:6px 10px; border:1px solid #e8e8e8; border-radius:6px; font-size:0.9rem; font-family:inherit; box-sizing:border-box;" placeholder="Description">
-                                    </div>
-                                </div>
-                                <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
-                                    <button type="button" onclick="window.modifierPhoto('${photo.id}', document.getElementById('titre_${photo.id}').value, document.getElementById('desc_${photo.id}').value)" style="padding:4px 16px; background:#c9a84c; color:white; border:none; border-radius:6px; font-size:0.8rem; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.background='#a8892e'" onmouseout="this.style.background='#c9a84c'">
-                                        <i class="fas fa-save"></i> Modifier
-                                    </button>
-                                    <button type="button" onclick="window.supprimerPhoto('${photo.id}')" style="padding:4px 16px; background:#e74c3c; color:white; border:none; border-radius:6px; font-size:0.8rem; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.background='#c0392b'" onmouseout="this.style.background='#e74c3c'">
-                                        <i class="fas fa-trash"></i> Supprimer
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Numéro / badge -->
-                            <div style="position:absolute; top:8px; right:12px; background:#c9a84c; color:white; padding:2px 12px; border-radius:50px; font-size:0.7rem; font-weight:600;">
-                                #${index + 1}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            container.innerHTML = html;
         }
 
         // ==========================================
@@ -881,10 +525,11 @@
                     document.getElementById('telephone').value = adminData.telephone || '';
                     document.getElementById('email').value = adminData.email || '';
                     
-                    // Photo de profil (colonne profil_tof_url de admins)
-                    if (adminData.profil_tof_url) {
+                    // Photo de profil depuis localStorage (base64)
+                    const savedProfilePhoto = localStorage.getItem('nikel_profile_photo');
+                    if (savedProfilePhoto) {
                         document.getElementById('profilePhoto').innerHTML = 
-                            `<img src="${adminData.profil_tof_url}" style="width:100%;height:100%;object-fit:cover;">`;
+                            `<img src="${savedProfilePhoto}" style="width:100%;height:100%;object-fit:cover;">`;
                     }
                 }
 
@@ -945,10 +590,11 @@
                     document.getElementById('titrePro').value = proData.titre || '';
                     document.getElementById('bio').value = proData.description || '';
                     
-                    // Photo professionnelle (colonne pdg_tof_url de admin_profiles)
-                    if (proData.pdg_tof_url) {
+                    // Photo professionnelle depuis localStorage (base64)
+                    const savedProPhoto = localStorage.getItem('nikel_pro_photo');
+                    if (savedProPhoto) {
                         document.getElementById('proPhoto').innerHTML = 
-                            `<img src="${proData.pdg_tof_url}" style="width:100%;height:100%;object-fit:cover;">`;
+                            `<img src="${savedProPhoto}" style="width:100%;height:100%;object-fit:cover;">`;
                     }
                 } else {
                     console.warn('⚠️ Aucun profil pro trouvé, création...');
@@ -1087,110 +733,6 @@
         }
 
         // ==========================================
-        // GESTION DES PHOTOS (profil et pro)
-        // ==========================================
-        async function uploadProfilPhoto(file) {
-            const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
-            if (!adminSession || !adminSession.id) {
-                showNotification('⚠️ Vous devez être connecté', 'error');
-                return;
-            }
-
-            try {
-                showNotification('📤 Upload de la photo de profil...', 'info');
-
-                const imageUrl = await uploadImageToStorage(file, adminSession.id, 'profils');
-                if (!imageUrl) return;
-
-                // Mettre à jour dans la table admins (colonne profil_tof_url)
-                const { error } = await supabaseClient
-                    .from('admins')
-                    .update({ profil_tof_url: imageUrl })
-                    .eq('id', adminSession.id);
-
-                if (error) {
-                    console.error('❌ Erreur mise à jour profil_tof_url:', error);
-                    showNotification('❌ Erreur: ' + error.message, 'error');
-                    return;
-                }
-
-                document.getElementById('profilePhoto').innerHTML = 
-                    `<img src="${imageUrl}" style="width:100%;height:100%;object-fit:cover;">`;
-                
-                showNotification('✅ Photo de profil mise à jour !', 'success');
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                showNotification('❌ Erreur: ' + err.message, 'error');
-            }
-        }
-
-        async function uploadProPhoto(file) {
-            const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
-            if (!adminSession || !adminSession.id) {
-                showNotification('⚠️ Vous devez être connecté', 'error');
-                return;
-            }
-
-            try {
-                showNotification('📤 Upload de la photo professionnelle...', 'info');
-
-                const imageUrl = await uploadImageToStorage(file, adminSession.id, 'profils');
-                if (!imageUrl) return;
-
-                // Mettre à jour dans la table admin_profiles (colonne pdg_tof_url)
-                const { error } = await supabaseClient
-                    .from('admin_profiles')
-                    .update({ pdg_tof_url: imageUrl })
-                    .eq('admin_id', adminSession.id);
-
-                if (error) {
-                    console.error('❌ Erreur mise à jour pdg_tof_url:', error);
-                    showNotification('❌ Erreur: ' + error.message, 'error');
-                    return;
-                }
-
-                document.getElementById('proPhoto').innerHTML = 
-                    `<img src="${imageUrl}" style="width:100%;height:100%;object-fit:cover;">`;
-                
-                showNotification('✅ Photo professionnelle mise à jour !', 'success');
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                showNotification('❌ Erreur: ' + err.message, 'error');
-            }
-        }
-
-        // ==========================================
-        // SETUP PHOTO UPLOADS
-        // ==========================================
-        function setupPhotoUploads() {
-            // Photo de profil -> colonne profil_tof_url (admins)
-            const photoInput = document.getElementById('photoInput');
-            if (photoInput) {
-                photoInput.addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        uploadProfilPhoto(file);
-                    }
-                    this.value = '';
-                });
-            }
-
-            // Photo professionnelle -> colonne pdg_tof_url (admin_profiles)
-            const proPhotoInput = document.getElementById('proPhotoInput');
-            if (proPhotoInput) {
-                proPhotoInput.addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        uploadProPhoto(file);
-                    }
-                    this.value = '';
-                });
-            }
-        }
-
-        // ==========================================
         // SOUMISSION DU FORMULAIRE
         // ==========================================
         const profileForm = document.getElementById('profileForm');
@@ -1236,43 +778,9 @@
         function init() {
             console.log('🚀 Démarrage de profil.html...');
             
-            // Setup des uploads de photos
-            setupPhotoUploads();
-            
-            // ==========================================
-            // EXPOSER LES FONCTIONS GLOBALEMENT
-            // ==========================================
-            window.modifierPhoto = modifierPhoto;
-            window.supprimerPhoto = supprimerPhoto;
-            window.changerImagePhoto = changerImagePhoto;
-            window.ajouterPhotoGalerie = ajouterPhotoGalerie;
-            window.renderGalerie = renderGalerie;
-            window.uploadImageToStorage = uploadImageToStorage;
-            window.loadGalerie = loadGalerie;
-            window.showNotification = showNotification;
-
-            // Bouton ajouter photo
-            const ajouterBtn = document.getElementById('ajouterPhotoBtn');
-            if (ajouterBtn) {
-                ajouterBtn.addEventListener('click', function() {
-                    if (galerieData.length >= 5) {
-                        showNotification('⚠️ Maximum 5 photos atteint', 'error');
-                        return;
-                    }
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = 'image/*';
-                    input.onchange = function(e) {
-                        const file = e.target.files[0];
-                        if (file) {
-                            const titre = prompt('Titre de la photo :', `Photo ${galerieData.length + 1}`);
-                            const description = prompt('Description :', '');
-                            ajouterPhotoGalerie(file, titre || '', description || '');
-                        }
-                    };
-                    input.click();
-                });
-            }
+            // Photos de profil (base64)
+            setupPhotoUpload('photoInput', 'profilePhoto', 'nikel_profile_photo');
+            setupPhotoUpload('proPhotoInput', 'proPhoto', 'nikel_pro_photo');
             
             setTimeout(async () => {
                 await loadAdminData();
