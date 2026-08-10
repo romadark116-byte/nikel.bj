@@ -8,7 +8,7 @@
 
     <form id="profileForm" style="display:flex; flex-direction:column; gap:30px;">
 
-        <!-- ===== SECTION 1 : PHOTO DE PROFIL ===== -->
+        <!-- ===== SECTION 1 : PHOTO DE PROFIL (colonne profil_tof_url de admins) ===== -->
         <div style="display:flex; align-items:center; gap:24px; padding:20px; background:#f8f8f8; border-radius:12px; flex-wrap:wrap;">
             <div style="position:relative; width:100px; height:100px; flex-shrink:0;">
                 <div id="profilePhoto" style="width:100px; height:100px; border-radius:50%; background:linear-gradient(135deg, #c9a84c, #a8892e); display:flex; align-items:center; justify-content:center; font-size:3rem; color:white; overflow:hidden; border:3px solid #c9a84c;">
@@ -125,7 +125,7 @@
                 <small style="color:#888; font-size:0.8rem;">Une courte description qui apparaît sous le grand titre.</small>
             </div>
 
-            <!-- Photo professionnelle -->
+            <!-- ===== PHOTO PROFESSIONNELLE (colonne pdg_tof_url de admin_profiles) ===== -->
             <div style="display:flex; align-items:center; gap:20px; padding:16px; background:#f8f8f8; border-radius:12px; margin-bottom:16px; flex-wrap:wrap;">
                 <div style="position:relative; width:80px; height:80px; flex-shrink:0;">
                     <div id="proPhoto" style="width:80px; height:80px; border-radius:12px; background:linear-gradient(135deg, #2d2d2d, #1a1a1a); display:flex; align-items:center; justify-content:center; font-size:2rem; color:white; overflow:hidden; border:2px solid #e8e8e8;">
@@ -474,7 +474,7 @@
         // ==========================================
         // UPLOAD D'IMAGE VERS SUPABASE STORAGE
         // ==========================================
-        async function uploadImageToStorage(file, adminId) {
+        async function uploadImageToStorage(file, adminId, folder = 'profils') {
             try {
                 const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/gif'];
                 if (!validTypes.includes(file.type)) {
@@ -488,12 +488,12 @@
                 }
 
                 const fileExt = file.name.split('.').pop();
-                const fileName = `galerie/${adminId}/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
+                const fileName = `${folder}/${adminId}/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
                 
                 console.log('📤 Upload de l\'image:', fileName);
 
                 const { data, error } = await supabaseClient.storage
-                    .from('galerie')
+                    .from('profils')
                     .upload(fileName, file, {
                         cacheControl: '3600',
                         upsert: false,
@@ -507,7 +507,7 @@
                 }
 
                 const { data: urlData } = supabaseClient.storage
-                    .from('galerie')
+                    .from('profils')
                     .getPublicUrl(fileName);
 
                 console.log('✅ Image uploadée:', urlData.publicUrl);
@@ -597,7 +597,7 @@
             try {
                 showNotification('📤 Upload en cours...', 'info');
 
-                const imageUrl = await uploadImageToStorage(file, adminSession.id);
+                const imageUrl = await uploadImageToStorage(file, adminSession.id, 'galerie');
                 if (!imageUrl) return;
 
                 const { data, error } = await supabaseClient
@@ -666,10 +666,10 @@
                 // Supprimer du Storage (optionnel)
                 if (photo.image) {
                     try {
-                        const path = photo.image.split('/storage/v1/object/public/galerie/')[1];
+                        const path = photo.image.split('/storage/v1/object/public/profils/')[1];
                         if (path) {
                             await supabaseClient.storage
-                                .from('galerie')
+                                .from('profils')
                                 .remove([path]);
                             console.log('🗑️ Image supprimée du Storage');
                         }
@@ -739,7 +739,7 @@
             try {
                 showNotification('📤 Upload en cours...', 'info');
 
-                const imageUrl = await uploadImageToStorage(file, adminSession.id);
+                const imageUrl = await uploadImageToStorage(file, adminSession.id, 'galerie');
                 if (!imageUrl) return;
 
                 const { error } = await supabaseClient
@@ -880,6 +880,12 @@
                     document.getElementById('pays').value = adminData.pays || 'FR';
                     document.getElementById('telephone').value = adminData.telephone || '';
                     document.getElementById('email').value = adminData.email || '';
+                    
+                    // Photo de profil (colonne profil_tof_url de admins)
+                    if (adminData.profil_tof_url) {
+                        document.getElementById('profilePhoto').innerHTML = 
+                            `<img src="${adminData.profil_tof_url}" style="width:100%;height:100%;object-fit:cover;">`;
+                    }
                 }
 
                 // 2. Charger les paramètres boutique
@@ -939,9 +945,10 @@
                     document.getElementById('titrePro').value = proData.titre || '';
                     document.getElementById('bio').value = proData.description || '';
                     
-                    if (proData.photo_url) {
+                    // Photo professionnelle (colonne pdg_tof_url de admin_profiles)
+                    if (proData.pdg_tof_url) {
                         document.getElementById('proPhoto').innerHTML = 
-                            `<img src="${proData.photo_url}" style="width:100%;height:100%;object-fit:cover;">`;
+                            `<img src="${proData.pdg_tof_url}" style="width:100%;height:100%;object-fit:cover;">`;
                     }
                 } else {
                     console.warn('⚠️ Aucun profil pro trouvé, création...');
@@ -1082,21 +1089,103 @@
         // ==========================================
         // GESTION DES PHOTOS (profil et pro)
         // ==========================================
-        function setupPhotoUpload(inputId, displayId, storageKey) {
-            const input = document.getElementById(inputId);
-            const display = document.getElementById(displayId);
-            
-            if (input && display) {
-                input.addEventListener('change', function(e) {
-                    const file = this.files[0];
+        async function uploadProfilPhoto(file) {
+            const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
+            if (!adminSession || !adminSession.id) {
+                showNotification('⚠️ Vous devez être connecté', 'error');
+                return;
+            }
+
+            try {
+                showNotification('📤 Upload de la photo de profil...', 'info');
+
+                const imageUrl = await uploadImageToStorage(file, adminSession.id, 'profils');
+                if (!imageUrl) return;
+
+                // Mettre à jour dans la table admins (colonne profil_tof_url)
+                const { error } = await supabaseClient
+                    .from('admins')
+                    .update({ profil_tof_url: imageUrl })
+                    .eq('id', adminSession.id);
+
+                if (error) {
+                    console.error('❌ Erreur mise à jour profil_tof_url:', error);
+                    showNotification('❌ Erreur: ' + error.message, 'error');
+                    return;
+                }
+
+                document.getElementById('profilePhoto').innerHTML = 
+                    `<img src="${imageUrl}" style="width:100%;height:100%;object-fit:cover;">`;
+                
+                showNotification('✅ Photo de profil mise à jour !', 'success');
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                showNotification('❌ Erreur: ' + err.message, 'error');
+            }
+        }
+
+        async function uploadProPhoto(file) {
+            const adminSession = JSON.parse(localStorage.getItem('nikel_admin'));
+            if (!adminSession || !adminSession.id) {
+                showNotification('⚠️ Vous devez être connecté', 'error');
+                return;
+            }
+
+            try {
+                showNotification('📤 Upload de la photo professionnelle...', 'info');
+
+                const imageUrl = await uploadImageToStorage(file, adminSession.id, 'profils');
+                if (!imageUrl) return;
+
+                // Mettre à jour dans la table admin_profiles (colonne pdg_tof_url)
+                const { error } = await supabaseClient
+                    .from('admin_profiles')
+                    .update({ pdg_tof_url: imageUrl })
+                    .eq('admin_id', adminSession.id);
+
+                if (error) {
+                    console.error('❌ Erreur mise à jour pdg_tof_url:', error);
+                    showNotification('❌ Erreur: ' + error.message, 'error');
+                    return;
+                }
+
+                document.getElementById('proPhoto').innerHTML = 
+                    `<img src="${imageUrl}" style="width:100%;height:100%;object-fit:cover;">`;
+                
+                showNotification('✅ Photo professionnelle mise à jour !', 'success');
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                showNotification('❌ Erreur: ' + err.message, 'error');
+            }
+        }
+
+        // ==========================================
+        // SETUP PHOTO UPLOADS
+        // ==========================================
+        function setupPhotoUploads() {
+            // Photo de profil -> colonne profil_tof_url (admins)
+            const photoInput = document.getElementById('photoInput');
+            if (photoInput) {
+                photoInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
                     if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(event) {
-                            display.innerHTML = '<img src="' + event.target.result + '" style="width:100%;height:100%;object-fit:cover;">';
-                            localStorage.setItem(storageKey, event.target.result);
-                        };
-                        reader.readAsDataURL(file);
+                        uploadProfilPhoto(file);
                     }
+                    this.value = '';
+                });
+            }
+
+            // Photo professionnelle -> colonne pdg_tof_url (admin_profiles)
+            const proPhotoInput = document.getElementById('proPhotoInput');
+            if (proPhotoInput) {
+                proPhotoInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        uploadProPhoto(file);
+                    }
+                    this.value = '';
                 });
             }
         }
@@ -1147,9 +1236,8 @@
         function init() {
             console.log('🚀 Démarrage de profil.html...');
             
-            // Photos de profil
-            setupPhotoUpload('photoInput', 'profilePhoto', 'nikel_profile_photo');
-            setupPhotoUpload('proPhotoInput', 'proPhoto', 'nikel_pro_photo');
+            // Setup des uploads de photos
+            setupPhotoUploads();
             
             // ==========================================
             // EXPOSER LES FONCTIONS GLOBALEMENT
