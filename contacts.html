@@ -1,4 +1,4 @@
-<!-- contacts.html - Mes contacts -->
+<!-- contacts.html - Mes contacts (version dashboard) -->
 <div id="contactsContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
@@ -15,7 +15,7 @@
     </div>
 
     <!-- ===== STATISTIQUES RAPIDES ===== -->
-    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
+    <div class="contacts-stats-grid" style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
         <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total contacts</p>
             <p style="font-size:1.8rem; font-weight:700; color:#1a1a1a;" id="totalContacts">0</p>
@@ -227,17 +227,80 @@
 </div>
 
 <!-- ========================================== -->
-<!-- STYLES RESPONSIVES                        -->
+<!-- STYLES RESPONSIVES - IDENTIQUE DASHBOARD   -->
 <!-- ========================================== -->
 <style>
-    /* ===== RESPONSIVE - COMME LE TABLEAU DE BORD ===== */
+    /* ========================================== */
+    /* RESPONSIVE - COMME LE DASHBOARD           */
+    /* ========================================== */
 
+    /* ===== STATS CARDS (taille exacte dashboard) ===== */
+    .contacts-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .contacts-stats-grid > div {
+        background: #f8f8f8;
+        padding: 16px;
+        border-radius: 12px;
+        text-align: center;
+        border-left: 4px solid #c9a84c;
+    }
+
+    .contacts-stats-grid > div p:first-child {
+        font-size: 0.8rem;
+        color: #888;
+        margin-bottom: 4px;
+        font-weight: 500;
+    }
+
+    .contacts-stats-grid > div p:last-child {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+
+    /* ===== RESPONSIVE TABLETTE ===== */
+    @media (max-width: 992px) {
+        .contacts-stats-grid {
+            gap: 14px;
+        }
+        .contacts-stats-grid > div p:last-child {
+            font-size: 1.6rem;
+        }
+        .contacts-table-wrapper table {
+            min-width: 800px !important;
+        }
+    }
+
+    /* ===== RESPONSIVE MOBILE (768px) ===== */
     @media (max-width: 768px) {
         #contactsContainer {
             padding: 16px !important;
         }
 
-        /* ===== TITRE EN COLONNE ===== */
+        /* ===== STATS EN 2 COLONNES (comme dashboard) ===== */
+        .contacts-stats-grid {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 10px !important;
+        }
+
+        .contacts-stats-grid > div {
+            padding: 12px !important;
+        }
+
+        .contacts-stats-grid > div p:first-child {
+            font-size: 0.7rem !important;
+        }
+
+        .contacts-stats-grid > div p:last-child {
+            font-size: 1.4rem !important;
+        }
+
+        /* ===== TITRE ===== */
         #contactsContainer > div:first-child {
             flex-direction: column !important;
             align-items: stretch !important;
@@ -250,22 +313,7 @@
             justify-content: center;
         }
 
-        /* ===== STATS EN 2 COLONNES (comme le tableau de bord) ===== */
-        #contactsContainer > div:nth-child(2) {
-            grid-template-columns: 1fr 1fr !important;
-            gap: 10px !important;
-        }
-        #contactsContainer > div:nth-child(2) > div {
-            padding: 12px !important;
-        }
-        #contactsContainer > div:nth-child(2) p:first-child {
-            font-size: 0.7rem !important;
-        }
-        #contactsContainer > div:nth-child(2) p:last-child {
-            font-size: 1.3rem !important;
-        }
-
-        /* ===== FILTRES EN COLONNE ===== */
+        /* ===== FILTRES ===== */
         #contactsContainer > div:nth-child(3) {
             flex-direction: column !important;
             align-items: stretch !important;
@@ -287,7 +335,6 @@
             border-radius: 10px !important;
         }
 
-        /* AFFICHAGE DE L'INDICATEUR */
         #contactsContainer > div:nth-child(4) .scroll-indicator {
             display: block !important;
         }
@@ -313,7 +360,7 @@
             padding: 3px 6px !important;
         }
 
-        /* ===== PAGINATION EN COLONNE ===== */
+        /* ===== PAGINATION ===== */
         #contactsContainer > div:nth-child(5) {
             flex-direction: column !important;
             align-items: center !important;
@@ -350,23 +397,27 @@
         }
     }
 
+    /* ===== RESPONSIVE MOBILE (480px) ===== */
     @media (max-width: 480px) {
         #contactsContainer {
             padding: 12px !important;
         }
 
-        /* ===== STATS EN 2 COLONNES ===== */
-        #contactsContainer > div:nth-child(2) {
+        /* ===== STATS ===== */
+        .contacts-stats-grid {
             gap: 8px !important;
         }
-        #contactsContainer > div:nth-child(2) > div {
+
+        .contacts-stats-grid > div {
             padding: 10px !important;
         }
-        #contactsContainer > div:nth-child(2) p:first-child {
+
+        .contacts-stats-grid > div p:first-child {
             font-size: 0.6rem !important;
         }
-        #contactsContainer > div:nth-child(2) p:last-child {
-            font-size: 1.1rem !important;
+
+        .contacts-stats-grid > div p:last-child {
+            font-size: 1.2rem !important;
         }
 
         /* ===== FILTRES ===== */
@@ -429,7 +480,20 @@
         }
     }
 
+    /* ===== RESPONSIVE TRÈS PETIT (360px) ===== */
     @media (max-width: 360px) {
+        .contacts-stats-grid {
+            gap: 6px !important;
+        }
+        .contacts-stats-grid > div {
+            padding: 8px !important;
+        }
+        .contacts-stats-grid > div p:first-child {
+            font-size: 0.55rem !important;
+        }
+        .contacts-stats-grid > div p:last-child {
+            font-size: 1rem !important;
+        }
         #contactsContainer > div:nth-child(4) table {
             min-width: 500px !important;
         }
@@ -437,18 +501,21 @@
             font-size: 0.55rem !important;
             padding: 4px !important;
         }
+        #contactsContainer {
+            padding: 8px !important;
+        }
     }
 
     /* ===== ORIENTATION PAYSAGE ===== */
     @media (max-width: 768px) and (orientation: landscape) {
-        #contactsContainer > div:nth-child(2) {
+        .contacts-stats-grid {
             grid-template-columns: repeat(4, 1fr) !important;
             gap: 8px !important;
         }
-        #contactsContainer > div:nth-child(2) > div {
+        .contacts-stats-grid > div {
             padding: 8px !important;
         }
-        #contactsContainer > div:nth-child(2) p:last-child {
+        .contacts-stats-grid > div p:last-child {
             font-size: 1.2rem !important;
         }
         #contactsContainer > div:nth-child(3) {
