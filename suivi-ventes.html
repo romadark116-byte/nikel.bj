@@ -1,91 +1,94 @@
-<!-- articles.html - Mes articles -->
-<div id="articlesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
+<!-- suivi-ventes.html - Suivi des ventes -->
+<div id="ventesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:24px; gap:12px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:24px;">
         <div>
             <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:#1a1a1a; margin-bottom:4px;">
-                <i class="fas fa-cube" style="color:#c9a84c;"></i> Mes articles
+                <i class="fas fa-chart-line" style="color:#c9a84c;"></i> Suivi des ventes
             </h2>
-            <p style="color:#888; font-size:0.95rem;">Gérez votre catalogue de produits.</p>
+            <p style="color:#888; font-size:0.95rem;">Gérez et suivez toutes vos commandes en un seul endroit.</p>
         </div>
-        <button onclick="openAddArticleModal()" style="padding:12px 24px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px; white-space:nowrap;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
-                <i class="fas fa-plus"></i> Ajouter un article
+        <div style="display:flex; gap:8px;">
+            <button onclick="exportCSV()" style="padding:10px 20px; background:#27ae60; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <i class="fas fa-file-export"></i> Exporter CSV
             </button>
+            <button onclick="rafraichirVentes()" style="padding:10px 20px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <i class="fas fa-sync-alt"></i> Rafraîchir
+            </button>
+        </div>
     </div>
 
-    <!-- ===== STATISTIQUES RAPIDES - 4 COLONNES COMME DASHBOARD ===== -->
-    <div class="articles-stats" style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
+    <!-- ===== STATISTIQUES RAPIDES ===== -->
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
         <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
-            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total articles</p>
-            <p style="font-size:1.8rem; font-weight:700; color:#1a1a1a;" id="totalArticles">0</p>
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total commandes</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#1a1a1a;" id="totalCommandes">0</p>
         </div>
         <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
-            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">En stock</p>
-            <p style="font-size:1.8rem; font-weight:700; color:#27ae60;" id="totalStock">0</p>
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">✅ Soldées</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#27ae60;" id="totalSoldees">0</p>
         </div>
         <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
-            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Rupture</p>
-            <p style="font-size:1.8rem; font-weight:700; color:#f39c12;" id="totalRupture">0</p>
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">⏳ En attente</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#f39c12;" id="totalEnAttente">0</p>
         </div>
         <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #e74c3c;">
-            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">En solde</p>
-            <p style="font-size:1.8rem; font-weight:700; color:#e74c3c;" id="totalSoldes">0</p>
+            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">❌ Annulées</p>
+            <p style="font-size:1.8rem; font-weight:700; color:#e74c3c;" id="totalAnnulees">0</p>
         </div>
     </div>
 
-    <!-- ===== FILTRES & RECHERCHE ===== -->
+    <!-- ===== BARRE DE RECHERCHE & FILTRES ===== -->
     <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
-        <div style="flex:2; min-width:180px;">
-            <input type="text" id="searchInputArticles" placeholder="🔍 Rechercher un produit..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; transition:all 0.3s; background:#ffffff; box-sizing:border-box;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onkeyup="applyArticleFilters()">
+
+        <div style="flex:2; min-width:200px;">
+            <input type="text" id="searchVentes" placeholder="🔍 Rechercher par nom, email ou téléphone..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onkeyup="applyVentesFilters()">
         </div>
-        <div style="min-width:140px; flex:1;">
-            <select id="filterCategorie" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer; box-sizing:border-box;" onchange="applyArticleFilters()">
-                <option value="all">📂 Toutes les catégories</option>
-                <option value="vêtements">👕 Vêtements</option>
-                <option value="accessoires">👜 Accessoires</option>
-                <option value="chaussures">👟 Chaussures</option>
-                <option value="sport">🏋️ Sport</option>
-                <option value="électronique">📱 Électronique</option>
-            </select>
-        </div>
-        <div style="min-width:140px; flex:1;">
-            <select id="filterStatutArticle" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer; box-sizing:border-box;" onchange="applyArticleFilters()">
+
+        <div style="min-width:150px;">
+            <select id="filterStatut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s; cursor:pointer;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyVentesFilters()">
                 <option value="all">📊 Tous les statuts</option>
-                <option value="En stock">✅ En stock</option>
-                <option value="Rupture de stock">⚠️ Rupture de stock</option>
-                <option value="Sur commande">📦 Sur commande</option>
-                <option value="Précommande">⏳ Précommande</option>
-                <option value="Épuisé">🚫 Épuisé</option>
-                <option value="Bientôt disponible">🔄 Bientôt disponible</option>
-                <option value="soldes">🔥 En solde</option>
+                <option value="soldé">✅ Soldé</option>
+                <option value="en attente">⏳ En attente</option>
+                <option value="annulé">❌ Annulé</option>
             </select>
         </div>
-        <button onclick="resetArticleFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888; white-space:nowrap;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+
+        <div style="min-width:150px;">
+            <input type="date" id="dateDebut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyVentesFilters()">
+        </div>
+
+        <div style="min-width:150px;">
+            <input type="date" id="dateFin" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyVentesFilters()">
+        </div>
+
+        <button onclick="resetVentesFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
             <i class="fas fa-undo"></i> Réinitialiser
         </button>
     </div>
 
-    <!-- ===== TABLEAU DES ARTICLES ===== -->
-    <div style="overflow-x:auto; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch;">
-        <table style="width:100%; border-collapse:collapse; font-size:0.95rem; min-width:650px;">
+    <!-- ===== TABLEAU DES VENTES ===== -->
+    <div style="overflow-x:auto; border-radius:12px; border:1px solid #f0f0f0;">
+        <table style="width:100%; border-collapse:collapse; font-size:0.95rem;">
             <thead>
                 <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">ID</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Image</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Nom</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Catégorie</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Prix</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Stock</th>
-                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Statut</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">#</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Client</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Email</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Téléphone</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Date</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Total</th>
+                    <th style="text-align:left; padding:14px 12px; font-weight:600; color:#1a1a1a;">Ville</th>
+                    <th style="text-align:center; padding:14px 12px; font-weight:600; color:#1a1a1a;">Statut</th>
                     <th style="text-align:center; padding:14px 12px; font-weight:600; color:#1a1a1a;">Actions</th>
                 </tr>
             </thead>
-            <tbody id="articlesTableBody">
+            <tbody id="ventesTableBody">
                 <tr>
-                    <td colspan="8" style="text-align:center; padding:40px; color:#888;">
+                    <td colspan="9" style="text-align:center; padding:40px; color:#888;">
                         <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
-                        Chargement des articles...
+                        Chargement des données...
                     </td>
                 </tr>
             </tbody>
@@ -94,849 +97,378 @@
 
     <!-- ===== PAGINATION ===== -->
     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:12px;">
-        <span style="color:#888; font-size:0.9rem;" id="paginationInfo">Affichage de 0 à 0 sur 0 entrées</span>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button onclick="previousArticlePage()" id="prevArticlePage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+        <span style="color:#888; font-size:0.9rem;" id="ventesPaginationInfo">Affichage de 0 à 0 sur 0 entrées</span>
+        <div style="display:flex; gap:8px;">
+            <button onclick="prevVentesPage()" id="prevVentesPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
                 <i class="fas fa-chevron-left"></i> Précédent
             </button>
-            <span id="articlePageInfo" style="display:flex; align-items:center; padding:0 12px; font-weight:600; color:#1a1a1a;">Page 1</span>
-            <button onclick="nextArticlePage()" id="nextArticlePage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+            <span id="ventesPageInfo" style="display:flex; align-items:center; padding:0 12px; font-weight:600; color:#1a1a1a;">Page 1</span>
+            <button onclick="nextVentesPage()" id="nextVentesPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
                 Suivant <i class="fas fa-chevron-right"></i>
             </button>
         </div>
     </div>
 </div>
 
-<!-- ===== MODAL AJOUT / MODIFICATION ARTICLE ===== -->
-<div id="articleModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center; padding:16px;">
-    <div style="background:white; border-radius:16px; padding:32px; max-width:550px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h3 id="articleModalTitle" style="font-family:'Playfair Display',serif; font-size:1.4rem; margin:0;">
-                <i class="fas fa-cube" style="color:#c9a84c;"></i> Ajouter un article
-            </h3>
-            <button onclick="closeArticleModal()" style="background:transparent; border:none; font-size:1.5rem; cursor:pointer; color:#888; padding:4px 8px;" onmouseover="this.style.color='#e74c3c'" onmouseout="this.style.color='#888'">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-
-        <form id="articleForm">
-            <input type="hidden" id="articleId" value="">
-            
-            <!-- Nom -->
-            <div style="margin-bottom:14px;">
-                <label for="articleNom" style="display:block; font-weight:600; margin-bottom:4px; font-size:0.9rem; color:#1a1a1a;">
-                    <i class="fas fa-tag"></i> Nom du produit
-                </label>
-                <input type="text" id="articleNom" placeholder="Ex: Nati Shop Sport Blanc" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; box-sizing:border-box;">
-            </div>
-
-            <!-- Catégorie & Prix -->
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                <div style="margin-bottom:14px;">
-                    <label for="articleCategorie" style="display:block; font-weight:600; margin-bottom:4px; font-size:0.9rem; color:#1a1a1a;">
-                        <i class="fas fa-folder"></i> Catégorie
-                    </label>
-                    <select id="articleCategorie" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; box-sizing:border-box;">
-                        <option value="vêtements">👕 Vêtements</option>
-                        <option value="accessoires">👜 Accessoires</option>
-                        <option value="chaussures">👟 Chaussures</option>
-                        <option value="sport">🏋️ Sport</option>
-                        <option value="électronique">📱 Électronique</option>
-                    </select>
-                </div>
-                <div style="margin-bottom:14px;">
-                    <label for="articlePrix" style="display:block; font-weight:600; margin-bottom:4px; font-size:0.9rem; color:#1a1a1a;">
-                        <i class="fas fa-money-bill-wave"></i> Prix (FCFA)
-                    </label>
-                    <input type="number" id="articlePrix" placeholder="0" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; box-sizing:border-box;">
-                </div>
-            </div>
-
-            <!-- Stock & Prix original -->
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                <div style="margin-bottom:14px;">
-                    <label for="articleStock" style="display:block; font-weight:600; margin-bottom:4px; font-size:0.9rem; color:#1a1a1a;">
-                        <i class="fas fa-boxes"></i> Stock
-                    </label>
-                    <input type="number" id="articleStock" placeholder="0" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; box-sizing:border-box;">
-                </div>
-                <div style="margin-bottom:14px;">
-                    <label for="articleOldPrice" style="display:block; font-weight:600; margin-bottom:4px; font-size:0.9rem; color:#1a1a1a;">
-                        <i class="fas fa-tag"></i> Ancien prix (optionnel)
-                    </label>
-                    <input type="number" id="articleOldPrice" placeholder="0" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; box-sizing:border-box;">
-                </div>
-            </div>
-
-            <!-- Statut -->
-            <div style="margin-bottom:14px;">
-                <label for="articleStatut" style="display:block; font-weight:600; margin-bottom:4px; font-size:0.9rem; color:#1a1a1a;">
-                    <i class="fas fa-info-circle"></i> Statut
-                </label>
-                <select id="articleStatut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; cursor:pointer; box-sizing:border-box;">
-                    <option value="En stock">✅ En stock</option>
-                    <option value="Rupture de stock">⚠️ Rupture de stock</option>
-                    <option value="Sur commande">📦 Sur commande</option>
-                    <option value="Précommande">⏳ Précommande</option>
-                    <option value="Épuisé">🚫 Épuisé</option>
-                    <option value="Bientôt disponible">🔄 Bientôt disponible</option>
-                </select>
-            </div>
-
-            <!-- Description -->
-            <div style="margin-bottom:14px;">
-                <label for="articleDescription" style="display:block; font-weight:600; margin-bottom:4px; font-size:0.9rem; color:#1a1a1a;">
-                    <i class="fas fa-align-left"></i> Description
-                </label>
-                <textarea id="articleDescription" rows="3" placeholder="Description du produit..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; resize:vertical; font-family:inherit; box-sizing:border-box;"></textarea>
-            </div>
-
-            <!-- Image URL -->
-            <div style="margin-bottom:14px;">
-                <label for="articleImage" style="display:block; font-weight:600; margin-bottom:4px; font-size:0.9rem; color:#1a1a1a;">
-                    <i class="fas fa-image"></i> URL de l'image
-                </label>
-                <input type="url" id="articleImage" placeholder="https://exemple.com/image.jpg" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; box-sizing:border-box;">
-            </div>
-
-            <!-- Boutons -->
-            <div style="display:flex; gap:12px; margin-top:16px; flex-wrap:wrap;">
-                <button type="submit" id="saveArticleBtn" style="flex:1; padding:12px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:600; cursor:pointer; transition:all 0.3s; min-height:48px;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
-                    <i class="fas fa-save"></i> Enregistrer
-                </button>
-                <button type="button" onclick="closeArticleModal()" style="flex:1; padding:12px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:1rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888; min-height:48px;" onmouseover="this.style.borderColor='#e74c3c';this.style.color='#e74c3c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
-                    <i class="fas fa-times"></i> Annuler
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- ========================================== -->
-<!-- STYLES RESPONSIVES SPÉCIFIQUES            -->
-<!-- ========================================== -->
-<style>
-    /* Responsive - Articles */
-    
-    /* Statistiques : 4 colonnes sur desktop */
-    .articles-stats {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
-        margin-bottom: 24px;
-    }
-
-    @media (max-width: 768px) {
-        #articlesContainer {
-            padding: 16px !important;
-        }
-
-        /* Statistiques : 2 colonnes sur mobile */
-        .articles-stats {
-            grid-template-columns: 1fr 1fr !important;
-            gap: 10px !important;
-        }
-
-        .articles-stats > div {
-            padding: 12px !important;
-        }
-
-        .articles-stats p:first-child {
-            font-size: 0.7rem !important;
-        }
-
-        .articles-stats p:last-child {
-            font-size: 1.4rem !important;
-        }
-
-        /* Header */
-        .articles-header {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-        }
-
-        .articles-header h2 {
-            font-size: 1.3rem !important;
-        }
-
-        .articles-header p {
-            font-size: 0.85rem !important;
-        }
-
-        .articles-header button {
-            width: 100% !important;
-            justify-content: center !important;
-            font-size: 0.85rem !important;
-            padding: 10px 16px !important;
-        }
-
-        /* Filtres */
-        .articles-filters {
-            flex-direction: column !important;
-            align-items: stretch !important;
-            padding: 12px !important;
-        }
-
-        .articles-filters > div {
-            min-width: 100% !important;
-            flex: none !important;
-        }
-
-        .articles-filters input,
-        .articles-filters select {
-            font-size: 0.9rem !important;
-            padding: 8px 12px !important;
-        }
-
-        .articles-filters button {
-            font-size: 0.85rem !important;
-            padding: 8px 14px !important;
-            width: 100% !important;
-            text-align: center !important;
-        }
-
-        /* Tableau */
-        .table-wrapper table {
-            min-width: 600px !important;
-            font-size: 0.85rem !important;
-        }
-
-        .table-wrapper th,
-        .table-wrapper td {
-            padding: 10px 8px !important;
-        }
-
-        .table-wrapper .action-btn {
-            padding: 4px 8px !important;
-            font-size: 0.7rem !important;
-        }
-
-        /* Pagination */
-        .articles-pagination {
-            flex-direction: column !important;
-            align-items: center !important;
-            gap: 8px !important;
-        }
-
-        .articles-pagination span {
-            font-size: 0.8rem !important;
-        }
-
-        .articles-pagination button {
-            padding: 6px 12px !important;
-            font-size: 0.8rem !important;
-        }
-
-        /* Modal */
-        #articleModal > div {
-            padding: 20px !important;
-            max-width: 95% !important;
-            margin: 10px !important;
-        }
-
-        #articleModal h3 {
-            font-size: 1.2rem !important;
-        }
-
-        #articleModal .form-grid-2 {
-            grid-template-columns: 1fr !important;
-            gap: 0 !important;
-        }
-
-        #articleModal .modal-actions {
-            flex-direction: column !important;
-        }
-
-        #articleModal .modal-actions button {
-            flex: none !important;
-            width: 100% !important;
-            min-height: 44px !important;
-        }
-
-        #articleModal label {
-            font-size: 0.8rem !important;
-        }
-
-        #articleModal input,
-        #articleModal select,
-        #articleModal textarea {
-            font-size: 0.85rem !important;
-            padding: 8px 12px !important;
-        }
-    }
-
-    @media (max-width: 480px) {
-        #articlesContainer {
-            padding: 12px !important;
-        }
-
-        .articles-stats {
-            grid-template-columns: 1fr 1fr !important;
-            gap: 8px !important;
-        }
-
-        .articles-stats > div {
-            padding: 10px !important;
-        }
-
-        .articles-stats p:first-child {
-            font-size: 0.6rem !important;
-        }
-
-        .articles-stats p:last-child {
-            font-size: 1.2rem !important;
-        }
-
-        .articles-header h2 {
-            font-size: 1.1rem !important;
-        }
-
-        .articles-header p {
-            font-size: 0.8rem !important;
-        }
-
-        .articles-header button {
-            font-size: 0.8rem !important;
-            padding: 8px 14px !important;
-        }
-
-        .table-wrapper table {
-            min-width: 500px !important;
-            font-size: 0.8rem !important;
-        }
-
-        .table-wrapper th,
-        .table-wrapper td {
-            padding: 8px 6px !important;
-        }
-
-        .table-wrapper .action-btn {
-            padding: 3px 6px !important;
-            font-size: 0.65rem !important;
-        }
-
-        .articles-pagination button {
-            padding: 4px 10px !important;
-            font-size: 0.7rem !important;
-        }
-
-        .articles-pagination #articlePageInfo {
-            font-size: 0.8rem !important;
-            padding: 0 8px !important;
-        }
-
-        #articleModal > div {
-            padding: 16px !important;
-        }
-
-        #articleModal h3 {
-            font-size: 1.1rem !important;
-        }
-
-        #articleModal label {
-            font-size: 0.75rem !important;
-        }
-
-        #articleModal input,
-        #articleModal select,
-        #articleModal textarea {
-            font-size: 0.8rem !important;
-            padding: 6px 10px !important;
-        }
-
-        #articleModal .modal-actions button {
-            font-size: 0.85rem !important;
-            padding: 10px !important;
-            min-height: 40px !important;
-        }
-    }
-
-    @media (max-width: 360px) {
-        .articles-stats {
-            grid-template-columns: 1fr 1fr !important;
-            gap: 6px !important;
-        }
-
-        .articles-stats > div {
-            padding: 8px !important;
-        }
-
-        .articles-stats p:first-child {
-            font-size: 0.55rem !important;
-        }
-
-        .articles-stats p:last-child {
-            font-size: 1rem !important;
-        }
-
-        .table-wrapper table {
-            min-width: 400px !important;
-            font-size: 0.7rem !important;
-        }
-
-        .table-wrapper th,
-        .table-wrapper td {
-            padding: 6px 4px !important;
-        }
-
-        .articles-pagination button {
-            padding: 4px 8px !important;
-            font-size: 0.65rem !important;
-        }
-
-        #articleModal > div {
-            padding: 12px !important;
-        }
-
-        #articleModal h3 {
-            font-size: 1rem !important;
-        }
-
-        #articleModal input,
-        #articleModal select,
-        #articleModal textarea {
-            font-size: 0.75rem !important;
-            padding: 5px 8px !important;
-        }
-    }
-
-    /* Orientation paysage sur mobile */
-    @media (max-width: 768px) and (orientation: landscape) {
-        .articles-stats {
-            grid-template-columns: repeat(4, 1fr) !important;
-            gap: 8px !important;
-        }
-
-        .articles-stats > div {
-            padding: 8px !important;
-        }
-
-        .articles-stats p:last-child {
-            font-size: 1.2rem !important;
-        }
-
-        .articles-filters {
-            flex-direction: row !important;
-            flex-wrap: wrap !important;
-        }
-
-        .articles-filters > div {
-            min-width: 120px !important;
-            flex: 1 !important;
-        }
-
-        .table-wrapper table {
-            min-width: 500px !important;
-        }
-    }
-</style>
-
 <!-- ===== SCRIPTS ===== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     (function() {
         // ==========================================
-        // RÉFÉRENCE SUPABASE
+        // SUPABASE CONFIG
         // ==========================================
-        const supabaseClient = window.supabaseClient;
+        const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
+        
+        let supabaseClient = null;
 
-        if (!supabaseClient) {
-            console.error('❌ SupabaseClient non disponible !');
-            document.getElementById('articlesContainer').innerHTML = `
-                <div style="text-align:center; padding:60px; color:red;">
-                    <i class="fas fa-exclamation-circle" style="font-size:3rem;"></i>
-                    <h3>Erreur de connexion</h3>
-                    <p>Impossible de se connecter à la base de données.</p>
-                    <p style="font-size:0.9rem; color:#888;">Veuillez rafraîchir la page.</p>
-                </div>
-            `;
-            return;
-        }
-
-        console.log('✅ SupabaseClient disponible dans articles.html');
-
-        // ==========================================
-        // VARIABLES GLOBALES
-        // ==========================================
-        let allArticles = [];
-        let filteredArticles = [];
-        let currentArticlePage = 1;
-        const articlesPerPage = 10;
-
-        // ==========================================
-        // FORMATER LE PRIX
-        // ==========================================
-        function formatPrice(price) {
-            return price.toFixed(2).replace('.', ',') + ' FCFA';
+        // Initialiser Supabase
+        try {
+            if (window.supabase) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                window.supabaseClient = supabaseClient;
+                console.log('✅ Supabase initialisé dans suivi-ventes.html');
+            } else {
+                console.warn('⚠️ Supabase SDK non chargé');
+            }
+        } catch (e) {
+            console.error('❌ Erreur initialisation Supabase:', e);
         }
 
         // ==========================================
-        // DÉTERMINER SI UN ARTICLE EST EN SOLDE
+        // VARIABLES
         // ==========================================
-        function isOnSale(article) {
-            return article.prix_original && parseFloat(article.prix_original) > parseFloat(article.prix);
+        let allVentes = [];
+        let filteredVentes = [];
+        let currentPage = 1;
+        const perPage = 10;
+
+        // ==========================================
+        // DONNÉES DE TEST (fallback) - MISES À JOUR AVEC statut_produit
+        // ==========================================
+        function getTestData() {
+            return [
+                { id: 1, prenom: 'Jean', nom: 'Dupont', email: 'jean@email.com', telephone: '0612345678', ville: 'Paris', pays: 'FR', created_at: new Date().toISOString(), total_achat: 398.00, statut_produit: 'soldé' },
+                { id: 2, prenom: 'Fleury', nom: 'HAMIDOU', email: 'f91631072@gmail.com', telephone: '0191647720', ville: 'Parakou', pays: 'BJ', created_at: new Date(Date.now() - 86400000).toISOString(), total_achat: 267.00, statut_produit: 'en attente' },
+                { id: 3, prenom: 'Marie', nom: 'Martin', email: 'marie@email.com', telephone: '0765432109', ville: 'Lyon', pays: 'FR', created_at: new Date(Date.now() - 172800000).toISOString(), total_achat: 159.00, statut_produit: 'annulé' },
+                { id: 4, prenom: 'Amadou', nom: 'Diallo', email: 'amadou@email.com', telephone: '779012345', ville: 'Dakar', pays: 'SN', created_at: new Date(Date.now() - 259200000).toISOString(), total_achat: 299.00, statut_produit: 'soldé' },
+                { id: 5, prenom: 'Sophie', nom: 'Bernard', email: 'sophie@email.com', telephone: '0612345987', ville: 'Marseille', pays: 'FR', created_at: new Date(Date.now() - 345600000).toISOString(), total_achat: 149.00, statut_produit: 'en attente' }
+            ];
         }
 
         // ==========================================
-        // AFFICHER LE STATUT AVEC COULEUR
+        // FORMATER LA DATE
         // ==========================================
-        function getArticleStatutBadge(statut) {
-            const statuts = {
-                'En stock': { bg: '#27ae60', icon: 'fa-check', text: 'En stock' },
-                'Rupture de stock': { bg: '#f39c12', icon: 'fa-times', text: 'Rupture de stock' },
-                'Sur commande': { bg: '#3498db', icon: 'fa-clock', text: 'Sur commande' },
-                'Précommande': { bg: '#9b59b6', icon: 'fa-hourglass-half', text: 'Précommande' },
-                'Épuisé': { bg: '#e74c3c', icon: 'fa-ban', text: 'Épuisé' },
-                'Bientôt disponible': { bg: '#1abc9c', icon: 'fa-arrow-right', text: 'Bientôt disponible' }
+        function formatDate(dateString) {
+            if (!dateString) return '—';
+            const d = new Date(dateString);
+            if (isNaN(d.getTime())) return '—';
+            return d.toLocaleDateString('fr-FR') + ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // ==========================================
+        // BADGE STATUT
+        // ==========================================
+        function getStatutBadge(statut) {
+            const s = {
+                'soldé': { bg: '#27ae60', icon: 'fa-check', text: 'Soldé' },
+                'en attente': { bg: '#f39c12', icon: 'fa-clock', text: 'En attente' },
+                'annulé': { bg: '#e74c3c', icon: 'fa-times', text: 'Annulé' }
             };
-            const s = statuts[statut] || statuts['En stock'];
-            return `<span style="background:${s.bg}; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-                <i class="fas ${s.icon}"></i> ${s.text}
+            const st = s[statut] || s['en attente'];
+            return `<span style="background:${st.bg}; color:white; padding:4px 12px; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                <i class="fas ${st.icon}"></i> ${st.text}
             </span>`;
         }
 
         // ==========================================
-        // RENDU DU TABLEAU
+        // RENDU TABLEAU
         // ==========================================
-        function renderArticleTable() {
-            const tbody = document.getElementById('articlesTableBody');
-            
-            if (filteredArticles.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="8" style="text-align:center; padding:40px; color:#888;">
-                            <i class="fas fa-box-open" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
-                            Aucun article trouvé.
-                        </td>
-                    </tr>
-                `;
+        function renderVentes() {
+            const tbody = document.getElementById('ventesTableBody');
+            if (filteredVentes.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:40px; color:#888;">
+                    <i class="fas fa-inbox" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
+                    Aucune vente trouvée.
+                </td></tr>`;
                 return;
             }
 
-            const startIndex = (currentArticlePage - 1) * articlesPerPage;
-            const endIndex = Math.min(startIndex + articlesPerPage, filteredArticles.length);
-            const pageItems = filteredArticles.slice(startIndex, endIndex);
+            const start = (currentPage - 1) * perPage;
+            const items = filteredVentes.slice(start, start + perPage);
 
-            tbody.innerHTML = pageItems.map(article => `
+            tbody.innerHTML = items.map(v => `
                 <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
-                    <td style="padding:12px; font-weight:600; color:#1a1a1a;">#${article.id}</td>
-                    <td style="padding:12px;">
-                        <img src="${article.image_url || 'https://via.placeholder.com/50x50/1a1a1a/FFFFFF?text=Nati+Shop'}" 
-                             alt="${article.nom}" 
-                             style="width:50px; height:50px; object-fit:cover; border-radius:8px;"
-                             onerror="this.src='https://via.placeholder.com/50x50/1a1a1a/FFFFFF?text=Nati+Shop'">
-                    </td>
-                    <td style="padding:12px; font-weight:500;">${article.nom}</td>
-                    <td style="padding:12px; color:#888;">${article.categorie || '—'}</td>
-                    <td style="padding:12px; font-weight:700; color:#c9a84c;">
-                        ${formatPrice(article.prix)}
-                        ${article.prix_original ? `<span style="font-size:0.8rem; color:#999; text-decoration:line-through; display:block;">${formatPrice(article.prix_original)}</span>` : ''}
-                    </td>
-                    <td style="padding:12px; text-align:center; font-weight:600;">${article.stock || 0}</td>
-                    <td style="padding:12px;">${getArticleStatutBadge(article.statut || 'En stock')}</td>
+                    <td style="padding:12px; font-weight:600;">#${v.id}</td>
+                    <td style="padding:12px; font-weight:500;">${v.prenom || ''} ${v.nom || ''}</td>
+                    <td style="padding:12px; color:#888;">${v.email || '—'}</td>
+                    <td style="padding:12px; color:#888;">${v.telephone || '—'}</td>
+                    <td style="padding:12px; color:#888; font-size:0.9rem;">${formatDate(v.created_at)}</td>
+                    <td style="padding:12px; font-weight:700; color:#c9a84c;">${v.total_achat ? v.total_achat.toFixed(2).replace('.', ',') + ' FCFA' : '—'}</td>
+                    <td style="padding:12px; color:#888;">${v.ville || '—'}</td>
+                    <td style="padding:12px; text-align:center;">${getStatutBadge(v.statut)}</td>
                     <td style="padding:12px; text-align:center;">
-                        <button onclick="editArticle('${article.id}')" class="action-btn" style="padding:6px 12px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Modifier">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button onclick="deleteArticle('${article.id}')" class="action-btn" style="padding:6px 12px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.8rem; margin:2px;" title="Supprimer">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
+                        <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:4px 10px; border:none; border-radius:6px; background:#27ae60; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
+                        <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:4px 10px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
+                        <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:4px 10px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.75rem; margin:2px; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
                     </td>
                 </tr>
             `).join('');
+
+            updateVentesPaginationInfo();
         }
 
         // ==========================================
-        // METTRE À JOUR LES STATISTIQUES
+        // STATISTIQUES
         // ==========================================
-        function updateArticleStats() {
-            const total = allArticles.length;
-            const stock = allArticles.filter(a => 
-                a.statut === 'En stock' || a.statut === 'Bientôt disponible'
-            ).length;
-            const rupture = allArticles.filter(a => 
-                a.statut === 'Rupture de stock' || a.statut === 'Épuisé'
-            ).length;
-            const soldes = allArticles.filter(a => 
-                a.prix_original && parseFloat(a.prix_original) > parseFloat(a.prix)
-            ).length;
-
-            document.getElementById('totalArticles').textContent = total;
-            document.getElementById('totalStock').textContent = stock;
-            document.getElementById('totalRupture').textContent = rupture;
-            document.getElementById('totalSoldes').textContent = soldes;
-        }
-
-        // ==========================================
-        // METTRE À JOUR LES INFOS DE PAGINATION
-        // ==========================================
-        function updateArticlePaginationInfo() {
-            const total = filteredArticles.length;
-            const start = (currentArticlePage - 1) * articlesPerPage + 1;
-            const end = Math.min(currentArticlePage * articlesPerPage, total);
-            const totalPages = Math.ceil(total / articlesPerPage);
-
-            document.getElementById('paginationInfo').textContent = 
-                `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
-            document.getElementById('articlePageInfo').textContent = `Page ${currentArticlePage} sur ${totalPages || 1}`;
-
-            document.getElementById('prevArticlePage').disabled = currentArticlePage <= 1;
-            document.getElementById('nextArticlePage').disabled = currentArticlePage >= totalPages;
+        function updateVentesStats() {
+            const total = allVentes.length;
+            const sold = allVentes.filter(v => v.statut === 'soldé').length;
+            const attente = allVentes.filter(v => v.statut === 'en attente').length;
+            const annul = allVentes.filter(v => v.statut === 'annulé').length;
+            
+            document.getElementById('totalCommandes').textContent = total;
+            document.getElementById('totalSoldees').textContent = sold;
+            document.getElementById('totalEnAttente').textContent = attente;
+            document.getElementById('totalAnnulees').textContent = annul;
         }
 
         // ==========================================
         // PAGINATION
         // ==========================================
-        function previousArticlePage() {
-            if (currentArticlePage > 1) {
-                currentArticlePage--;
-                renderArticleTable();
-                updateArticlePaginationInfo();
+        function updateVentesPaginationInfo() {
+            const total = filteredVentes.length;
+            const start = (currentPage - 1) * perPage + 1;
+            const end = Math.min(currentPage * perPage, total);
+            const totalPages = Math.ceil(total / perPage) || 1;
+
+            document.getElementById('ventesPaginationInfo').textContent = 
+                `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
+            document.getElementById('ventesPageInfo').textContent = `Page ${currentPage} sur ${totalPages}`;
+
+            document.getElementById('prevVentesPage').disabled = currentPage <= 1;
+            document.getElementById('nextVentesPage').disabled = currentPage >= totalPages;
+        }
+
+        function prevVentesPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderVentes();
+                updateVentesPaginationInfo();
             }
         }
 
-        function nextArticlePage() {
-            const totalPages = Math.ceil(filteredArticles.length / articlesPerPage);
-            if (currentArticlePage < totalPages) {
-                currentArticlePage++;
-                renderArticleTable();
-                updateArticlePaginationInfo();
+        function nextVentesPage() {
+            const totalPages = Math.ceil(filteredVentes.length / perPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderVentes();
+                updateVentesPaginationInfo();
             }
         }
 
         // ==========================================
         // FILTRES
         // ==========================================
-        function applyArticleFilters() {
-            const searchTerm = document.getElementById('searchInputArticles').value.toLowerCase().trim();
-            const categorie = document.getElementById('filterCategorie').value;
-            const statut = document.getElementById('filterStatutArticle').value;
+        function applyVentesFilters() {
+            const search = document.getElementById('searchVentes').value.toLowerCase().trim();
+            const statut = document.getElementById('filterStatut').value;
+            const dateDebut = document.getElementById('dateDebut').value;
+            const dateFin = document.getElementById('dateFin').value;
 
-            filteredArticles = allArticles.filter(article => {
-                let matchSearch = true;
-                if (searchTerm) {
-                    matchSearch = article.nom.toLowerCase().includes(searchTerm) ||
-                                  (article.description && article.description.toLowerCase().includes(searchTerm));
+            filteredVentes = allVentes.filter(v => {
+                let match = true;
+                
+                // Recherche
+                if (search) {
+                    const fullName = `${v.prenom || ''} ${v.nom || ''}`.toLowerCase();
+                    const email = (v.email || '').toLowerCase();
+                    const phone = (v.telephone || '').toLowerCase();
+                    match = fullName.includes(search) || email.includes(search) || phone.includes(search);
                 }
-
-                let matchCategorie = true;
-                if (categorie !== 'all') {
-                    matchCategorie = article.categorie === categorie;
-                }
-
-                let matchStatut = true;
+                
+                // Statut
                 if (statut !== 'all') {
-                    if (statut === 'soldes') {
-                        matchStatut = isOnSale(article);
-                    } else {
-                        matchStatut = article.statut === statut;
-                    }
+                    match = match && v.statut === statut;
                 }
-
-                return matchSearch && matchCategorie && matchStatut;
+                
+                // Dates
+                if (dateDebut && match) {
+                    const d1 = new Date(dateDebut);
+                    const dV = new Date(v.created_at);
+                    if (d1 > dV) match = false;
+                }
+                if (dateFin && match) {
+                    const d2 = new Date(dateFin);
+                    const dV = new Date(v.created_at);
+                    d2.setHours(23, 59, 59);
+                    if (d2 < dV) match = false;
+                }
+                
+                return match;
             });
 
-            currentArticlePage = 1;
-            renderArticleTable();
-            updateArticlePaginationInfo();
+            currentPage = 1;
+            renderVentes();
+            updateVentesPaginationInfo();
         }
 
-        function resetArticleFilters() {
-            document.getElementById('searchInputArticles').value = '';
-            document.getElementById('filterCategorie').value = 'all';
-            document.getElementById('filterStatutArticle').value = 'all';
-            filteredArticles = [...allArticles];
-            currentArticlePage = 1;
-            renderArticleTable();
-            updateArticlePaginationInfo();
+        function resetVentesFilters() {
+            document.getElementById('searchVentes').value = '';
+            document.getElementById('filterStatut').value = 'all';
+            document.getElementById('dateDebut').value = '';
+            document.getElementById('dateFin').value = '';
+            filteredVentes = [...allVentes];
+            currentPage = 1;
+            renderVentes();
+            updateVentesPaginationInfo();
         }
 
         // ==========================================
-        // CHARGER LES ARTICLES DEPUIS SUPABASE
+        // METTRE À JOUR LE STATUT - UTILISE statut_produit
         // ==========================================
-        async function loadArticlesData() {
+        async function updateStatut(id, newStatut) {
+            // Mettre à jour localement
+            const v = allVentes.find(item => item.id === id);
+            if (!v) return;
+
+            const oldStatut = v.statut;
+            v.statut = newStatut;
+            
+            const f = filteredVentes.find(item => item.id === id);
+            if (f) f.statut = newStatut;
+
+            renderVentes();
+            updateVentesStats();
+
+            // Mettre à jour dans Supabase avec statut_produit
             try {
-                console.log('📝 Chargement des articles depuis Supabase...');
+                if (supabaseClient) {
+                    const { error } = await supabaseClient
+                        .from('clients')
+                        .update({ statut_produit: newStatut })  // ← Utilisation de statut_produit
+                        .eq('id', id);
+
+                    if (error) {
+                        console.error('❌ Erreur mise à jour Supabase:', error);
+                        // Revert local
+                        v.statut = oldStatut;
+                        if (f) f.statut = oldStatut;
+                        renderVentes();
+                        updateVentesStats();
+                        showNotification('❌ Erreur lors de la mise à jour', 'error');
+                        return;
+                    }
+                }
                 
+                showNotification(`✅ Statut mis à jour : ${newStatut}`, 'success');
+
+            } catch (err) {
+                console.error('❌ Erreur:', err);
+                showNotification('❌ Erreur lors de la mise à jour', 'error');
+            }
+        }
+
+        // ==========================================
+        // EXPORTER CSV - UTILISE statut_produit
+        // ==========================================
+        function exportCSV() {
+            if (allVentes.length === 0) {
+                showNotification('❌ Aucune donnée à exporter', 'error');
+                return;
+            }
+
+            let csv = 'ID,Client,Email,Téléphone,Date,Total,Ville,Pays,Statut\n';
+            allVentes.forEach(v => {
+                const client = `${v.prenom || ''} ${v.nom || ''}`.trim();
+                // Utiliser statut_produit ou statut en fallback
+                const statutValue = v.statut_produit || v.statut || '';
+                csv += `${v.id},"${client}","${v.email || ''}","${v.telephone || ''}","${formatDate(v.created_at)}","${v.total_achat || 0}","${v.ville || ''}","${v.pays || ''}","${statutValue}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `ventes_${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('✅ Export CSV effectué avec succès', 'success');
+        }
+
+        // ==========================================
+        // RAFRAÎCHIR
+        // ==========================================
+        function rafraichirVentes() {
+            loadVentesData();
+            showNotification('🔄 Données actualisées', 'info');
+        }
+
+        // ==========================================
+        // CHARGER LES DONNÉES DEPUIS SUPABASE - UTILISE statut_produit
+        // ==========================================
+        async function loadVentesData() {
+            try {
+                console.log('📝 Chargement des données depuis Supabase...');
+                
+                // Vérifier si Supabase est disponible
+                if (!supabaseClient) {
+                    console.warn('⚠️ Supabase non disponible, utilisation des données de test');
+                    allVentes = getTestData();
+                    filteredVentes = [...allVentes];
+                    renderVentes();
+                    updateVentesStats();
+                    updateVentesPaginationInfo();
+                    return;
+                }
+
+                // Charger les données depuis la table clients
                 const { data, error } = await supabaseClient
-                    .from('produits')
+                    .from('clients')
                     .select('*')
                     .order('created_at', { ascending: false });
 
                 if (error) {
                     console.error('❌ Erreur chargement:', error);
-                    showNotification('❌ Erreur de chargement des articles', 'error');
+                    // Utiliser les données de test en cas d'erreur
+                    allVentes = getTestData();
+                    filteredVentes = [...allVentes];
+                    renderVentes();
+                    updateVentesStats();
+                    updateVentesPaginationInfo();
                     return;
                 }
 
                 if (data && data.length > 0) {
-                    console.log(`✅ ${data.length} articles chargés depuis Supabase`);
-                    allArticles = data.map(p => ({
-                        ...p,
-                        statut: p.statut || 'En stock'
+                    console.log(`✅ ${data.length} clients chargés depuis Supabase`);
+                    
+                    // Utiliser statut_produit comme source du statut
+                    allVentes = data.map(c => ({
+                        ...c,
+                        statut: c.statut_produit || 'en attente'  // ← Utilisation de statut_produit
                     }));
+                    
+                    filteredVentes = [...allVentes];
+                    renderVentes();
+                    updateVentesStats();
+                    updateVentesPaginationInfo();
                 } else {
-                    console.warn('⚠️ Aucun article trouvé dans Supabase');
-                    allArticles = [];
+                    console.warn('⚠️ Aucune donnée trouvée, utilisation des données de test');
+                    allVentes = getTestData();
+                    filteredVentes = [...allVentes];
+                    renderVentes();
+                    updateVentesStats();
+                    updateVentesPaginationInfo();
                 }
-
-                filteredArticles = [...allArticles];
-                renderArticleTable();
-                updateArticleStats();
-                updateArticlePaginationInfo();
 
             } catch (err) {
                 console.error('❌ Erreur:', err);
-                showNotification('❌ Erreur de chargement des articles', 'error');
-            }
-        }
-
-        // ==========================================
-        // MODAL : AJOUTER
-        // ==========================================
-        function openAddArticleModal() {
-            document.getElementById('articleModalTitle').innerHTML = '<i class="fas fa-cube" style="color:#c9a84c;"></i> Ajouter un article';
-            document.getElementById('articleId').value = '';
-            document.getElementById('articleForm').reset();
-            document.getElementById('articleStatut').value = 'En stock';
-            document.getElementById('articleModal').style.display = 'flex';
-        }
-
-        // ==========================================
-        // MODAL : MODIFIER
-        // ==========================================
-        function editArticle(id) {
-            console.log('✏️ Modification de l\'article:', id);
-            const article = allArticles.find(a => a.id === id);
-            if (!article) {
-                showNotification('❌ Article non trouvé', 'error');
-                return;
-            }
-
-            document.getElementById('articleModalTitle').innerHTML = '<i class="fas fa-edit" style="color:#c9a84c;"></i> Modifier l\'article';
-            document.getElementById('articleId').value = article.id;
-            document.getElementById('articleNom').value = article.nom || '';
-            document.getElementById('articleCategorie').value = article.categorie || 'vêtements';
-            document.getElementById('articlePrix').value = article.prix || '';
-            document.getElementById('articleOldPrice').value = article.prix_original || '';
-            document.getElementById('articleStock').value = article.stock || 0;
-            document.getElementById('articleStatut').value = article.statut || 'En stock';
-            document.getElementById('articleDescription').value = article.description || '';
-            document.getElementById('articleImage').value = article.image_url || '';
-            document.getElementById('articleModal').style.display = 'flex';
-        }
-
-        // ==========================================
-        // MODAL : FERMER
-        // ==========================================
-        function closeArticleModal() {
-            document.getElementById('articleModal').style.display = 'none';
-            document.getElementById('articleForm').reset();
-        }
-
-        // ==========================================
-        // SAUVEGARDER ARTICLE (AJOUT OU MODIFICATION)
-        // ==========================================
-        async function saveArticle(event) {
-            event.preventDefault();
-
-            const id = document.getElementById('articleId').value;
-            const prix = parseFloat(document.getElementById('articlePrix').value) || 0;
-            const oldPrice = document.getElementById('articleOldPrice').value ? parseFloat(document.getElementById('articleOldPrice').value) : null;
-            const stock = parseInt(document.getElementById('articleStock').value) || 0;
-            const statut = document.getElementById('articleStatut').value || 'En stock';
-
-            const articleData = {
-                nom: document.getElementById('articleNom').value.trim(),
-                categorie: document.getElementById('articleCategorie').value,
-                prix: prix,
-                prix_original: oldPrice,
-                stock: stock,
-                statut: statut,
-                description: document.getElementById('articleDescription').value.trim(),
-                image_url: document.getElementById('articleImage').value.trim()
-            };
-
-            try {
-                if (id) {
-                    // MODIFICATION
-                    console.log('📝 Mise à jour de l\'article:', id);
-                    const { error } = await supabaseClient
-                        .from('produits')
-                        .update(articleData)
-                        .eq('id', id);
-
-                    if (error) {
-                        console.error('❌ Erreur mise à jour:', error);
-                        showNotification('❌ Erreur lors de la modification', 'error');
-                        return;
-                    }
-
-                    const index = allArticles.findIndex(a => a.id === id);
-                    if (index !== -1) {
-                        allArticles[index] = { ...allArticles[index], ...articleData };
-                    }
-                    showNotification('✅ Article modifié avec succès !', 'success');
-                } else {
-                    // AJOUT
-                    console.log('📝 Ajout d\'un nouvel article');
-                    const { data, error } = await supabaseClient
-                        .from('produits')
-                        .insert([articleData])
-                        .select();
-
-                    if (error) {
-                        console.error('❌ Erreur insertion:', error);
-                        showNotification('❌ Erreur lors de l\'ajout', 'error');
-                        return;
-                    }
-
-                    if (data && data.length > 0) {
-                        allArticles.unshift(data[0]);
-                    }
-                    showNotification('✅ Article ajouté avec succès !', 'success');
-                }
-
-                closeArticleModal();
-                filteredArticles = [...allArticles];
-                renderArticleTable();
-                updateArticleStats();
-                updateArticlePaginationInfo();
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                showNotification('❌ Une erreur est survenue', 'error');
-            }
-        }
-
-        // ==========================================
-        // SUPPRIMER ARTICLE
-        // ==========================================
-        async function deleteArticle(id) {
-            if (!confirm('Voulez-vous vraiment supprimer cet article ?')) return;
-
-            try {
-                console.log('🗑️ Suppression de l\'article:', id);
-                const { error } = await supabaseClient
-                    .from('produits')
-                    .delete()
-                    .eq('id', id);
-
-                if (error) {
-                    console.error('❌ Erreur suppression:', error);
-                    showNotification('❌ Erreur lors de la suppression', 'error');
-                    return;
-                }
-
-                allArticles = allArticles.filter(a => a.id !== id);
-                filteredArticles = [...allArticles];
-                renderArticleTable();
-                updateArticleStats();
-                updateArticlePaginationInfo();
-                showNotification('🗑️ Article supprimé avec succès', 'success');
-
-            } catch (err) {
-                console.error('❌ Erreur:', err);
-                showNotification('❌ Une erreur est survenue', 'error');
+                allVentes = getTestData();
+                filteredVentes = [...allVentes];
+                renderVentes();
+                updateVentesStats();
+                updateVentesPaginationInfo();
             }
         }
 
@@ -944,8 +476,8 @@
         // NOTIFICATION
         // ==========================================
         function showNotification(message, type = 'info') {
-            document.querySelectorAll('.toast-nati').forEach(t => t.remove());
-            
+            document.querySelectorAll('.toast-nikel').forEach(t => t.remove());
+
             const colors = {
                 success: '#27ae60',
                 error: '#e74c3c',
@@ -953,7 +485,7 @@
             };
 
             const toast = document.createElement('div');
-            toast.className = 'toast-nati';
+            toast.className = 'toast-nikel';
             toast.style.cssText = `
                 position: fixed;
                 bottom: 30px;
@@ -975,6 +507,7 @@
             `;
             toast.innerHTML = `<span>${message}</span>`;
             document.body.appendChild(toast);
+
             setTimeout(() => {
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateY(20px)';
@@ -984,48 +517,30 @@
         }
 
         // ==========================================
+        // EXPOSER LES FONCTIONS GLOBALEMENT
+        // ==========================================
+        window.applyVentesFilters = applyVentesFilters;
+        window.resetVentesFilters = resetVentesFilters;
+        window.prevVentesPage = prevVentesPage;
+        window.nextVentesPage = nextVentesPage;
+        window.updateStatut = updateStatut;
+        window.exportCSV = exportCSV;
+        window.rafraichirVentes = rafraichirVentes;
+        window.showNotification = showNotification;
+        window.loadVentesData = loadVentesData;
+
+        // ==========================================
         // INITIALISATION
         // ==========================================
         function init() {
-            console.log('🚀 Chargement de articles.html (Nati Shop)...');
-            loadArticlesData();
-
-            document.getElementById('articleForm').addEventListener('submit', saveArticle);
-
-            document.getElementById('articleModal').addEventListener('click', function(e) {
-                if (e.target === this) closeArticleModal();
-            });
-
-            // Fermer la modale avec Echap
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeArticleModal();
-                }
-            });
+            console.log('🚀 Chargement de suivi-ventes.html...');
+            loadVentesData();
         }
 
-        // ==========================================
-        // EXPOSER LES FONCTIONS GLOBALEMENT
-        // ==========================================
-        window.applyArticleFilters = applyArticleFilters;
-        window.resetArticleFilters = resetArticleFilters;
-        window.previousArticlePage = previousArticlePage;
-        window.nextArticlePage = nextArticlePage;
-        window.openAddArticleModal = openAddArticleModal;
-        window.editArticle = editArticle;
-        window.deleteArticle = deleteArticle;
-        window.closeArticleModal = closeArticleModal;
-        window.saveArticle = saveArticle;
-        window.showNotification = showNotification;
-
-        // ==========================================
-        // LANCEMENT
-        // ==========================================
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', init);
         } else {
             init();
         }
-
     })();
 </script>
