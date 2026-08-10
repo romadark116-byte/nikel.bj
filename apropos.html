@@ -1126,48 +1126,43 @@
 
                 console.log('🔄 Chargement des données du fondateur...');
 
-                // ✅ Récupérer les données depuis la table admins avec la jointure vers admin_profiles
-                const { data: admin, error } = await supabaseClient
+                // ✅ Récupérer le premier admin (ou celui avec l'email spécifique)
+                const { data: admins, error: adminsError } = await supabaseClient
                     .from('admins')
-                    .select(`
-                        id,
-                        prenom,
-                        nom,
-                        email,
-                        telephone,
-                        boutique_nom,
-                        ville,
-                        pays,
-                        created_at,
-                        admin_profiles (
-                            id,
-                            titre,
-                            signature,
-                            description,
-                            pdg_tof_url
-                        )
-                    `)
-                    .eq('id', 1)
-                    .single();
+                    .select('*')
+                    .limit(1);
 
-                if (error) {
-                    console.error('❌ Erreur Supabase:', error);
-                    throw error;
+                if (adminsError) {
+                    console.error('❌ Erreur chargement admin:', adminsError);
+                    throw adminsError;
                 }
 
-                if (!admin) {
+                if (!admins || admins.length === 0) {
                     console.warn('⚠️ Aucun administrateur trouvé');
                     throw new Error('Aucun administrateur trouvé');
                 }
 
-                console.log('✅ Données du fondateur chargées avec succès');
+                const admin = admins[0];
+                console.log('✅ Administrateur trouvé:', admin.email);
 
-                // --- RÉCUPÉRER LE PROFIL ---
-                const profile = admin.admin_profiles || {};
+                // ✅ Récupérer le profil admin_profiles lié à cet admin
+                const { data: profiles, error: profileError } = await supabaseClient
+                    .from('admin_profiles')
+                    .select('*')
+                    .eq('admin_id', admin.id)
+                    .limit(1);
 
-                // --- METTRE À JOUR LA PHOTO AVEC pdg_tof_url DEPUIS admin_profiles ---
-                let photoUrl = profile.pdg_tof_url;
+                if (profileError) {
+                    console.error('❌ Erreur chargement admin_profiles:', profileError);
+                }
+
+                const profile = (profiles && profiles.length > 0) ? profiles[0] : {};
+                console.log('✅ Profil trouvé:', profile);
+
+                // --- METTRE À JOUR LA PHOTO AVEC pdg_tof_url ---
+                let photoUrl = profile.pdg_tof_url || null;
                 
+                // Si aucune photo dans pdg_tof_url, utiliser l'avatar par défaut
                 if (!photoUrl || photoUrl.trim() === '') {
                     const fullName = `${admin.prenom || ''} ${admin.nom || ''}`.trim();
                     photoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName || 'Fondateur')}&size=400&background=c9a84c&color=fff&font-size=0.5`;
@@ -1175,8 +1170,10 @@
 
                 const cacheBuster = new Date().getTime();
                 imageEl.src = `${photoUrl}${photoUrl.includes('?') ? '&' : '?'}_=${cacheBuster}`;
+                console.log('📸 Photo chargée depuis pdg_tof_url:', photoUrl);
                 
                 imageEl.onerror = function() {
+                    console.warn('⚠️ Erreur chargement image, fallback vers avatar');
                     const fullName = `${admin.prenom || ''} ${admin.nom || ''}`.trim();
                     this.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName || 'Fondateur')}&size=400&background=c9a84c&color=fff&font-size=0.5&_=${cacheBuster}`;
                 };
