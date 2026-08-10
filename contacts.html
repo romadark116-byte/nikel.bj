@@ -2,57 +2,57 @@
 <div id="contactsContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
-    <div class="contacts-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:24px; gap:12px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:24px; gap:12px;">
         <div>
             <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:#1a1a1a; margin-bottom:4px;">
                 <i class="fas fa-address-book" style="color:#c9a84c;"></i> Mes contacts
             </h2>
             <p style="color:#888; font-size:0.95rem;">Gérez votre liste de clients et prospects.</p>
         </div>
-        <button onclick="openAddModal()" class="btn-add-contact" style="padding:12px 24px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px; white-space:nowrap;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+        <button onclick="openAddModal()" style="padding:12px 24px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px; white-space:nowrap;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                 <i class="fas fa-plus"></i> Ajouter un contact
             </button>
     </div>
 
-    <!-- ===== STATISTIQUES RAPIDES ===== -->
-    <div class="contacts-stats" style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
-        <div class="stat-card" style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
+    <!-- ===== STATISTIQUES ===== -->
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total contacts</p>
             <p style="font-size:1.8rem; font-weight:700; color:#1a1a1a;" id="totalContacts">0</p>
         </div>
-        <div class="stat-card" style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">✅ Clients</p>
             <p style="font-size:1.8rem; font-weight:700; color:#27ae60;" id="totalClients">0</p>
         </div>
-        <div class="stat-card" style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">⭐ Prospects</p>
             <p style="font-size:1.8rem; font-weight:700; color:#f39c12;" id="totalProspects">0</p>
         </div>
-        <div class="stat-card" style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #3498db;">
+        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #3498db;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">👤 Actifs</p>
             <p style="font-size:1.8rem; font-weight:700; color:#3498db;" id="totalActifs">0</p>
         </div>
     </div>
 
-    <!-- ===== BARRE DE RECHERCHE & FILTRES ===== -->
-    <div class="contacts-filters" style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
+    <!-- ===== FILTRES ===== -->
+    <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
         <div style="flex:2; min-width:180px;">
-            <input type="text" id="searchInputContacts" placeholder="🔍 Rechercher par nom, email ou téléphone..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s; box-sizing:border-box;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onkeyup="applyFilters()">
+            <input type="text" id="searchInputContacts" placeholder="🔍 Rechercher..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onkeyup="applyFilters()">
         </div>
         <div style="min-width:130px; flex:1;">
-            <select id="filterType" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer; outline:none; transition:border-color 0.3s; box-sizing:border-box;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyFilters()">
-                <option value="all">👥 Tous les contacts</option>
+            <select id="filterType" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onchange="applyFilters()">
+                <option value="all">👥 Tous</option>
                 <option value="client">✅ Clients</option>
                 <option value="prospect">⭐ Prospects</option>
             </select>
         </div>
-        <button onclick="resetFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888; white-space:nowrap;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
-                <i class="fas fa-undo"></i> Réinitialiser
-            </button>
+        <button onclick="resetFilters()" style="padding:10px 16px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; color:#888; white-space:nowrap;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+            <i class="fas fa-undo"></i> Réinitialiser
+        </button>
     </div>
 
-    <!-- ===== TABLEAU DES CONTACTS ===== -->
-    <div class="contacts-table-wrapper" style="overflow-x:auto; overflow-y:visible; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch;">
+    <!-- ===== TABLEAU AVEC SCROLL ===== -->
+    <div style="overflow-x:auto; overflow-y:visible; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch;">
         <table style="width:100%; border-collapse:collapse; font-size:0.85rem; min-width:900px;">
             <thead>
                 <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
@@ -71,7 +71,7 @@
                 <tr>
                     <td colspan="9" style="text-align:center; padding:40px; color:#888;">
                         <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
-                        Chargement des contacts...
+                        Chargement...
                     </td>
                 </tr>
             </tbody>
@@ -79,21 +79,21 @@
     </div>
 
     <!-- ===== PAGINATION ===== -->
-    <div class="contacts-pagination" style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:12px;">
-        <span style="color:#888; font-size:0.9rem;" id="paginationInfo">Affichage de 0 à 0 sur 0 entrées</span>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:12px;">
+        <span style="color:#888; font-size:0.9rem;" id="paginationInfo">Affichage de 0 à 0 sur 0</span>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button onclick="previousPage()" id="prevPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+            <button onclick="previousPage()" id="prevPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
                 <i class="fas fa-chevron-left"></i> Précédent
             </button>
             <span id="pageInfo" style="display:flex; align-items:center; padding:0 12px; font-weight:600; color:#1a1a1a;">Page 1</span>
-            <button onclick="nextPage()" id="nextPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+            <button onclick="nextPage()" id="nextPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
                 Suivant <i class="fas fa-chevron-right"></i>
             </button>
         </div>
     </div>
 </div>
 
-<!-- ===== MODAL AJOUT / MODIFICATION ===== -->
+<!-- ===== MODAL ===== -->
 <div id="contactModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center; padding:16px;">
     <div style="background:white; border-radius:16px; padding:32px; max-width:550px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
@@ -108,37 +108,26 @@
         <form id="contactForm">
             <input type="hidden" id="contactId" value="">
             
-            <!-- Prénom & Nom -->
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                 <div style="margin-bottom:12px;">
-                    <label for="prenom" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#1a1a1a;">
-                        <i class="fas fa-user"></i> Prénom
-                    </label>
+                    <label for="prenom" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#1a1a1a;">Prénom</label>
                     <input type="text" id="prenom" placeholder="Jean" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; box-sizing:border-box;">
                 </div>
                 <div style="margin-bottom:12px;">
-                    <label for="nom" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#1a1a1a;">
-                        <i class="fas fa-user"></i> Nom
-                    </label>
+                    <label for="nom" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#1a1a1a;">Nom</label>
                     <input type="text" id="nom" placeholder="Dupont" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; box-sizing:border-box;">
                 </div>
             </div>
 
-            <!-- Email -->
             <div style="margin-bottom:12px;">
-                <label for="email" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#1a1a1a;">
-                    <i class="fas fa-envelope"></i> Email
-                </label>
+                <label for="email" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#1a1a1a;">Email</label>
                 <input type="email" id="email" placeholder="jean@email.com" required style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; box-sizing:border-box;">
             </div>
 
-            <!-- Téléphone avec indicatif -->
             <div style="margin-bottom:12px;">
-                <label style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#1a1a1a;">
-                    <i class="fas fa-phone"></i> Téléphone
-                </label>
+                <label style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#1a1a1a;">Téléphone</label>
                 <div style="display:flex; gap:8px;">
-                    <select id="indicatif" style="width:110px; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; flex-shrink:0; box-sizing:border-box;" onchange="updatePaysFromIndicatif(); updatePhonePlaceholder();">
+                    <select id="indicatif" style="width:110px; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; flex-shrink:0;" onchange="updatePaysFromIndicatif(); updatePhonePlaceholder();">
                         <option value="+229">🇧🇯 +229</option>
                         <option value="+228">🇹🇬 +228</option>
                         <option value="+227">🇳🇪 +227</option>
@@ -146,18 +135,15 @@
                         <option value="+225">🇨🇮 +225</option>
                     </select>
                     <input type="tel" id="telephone" placeholder="01 23 45 67 89" required 
-                           style="flex:1; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; transition:border-color 0.3s; box-sizing:border-box;"
-                           oninput="validatePhone(this)" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'">
+                           style="flex:1; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; box-sizing:border-box;"
+                           oninput="validatePhone(this)">
                 </div>
                 <small id="phoneHelp" style="color:#888; font-size:0.75rem;">10 chiffres (ex: 01 23 45 67 89)</small>
             </div>
 
-            <!-- Ville & Pays -->
             <div style="display:grid; grid-template-columns:2fr 1fr; gap:12px;">
                 <div style="margin-bottom:12px;">
-                    <label for="ville" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#1a1a1a;">
-                        <i class="fas fa-city"></i> Ville
-                    </label>
+                    <label for="ville" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#1a1a1a;">Ville</label>
                     <select id="ville" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; box-sizing:border-box;">
                         <option value="Cotonou">Cotonou</option>
                         <option value="Porto-Novo">Porto-Novo</option>
@@ -187,32 +173,25 @@
                     </select>
                 </div>
                 <div style="margin-bottom:12px;">
-                    <label for="pays" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#1a1a1a;">
-                        <i class="fas fa-globe"></i> Pays
-                    </label>
-                    <input type="text" id="paysDisplay" value="Bénin" readonly style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f0f0f0; color:#666; cursor:not-allowed; font-family:inherit; box-sizing:border-box;">
+                    <label for="pays" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#1a1a1a;">Pays</label>
+                    <input type="text" id="paysDisplay" value="Bénin" readonly style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f0f0f0; color:#666; cursor:not-allowed; box-sizing:border-box;">
                     <input type="hidden" id="pays" value="BJ">
-                    <small style="color:#888; font-size:0.7rem;">🔒 Généré automatiquement</small>
                 </div>
             </div>
 
-            <!-- Statut Contact -->
             <div style="margin-bottom:12px;">
-                <label for="statut_contact" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#1a1a1a;">
-                    <i class="fas fa-tag"></i> Statut
-                </label>
+                <label for="statut_contact" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:4px; color:#1a1a1a;">Statut</label>
                 <select id="statut_contact" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#f8f8f8; box-sizing:border-box;">
                     <option value="prospect" selected>⭐ Prospect</option>
                     <option value="client">✅ Client</option>
                 </select>
             </div>
 
-            <!-- Boutons -->
             <div style="display:flex; gap:12px; margin-top:16px; flex-wrap:wrap;">
-                <button type="submit" id="saveContactBtn" style="flex:1; padding:12px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:600; cursor:pointer; transition:all 0.3s; min-height:48px;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                <button type="submit" id="saveContactBtn" style="flex:1; padding:12px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:600; cursor:pointer; min-height:48px;">
                     <i class="fas fa-save"></i> Enregistrer
                 </button>
-                <button type="button" onclick="closeModal()" style="flex:1; padding:12px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:1rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888; min-height:48px;" onmouseover="this.style.borderColor='#e74c3c';this.style.color='#e74c3c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+                <button type="button" onclick="closeModal()" style="flex:1; padding:12px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:1rem; font-weight:600; cursor:pointer; color:#888; min-height:48px;">
                     <i class="fas fa-times"></i> Annuler
                 </button>
             </div>
@@ -221,13 +200,13 @@
 </div>
 
 <!-- ========================================== -->
-<!-- STYLES RESPONSIVES - IDENTIQUE À FAVORIS  -->
+<!-- STYLES RESPONSIVES                        -->
 <!-- ========================================== -->
 <style>
-    /* Responsive - Contacts (identique à favoris) */
-    
+    /* ===== RESPONSIVE - CONTACTS ===== */
+
     @media (max-width: 992px) {
-        .contacts-table-wrapper table {
+        #contactsContainer > div:nth-child(4) table {
             min-width: 800px !important;
         }
     }
@@ -238,115 +217,120 @@
         }
 
         /* Header */
-        .contacts-header {
+        #contactsContainer > div:first-child {
             flex-direction: column !important;
-            align-items: flex-start !important;
+            align-items: stretch !important;
         }
-
-        .contacts-header h2 {
+        #contactsContainer > div:first-child > div:last-child {
+            width: 100%;
+        }
+        #contactsContainer > div:first-child button {
+            width: 100%;
+            justify-content: center;
+        }
+        #contactsContainer > div:first-child h2 {
             font-size: 1.3rem !important;
         }
-
-        .contacts-header p {
+        #contactsContainer > div:first-child p {
             font-size: 0.85rem !important;
         }
 
-        .contacts-header .btn-add-contact {
-            width: 100% !important;
-            justify-content: center !important;
-            font-size: 0.85rem !important;
-            padding: 10px 16px !important;
-        }
-
-        /* Statistiques : 2 colonnes */
-        .contacts-stats {
+        /* Stats : 2 colonnes */
+        #contactsContainer > div:nth-child(2) {
             grid-template-columns: 1fr 1fr !important;
             gap: 10px !important;
         }
-
-        .contacts-stats .stat-card {
+        #contactsContainer > div:nth-child(2) > div {
             padding: 12px !important;
         }
-
-        .contacts-stats .stat-card p:first-child {
+        #contactsContainer > div:nth-child(2) p:first-child {
             font-size: 0.7rem !important;
         }
-
-        .contacts-stats .stat-card p:last-child {
+        #contactsContainer > div:nth-child(2) p:last-child {
             font-size: 1.4rem !important;
         }
 
         /* Filtres */
-        .contacts-filters {
+        #contactsContainer > div:nth-child(3) {
             flex-direction: column !important;
             align-items: stretch !important;
             padding: 12px !important;
         }
-
-        .contacts-filters > div {
+        #contactsContainer > div:nth-child(3) > div {
             min-width: 100% !important;
             flex: none !important;
         }
-
-        .contacts-filters input,
-        .contacts-filters select {
+        #contactsContainer > div:nth-child(3) input,
+        #contactsContainer > div:nth-child(3) select {
             font-size: 0.9rem !important;
             padding: 8px 12px !important;
         }
-
-        .contacts-filters button {
+        #contactsContainer > div:nth-child(3) button {
             font-size: 0.85rem !important;
             padding: 8px 14px !important;
             width: 100% !important;
             text-align: center !important;
         }
 
-        /* Tableau */
-        .contacts-table-wrapper {
+        /* Tableau - SCROLL */
+        #contactsContainer > div:nth-child(4) {
             overflow-x: auto !important;
             -webkit-overflow-scrolling: touch !important;
         }
-
-        .contacts-table-wrapper table {
+        #contactsContainer > div:nth-child(4) table {
             min-width: 700px !important;
             font-size: 0.75rem !important;
         }
-
-        .contacts-table-wrapper table th,
-        .contacts-table-wrapper table td {
+        #contactsContainer > div:nth-child(4) table th,
+        #contactsContainer > div:nth-child(4) table td {
             padding: 8px 6px !important;
             font-size: 0.7rem !important;
         }
-
-        .contacts-table-wrapper table th {
+        #contactsContainer > div:nth-child(4) table th {
             white-space: nowrap !important;
-            font-size: 0.7rem !important;
         }
-
-        .contacts-table-wrapper table td .statut-badge {
+        #contactsContainer > div:nth-child(4) table td .statut-badge {
             font-size: 0.55rem !important;
             padding: 2px 6px !important;
         }
-
-        .contacts-table-wrapper table td .action-btn {
+        #contactsContainer > div:nth-child(4) table td .action-btn {
             font-size: 0.6rem !important;
             padding: 3px 6px !important;
         }
 
         /* Pagination */
-        .contacts-pagination {
+        #contactsContainer > div:nth-child(5) {
             flex-direction: column !important;
             align-items: center !important;
             gap: 8px !important;
         }
-
-        .contacts-pagination span {
+        #contactsContainer > div:nth-child(5) span:first-child {
+            font-size: 0.8rem !important;
+        }
+        #contactsContainer > div:nth-child(5) button {
+            padding: 6px 12px !important;
             font-size: 0.8rem !important;
         }
 
-        .contacts-pagination button {
-            padding: 6px 12px !important;
-            font-size: 0.8rem !important;
+        /* Modal */
+        #contactModal > div {
+            padding: 20px !important;
+            max-width: 95% !important;
+            margin: 10px !important;
+        }
+        #contactModal h3 {
+            font-size: 1.2rem !important;
+        }
+        #contactModal label {
+            font-size: 0.85rem !important;
+        }
+        #contactModal input,
+        #contactModal select {
+            font-size: 0.85rem !important;
+            padding: 8px 12px !important;
+        }
+        #contactModal > div > div:first-child {
+            flex-wrap: wrap;
         }
     }
 
@@ -355,123 +339,121 @@
             padding: 12px !important;
         }
 
-        /* Statistiques : 2 colonnes */
-        .contacts-stats {
-            grid-template-columns: 1fr 1fr !important;
+        #contactsContainer > div:nth-child(2) {
             gap: 8px !important;
         }
-
-        .contacts-stats .stat-card {
+        #contactsContainer > div:nth-child(2) > div {
             padding: 10px !important;
         }
-
-        .contacts-stats .stat-card p:first-child {
+        #contactsContainer > div:nth-child(2) p:first-child {
             font-size: 0.6rem !important;
         }
-
-        .contacts-stats .stat-card p:last-child {
+        #contactsContainer > div:nth-child(2) p:last-child {
             font-size: 1.2rem !important;
         }
 
-        /* Filtres */
-        .contacts-filters {
+        #contactsContainer > div:nth-child(3) {
             padding: 10px !important;
         }
-
-        .contacts-filters input,
-        .contacts-filters select {
+        #contactsContainer > div:nth-child(3) input,
+        #contactsContainer > div:nth-child(3) select {
             font-size: 0.8rem !important;
             padding: 8px 12px !important;
         }
-
-        .contacts-filters button {
+        #contactsContainer > div:nth-child(3) button {
             font-size: 0.8rem !important;
             padding: 8px 14px !important;
         }
 
-        /* Tableau */
-        .contacts-table-wrapper table {
+        #contactsContainer > div:nth-child(4) table {
             min-width: 600px !important;
             font-size: 0.65rem !important;
         }
-
-        .contacts-table-wrapper table th,
-        .contacts-table-wrapper table td {
+        #contactsContainer > div:nth-child(4) table th,
+        #contactsContainer > div:nth-child(4) table td {
             padding: 5px 4px !important;
             font-size: 0.6rem !important;
         }
-
-        .contacts-table-wrapper table td .statut-badge {
+        #contactsContainer > div:nth-child(4) table td .statut-badge {
             font-size: 0.5rem !important;
             padding: 1px 4px !important;
         }
-
-        .contacts-table-wrapper table td .action-btn {
+        #contactsContainer > div:nth-child(4) table td .action-btn {
             font-size: 0.5rem !important;
             padding: 2px 4px !important;
         }
 
-        /* Header */
-        .contacts-header h2 {
+        #contactsContainer > div:first-child h2 {
             font-size: 1.1rem !important;
         }
-
-        .contacts-header p {
+        #contactsContainer > div:first-child p {
             font-size: 0.8rem !important;
         }
-
-        .contacts-header .btn-add-contact {
+        #contactsContainer > div:first-child button {
             font-size: 0.8rem !important;
             padding: 8px 14px !important;
         }
 
-        /* Pagination */
-        .contacts-pagination button {
+        #contactsContainer > div:nth-child(5) button {
             padding: 4px 10px !important;
             font-size: 0.7rem !important;
         }
-
-        .contacts-pagination #pageInfo {
+        #contactsContainer > div:nth-child(5) #pageInfo {
             font-size: 0.8rem !important;
             padding: 0 8px !important;
+        }
+
+        #contactModal > div {
+            padding: 16px !important;
+        }
+        #contactModal h3 {
+            font-size: 1.1rem !important;
+        }
+        #contactModal label {
+            font-size: 0.75rem !important;
+        }
+        #contactModal input,
+        #contactModal select {
+            font-size: 0.8rem !important;
+            padding: 6px 10px !important;
+        }
+        #contactModal > div > div:last-child {
+            flex-direction: column !important;
+        }
+        #contactModal > div > div:last-child button {
+            width: 100% !important;
         }
     }
 
     @media (max-width: 360px) {
-        .contacts-stats {
-            grid-template-columns: 1fr 1fr !important;
+        #contactsContainer > div:nth-child(2) {
             gap: 6px !important;
         }
-
-        .contacts-stats .stat-card {
+        #contactsContainer > div:nth-child(2) > div {
             padding: 8px !important;
         }
-
-        .contacts-stats .stat-card p:first-child {
+        #contactsContainer > div:nth-child(2) p:first-child {
             font-size: 0.55rem !important;
         }
-
-        .contacts-stats .stat-card p:last-child {
+        #contactsContainer > div:nth-child(2) p:last-child {
             font-size: 1rem !important;
         }
 
-        .contacts-table-wrapper table {
+        #contactsContainer > div:nth-child(4) table {
             min-width: 500px !important;
             font-size: 0.55rem !important;
         }
-
-        .contacts-table-wrapper table th,
-        .contacts-table-wrapper table td {
+        #contactsContainer > div:nth-child(4) table th,
+        #contactsContainer > div:nth-child(4) table td {
             padding: 4px 3px !important;
             font-size: 0.5rem !important;
         }
 
-        .contacts-pagination button {
+        #contactsContainer > div:nth-child(5) button {
             padding: 4px 8px !important;
             font-size: 0.65rem !important;
         }
-
-        .contacts-pagination #pageInfo {
+        #contactsContainer > div:nth-child(5) #pageInfo {
             font-size: 0.7rem !important;
             padding: 0 6px !important;
         }
@@ -481,32 +463,27 @@
         }
     }
 
-    /* Orientation paysage sur mobile */
+    /* Paysage */
     @media (max-width: 768px) and (orientation: landscape) {
-        .contacts-stats {
+        #contactsContainer > div:nth-child(2) {
             grid-template-columns: repeat(4, 1fr) !important;
             gap: 8px !important;
         }
-
-        .contacts-stats .stat-card {
+        #contactsContainer > div:nth-child(2) > div {
             padding: 8px !important;
         }
-
-        .contacts-stats .stat-card p:last-child {
+        #contactsContainer > div:nth-child(2) p:last-child {
             font-size: 1.2rem !important;
         }
-
-        .contacts-filters {
+        #contactsContainer > div:nth-child(3) {
             flex-direction: row !important;
             flex-wrap: wrap !important;
         }
-
-        .contacts-filters > div {
+        #contactsContainer > div:nth-child(3) > div {
             min-width: 120px !important;
             flex: 1 !important;
         }
-
-        .contacts-table-wrapper table {
+        #contactsContainer > div:nth-child(4) table {
             min-width: 600px !important;
         }
     }
@@ -519,19 +496,19 @@
         'use strict';
 
         // ==========================================
-        // SUPABASE CONFIG
+        // SUPABASE
         // ==========================================
         let supabaseClient = window.supabaseClient;
 
         if (!supabaseClient) {
-            console.warn('⚠️ SupabaseClient non trouvé, création...');
+            console.warn('⚠️ SupabaseClient non trouvé...');
             const SUPABASE_URL = "https://belekcdvgslnnejqonjb.supabase.co";
             const SUPABASE_ANON_KEY = "sb_publishable_tb_mhTjs26f4hMQD0Y4SSQ_8JnF2dqp";
             
             if (typeof supabase !== 'undefined' && supabase.createClient) {
                 supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 window.supabaseClient = supabaseClient;
-                console.log('✅ SupabaseClient créé dans contacts.html');
+                console.log('✅ SupabaseClient créé');
             } else {
                 console.error('❌ Supabase SDK non chargé !');
                 document.getElementById('contactsContainer').innerHTML = `
@@ -545,10 +522,10 @@
             }
         }
 
-        console.log('✅ Supabase disponible dans contacts.html');
+        console.log('✅ Supabase disponible');
 
         // ==========================================
-        // CONFIGURATION DES NUMÉROS DE TÉLÉPHONE
+        // CONFIG
         // ==========================================
         const phoneConfig = {
             '+229': { nbDigits: 10, placeholder: '01 23 45 67 89', help: '10 chiffres' },
