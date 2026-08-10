@@ -128,30 +128,56 @@
         50% { opacity: 1; transform: translateX(6px); }
     }
     
-    /* ===== FORCER LE SCROLL SUR MOBILE ===== */
+    /* ===== FORCER LE SCROLL SUR TOUS LES APPAREILS ===== */
     #tableScrollContainer {
         overflow-x: auto !important;
+        overflow-y: visible !important;
         -webkit-overflow-scrolling: touch !important;
         scroll-behavior: smooth !important;
     }
     
-    /* ===== SCROLLBAR PERSONNALISÉ ===== */
+    /* ===== FORCER L'AFFICHAGE DE LA SCROLLBAR SUR DESKTOP ===== */
+    #tableScrollContainer {
+        scrollbar-width: auto !important; /* Firefox */
+        -ms-overflow-style: auto !important; /* IE/Edge */
+    }
+    
+    /* ===== SCROLLBAR PERSONNALISÉ (visible sur desktop) ===== */
     #tableScrollContainer::-webkit-scrollbar {
-        height: 8px;
+        height: 12px !important;
+        width: 12px !important;
     }
     
     #tableScrollContainer::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 4px;
+        background: #f1f1f1 !important;
+        border-radius: 6px !important;
     }
     
     #tableScrollContainer::-webkit-scrollbar-thumb {
-        background: #c9a84c;
-        border-radius: 4px;
+        background: #c9a84c !important;
+        border-radius: 6px !important;
     }
     
     #tableScrollContainer::-webkit-scrollbar-thumb:hover {
-        background: #a8892e;
+        background: #a8892e !important;
+    }
+    
+    /* ===== INDICATEUR VISUEL POUR DESKTOP ===== */
+    #tableScrollContainer::after {
+        content: '⇄';
+        position: sticky;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(201, 168, 76, 0.9);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 20px 0 0 20px;
+        font-size: 1.2rem;
+        pointer-events: none;
+        opacity: 0.7;
+        z-index: 5;
+        box-shadow: -2px 0 10px rgba(0,0,0,0.1);
     }
     
     /* ===== SURVOL DES LIGNES ===== */
@@ -235,6 +261,11 @@
         #tableScrollContainer table td button {
             font-size: 0.6rem !important;
             padding: 2px 5px !important;
+        }
+        
+        /* Cacher l'indicateur desktop sur mobile */
+        #tableScrollContainer::after {
+            display: none !important;
         }
         
         /* Indicateur scroll */
