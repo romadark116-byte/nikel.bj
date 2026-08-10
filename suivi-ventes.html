@@ -1,4 +1,4 @@
-<!-- suivi-ventes.html - Version grille de cartes -->
+<!-- suivi-ventes.html - Version avec tableau scrollable horizontalement -->
 <div id="ventesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
@@ -9,7 +9,7 @@
             </h2>
             <p style="color:#888; font-size:0.95rem;">Gérez et suivez toutes vos commandes en un seul endroit.</p>
         </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap; width:auto;">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button onclick="exportCSV()" style="padding:10px 20px; background:#27ae60; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                 <i class="fas fa-file-export"></i> Exporter CSV
             </button>
@@ -63,19 +63,31 @@
         </button>
     </div>
 
-    <!-- ===== GRILLE DES VENTES ===== -->
-    <div class="ventes-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:20px;" id="ventesGrid">
-        <div style="text-align:center; padding:40px; color:#888; grid-column:1/-1;">
-            <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
-            Chargement des données...
-        </div>
-    </div>
-
-    <!-- ===== MESSAGE AUCUNE VENTE ===== -->
-    <div id="emptyVentes" style="display:none; text-align:center; padding:60px 20px; color:#888;">
-        <i class="fas fa-chart-line" style="font-size:3rem; color:#ddd; display:block; margin-bottom:16px;"></i>
-        <h3 style="color:#1a1a1a;">Aucune vente</h3>
-        <p style="color:#888;">Aucune commande n'a encore été enregistrée.</p>
+    <!-- ===== TABLEAU DES VENTES - SCROLLABLE HORIZONTALEMENT ===== -->
+    <div class="ventes-table-wrapper" style="overflow-x:auto; overflow-y:visible; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch;">
+        <table style="width:100%; border-collapse:collapse; font-size:0.85rem; min-width:900px; table-layout:auto;">
+            <thead>
+                <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">#</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Client</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Email</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Téléphone</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Date</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Total</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Ville</th>
+                    <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Statut</th>
+                    <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; white-space:nowrap;">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="ventesTableBody">
+                <tr>
+                    <td colspan="9" style="text-align:center; padding:40px; color:#888;">
+                        <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
+                        Chargement des données...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <!-- ===== PAGINATION ===== -->
@@ -94,24 +106,18 @@
 </div>
 
 <!-- ========================================== -->
-<!-- STYLES RESPONSIVES - IDENTIQUES AUX AUTRES -->
+<!-- STYLES RESPONSIVES - SCROLL HORIZONTAL UNIQUEMENT -->
 <!-- ========================================== -->
 <style>
-    /* Responsive - Ventes (identique aux autres pages) */
+    /* RESPONSIVE - Scroll horizontal uniquement */
     
-    @media (max-width: 992px) {
-        .ventes-grid {
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
-            gap: 16px !important;
-        }
-    }
-
+    /* ===== 768px et moins ===== */
     @media (max-width: 768px) {
         #ventesContainer {
             padding: 16px !important;
         }
 
-        /* Header */
+        /* ===== HEADER ===== */
         .ventes-header {
             flex-direction: column !important;
             align-items: flex-start !important;
@@ -127,16 +133,19 @@
 
         .ventes-header > div:last-child {
             width: 100% !important;
+            display: flex !important;
+            gap: 6px !important;
         }
 
         .ventes-header > div:last-child button {
             flex: 1 !important;
             justify-content: center !important;
-            font-size: 0.8rem !important;
-            padding: 8px 12px !important;
+            font-size: 0.75rem !important;
+            padding: 8px 10px !important;
+            white-space: nowrap !important;
         }
 
-        /* Statistiques : 2 colonnes */
+        /* ===== STATISTIQUES ===== */
         .ventes-stats {
             grid-template-columns: 1fr 1fr !important;
             gap: 10px !important;
@@ -154,7 +163,7 @@
             font-size: 1.4rem !important;
         }
 
-        /* Filtres */
+        /* ===== FILTRES ===== */
         .ventes-filters {
             flex-direction: column !important;
             align-items: stretch !important;
@@ -179,55 +188,68 @@
             text-align: center !important;
         }
 
-        /* Grille */
-        .ventes-grid {
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
-            gap: 14px !important;
+        /* ===== TABLEAU - SCROLLABLE DE GAUCHE À DROITE ===== */
+        .ventes-table-wrapper {
+            overflow-x: auto !important;
+            overflow-y: visible !important;
+            -webkit-overflow-scrolling: touch !important;
+            border-radius: 12px !important;
+            border: 1px solid #f0f0f0 !important;
+            /* Indicateur visuel de scroll */
+            position: relative !important;
         }
 
-        .ventes-grid .vente-card {
-            padding: 14px !important;
+        /* Ajout d'un gradient pour indiquer qu'il y a du scroll */
+        .ventes-table-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 40px;
+            background: linear-gradient(to right, transparent, rgba(0,0,0,0.05));
+            pointer-events: none;
+            border-radius: 0 12px 12px 0;
+            display: none;
         }
 
-        .ventes-grid .vente-card .vente-number {
-            font-size: 0.7rem !important;
-        }
-
-        .ventes-grid .vente-card .vente-client {
-            font-size: 0.9rem !important;
-        }
-
-        .ventes-grid .vente-card .vente-info {
+        .ventes-table-wrapper table {
+            min-width: 900px !important;
+            width: 100% !important;
             font-size: 0.75rem !important;
         }
 
-        .ventes-grid .vente-card .vente-info i {
-            width: 16px !important;
+        .ventes-table-wrapper table th,
+        .ventes-table-wrapper table td {
+            padding: 8px 6px !important;
+            font-size: 0.7rem !important;
         }
 
-        .ventes-grid .vente-card .vente-total {
-            font-size: 1.1rem !important;
+        .ventes-table-wrapper table th {
+            white-space: nowrap !important;
+            font-size: 0.7rem !important;
         }
 
-        .ventes-grid .vente-card .statut-badge {
-            font-size: 0.6rem !important;
-            padding: 2px 8px !important;
+        .ventes-table-wrapper table td .statut-badge {
+            font-size: 0.55rem !important;
+            padding: 2px 6px !important;
         }
 
-        .ventes-grid .vente-card .action-btn {
-            font-size: 0.6rem !important;
-            padding: 3px 8px !important;
+        .ventes-table-wrapper table td button {
+            font-size: 0.55rem !important;
+            padding: 2px 5px !important;
         }
 
-        /* Pagination */
+        /* ===== PAGINATION ===== */
         .ventes-pagination {
             flex-direction: column !important;
             align-items: center !important;
             gap: 8px !important;
         }
 
-        .ventes-pagination span {
+        .ventes-pagination span:first-child {
             font-size: 0.8rem !important;
+            text-align: center !important;
         }
 
         .ventes-pagination button {
@@ -236,14 +258,14 @@
         }
     }
 
+    /* ===== 480px et moins ===== */
     @media (max-width: 480px) {
         #ventesContainer {
             padding: 12px !important;
         }
 
-        /* Statistiques : 2 colonnes */
+        /* ===== STATISTIQUES ===== */
         .ventes-stats {
-            grid-template-columns: 1fr 1fr !important;
             gap: 8px !important;
         }
 
@@ -259,7 +281,7 @@
             font-size: 1.2rem !important;
         }
 
-        /* Filtres */
+        /* ===== FILTRES ===== */
         .ventes-filters {
             padding: 10px !important;
         }
@@ -275,48 +297,29 @@
             padding: 8px 14px !important;
         }
 
-        /* Grille */
-        .ventes-grid {
-            grid-template-columns: 1fr 1fr !important;
-            gap: 10px !important;
-        }
-
-        .ventes-grid .vente-card {
-            padding: 12px !important;
-        }
-
-        .ventes-grid .vente-card .vente-number {
-            font-size: 0.6rem !important;
-        }
-
-        .ventes-grid .vente-card .vente-client {
-            font-size: 0.8rem !important;
-        }
-
-        .ventes-grid .vente-card .vente-info {
+        /* ===== TABLEAU ===== */
+        .ventes-table-wrapper table {
+            min-width: 700px !important;
             font-size: 0.65rem !important;
         }
 
-        .ventes-grid .vente-card .vente-info i {
-            width: 14px !important;
+        .ventes-table-wrapper table th,
+        .ventes-table-wrapper table td {
+            padding: 5px 4px !important;
             font-size: 0.6rem !important;
         }
 
-        .ventes-grid .vente-card .vente-total {
-            font-size: 1rem !important;
-        }
-
-        .ventes-grid .vente-card .statut-badge {
+        .ventes-table-wrapper table td .statut-badge {
             font-size: 0.5rem !important;
-            padding: 1px 6px !important;
+            padding: 1px 4px !important;
         }
 
-        .ventes-grid .vente-card .action-btn {
+        .ventes-table-wrapper table td button {
             font-size: 0.5rem !important;
-            padding: 2px 6px !important;
+            padding: 2px 4px !important;
         }
 
-        /* Header */
+        /* ===== HEADER ===== */
         .ventes-header h2 {
             font-size: 1.1rem !important;
         }
@@ -326,11 +329,11 @@
         }
 
         .ventes-header > div:last-child button {
-            font-size: 0.7rem !important;
-            padding: 6px 10px !important;
+            font-size: 0.65rem !important;
+            padding: 6px 8px !important;
         }
 
-        /* Pagination */
+        /* ===== PAGINATION ===== */
         .ventes-pagination button {
             padding: 4px 10px !important;
             font-size: 0.7rem !important;
@@ -340,28 +343,15 @@
             font-size: 0.8rem !important;
             padding: 0 8px !important;
         }
-
-        /* Empty state */
-        #emptyVentes {
-            padding: 40px 16px !important;
-        }
-
-        #emptyVentes i {
-            font-size: 2.5rem !important;
-        }
-
-        #emptyVentes h3 {
-            font-size: 1.1rem !important;
-        }
-
-        #emptyVentes p {
-            font-size: 0.85rem !important;
-        }
     }
 
+    /* ===== 360px et moins ===== */
     @media (max-width: 360px) {
+        #ventesContainer {
+            padding: 8px !important;
+        }
+
         .ventes-stats {
-            grid-template-columns: 1fr 1fr !important;
             gap: 6px !important;
         }
 
@@ -377,30 +367,15 @@
             font-size: 1rem !important;
         }
 
-        .ventes-grid {
-            grid-template-columns: 1fr 1fr !important;
-            gap: 8px !important;
+        .ventes-table-wrapper table {
+            min-width: 600px !important;
+            font-size: 0.55rem !important;
         }
 
-        .ventes-grid .vente-card {
-            padding: 10px !important;
-        }
-
-        .ventes-grid .vente-card .vente-client {
-            font-size: 0.7rem !important;
-        }
-
-        .ventes-grid .vente-card .vente-info {
-            font-size: 0.6rem !important;
-        }
-
-        .ventes-grid .vente-card .vente-total {
-            font-size: 0.9rem !important;
-        }
-
-        .ventes-grid .vente-card .action-btn {
-            font-size: 0.45rem !important;
-            padding: 2px 4px !important;
+        .ventes-table-wrapper table th,
+        .ventes-table-wrapper table td {
+            padding: 4px 3px !important;
+            font-size: 0.5rem !important;
         }
 
         .ventes-pagination button {
@@ -412,13 +387,9 @@
             font-size: 0.7rem !important;
             padding: 0 6px !important;
         }
-
-        #ventesContainer {
-            padding: 8px !important;
-        }
     }
 
-    /* Orientation paysage sur mobile */
+    /* ===== ORIENTATION PAYSAGE ===== */
     @media (max-width: 768px) and (orientation: landscape) {
         .ventes-stats {
             grid-template-columns: repeat(4, 1fr) !important;
@@ -443,14 +414,13 @@
             flex: 1 !important;
         }
 
-        .ventes-grid {
-            grid-template-columns: repeat(3, 1fr) !important;
-            gap: 12px !important;
+        .ventes-table-wrapper table {
+            min-width: 700px !important;
         }
     }
 </style>
 
-<!-- ===== SCRIPTS ===== -->
+<!-- ===== SCRIPTS (inchangés) ===== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     (function() {
@@ -480,7 +450,7 @@
         let allVentes = [];
         let filteredVentes = [];
         let currentPage = 1;
-        const perPage = 6; // Comme les autres pages
+        const perPage = 10;
 
         // ==========================================
         // DONNÉES DE TEST
@@ -523,106 +493,41 @@
         }
 
         // ==========================================
-        // RENDU GRILLE
+        // RENDU TABLEAU
         // ==========================================
         function renderVentes() {
-            const grid = document.getElementById('ventesGrid');
-            const empty = document.getElementById('emptyVentes');
-            const pagination = document.getElementById('ventesContainer').querySelector('.ventes-pagination');
-
-            if (allVentes.length === 0) {
-                grid.style.display = 'none';
-                empty.style.display = 'block';
-                if (pagination) pagination.style.display = 'none';
-                return;
-            }
-
-            grid.style.display = 'grid';
-            empty.style.display = 'none';
-            if (pagination) pagination.style.display = 'flex';
-
+            const tbody = document.getElementById('ventesTableBody');
+            if (!tbody) return;
+            
             if (filteredVentes.length === 0) {
-                grid.innerHTML = `
-                    <div style="text-align:center; padding:40px; color:#888; grid-column:1/-1;">
-                        <i class="fas fa-search" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
-                        Aucune vente ne correspond à votre recherche.
-                    </div>
-                `;
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:40px; color:#888;">
+                    <i class="fas fa-inbox" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
+                    Aucune vente trouvée.
+                </td></tr>`;
+                updateVentesPaginationInfo();
                 return;
             }
 
             const start = (currentPage - 1) * perPage;
             const items = filteredVentes.slice(start, start + perPage);
 
-            grid.innerHTML = items.map(v => {
-                const nomComplet = `${v.prenom || ''} ${v.nom || ''}`.trim() || 'Client inconnu';
-                const initiales = nomComplet.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-
-                return `
-                <div class="vente-card" style="background:#ffffff; border-radius:12px; overflow:hidden; transition:all 0.3s; position:relative; border:1px solid #f0f0f0; box-shadow:0 2px 8px rgba(0,0,0,0.04); padding:16px;" 
-                     onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 30px rgba(0,0,0,0.12)';this.style.borderColor='#c9a84c'" 
-                     onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.04)';this.style.borderColor='#f0f0f0'">
-
-                    <!-- Numéro de commande -->
-                    <div class="vente-number" style="font-size:0.75rem; color:#888; margin-bottom:4px;">
-                        <i class="fas fa-hashtag"></i> Commande #${v.id}
-                    </div>
-
-                    <!-- Client -->
-                    <div class="vente-client" style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-                        <div style="width:40px; height:40px; border-radius:50%; background:#c9a84c; display:flex; align-items:center; justify-content:center; font-weight:700; color:white; font-size:1rem; flex-shrink:0;">
-                            ${initiales}
-                        </div>
-                        <div>
-                            <div style="font-weight:600; font-size:1rem; color:#1a1a1a;">${nomComplet}</div>
-                            <div style="font-size:0.7rem; color:#888;">${v.ville || 'Ville inconnue'}</div>
-                        </div>
-                    </div>
-
-                    <!-- Informations -->
-                    <div class="vente-info" style="font-size:0.8rem; color:#555; display:grid; grid-template-columns:1fr 1fr; gap:4px 12px; margin-bottom:10px;">
-                        <div style="display:flex; align-items:center; gap:6px;">
-                            <i class="fas fa-envelope" style="width:16px; color:#888;"></i>
-                            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${v.email || '—'}">${v.email || '—'}</span>
-                        </div>
-                        <div style="display:flex; align-items:center; gap:6px;">
-                            <i class="fas fa-phone" style="width:16px; color:#888;"></i>
-                            ${v.telephone || '—'}
-                        </div>
-                        <div style="display:flex; align-items:center; gap:6px; grid-column:1/-1;">
-                            <i class="fas fa-calendar" style="width:16px; color:#888;"></i>
-                            ${formatDate(v.created_at)}
-                        </div>
-                    </div>
-
-                    <!-- Total -->
-                    <div class="vente-total" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding-top:8px; border-top:1px solid #f0f0f0;">
-                        <span style="color:#888; font-size:0.8rem;">Total</span>
-                        <span style="font-weight:700; color:#c9a84c; font-size:1.2rem;">
-                            ${v.total_achat ? v.total_achat.toFixed(0).replace('.', ',') + ' FCFA' : '—'}
-                        </span>
-                    </div>
-
-                    <!-- Statut -->
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        ${getStatutBadge(v.statut)}
-                        <span style="font-size:0.65rem; color:#888;">${v.pays || ''}</span>
-                    </div>
-
-                    <!-- Actions -->
-                    <div style="display:flex; gap:6px; justify-content:center; border-top:1px solid #f0f0f0; padding-top:10px;">
-                        <button onclick="updateStatut(${v.id}, 'soldé')" class="action-btn" style="padding:4px 10px; border:none; border-radius:6px; background:#27ae60; color:white; cursor:pointer; font-size:0.7rem; transition:all 0.3s; display:flex; align-items:center; gap:4px;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                            <i class="fas fa-check"></i> Soldé
-                        </button>
-                        <button onclick="updateStatut(${v.id}, 'en attente')" class="action-btn" style="padding:4px 10px; border:none; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.7rem; transition:all 0.3s; display:flex; align-items:center; gap:4px;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                            <i class="fas fa-clock"></i> Attente
-                        </button>
-                        <button onclick="updateStatut(${v.id}, 'annulé')" class="action-btn" style="padding:4px 10px; border:none; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.7rem; transition:all 0.3s; display:flex; align-items:center; gap:4px;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                            <i class="fas fa-times"></i> Annulé
-                        </button>
-                    </div>
-                </div>
-            `}).join('');
+            tbody.innerHTML = items.map(v => `
+                <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
+                    <td style="padding:8px 6px; font-weight:600; font-size:0.8rem; text-align:center;">${v.id}</td>
+                    <td style="padding:8px 6px; font-weight:500; font-size:0.8rem; max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${v.prenom || ''} ${v.nom || ''}">${v.prenom || ''} ${v.nom || ''}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${v.email || '—'}">${v.email || '—'}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap;">${v.telephone || '—'}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap;">${formatDate(v.created_at)}</td>
+                    <td style="padding:8px 6px; font-weight:700; color:#c9a84c; font-size:0.8rem; white-space:nowrap;">${v.total_achat ? v.total_achat.toFixed(0).replace('.', ',') + ' FCFA' : '—'}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${v.ville || '—'}">${v.ville || '—'}</td>
+                    <td style="padding:8px 6px; text-align:center;">${getStatutBadge(v.statut)}</td>
+                    <td style="padding:8px 6px; text-align:center; white-space:nowrap;">
+                        <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:3px 6px; border:none; border-radius:4px; background:#27ae60; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
+                        <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:3px 6px; border:none; border-radius:4px; background:#f39c12; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
+                        <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:3px 6px; border:none; border-radius:4px; background:#e74c3c; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
+                    </td>
+                </tr>
+            `).join('');
 
             updateVentesPaginationInfo();
         }
@@ -933,11 +838,11 @@
         // INITIALISATION
         // ==========================================
         function init() {
-            console.log('🚀 Chargement de suivi-ventes.html (version grille)...');
+            console.log('🚀 Chargement de suivi-ventes.html (tableau scrollable horizontal)...');
             
-            const grid = document.getElementById('ventesGrid');
-            if (!grid) {
-                console.error('❌ Grid non trouvé');
+            const tbody = document.getElementById('ventesTableBody');
+            if (!tbody) {
+                console.error('❌ Table body non trouvé');
                 return;
             }
             
