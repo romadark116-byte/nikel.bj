@@ -2,57 +2,57 @@
 <div id="contactsContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:24px; gap:12px;">
+    <div class="contacts-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:24px; gap:12px;">
         <div>
             <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:#1a1a1a; margin-bottom:4px;">
                 <i class="fas fa-address-book" style="color:#c9a84c;"></i> Mes contacts
             </h2>
             <p style="color:#888; font-size:0.95rem;">Gérez votre liste de clients et prospects.</p>
         </div>
-        <button onclick="openAddModal()" style="padding:12px 24px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px; white-space:nowrap;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+        <button onclick="openAddModal()" class="btn-add" style="padding:12px 24px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px; white-space:nowrap;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                 <i class="fas fa-plus"></i> Ajouter un contact
             </button>
     </div>
 
     <!-- ===== STATISTIQUES ===== -->
-    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
+    <div class="contacts-stats" style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
+        <div class="stat-card" style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total contacts</p>
             <p style="font-size:1.8rem; font-weight:700; color:#1a1a1a;" id="totalContacts">0</p>
         </div>
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
+        <div class="stat-card" style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">✅ Clients</p>
             <p style="font-size:1.8rem; font-weight:700; color:#27ae60;" id="totalClients">0</p>
         </div>
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
+        <div class="stat-card" style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">⭐ Prospects</p>
             <p style="font-size:1.8rem; font-weight:700; color:#f39c12;" id="totalProspects">0</p>
         </div>
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #3498db;">
+        <div class="stat-card" style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #3498db;">
             <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">👤 Actifs</p>
             <p style="font-size:1.8rem; font-weight:700; color:#3498db;" id="totalActifs">0</p>
         </div>
     </div>
 
     <!-- ===== FILTRES ===== -->
-    <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
+    <div class="contacts-filters" style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
         <div style="flex:2; min-width:180px;">
-            <input type="text" id="searchInputContacts" placeholder="🔍 Rechercher..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onkeyup="applyFilters()">
+            <input type="text" id="searchInputContacts" placeholder="🔍 Rechercher..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s; box-sizing:border-box;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onkeyup="applyFilters()">
         </div>
         <div style="min-width:130px; flex:1;">
-            <select id="filterType" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff;" onchange="applyFilters()">
+            <select id="filterType" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; cursor:pointer; outline:none; transition:border-color 0.3s; box-sizing:border-box;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyFilters()">
                 <option value="all">👥 Tous</option>
                 <option value="client">✅ Clients</option>
                 <option value="prospect">⭐ Prospects</option>
             </select>
         </div>
-        <button onclick="resetFilters()" style="padding:10px 16px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; color:#888; white-space:nowrap;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+        <button onclick="resetFilters()" style="padding:10px 20px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888; white-space:nowrap;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
             <i class="fas fa-undo"></i> Réinitialiser
         </button>
     </div>
 
     <!-- ===== TABLEAU AVEC SCROLL ===== -->
-    <div style="overflow-x:auto; overflow-y:visible; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch;">
+    <div class="contacts-table-wrapper" style="overflow-x:auto; overflow-y:visible; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch;">
         <table style="width:100%; border-collapse:collapse; font-size:0.85rem; min-width:900px;">
             <thead>
                 <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
@@ -79,14 +79,14 @@
     </div>
 
     <!-- ===== PAGINATION ===== -->
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:12px;">
+    <div class="contacts-pagination" style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:12px;">
         <span style="color:#888; font-size:0.9rem;" id="paginationInfo">Affichage de 0 à 0 sur 0</span>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button onclick="previousPage()" id="prevPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+            <button onclick="previousPage()" id="prevPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
                 <i class="fas fa-chevron-left"></i> Précédent
             </button>
             <span id="pageInfo" style="display:flex; align-items:center; padding:0 12px; font-weight:600; color:#1a1a1a;">Page 1</span>
-            <button onclick="nextPage()" id="nextPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+            <button onclick="nextPage()" id="nextPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
                 Suivant <i class="fas fa-chevron-right"></i>
             </button>
         </div>
@@ -200,13 +200,13 @@
 </div>
 
 <!-- ========================================== -->
-<!-- STYLES RESPONSIVES                        -->
+<!-- STYLES RESPONSIVES - IDENTIQUES À FAVORIS -->
 <!-- ========================================== -->
 <style>
-    /* ===== RESPONSIVE - CONTACTS ===== */
-
+    /* Responsive - Contacts (mêmes réglages que favoris) */
+    
     @media (max-width: 992px) {
-        #contactsContainer > div:nth-child(4) table {
+        .contacts-table-wrapper table {
             min-width: 800px !important;
         }
     }
@@ -217,97 +217,112 @@
         }
 
         /* Header */
-        #contactsContainer > div:first-child {
+        .contacts-header {
             flex-direction: column !important;
-            align-items: stretch !important;
+            align-items: flex-start !important;
         }
-        #contactsContainer > div:first-child > div:last-child {
-            width: 100%;
-        }
-        #contactsContainer > div:first-child button {
-            width: 100%;
-            justify-content: center;
-        }
-        #contactsContainer > div:first-child h2 {
+
+        .contacts-header h2 {
             font-size: 1.3rem !important;
         }
-        #contactsContainer > div:first-child p {
+
+        .contacts-header p {
             font-size: 0.85rem !important;
         }
 
-        /* Stats : 2 colonnes */
-        #contactsContainer > div:nth-child(2) {
+        .contacts-header .btn-add {
+            width: 100% !important;
+            justify-content: center !important;
+            font-size: 0.85rem !important;
+            padding: 10px 16px !important;
+        }
+
+        /* Statistiques : 2 colonnes */
+        .contacts-stats {
             grid-template-columns: 1fr 1fr !important;
             gap: 10px !important;
         }
-        #contactsContainer > div:nth-child(2) > div {
+
+        .contacts-stats .stat-card {
             padding: 12px !important;
         }
-        #contactsContainer > div:nth-child(2) p:first-child {
+
+        .contacts-stats .stat-card p:first-child {
             font-size: 0.7rem !important;
         }
-        #contactsContainer > div:nth-child(2) p:last-child {
+
+        .contacts-stats .stat-card p:last-child {
             font-size: 1.4rem !important;
         }
 
         /* Filtres */
-        #contactsContainer > div:nth-child(3) {
+        .contacts-filters {
             flex-direction: column !important;
             align-items: stretch !important;
             padding: 12px !important;
         }
-        #contactsContainer > div:nth-child(3) > div {
+
+        .contacts-filters > div {
             min-width: 100% !important;
             flex: none !important;
         }
-        #contactsContainer > div:nth-child(3) input,
-        #contactsContainer > div:nth-child(3) select {
+
+        .contacts-filters input,
+        .contacts-filters select {
             font-size: 0.9rem !important;
             padding: 8px 12px !important;
         }
-        #contactsContainer > div:nth-child(3) button {
+
+        .contacts-filters button {
             font-size: 0.85rem !important;
             padding: 8px 14px !important;
             width: 100% !important;
             text-align: center !important;
         }
 
-        /* Tableau - SCROLL */
-        #contactsContainer > div:nth-child(4) {
+        /* Tableau */
+        .contacts-table-wrapper {
             overflow-x: auto !important;
             -webkit-overflow-scrolling: touch !important;
         }
-        #contactsContainer > div:nth-child(4) table {
+
+        .contacts-table-wrapper table {
             min-width: 700px !important;
             font-size: 0.75rem !important;
         }
-        #contactsContainer > div:nth-child(4) table th,
-        #contactsContainer > div:nth-child(4) table td {
+
+        .contacts-table-wrapper table th,
+        .contacts-table-wrapper table td {
             padding: 8px 6px !important;
             font-size: 0.7rem !important;
         }
-        #contactsContainer > div:nth-child(4) table th {
+
+        .contacts-table-wrapper table th {
             white-space: nowrap !important;
         }
-        #contactsContainer > div:nth-child(4) table td .statut-badge {
+
+        .contacts-table-wrapper table td .statut-badge {
             font-size: 0.55rem !important;
             padding: 2px 6px !important;
         }
-        #contactsContainer > div:nth-child(4) table td .action-btn {
+
+        .contacts-table-wrapper table td .action-btn {
             font-size: 0.6rem !important;
             padding: 3px 6px !important;
         }
 
         /* Pagination */
-        #contactsContainer > div:nth-child(5) {
+        .contacts-pagination {
             flex-direction: column !important;
             align-items: center !important;
             gap: 8px !important;
         }
-        #contactsContainer > div:nth-child(5) span:first-child {
+
+        .contacts-pagination span {
             font-size: 0.8rem !important;
         }
-        #contactsContainer > div:nth-child(5) button {
+
+        .contacts-pagination button {
             padding: 6px 12px !important;
             font-size: 0.8rem !important;
         }
@@ -318,17 +333,21 @@
             max-width: 95% !important;
             margin: 10px !important;
         }
+
         #contactModal h3 {
             font-size: 1.2rem !important;
         }
+
         #contactModal label {
             font-size: 0.85rem !important;
         }
+
         #contactModal input,
         #contactModal select {
             font-size: 0.85rem !important;
             padding: 8px 12px !important;
         }
+
         #contactModal > div > div:first-child {
             flex-wrap: wrap;
         }
@@ -339,121 +358,150 @@
             padding: 12px !important;
         }
 
-        #contactsContainer > div:nth-child(2) {
+        /* Statistiques : 2 colonnes */
+        .contacts-stats {
+            grid-template-columns: 1fr 1fr !important;
             gap: 8px !important;
         }
-        #contactsContainer > div:nth-child(2) > div {
+
+        .contacts-stats .stat-card {
             padding: 10px !important;
         }
-        #contactsContainer > div:nth-child(2) p:first-child {
+
+        .contacts-stats .stat-card p:first-child {
             font-size: 0.6rem !important;
         }
-        #contactsContainer > div:nth-child(2) p:last-child {
+
+        .contacts-stats .stat-card p:last-child {
             font-size: 1.2rem !important;
         }
 
-        #contactsContainer > div:nth-child(3) {
+        /* Filtres */
+        .contacts-filters {
             padding: 10px !important;
         }
-        #contactsContainer > div:nth-child(3) input,
-        #contactsContainer > div:nth-child(3) select {
+
+        .contacts-filters input,
+        .contacts-filters select {
             font-size: 0.8rem !important;
             padding: 8px 12px !important;
         }
-        #contactsContainer > div:nth-child(3) button {
+
+        .contacts-filters button {
             font-size: 0.8rem !important;
             padding: 8px 14px !important;
         }
 
-        #contactsContainer > div:nth-child(4) table {
+        /* Tableau */
+        .contacts-table-wrapper table {
             min-width: 600px !important;
             font-size: 0.65rem !important;
         }
-        #contactsContainer > div:nth-child(4) table th,
-        #contactsContainer > div:nth-child(4) table td {
+
+        .contacts-table-wrapper table th,
+        .contacts-table-wrapper table td {
             padding: 5px 4px !important;
             font-size: 0.6rem !important;
         }
-        #contactsContainer > div:nth-child(4) table td .statut-badge {
+
+        .contacts-table-wrapper table td .statut-badge {
             font-size: 0.5rem !important;
             padding: 1px 4px !important;
         }
-        #contactsContainer > div:nth-child(4) table td .action-btn {
+
+        .contacts-table-wrapper table td .action-btn {
             font-size: 0.5rem !important;
             padding: 2px 4px !important;
         }
 
-        #contactsContainer > div:first-child h2 {
+        /* Header */
+        .contacts-header h2 {
             font-size: 1.1rem !important;
         }
-        #contactsContainer > div:first-child p {
+
+        .contacts-header p {
             font-size: 0.8rem !important;
         }
-        #contactsContainer > div:first-child button {
+
+        .contacts-header .btn-add {
             font-size: 0.8rem !important;
             padding: 8px 14px !important;
         }
 
-        #contactsContainer > div:nth-child(5) button {
+        /* Pagination */
+        .contacts-pagination button {
             padding: 4px 10px !important;
             font-size: 0.7rem !important;
         }
-        #contactsContainer > div:nth-child(5) #pageInfo {
+
+        .contacts-pagination #pageInfo {
             font-size: 0.8rem !important;
             padding: 0 8px !important;
         }
 
+        /* Modal */
         #contactModal > div {
             padding: 16px !important;
         }
+
         #contactModal h3 {
             font-size: 1.1rem !important;
         }
+
         #contactModal label {
             font-size: 0.75rem !important;
         }
+
         #contactModal input,
         #contactModal select {
             font-size: 0.8rem !important;
             padding: 6px 10px !important;
         }
+
         #contactModal > div > div:last-child {
             flex-direction: column !important;
         }
+
         #contactModal > div > div:last-child button {
             width: 100% !important;
         }
     }
 
     @media (max-width: 360px) {
-        #contactsContainer > div:nth-child(2) {
+        .contacts-stats {
+            grid-template-columns: 1fr 1fr !important;
             gap: 6px !important;
         }
-        #contactsContainer > div:nth-child(2) > div {
+
+        .contacts-stats .stat-card {
             padding: 8px !important;
         }
-        #contactsContainer > div:nth-child(2) p:first-child {
+
+        .contacts-stats .stat-card p:first-child {
             font-size: 0.55rem !important;
         }
-        #contactsContainer > div:nth-child(2) p:last-child {
+
+        .contacts-stats .stat-card p:last-child {
             font-size: 1rem !important;
         }
 
-        #contactsContainer > div:nth-child(4) table {
+        .contacts-table-wrapper table {
             min-width: 500px !important;
             font-size: 0.55rem !important;
         }
-        #contactsContainer > div:nth-child(4) table th,
-        #contactsContainer > div:nth-child(4) table td {
+
+        .contacts-table-wrapper table th,
+        .contacts-table-wrapper table td {
             padding: 4px 3px !important;
             font-size: 0.5rem !important;
         }
 
-        #contactsContainer > div:nth-child(5) button {
+        .contacts-pagination button {
             padding: 4px 8px !important;
             font-size: 0.65rem !important;
         }
-        #contactsContainer > div:nth-child(5) #pageInfo {
+
+        .contacts-pagination #pageInfo {
             font-size: 0.7rem !important;
             padding: 0 6px !important;
         }
@@ -463,33 +511,38 @@
         }
     }
 
-    /* Paysage */
+    /* Orientation paysage sur mobile */
     @media (max-width: 768px) and (orientation: landscape) {
-        #contactsContainer > div:nth-child(2) {
+        .contacts-stats {
             grid-template-columns: repeat(4, 1fr) !important;
             gap: 8px !important;
         }
-        #contactsContainer > div:nth-child(2) > div {
+
+        .contacts-stats .stat-card {
             padding: 8px !important;
         }
-        #contactsContainer > div:nth-child(2) p:last-child {
+
+        .contacts-stats .stat-card p:last-child {
             font-size: 1.2rem !important;
         }
-        #contactsContainer > div:nth-child(3) {
+
+        .contacts-filters {
             flex-direction: row !important;
             flex-wrap: wrap !important;
         }
-        #contactsContainer > div:nth-child(3) > div {
+
+        .contacts-filters > div {
             min-width: 120px !important;
             flex: 1 !important;
         }
-        #contactsContainer > div:nth-child(4) table {
+
+        .contacts-table-wrapper table {
             min-width: 600px !important;
         }
     }
 </style>
 
-<!-- ===== SCRIPTS ===== -->
+<!-- ===== SCRIPTS (inchangés) ===== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     (function() {
