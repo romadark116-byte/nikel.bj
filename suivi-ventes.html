@@ -1,5 +1,5 @@
-<!-- suivi-ventes.html - Version avec scroll 100% fonctionnel -->
-<div id="ventesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
+<!-- suivi-ventes.html - Version avec SCROLL FORCÉ -->
+<div id="ventesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px; overflow:visible;">
 
     <!-- ===== TITRE ===== -->
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:24px;">
@@ -68,21 +68,23 @@
         </button>
     </div>
 
-    <!-- ===== TABLEAU DES VENTES - SCROLL 100% FONCTIONNEL ===== -->
-    <!-- LE TRUC IMPORTANT : width:100% + overflow-x:auto sur le parent -->
-    <div style="width:100%; overflow-x:auto; overflow-y:visible; -webkit-overflow-scrolling:touch; border-radius:12px; border:1px solid #f0f0f0;">
-        <table style="width:100%; min-width:1100px; border-collapse:collapse; font-size:0.85rem; table-layout:fixed;">
+    <!-- ===== CONTENEUR TABLEAU AVEC SCROLL 100% ===== -->
+    <!-- SOLUTION RADICALE : overflow-x:auto sur un conteneur sans padding -->
+    <div style="width:100%; overflow-x:auto; overflow-y:visible; -webkit-overflow-scrolling:touch; border-radius:12px; border:1px solid #f0f0f0; background:white;">
+
+        <!-- TABLEAU AVEC LARGEUR FIXE POUR FORCER LE SCROLL -->
+        <table style="width:100%; min-width:1100px; border-collapse:collapse; font-size:0.85rem;">
             <thead>
                 <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:50px; min-width:50px; max-width:50px;">#</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:140px; min-width:140px; max-width:140px;">Client</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:180px; min-width:180px; max-width:180px;">Email</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:120px; min-width:120px; max-width:120px;">Téléphone</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:160px; min-width:160px; max-width:160px;">Date</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:100px; min-width:100px; max-width:100px;">Total</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:100px; min-width:100px; max-width:100px;">Ville</th>
-                    <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; width:110px; min-width:110px; max-width:110px;">Statut</th>
-                    <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; width:180px; min-width:180px; max-width:180px;">Actions</th>
+                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:50px; min-width:50px; white-space:nowrap;">#</th>
+                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:130px; min-width:130px; white-space:nowrap;">Client</th>
+                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:180px; min-width:180px; white-space:nowrap;">Email</th>
+                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:120px; min-width:120px; white-space:nowrap;">Téléphone</th>
+                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:150px; min-width:150px; white-space:nowrap;">Date</th>
+                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:110px; min-width:110px; white-space:nowrap;">Total</th>
+                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:100px; min-width:100px; white-space:nowrap;">Ville</th>
+                    <th style="text-align:center; padding:12px 10px; font-weight:600; color:#1a1a1a; width:110px; min-width:110px; white-space:nowrap;">Statut</th>
+                    <th style="text-align:center; padding:12px 10px; font-weight:600; color:#1a1a1a; width:190px; min-width:190px; white-space:nowrap;">Actions</th>
                 </tr>
             </thead>
             <tbody id="ventesTableBody">
@@ -97,9 +99,9 @@
     </div>
 
     <!-- ===== INDICATEUR DE SCROLL ===== -->
-    <div id="scrollIndicator" style="display:flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.6rem 0 0.3rem; font-size:0.8rem; color:#94a3b8; user-select:none; transition:opacity 0.3s;">
+    <div id="scrollIndicator" style="display:flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.8rem 0 0.3rem; font-size:0.85rem; color:#94a3b8; user-select:none; transition:opacity 0.3s;">
         <i class="fas fa-chevron-left" style="animation:pulseScroll 1.5s ease-in-out infinite;"></i>
-        <span>⬅️ Faites glisser ou scroll horizontalement ➡️</span>
+        <span style="font-weight:500;">⬅️ Faites glisser ou scroll horizontalement ➡️</span>
         <i class="fas fa-chevron-right" style="animation:pulseScroll 1.5s ease-in-out infinite;"></i>
     </div>
 
@@ -126,14 +128,25 @@
         50% { opacity: 1; transform: translateX(6px); }
     }
 
-    /* FORCER LE SCROLL SUR LE CONTENEUR */
+    /* FORCER LE SCROLL - OVERRIDE DE TOUT */
+    #ventesContainer {
+        overflow: visible !important;
+    }
+
+    /* Le conteneur du tableau doit avoir overflow-x:auto */
     #ventesContainer > div:nth-child(4) {
         overflow-x: auto !important;
         overflow-y: visible !important;
         -webkit-overflow-scrolling: touch !important;
     }
 
-    /* RESPONSIVE - MOBILE */
+    /* Tableau responsive */
+    #ventesContainer > div:nth-child(4) table {
+        min-width: 1100px !important;
+        width: 100% !important;
+    }
+
+    /* SUR MOBILE - réduire la largeur min */
     @media (max-width: 768px) {
         #ventesContainer { padding: 16px !important; }
         
@@ -177,30 +190,26 @@
             text-align: center;
         }
         
-        /* TABLEAU - REDUIRE LA LARGEUR MIN */
+        /* Mobile : réduire la largeur min du tableau */
         #ventesContainer > div:nth-child(4) table {
             min-width: 800px !important;
-            font-size: 0.7rem !important;
         }
         #ventesContainer > div:nth-child(4) table th,
         #ventesContainer > div:nth-child(4) table td {
-            padding: 6px 4px !important;
-            font-size: 0.65rem !important;
-        }
-        #ventesContainer > div:nth-child(4) table th {
-            white-space: nowrap !important;
+            padding: 8px 6px !important;
+            font-size: 0.7rem !important;
         }
         
-        #ventesContainer > div:last-child {
+        #ventesContainer > div:nth-child(6) {
             flex-direction: column !important;
             align-items: center !important;
             gap: 8px !important;
         }
-        #ventesContainer > div:last-child span:first-child {
+        #ventesContainer > div:nth-child(6) span:first-child {
             font-size: 0.8rem !important;
             text-align: center !important;
         }
-        #ventesContainer > div:last-child button {
+        #ventesContainer > div:nth-child(6) button {
             padding: 6px 12px !important;
             font-size: 0.8rem !important;
         }
@@ -241,7 +250,7 @@
         }
         #ventesContainer > div:nth-child(4) table th,
         #ventesContainer > div:nth-child(4) table td {
-            padding: 4px 3px !important;
+            padding: 5px 4px !important;
             font-size: 0.55rem !important;
         }
     }
@@ -283,13 +292,13 @@
         // ==========================================
         function getTestData() {
             return [
+                { id: 14, prenom: 'Fridaos', nom: 'Kamara', email: 'saintmichel91647720@gmail.com', telephone: '81643466', ville: 'Maradi', pays: 'NE', created_at: new Date('2026-08-10T18:24:00').toISOString(), total_achat: null, statut_produit: 'en attente' },
                 { id: 13, prenom: 'gagaga', nom: 'j\'çità', email: 'fzeihfihfzefi@gmail.com', telephone: '0126252555', ville: 'Cotonou', pays: 'BJ', created_at: new Date('2026-08-09T11:31:00').toISOString(), total_achat: null, statut_produit: 'en attente' },
                 { id: 12, prenom: 'Saint', nom: 'Michel', email: 'saintmichel91647720@gmail.com', telephone: '0195931369', ville: 'Cotonou', pays: 'BJ', created_at: new Date('2026-07-16T08:58:00').toISOString(), total_achat: null, statut_produit: 'en attente' },
-                { id: 1, prenom: 'Jean', nom: 'Dupont', email: 'jean@email.com', telephone: '0612345678', ville: 'Paris', pays: 'FR', created_at: new Date('2026-08-01T10:00:00').toISOString(), total_achat: 398.00, statut_produit: 'soldé' },
-                { id: 2, prenom: 'Fleury', nom: 'HAMIDOU', email: 'f91631072@gmail.com', telephone: '0191647720', ville: 'Parakou', pays: 'BJ', created_at: new Date(Date.now() - 86400000).toISOString(), total_achat: 267.00, statut_produit: 'en attente' },
-                { id: 3, prenom: 'Marie', nom: 'Martin', email: 'marie@email.com', telephone: '0765432109', ville: 'Lyon', pays: 'FR', created_at: new Date(Date.now() - 172800000).toISOString(), total_achat: 159.00, statut_produit: 'annulé' },
-                { id: 4, prenom: 'Amadou', nom: 'Diallo', email: 'amadou@email.com', telephone: '779012345', ville: 'Dakar', pays: 'SN', created_at: new Date(Date.now() - 259200000).toISOString(), total_achat: 299.00, statut_produit: 'soldé' },
-                { id: 5, prenom: 'Sophie', nom: 'Bernard', email: 'sophie@email.com', telephone: '0612345987', ville: 'Marseille', pays: 'FR', created_at: new Date(Date.now() - 345600000).toISOString(), total_achat: 149.00, statut_produit: 'en attente' }
+                { id: 11, prenom: 'izqezijozjqto', nom: 's(...)', email: 'xbbbbcnxc@gmail.com', telephone: '6858989859', ville: 'Cotonou', pays: 'BJ', created_at: new Date('2026-07-06T23:46:00').toISOString(), total_achat: null, statut_produit: 'annulé' },
+                { id: 10, prenom: 'gorge', nom: 'jeje', email: 'zlehze@gmail.com', telephone: '6186749388', ville: 'Cotonou', pays: 'BJ', created_at: new Date('2026-07-06T23:30:00').toISOString(), total_achat: null, statut_produit: 'annulé' },
+                { id: 7, prenom: 'jacob', nom: 'KOUAN', email: 'couhanjacob@gmail.com', telephone: '2220235485', ville: 'Cotonou', pays: 'BJ', created_at: new Date('2026-07-06T20:35:00').toISOString(), total_achat: null, statut_produit: 'annulé' },
+                { id: 1, prenom: 'Marie-Louise', nom: 'K...', email: 'mariekouassi@gmail.com', telephone: '6565958589', ville: 'Abidjan', pays: 'CI', created_at: new Date('2026-07-04T23:44:00').toISOString(), total_achat: 5250.00, statut_produit: 'soldé' }
             ];
         }
 
@@ -313,7 +322,7 @@
                 'annulé': { bg: '#e74c3c', icon: 'fa-times', text: 'Annulé' }
             };
             const st = s[statut] || s['en attente'];
-            return `<span class="statut-badge" style="background:${st.bg}; color:white; padding:3px 10px; border-radius:50px; font-size:0.7rem; font-weight:600; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;">
+            return `<span style="background:${st.bg}; color:white; padding:3px 10px; border-radius:50px; font-size:0.7rem; font-weight:600; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;">
                 <i class="fas ${st.icon}"></i> ${st.text}
             </span>`;
         }
@@ -339,18 +348,18 @@
 
             tbody.innerHTML = items.map(v => `
                 <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
-                    <td style="padding:8px 6px; font-weight:600; font-size:0.8rem; text-align:center;">${v.id}</td>
-                    <td style="padding:8px 6px; font-weight:500; font-size:0.8rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${v.prenom || ''} ${v.nom || ''}">${v.prenom || ''} ${v.nom || ''}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${v.email || '—'}">${v.email || '—'}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap;">${v.telephone || '—'}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap;">${formatDate(v.created_at)}</td>
-                    <td style="padding:8px 6px; font-weight:700; color:#c9a84c; font-size:0.8rem; white-space:nowrap;">${v.total_achat ? v.total_achat.toFixed(0).replace('.', ',') + ' FCFA' : '—'}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${v.ville || '—'}">${v.ville || '—'}</td>
-                    <td style="padding:8px 6px; text-align:center; white-space:nowrap;">${getStatutBadge(v.statut)}</td>
-                    <td style="padding:8px 6px; text-align:center; white-space:nowrap;">
-                        <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:3px 6px; border:none; border-radius:4px; background:#27ae60; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
-                        <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:3px 6px; border:none; border-radius:4px; background:#f39c12; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
-                        <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:3px 6px; border:none; border-radius:4px; background:#e74c3c; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
+                    <td style="padding:10px 8px; font-weight:600; font-size:0.8rem; text-align:center; white-space:nowrap;">${v.id}</td>
+                    <td style="padding:10px 8px; font-weight:500; font-size:0.8rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:130px;" title="${v.prenom || ''} ${v.nom || ''}">${v.prenom || ''} ${v.nom || ''}</td>
+                    <td style="padding:10px 8px; color:#555; font-size:0.75rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;" title="${v.email || '—'}">${v.email || '—'}</td>
+                    <td style="padding:10px 8px; color:#555; font-size:0.75rem; white-space:nowrap;">${v.telephone || '—'}</td>
+                    <td style="padding:10px 8px; color:#555; font-size:0.75rem; white-space:nowrap;">${formatDate(v.created_at)}</td>
+                    <td style="padding:10px 8px; font-weight:700; color:#c9a84c; font-size:0.8rem; white-space:nowrap;">${v.total_achat ? v.total_achat.toFixed(2) + ' €' : '—'}</td>
+                    <td style="padding:10px 8px; color:#555; font-size:0.75rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100px;" title="${v.ville || '—'}">${v.ville || '—'}</td>
+                    <td style="padding:10px 8px; text-align:center; white-space:nowrap;">${getStatutBadge(v.statut)}</td>
+                    <td style="padding:10px 8px; text-align:center; white-space:nowrap;">
+                        <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:3px 8px; border:none; border-radius:4px; background:#27ae60; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
+                        <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:3px 8px; border:none; border-radius:4px; background:#f39c12; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
+                        <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:3px 8px; border:none; border-radius:4px; background:#e74c3c; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
                     </td>
                 </tr>
             `).join('');
