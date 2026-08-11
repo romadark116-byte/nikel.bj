@@ -1,94 +1,81 @@
-<!-- suivi-ventes.html - Version avec le tableau du catalogue produits -->
-<div id="ventesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
+<!-- suivi-ventes.html - Version réécrite avec scroll fonctionnel -->
+<div id="ventesContainer">
 
     <!-- ===== TITRE ===== -->
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:24px;">
+    <div class="ventes-header">
         <div>
-            <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:#1a1a1a; margin-bottom:4px;">
+            <h2>
                 <i class="fas fa-chart-line" style="color:#c9a84c;"></i> Suivi des ventes
             </h2>
-            <p style="color:#888; font-size:0.95rem;">Gérez et suivez toutes vos commandes en un seul endroit.</p>
+            <p class="ventes-subtitle">Gérez et suivez toutes vos commandes en un seul endroit.</p>
         </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button onclick="exportCSV()" style="padding:10px 20px; background:#27ae60; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        <div class="ventes-buttons">
+            <button onclick="exportCSV()" class="btn-export">
                 <i class="fas fa-file-export"></i> Exporter CSV
             </button>
-            <button onclick="rafraichirVentes()" style="padding:10px 20px; background:linear-gradient(135deg, #c9a84c, #a8892e); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; transition:all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <button onclick="rafraichirVentes()" class="btn-refresh">
                 <i class="fas fa-sync-alt"></i> Rafraîchir
             </button>
         </div>
     </div>
 
     <!-- ===== STATISTIQUES RAPIDES ===== -->
-    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #c9a84c;">
-            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total commandes</p>
-            <p style="font-size:1.8rem; font-weight:700; color:#1a1a1a;" id="totalCommandes">0</p>
+    <div class="ventes-stats">
+        <div class="stat-card stat-total">
+            <p>Total commandes</p>
+            <p id="totalCommandes">0</p>
         </div>
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #27ae60;">
-            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">✅ Soldées</p>
-            <p style="font-size:1.8rem; font-weight:700; color:#27ae60;" id="totalSoldees">0</p>
+        <div class="stat-card stat-sold">
+            <p>✅ Soldées</p>
+            <p id="totalSoldees">0</p>
         </div>
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #f39c12;">
-            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">⏳ En attente</p>
-            <p style="font-size:1.8rem; font-weight:700; color:#f39c12;" id="totalEnAttente">0</p>
+        <div class="stat-card stat-waiting">
+            <p>⏳ En attente</p>
+            <p id="totalEnAttente">0</p>
         </div>
-        <div style="background:#f8f8f8; padding:16px; border-radius:12px; text-align:center; border-left:4px solid #e74c3c;">
-            <p style="font-size:0.8rem; color:#888; margin-bottom:4px;">❌ Annulées</p>
-            <p style="font-size:1.8rem; font-weight:700; color:#e74c3c;" id="totalAnnulees">0</p>
+        <div class="stat-card stat-canceled">
+            <p>❌ Annulées</p>
+            <p id="totalAnnulees">0</p>
         </div>
     </div>
 
     <!-- ===== BARRE DE RECHERCHE & FILTRES ===== -->
-    <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center; background:#f8f8f8; padding:16px; border-radius:12px;">
-
-        <div style="flex:2; min-width:180px;">
-            <input type="text" id="searchVentes" placeholder="🔍 Rechercher..." style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.95rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onkeyup="applyVentesFilters()">
-        </div>
-
-        <div style="min-width:130px; flex:1;">
-            <select id="filterStatut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.9rem; background:#ffffff; outline:none; transition:border-color 0.3s; cursor:pointer;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyVentesFilters()">
-                <option value="all">📊 Tous</option>
-                <option value="soldé">✅ Soldé</option>
-                <option value="en attente">⏳ En attente</option>
-                <option value="annulé">❌ Annulé</option>
-            </select>
-        </div>
-
-        <div style="min-width:130px; flex:1;">
-            <input type="date" id="dateDebut" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.9rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyVentesFilters()">
-        </div>
-
-        <div style="min-width:130px; flex:1;">
-            <input type="date" id="dateFin" style="width:100%; padding:10px 14px; border:2px solid #e8e8e8; border-radius:10px; font-size:0.9rem; background:#ffffff; outline:none; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e8e8e8'" onchange="applyVentesFilters()">
-        </div>
-
-        <button onclick="resetVentesFilters()" style="padding:10px 16px; background:transparent; border:2px solid #e8e8e8; border-radius:10px; font-size:0.9rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:#888; white-space:nowrap;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+    <div class="ventes-filters">
+        <input type="text" id="searchVentes" placeholder="🔍 Rechercher..." onkeyup="applyVentesFilters()">
+        <select id="filterStatut" onchange="applyVentesFilters()">
+            <option value="all">📊 Tous</option>
+            <option value="soldé">✅ Soldé</option>
+            <option value="en attente">⏳ En attente</option>
+            <option value="annulé">❌ Annulé</option>
+        </select>
+        <input type="date" id="dateDebut" onchange="applyVentesFilters()">
+        <input type="date" id="dateFin" onchange="applyVentesFilters()">
+        <button onclick="resetVentesFilters()" class="btn-reset">
             <i class="fas fa-undo"></i> Réinitialiser
         </button>
     </div>
 
-    <!-- ===== TABLEAU DES VENTES - COPIÉ DU CATALOGUE PRODUITS ===== -->
-    <div class="table-wrapper" id="tableWrapperVentes">
+    <!-- ===== TABLEAU AVEC SCROLL - CONFIGURATION PROPRE ===== -->
+    <div class="table-wrapper">
         <div class="table-scroll" id="tableScrollVentes">
             <table>
                 <thead>
                     <tr>
-                        <th class="col-id">#</th>
-                        <th class="col-client">Client</th>
-                        <th class="col-email">Email</th>
-                        <th class="col-phone">Téléphone</th>
-                        <th class="col-date">Date</th>
-                        <th class="col-total">Total</th>
-                        <th class="col-ville">Ville</th>
-                        <th class="col-statut">Statut</th>
-                        <th class="col-actions">Actions</th>
+                        <th>#</th>
+                        <th>Client</th>
+                        <th>Email</th>
+                        <th>Téléphone</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Ville</th>
+                        <th style="text-align:center;">Statut</th>
+                        <th style="text-align:right;">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="ventesTableBody">
                     <tr>
-                        <td colspan="9" style="text-align:center; padding:40px; color:#888;">
-                            <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
+                        <td colspan="9" class="loading-cell">
+                            <i class="fas fa-spinner fa-spin"></i>
                             Chargement des données...
                         </td>
                     </tr>
@@ -97,29 +84,164 @@
         </div>
         <div class="scroll-indicator">
             <i class="fas fa-chevron-left"></i>
-            <span>Faites glisser ou scroll horizontalement</span>
+            <span>⬅️ Faites glisser ou scroll horizontalement ➡️</span>
             <i class="fas fa-chevron-right"></i>
         </div>
     </div>
 
     <!-- ===== PAGINATION ===== -->
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:12px;">
-        <span style="color:#888; font-size:0.9rem;" id="ventesPaginationInfo">Affichage de 0 à 0 sur 0 entrées</span>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button onclick="prevVentesPage()" id="prevVentesPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+    <div class="ventes-pagination">
+        <span id="ventesPaginationInfo">Affichage de 0 à 0 sur 0 entrées</span>
+        <div>
+            <button onclick="prevVentesPage()" id="prevVentesPage">
                 <i class="fas fa-chevron-left"></i> Précédent
             </button>
-            <span id="ventesPageInfo" style="display:flex; align-items:center; padding:0 12px; font-weight:600; color:#1a1a1a;">Page 1</span>
-            <button onclick="nextVentesPage()" id="nextVentesPage" style="padding:8px 16px; border:2px solid #e8e8e8; border-radius:8px; background:transparent; cursor:pointer; transition:all 0.3s; color:#888;" onmouseover="this.style.borderColor='#c9a84c';this.style.color='#c9a84c'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#888'">
+            <span id="ventesPageInfo">Page 1</span>
+            <button onclick="nextVentesPage()" id="nextVentesPage">
                 Suivant <i class="fas fa-chevron-right"></i>
             </button>
         </div>
     </div>
 </div>
 
-<!-- ===== STYLES TABLEAU + RESPONSIVE ===== -->
+<!-- ===== STYLES COMPLETS ===== -->
 <style>
-    /* ===== TABLEAU SCROLLABLE HORIZONTALEMENT (copié du catalogue) ===== */
+    /* ===== CONTENEUR PRINCIPAL ===== */
+    #ventesContainer {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+        padding: 32px;
+        max-width: 1300px;
+        margin: 0 auto;
+    }
+
+    /* ===== TITRE ===== */
+    .ventes-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 24px;
+    }
+    .ventes-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.6rem;
+        color: #1a1a1a;
+        margin-bottom: 4px;
+    }
+    .ventes-subtitle {
+        color: #888;
+        font-size: 0.95rem;
+    }
+    .ventes-buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    .btn-export {
+        padding: 10px 20px;
+        background: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    .btn-export:hover {
+        transform: scale(1.05);
+    }
+    .btn-refresh {
+        padding: 10px 20px;
+        background: linear-gradient(135deg, #c9a84c, #a8892e);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    .btn-refresh:hover {
+        transform: scale(1.05);
+    }
+
+    /* ===== STATISTIQUES ===== */
+    .ventes-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    .stat-card {
+        background: #f8f8f8;
+        padding: 16px;
+        border-radius: 12px;
+        text-align: center;
+        border-left: 4px solid #c9a84c;
+    }
+    .stat-card p:first-child {
+        font-size: 0.8rem;
+        color: #888;
+        margin-bottom: 4px;
+    }
+    .stat-card p:last-child {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+    .stat-sold { border-left-color: #27ae60; }
+    .stat-sold p:last-child { color: #27ae60; }
+    .stat-waiting { border-left-color: #f39c12; }
+    .stat-waiting p:last-child { color: #f39c12; }
+    .stat-canceled { border-left-color: #e74c3c; }
+    .stat-canceled p:last-child { color: #e74c3c; }
+
+    /* ===== FILTRES ===== */
+    .ventes-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 20px;
+        align-items: center;
+        background: #f8f8f8;
+        padding: 16px;
+        border-radius: 12px;
+    }
+    .ventes-filters input,
+    .ventes-filters select {
+        padding: 10px 14px;
+        border: 2px solid #e8e8e8;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        background: #ffffff;
+        outline: none;
+        transition: border-color 0.3s;
+        flex: 1;
+        min-width: 150px;
+    }
+    .ventes-filters input:focus,
+    .ventes-filters select:focus {
+        border-color: #c9a84c;
+    }
+    .btn-reset {
+        padding: 10px 16px;
+        background: transparent;
+        border: 2px solid #e8e8e8;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        color: #888;
+        white-space: nowrap;
+    }
+    .btn-reset:hover {
+        border-color: #c9a84c;
+        color: #c9a84c;
+    }
+
+    /* ===== TABLEAU AVEC SCROLL - CONFIGURATION CRITIQUE ===== */
     .table-wrapper {
         position: relative;
         background: white;
@@ -128,6 +250,7 @@
         border: 1px solid #e9edf2;
         overflow: hidden;
         margin-top: 0.5rem;
+        /* IMPORTANT: pas de overflow:hidden sur les parents */
     }
     
     .table-scroll {
@@ -136,11 +259,13 @@
         padding: 0.5rem 1rem 1rem 1rem;
         scroll-behavior: smooth;
         -webkit-overflow-scrolling: touch;
+        /* CRITIQUE: c'est ici que le scroll se fait */
     }
     
     .table-scroll table {
         width: 100%;
         min-width: 1100px;
+        /* FORCE le débordement pour activer le scroll */
         border-collapse: separate;
         border-spacing: 0;
         font-size: 0.95rem;
@@ -157,6 +282,7 @@
         border-bottom: 2px solid #e2e8f0;
         white-space: nowrap;
         z-index: 10;
+        /* STICKY pour garder l'en-tête visible */
     }
     
     .table-scroll thead th:first-child {
@@ -173,6 +299,7 @@
         border-bottom: 1px solid #f1f5f9;
         vertical-align: middle;
         white-space: nowrap;
+        /* EMPÊCHE le retour à la ligne */
     }
     
     .table-scroll tbody tr:hover {
@@ -183,46 +310,67 @@
         border-bottom: none;
     }
     
-    /* Colonnes spécifiques */
-    .col-id {
+    /* Largeurs des colonnes */
+    .table-scroll table th:nth-child(1),
+    .table-scroll table td:nth-child(1) {
         min-width: 50px;
         width: 50px;
         text-align: center;
     }
-    .col-client {
+    .table-scroll table th:nth-child(2),
+    .table-scroll table td:nth-child(2) {
         min-width: 140px;
         font-weight: 500;
     }
-    .col-email {
+    .table-scroll table th:nth-child(3),
+    .table-scroll table td:nth-child(3) {
         min-width: 180px;
         color: #475569;
     }
-    .col-phone {
+    .table-scroll table th:nth-child(4),
+    .table-scroll table td:nth-child(4) {
         min-width: 120px;
         color: #475569;
     }
-    .col-date {
+    .table-scroll table th:nth-child(5),
+    .table-scroll table td:nth-child(5) {
         min-width: 160px;
         color: #475569;
     }
-    .col-total {
+    .table-scroll table th:nth-child(6),
+    .table-scroll table td:nth-child(6) {
         min-width: 120px;
         font-weight: 600;
         color: #2563eb;
     }
-    .col-ville {
+    .table-scroll table th:nth-child(7),
+    .table-scroll table td:nth-child(7) {
         min-width: 100px;
         color: #475569;
     }
-    .col-statut {
+    .table-scroll table th:nth-child(8),
+    .table-scroll table td:nth-child(8) {
         min-width: 120px;
         text-align: center;
     }
-    .col-actions {
+    .table-scroll table th:nth-child(9),
+    .table-scroll table td:nth-child(9) {
         min-width: 180px;
         text-align: right;
     }
     
+    .loading-cell {
+        text-align: center;
+        padding: 40px;
+        color: #888;
+    }
+    .loading-cell i {
+        font-size: 1.5rem;
+        display: block;
+        margin-bottom: 12px;
+    }
+
+    /* ===== INDICATEUR DE SCROLL ===== */
     .scroll-indicator {
         display: flex;
         align-items: center;
@@ -234,154 +382,140 @@
         border-top: 1px solid #f1f5f9;
         margin: 0 1rem;
         user-select: none;
+        transition: opacity 0.3s;
     }
-    
     .scroll-indicator i {
         animation: pulseScroll 1.5s ease-in-out infinite;
     }
-    
     @keyframes pulseScroll {
         0%, 100% { opacity: 0.4; transform: translateX(0); }
         50% { opacity: 1; transform: translateX(6px); }
     }
 
-    /* RESPONSIVE - MOBILE */
+    /* ===== PAGINATION ===== */
+    .ventes-pagination {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 16px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .ventes-pagination span {
+        color: #888;
+        font-size: 0.9rem;
+    }
+    .ventes-pagination div {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+    .ventes-pagination button {
+        padding: 8px 16px;
+        border: 2px solid #e8e8e8;
+        border-radius: 8px;
+        background: transparent;
+        cursor: pointer;
+        transition: all 0.3s;
+        color: #888;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    .ventes-pagination button:hover {
+        border-color: #c9a84c;
+        color: #c9a84c;
+    }
+    .ventes-pagination button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    .ventes-pagination #ventesPageInfo {
+        padding: 0 12px;
+        font-weight: 600;
+        color: #1a1a1a;
+        font-size: 0.95rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
-        #ventesContainer { padding: 16px !important; }
+        #ventesContainer { padding: 16px; }
+        .ventes-header { flex-direction: column; align-items: stretch; }
+        .ventes-buttons { width: 100%; }
+        .ventes-buttons button { width: 100%; justify-content: center; }
         
-        /* Titre */
-        #ventesContainer > div:first-child { 
-            flex-direction: column !important; 
-            align-items: stretch !important;
+        .ventes-stats {
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
-        #ventesContainer > div:first-child > div:last-child {
-            width: 100%;
-        }
-        #ventesContainer > div:first-child button {
-            width: 100%;
-            justify-content: center;
-        }
+        .stat-card { padding: 12px; }
+        .stat-card p:first-child { font-size: 0.7rem; }
+        .stat-card p:last-child { font-size: 1.3rem; }
         
-        /* Stats en 2 colonnes */
-        #ventesContainer > div:nth-child(2) {
-            grid-template-columns: 1fr 1fr !important;
-            gap: 10px !important;
+        .ventes-filters {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 12px;
         }
-        #ventesContainer > div:nth-child(2) > div {
-            padding: 12px !important;
+        .ventes-filters input,
+        .ventes-filters select {
+            min-width: 100%;
+            font-size: 0.9rem;
+            padding: 8px 12px;
         }
-        #ventesContainer > div:nth-child(2) p:first-child {
-            font-size: 0.7rem !important;
-        }
-        #ventesContainer > div:nth-child(2) p:last-child {
-            font-size: 1.3rem !important;
-        }
+        .btn-reset { width: 100%; text-align: center; }
         
-        /* Filtres en colonne */
-        #ventesContainer > div:nth-child(3) {
-            flex-direction: column !important;
-            align-items: stretch !important;
-            padding: 12px !important;
-        }
-        #ventesContainer > div:nth-child(3) > div {
-            min-width: 100% !important;
-            flex: none !important;
-        }
-        #ventesContainer > div:nth-child(3) button {
-            width: 100%;
-            text-align: center;
-        }
-        
-        /* Tableau - scroll horizontal */
-        .table-scroll {
-            padding: 0.5rem 0.5rem 1rem 0.5rem !important;
-        }
+        .table-scroll { padding: 0.5rem 0.5rem 1rem 0.5rem; }
         .table-scroll table {
-            min-width: 800px !important;
-            font-size: 0.75rem !important;
+            min-width: 800px;
+            font-size: 0.75rem;
         }
         .table-scroll table th,
         .table-scroll table td {
-            padding: 8px 6px !important;
+            padding: 8px 6px;
         }
         .table-scroll table th {
-            white-space: nowrap !important;
-            font-size: 0.7rem !important;
-        }
-        .table-scroll table td .statut-badge {
-            font-size: 0.55rem !important;
-            padding: 2px 6px !important;
-        }
-        .table-scroll table td button {
-            font-size: 0.6rem !important;
-            padding: 2px 5px !important;
+            font-size: 0.7rem;
         }
         
-        /* Pagination */
-        #ventesContainer > div:last-child {
-            flex-direction: column !important;
-            align-items: center !important;
-            gap: 8px !important;
+        .ventes-pagination {
+            flex-direction: column;
+            align-items: center;
         }
-        #ventesContainer > div:last-child span:first-child {
-            font-size: 0.8rem !important;
-            text-align: center !important;
+        .ventes-pagination span:first-child {
+            font-size: 0.8rem;
+            text-align: center;
         }
-        #ventesContainer > div:last-child button {
-            padding: 6px 12px !important;
-            font-size: 0.8rem !important;
+        .ventes-pagination button {
+            padding: 6px 12px;
+            font-size: 0.8rem;
         }
     }
 
     @media (max-width: 480px) {
-        #ventesContainer { padding: 12px !important; }
+        #ventesContainer { padding: 12px; }
+        .ventes-stats { gap: 8px; }
+        .stat-card { padding: 10px; }
+        .stat-card p:first-child { font-size: 0.6rem; }
+        .stat-card p:last-child { font-size: 1.1rem; }
         
-        #ventesContainer > div:nth-child(2) {
-            gap: 8px !important;
-        }
-        #ventesContainer > div:nth-child(2) > div {
-            padding: 10px !important;
-        }
-        #ventesContainer > div:nth-child(2) p:first-child {
-            font-size: 0.6rem !important;
-        }
-        #ventesContainer > div:nth-child(2) p:last-child {
-            font-size: 1.1rem !important;
-        }
-        
-        #ventesContainer > div:nth-child(3) {
-            padding: 10px !important;
-        }
-        #ventesContainer > div:nth-child(3) input,
-        #ventesContainer > div:nth-child(3) select {
-            font-size: 0.8rem !important;
-            padding: 8px 12px !important;
-        }
-        #ventesContainer > div:nth-child(3) button {
-            font-size: 0.8rem !important;
-            padding: 8px 14px !important;
+        .ventes-filters { padding: 10px; }
+        .ventes-filters input,
+        .ventes-filters select {
+            font-size: 0.8rem;
+            padding: 8px 12px;
         }
         
         .table-scroll table {
-            min-width: 650px !important;
-            font-size: 0.65rem !important;
+            min-width: 650px;
+            font-size: 0.65rem;
         }
         .table-scroll table th,
         .table-scroll table td {
-            padding: 5px 4px !important;
-        }
-        .table-scroll table td .statut-badge {
-            font-size: 0.5rem !important;
-            padding: 1px 4px !important;
-        }
-        .table-scroll table td button {
-            font-size: 0.5rem !important;
-            padding: 2px 4px !important;
+            padding: 5px 4px;
         }
     }
 </style>
 
-<!-- ===== SCRIPTS ===== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     (function() {
@@ -454,7 +588,7 @@
         }
 
         // ==========================================
-        // RENDU TABLEAU - adapté pour les ventes
+        // RENDU TABLEAU
         // ==========================================
         function renderVentes() {
             const tbody = document.getElementById('ventesTableBody');
@@ -473,19 +607,19 @@
             const items = filteredVentes.slice(start, start + perPage);
 
             tbody.innerHTML = items.map(v => `
-                <tr data-id="${v.id}">
-                    <td class="col-id">${v.id}</td>
-                    <td class="col-client" title="${v.prenom || ''} ${v.nom || ''}">${v.prenom || ''} ${v.nom || ''}</td>
-                    <td class="col-email" title="${v.email || '—'}">${v.email || '—'}</td>
-                    <td class="col-phone">${v.telephone || '—'}</td>
-                    <td class="col-date">${formatDate(v.created_at)}</td>
-                    <td class="col-total">${v.total_achat ? v.total_achat.toFixed(2) + ' €' : '—'}</td>
-                    <td class="col-ville" title="${v.ville || '—'}">${v.ville || '—'}</td>
-                    <td class="col-statut">${getStatutBadge(v.statut)}</td>
-                    <td class="col-actions">
-                        <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:0.3rem 0.8rem; border:1px solid #27ae60; border-radius:6px; background:#27ae60; color:white; cursor:pointer; font-size:0.7rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
-                        <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:0.3rem 0.8rem; border:1px solid #f39c12; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.7rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
-                        <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:0.3rem 0.8rem; border:1px solid #e74c3c; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.7rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
+                <tr>
+                    <td style="text-align:center; font-weight:600;">${v.id}</td>
+                    <td title="${v.prenom || ''} ${v.nom || ''}">${v.prenom || ''} ${v.nom || ''}</td>
+                    <td title="${v.email || '—'}">${v.email || '—'}</td>
+                    <td>${v.telephone || '—'}</td>
+                    <td>${formatDate(v.created_at)}</td>
+                    <td style="font-weight:600; color:#2563eb;">${v.total_achat ? v.total_achat.toFixed(2) + ' €' : '—'}</td>
+                    <td title="${v.ville || '—'}">${v.ville || '—'}</td>
+                    <td style="text-align:center;">${getStatutBadge(v.statut)}</td>
+                    <td style="text-align:right; white-space:nowrap;">
+                        <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:4px 8px; border:1px solid #27ae60; border-radius:4px; background:#27ae60; color:white; cursor:pointer; font-size:0.7rem; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">✅</button>
+                        <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:4px 8px; border:1px solid #f39c12; border-radius:4px; background:#f39c12; color:white; cursor:pointer; font-size:0.7rem; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">⏳</button>
+                        <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:4px 8px; border:1px solid #e74c3c; border-radius:4px; background:#e74c3c; color:white; cursor:pointer; font-size:0.7rem; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">❌</button>
                     </td>
                 </tr>
             `).join('');
@@ -517,40 +651,21 @@
             const end = Math.min(currentPage * perPage, total);
             const totalPages = Math.ceil(total / perPage) || 1;
 
-            const infoEl = document.getElementById('ventesPaginationInfo');
-            const pageEl = document.getElementById('ventesPageInfo');
-            const prevBtn = document.getElementById('prevVentesPage');
-            const nextBtn = document.getElementById('nextVentesPage');
+            document.getElementById('ventesPaginationInfo').textContent = 
+                `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
+            document.getElementById('ventesPageInfo').textContent = `Page ${currentPage} sur ${totalPages}`;
             
-            if (infoEl) {
-                infoEl.textContent = `Affichage de ${total > 0 ? start : 0} à ${end} sur ${total} entrées`;
-            }
-            if (pageEl) {
-                pageEl.textContent = `Page ${currentPage} sur ${totalPages}`;
-            }
-            if (prevBtn) {
-                prevBtn.disabled = currentPage <= 1;
-                prevBtn.style.opacity = currentPage <= 1 ? '0.5' : '1';
-            }
-            if (nextBtn) {
-                nextBtn.disabled = currentPage >= totalPages;
-                nextBtn.style.opacity = currentPage >= totalPages ? '0.5' : '1';
-            }
+            document.getElementById('prevVentesPage').disabled = currentPage <= 1;
+            document.getElementById('nextVentesPage').disabled = currentPage >= totalPages;
         }
 
         function prevVentesPage() {
-            if (currentPage > 1) {
-                currentPage--;
-                renderVentes();
-            }
+            if (currentPage > 1) { currentPage--; renderVentes(); }
         }
 
         function nextVentesPage() {
             const totalPages = Math.ceil(filteredVentes.length / perPage);
-            if (currentPage < totalPages) {
-                currentPage++;
-                renderVentes();
-            }
+            if (currentPage < totalPages) { currentPage++; renderVentes(); }
         }
 
         // ==========================================
@@ -785,7 +900,7 @@
         }
 
         // ==========================================
-        // DÉTECTION DU SCROLL (comme le catalogue)
+        // DÉTECTION DU SCROLL
         // ==========================================
         function initScrollDetection() {
             const scrollEl = document.getElementById('tableScrollVentes');
@@ -822,13 +937,6 @@
         // ==========================================
         function init() {
             console.log('🚀 Chargement de suivi-ventes.html...');
-            
-            const tbody = document.getElementById('ventesTableBody');
-            if (!tbody) {
-                console.error('❌ Table body non trouvé');
-                return;
-            }
-            
             loadVentesData();
             initScrollDetection();
         }
