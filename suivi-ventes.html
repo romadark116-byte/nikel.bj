@@ -1,4 +1,4 @@
-<!-- suivi-ventes.html - Version avec tableau scrollable horizontalement -->
+<!-- suivi-ventes.html - Version avec colonnes réduites -->
 <div id="ventesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
@@ -68,41 +68,31 @@
         </button>
     </div>
 
-    <!-- ===== TABLEAU DES VENTES - SCROLLABLE HORIZONTALEMENT ===== -->
-    <div style="overflow-x:auto; overflow-y:visible; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch; scroll-behavior:smooth; padding:0; width:100%; max-width:100%;" id="tableScrollContainer">
-        <div style="width:1800px; min-width:1800px;">
-            <table style="width:100%; border-collapse:collapse; font-size:0.85rem; table-layout:fixed;">
-                <thead>
-                    <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
-                        <th style="text-align:left; padding:10px 12px; font-weight:600; color:#1a1a1a; width:60px; min-width:60px; white-space:nowrap; position:sticky; left:0; background:#f8f8f8; z-index:10;">#</th>
-                        <th style="text-align:left; padding:10px 12px; font-weight:600; color:#1a1a1a; width:180px; min-width:180px; white-space:nowrap;">Client</th>
-                        <th style="text-align:left; padding:10px 12px; font-weight:600; color:#1a1a1a; width:250px; min-width:250px; white-space:nowrap;">Email</th>
-                        <th style="text-align:left; padding:10px 12px; font-weight:600; color:#1a1a1a; width:180px; min-width:180px; white-space:nowrap;">Téléphone</th>
-                        <th style="text-align:left; padding:10px 12px; font-weight:600; color:#1a1a1a; width:200px; min-width:200px; white-space:nowrap;">Date</th>
-                        <th style="text-align:left; padding:10px 12px; font-weight:600; color:#1a1a1a; width:160px; min-width:160px; white-space:nowrap;">Total</th>
-                        <th style="text-align:left; padding:10px 12px; font-weight:600; color:#1a1a1a; width:170px; min-width:170px; white-space:nowrap;">Ville</th>
-                        <th style="text-align:left; padding:10px 12px; font-weight:600; color:#1a1a1a; width:140px; min-width:140px; white-space:nowrap;">Pays</th>
-                        <th style="text-align:center; padding:10px 12px; font-weight:600; color:#1a1a1a; width:170px; min-width:170px; white-space:nowrap;">Statut</th>
-                        <th style="text-align:center; padding:10px 12px; font-weight:600; color:#1a1a1a; width:240px; min-width:240px; white-space:nowrap;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="ventesTableBody">
-                    <tr>
-                        <td colspan="10" style="text-align:center; padding:40px; color:#888;">
-                            <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
-                            Chargement des données...
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- ===== INDICATEUR DE SCROLL ===== -->
-    <div style="display:flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.6rem 0 0.3rem; font-size:0.8rem; color:#94a3b8; user-select:none; border-top:1px solid #f0f0f0; margin-top:0;">
-        <i class="fas fa-chevron-left" style="opacity:0.5;"></i>
-        <span>👆 Faites glisser ou scroll horizontalement pour voir toutes les colonnes</span>
-        <i class="fas fa-chevron-right" style="opacity:0.5; animation:pulseScroll 1.5s ease-in-out infinite;"></i>
+    <!-- ===== TABLEAU DES VENTES - COLONNES RÉDUITES ===== -->
+    <div style="overflow-x:auto; overflow-y:visible; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch;">
+        <table style="width:100%; border-collapse:collapse; font-size:0.85rem; min-width:900px; table-layout:auto;">
+            <thead>
+                <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:40px; white-space:nowrap;">#</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:110px; white-space:nowrap;">Client</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:150px; white-space:nowrap;">Email</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:110px; white-space:nowrap;">Téléphone</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:140px; white-space:nowrap;">Date</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:90px; white-space:nowrap;">Total</th>
+                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:90px; white-space:nowrap;">Ville</th>
+                    <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; width:100px; white-space:nowrap;">Statut</th>
+                    <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; width:120px; white-space:nowrap;">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="ventesTableBody">
+                <tr>
+                    <td colspan="9" style="text-align:center; padding:40px; color:#888;">
+                        <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
+                        Chargement des données...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <!-- ===== PAGINATION ===== -->
@@ -122,52 +112,7 @@
 
 <!-- ===== STYLES RESPONSIVE ===== -->
 <style>
-    /* ===== INDICATEUR DE SCROLL ANIMÉ ===== */
-    @keyframes pulseScroll {
-        0%, 100% { opacity: 0.4; transform: translateX(0); }
-        50% { opacity: 1; transform: translateX(6px); }
-    }
-    
-    /* ===== FORCER LE SCROLL SUR TOUS LES APPAREILS ===== */
-    #tableScrollContainer {
-        overflow-x: auto !important;
-        overflow-y: visible !important;
-        -webkit-overflow-scrolling: touch !important;
-        scroll-behavior: smooth !important;
-    }
-    
-    /* ===== FORCER L'AFFICHAGE DE LA SCROLLBAR SUR DESKTOP ===== */
-    #tableScrollContainer {
-        scrollbar-width: auto !important; /* Firefox */
-        -ms-overflow-style: auto !important; /* IE/Edge */
-    }
-    
-    /* ===== SCROLLBAR PERSONNALISÉ (visible sur desktop) ===== */
-    #tableScrollContainer::-webkit-scrollbar {
-        height: 12px !important;
-        width: 12px !important;
-    }
-    
-    #tableScrollContainer::-webkit-scrollbar-track {
-        background: #f1f1f1 !important;
-        border-radius: 6px !important;
-    }
-    
-    #tableScrollContainer::-webkit-scrollbar-thumb {
-        background: #c9a84c !important;
-        border-radius: 6px !important;
-    }
-    
-    #tableScrollContainer::-webkit-scrollbar-thumb:hover {
-        background: #a8892e !important;
-    }
-    
-    /* ===== SURVOL DES LIGNES ===== */
-    #ventesTableBody tr:hover {
-        background: #fafafa !important;
-    }
-
-    /* ===== RESPONSIVE - MOBILE ===== */
+    /* RESPONSIVE - MOBILE */
     @media (max-width: 768px) {
         #ventesContainer { padding: 16px !important; }
         
@@ -215,53 +160,43 @@
         }
         
         /* Tableau - scroll horizontal */
-        #tableScrollContainer > div {
-            width: 1200px !important;
-            min-width: 1200px !important;
+        #ventesContainer > div:nth-child(4) {
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
         }
-        
-        #tableScrollContainer table {
+        #ventesContainer > div:nth-child(4) table {
+            min-width: 700px !important;
             font-size: 0.75rem !important;
         }
-        
-        #tableScrollContainer table th,
-        #tableScrollContainer table td {
-            padding: 8px 8px !important;
+        #ventesContainer > div:nth-child(4) table th,
+        #ventesContainer > div:nth-child(4) table td {
+            padding: 8px 6px !important;
             font-size: 0.7rem !important;
         }
-        
-        #tableScrollContainer table th {
+        #ventesContainer > div:nth-child(4) table th {
             white-space: nowrap !important;
             font-size: 0.7rem !important;
         }
-        
-        #tableScrollContainer table td .statut-badge {
+        #ventesContainer > div:nth-child(4) table td .statut-badge {
             font-size: 0.55rem !important;
             padding: 2px 6px !important;
         }
-        
-        #tableScrollContainer table td button {
+        #ventesContainer > div:nth-child(4) table td button {
             font-size: 0.6rem !important;
             padding: 2px 5px !important;
         }
         
-        /* Indicateur scroll */
-        #ventesContainer > div:nth-child(5) {
-            font-size: 0.65rem !important;
-            padding: 0.4rem 0 0.3rem !important;
-        }
-        
         /* Pagination */
-        #ventesContainer > div:nth-child(6) {
+        #ventesContainer > div:nth-child(5) {
             flex-direction: column !important;
             align-items: center !important;
             gap: 8px !important;
         }
-        #ventesContainer > div:nth-child(6) span:first-child {
+        #ventesContainer > div:nth-child(5) span:first-child {
             font-size: 0.8rem !important;
             text-align: center !important;
         }
-        #ventesContainer > div:nth-child(6) button {
+        #ventesContainer > div:nth-child(5) button {
             padding: 6px 12px !important;
             font-size: 0.8rem !important;
         }
@@ -296,34 +231,22 @@
             padding: 8px 14px !important;
         }
         
-        #tableScrollContainer > div {
-            width: 950px !important;
-            min-width: 950px !important;
-        }
-        
-        #tableScrollContainer table {
+        #ventesContainer > div:nth-child(4) table {
+            min-width: 600px !important;
             font-size: 0.65rem !important;
         }
-        
-        #tableScrollContainer table th,
-        #tableScrollContainer table td {
-            padding: 5px 5px !important;
+        #ventesContainer > div:nth-child(4) table th,
+        #ventesContainer > div:nth-child(4) table td {
+            padding: 5px 4px !important;
             font-size: 0.6rem !important;
         }
-        
-        #tableScrollContainer table td .statut-badge {
+        #ventesContainer > div:nth-child(4) table td .statut-badge {
             font-size: 0.5rem !important;
             padding: 1px 4px !important;
         }
-        
-        #tableScrollContainer table td button {
+        #ventesContainer > div:nth-child(4) table td button {
             font-size: 0.5rem !important;
             padding: 2px 4px !important;
-        }
-        
-        #ventesContainer > div:nth-child(5) {
-            font-size: 0.55rem !important;
-            padding: 0.3rem 0 0.2rem !important;
         }
     }
 </style>
@@ -332,8 +255,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     (function() {
-        'use strict';
-
         // ==========================================
         // SUPABASE CONFIG
         // ==========================================
@@ -373,10 +294,7 @@
                 { id: 2, prenom: 'Fleury', nom: 'HAMIDOU', email: 'f91631072@gmail.com', telephone: '0191647720', ville: 'Parakou', pays: 'BJ', created_at: new Date(Date.now() - 86400000).toISOString(), total_achat: 267.00, statut_produit: 'en attente' },
                 { id: 3, prenom: 'Marie', nom: 'Martin', email: 'marie@email.com', telephone: '0765432109', ville: 'Lyon', pays: 'FR', created_at: new Date(Date.now() - 172800000).toISOString(), total_achat: 159.00, statut_produit: 'annulé' },
                 { id: 4, prenom: 'Amadou', nom: 'Diallo', email: 'amadou@email.com', telephone: '779012345', ville: 'Dakar', pays: 'SN', created_at: new Date(Date.now() - 259200000).toISOString(), total_achat: 299.00, statut_produit: 'soldé' },
-                { id: 5, prenom: 'Sophie', nom: 'Bernard', email: 'sophie@email.com', telephone: '0612345987', ville: 'Marseille', pays: 'FR', created_at: new Date(Date.now() - 345600000).toISOString(), total_achat: 149.00, statut_produit: 'en attente' },
-                { id: 6, prenom: 'Abdoulaye', nom: 'Sow', email: 'abdoulaye@email.com', telephone: '771234567', ville: 'Dakar', pays: 'SN', created_at: new Date(Date.now() - 432000000).toISOString(), total_achat: 450.00, statut_produit: 'soldé' },
-                { id: 7, prenom: 'Claire', nom: 'Petit', email: 'claire@email.com', telephone: '0687654321', ville: 'Nice', pays: 'FR', created_at: new Date(Date.now() - 518400000).toISOString(), total_achat: 89.00, statut_produit: 'en attente' },
-                { id: 8, prenom: 'Moussa', nom: 'Camara', email: 'moussa@email.com', telephone: '620123456', ville: 'Abidjan', pays: 'CI', created_at: new Date(Date.now() - 604800000).toISOString(), total_achat: 320.00, statut_produit: 'annulé' }
+                { id: 5, prenom: 'Sophie', nom: 'Bernard', email: 'sophie@email.com', telephone: '0612345987', ville: 'Marseille', pays: 'FR', created_at: new Date(Date.now() - 345600000).toISOString(), total_achat: 149.00, statut_produit: 'en attente' }
             ];
         }
 
@@ -413,7 +331,7 @@
             if (!tbody) return;
             
             if (filteredVentes.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:40px; color:#888;">
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:40px; color:#888;">
                     <i class="fas fa-inbox" style="font-size:2rem; display:block; margin-bottom:12px; color:#ddd;"></i>
                     Aucune vente trouvée.
                 </td></tr>`;
@@ -426,16 +344,15 @@
 
             tbody.innerHTML = items.map(v => `
                 <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
-                    <td style="padding:8px 12px; font-weight:600; font-size:0.8rem; text-align:center; position:sticky; left:0; background:white; z-index:5; width:60px; min-width:60px;">${v.id}</td>
-                    <td style="padding:8px 12px; font-weight:500; font-size:0.8rem; white-space:nowrap; width:180px; min-width:180px;" title="${v.prenom || ''} ${v.nom || ''}">${v.prenom || ''} ${v.nom || ''}</td>
-                    <td style="padding:8px 12px; color:#555; font-size:0.75rem; white-space:nowrap; width:250px; min-width:250px;" title="${v.email || '—'}">${v.email || '—'}</td>
-                    <td style="padding:8px 12px; color:#555; font-size:0.75rem; white-space:nowrap; width:180px; min-width:180px;">${v.telephone || '—'}</td>
-                    <td style="padding:8px 12px; color:#555; font-size:0.75rem; white-space:nowrap; width:200px; min-width:200px;">${formatDate(v.created_at)}</td>
-                    <td style="padding:8px 12px; font-weight:700; color:#c9a84c; font-size:0.8rem; white-space:nowrap; width:160px; min-width:160px;">${v.total_achat ? v.total_achat.toFixed(0).replace('.', ',') + ' FCFA' : '—'}</td>
-                    <td style="padding:8px 12px; color:#555; font-size:0.75rem; white-space:nowrap; width:170px; min-width:170px;" title="${v.ville || '—'}">${v.ville || '—'}</td>
-                    <td style="padding:8px 12px; color:#555; font-size:0.75rem; white-space:nowrap; width:140px; min-width:140px;">${v.pays || '—'}</td>
-                    <td style="padding:8px 12px; text-align:center; width:170px; min-width:170px;">${getStatutBadge(v.statut)}</td>
-                    <td style="padding:8px 12px; text-align:center; white-space:nowrap; width:240px; min-width:240px;">
+                    <td style="padding:8px 6px; font-weight:600; font-size:0.8rem; text-align:center;">${v.id}</td>
+                    <td style="padding:8px 6px; font-weight:500; font-size:0.8rem; max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${v.prenom || ''} ${v.nom || ''}">${v.prenom || ''} ${v.nom || ''}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${v.email || '—'}">${v.email || '—'}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap;">${v.telephone || '—'}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap;">${formatDate(v.created_at)}</td>
+                    <td style="padding:8px 6px; font-weight:700; color:#c9a84c; font-size:0.8rem; white-space:nowrap;">${v.total_achat ? v.total_achat.toFixed(0).replace('.', ',') + ' FCFA' : '—'}</td>
+                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${v.ville || '—'}">${v.ville || '—'}</td>
+                    <td style="padding:8px 6px; text-align:center;">${getStatutBadge(v.statut)}</td>
+                    <td style="padding:8px 6px; text-align:center; white-space:nowrap;">
                         <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:3px 6px; border:none; border-radius:4px; background:#27ae60; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
                         <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:3px 6px; border:none; border-radius:4px; background:#f39c12; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
                         <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:3px 6px; border:none; border-radius:4px; background:#e74c3c; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
@@ -483,13 +400,9 @@
             }
             if (prevBtn) {
                 prevBtn.disabled = currentPage <= 1;
-                prevBtn.style.opacity = currentPage <= 1 ? '0.5' : '1';
-                prevBtn.style.cursor = currentPage <= 1 ? 'not-allowed' : 'pointer';
             }
             if (nextBtn) {
                 nextBtn.disabled = currentPage >= totalPages;
-                nextBtn.style.opacity = currentPage >= totalPages ? '0.5' : '1';
-                nextBtn.style.cursor = currentPage >= totalPages ? 'not-allowed' : 'pointer';
             }
         }
 
@@ -497,7 +410,6 @@
             if (currentPage > 1) {
                 currentPage--;
                 renderVentes();
-                document.getElementById('tableScrollContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
 
@@ -506,7 +418,6 @@
             if (currentPage < totalPages) {
                 currentPage++;
                 renderVentes();
-                document.getElementById('tableScrollContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
 
@@ -742,24 +653,6 @@
         }
 
         // ==========================================
-        // DÉTECTION DU SCROLL HORIZONTAL
-        // ==========================================
-        const scrollContainer = document.getElementById('tableScrollContainer');
-        if (scrollContainer) {
-            scrollContainer.addEventListener('scroll', function() {
-                const indicator = document.querySelector('[style*="Faites glisser"]');
-                if (indicator) {
-                    const maxScroll = this.scrollWidth - this.clientWidth;
-                    if (this.scrollLeft >= maxScroll - 10) {
-                        indicator.style.opacity = '0.3';
-                    } else {
-                        indicator.style.opacity = '1';
-                    }
-                }
-            });
-        }
-
-        // ==========================================
         // EXPOSER LES FONCTIONS
         // ==========================================
         window.applyVentesFilters = applyVentesFilters;
@@ -793,4 +686,4 @@
             init();
         }
     })();
-</script>
+</script> on essaie la meme chose ici coté tableau uniquement
