@@ -1,5 +1,5 @@
-<!-- suivi-ventes.html - Version avec SCROLL FORCÉ -->
-<div id="ventesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px; overflow:visible;">
+<!-- suivi-ventes.html - Version avec le tableau du catalogue produits -->
+<div id="ventesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:24px;">
@@ -68,41 +68,38 @@
         </button>
     </div>
 
-    <!-- ===== CONTENEUR TABLEAU AVEC SCROLL 100% ===== -->
-    <!-- SOLUTION RADICALE : overflow-x:auto sur un conteneur sans padding -->
-    <div style="width:100%; overflow-x:auto; overflow-y:visible; -webkit-overflow-scrolling:touch; border-radius:12px; border:1px solid #f0f0f0; background:white;">
-
-        <!-- TABLEAU AVEC LARGEUR FIXE POUR FORCER LE SCROLL -->
-        <table style="width:100%; min-width:1100px; border-collapse:collapse; font-size:0.85rem;">
-            <thead>
-                <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
-                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:50px; min-width:50px; white-space:nowrap;">#</th>
-                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:130px; min-width:130px; white-space:nowrap;">Client</th>
-                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:180px; min-width:180px; white-space:nowrap;">Email</th>
-                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:120px; min-width:120px; white-space:nowrap;">Téléphone</th>
-                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:150px; min-width:150px; white-space:nowrap;">Date</th>
-                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:110px; min-width:110px; white-space:nowrap;">Total</th>
-                    <th style="text-align:left; padding:12px 10px; font-weight:600; color:#1a1a1a; width:100px; min-width:100px; white-space:nowrap;">Ville</th>
-                    <th style="text-align:center; padding:12px 10px; font-weight:600; color:#1a1a1a; width:110px; min-width:110px; white-space:nowrap;">Statut</th>
-                    <th style="text-align:center; padding:12px 10px; font-weight:600; color:#1a1a1a; width:190px; min-width:190px; white-space:nowrap;">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="ventesTableBody">
-                <tr>
-                    <td colspan="9" style="text-align:center; padding:40px; color:#888;">
-                        <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
-                        Chargement des données...
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- ===== INDICATEUR DE SCROLL ===== -->
-    <div id="scrollIndicator" style="display:flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.8rem 0 0.3rem; font-size:0.85rem; color:#94a3b8; user-select:none; transition:opacity 0.3s;">
-        <i class="fas fa-chevron-left" style="animation:pulseScroll 1.5s ease-in-out infinite;"></i>
-        <span style="font-weight:500;">⬅️ Faites glisser ou scroll horizontalement ➡️</span>
-        <i class="fas fa-chevron-right" style="animation:pulseScroll 1.5s ease-in-out infinite;"></i>
+    <!-- ===== TABLEAU DES VENTES - COPIÉ DU CATALOGUE PRODUITS ===== -->
+    <div class="table-wrapper" id="tableWrapperVentes">
+        <div class="table-scroll" id="tableScrollVentes">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-id">#</th>
+                        <th class="col-client">Client</th>
+                        <th class="col-email">Email</th>
+                        <th class="col-phone">Téléphone</th>
+                        <th class="col-date">Date</th>
+                        <th class="col-total">Total</th>
+                        <th class="col-ville">Ville</th>
+                        <th class="col-statut">Statut</th>
+                        <th class="col-actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="ventesTableBody">
+                    <tr>
+                        <td colspan="9" style="text-align:center; padding:40px; color:#888;">
+                            <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
+                            Chargement des données...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-left"></i>
+            <span>Faites glisser ou scroll horizontalement</span>
+            <i class="fas fa-chevron-right"></i>
+        </div>
     </div>
 
     <!-- ===== PAGINATION ===== -->
@@ -120,36 +117,139 @@
     </div>
 </div>
 
-<!-- ===== STYLES ===== -->
+<!-- ===== STYLES TABLEAU + RESPONSIVE ===== -->
 <style>
-    /* Animation de pulse pour l'indicateur de scroll */
+    /* ===== TABLEAU SCROLLABLE HORIZONTALEMENT (copié du catalogue) ===== */
+    .table-wrapper {
+        position: relative;
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 8px 20px -8px rgba(0,0,0,0.08);
+        border: 1px solid #e9edf2;
+        overflow: hidden;
+        margin-top: 0.5rem;
+    }
+    
+    .table-scroll {
+        overflow-x: auto;
+        overflow-y: visible;
+        padding: 0.5rem 1rem 1rem 1rem;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .table-scroll table {
+        width: 100%;
+        min-width: 1100px;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 0.95rem;
+    }
+    
+    .table-scroll thead th {
+        position: sticky;
+        top: 0;
+        background: #f8fafc;
+        color: #1e293b;
+        font-weight: 600;
+        padding: 1rem 0.8rem;
+        text-align: left;
+        border-bottom: 2px solid #e2e8f0;
+        white-space: nowrap;
+        z-index: 10;
+    }
+    
+    .table-scroll thead th:first-child {
+        border-radius: 12px 0 0 0;
+        padding-left: 0.5rem;
+    }
+    
+    .table-scroll thead th:last-child {
+        border-radius: 0 12px 0 0;
+    }
+    
+    .table-scroll tbody td {
+        padding: 0.9rem 0.8rem;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+    
+    .table-scroll tbody tr:hover {
+        background: #f8fafc;
+    }
+    
+    .table-scroll tbody tr:last-child td {
+        border-bottom: none;
+    }
+    
+    /* Colonnes spécifiques */
+    .col-id {
+        min-width: 50px;
+        width: 50px;
+        text-align: center;
+    }
+    .col-client {
+        min-width: 140px;
+        font-weight: 500;
+    }
+    .col-email {
+        min-width: 180px;
+        color: #475569;
+    }
+    .col-phone {
+        min-width: 120px;
+        color: #475569;
+    }
+    .col-date {
+        min-width: 160px;
+        color: #475569;
+    }
+    .col-total {
+        min-width: 120px;
+        font-weight: 600;
+        color: #2563eb;
+    }
+    .col-ville {
+        min-width: 100px;
+        color: #475569;
+    }
+    .col-statut {
+        min-width: 120px;
+        text-align: center;
+    }
+    .col-actions {
+        min-width: 180px;
+        text-align: right;
+    }
+    
+    .scroll-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.6rem 0 0.3rem;
+        font-size: 0.8rem;
+        color: #94a3b8;
+        border-top: 1px solid #f1f5f9;
+        margin: 0 1rem;
+        user-select: none;
+    }
+    
+    .scroll-indicator i {
+        animation: pulseScroll 1.5s ease-in-out infinite;
+    }
+    
     @keyframes pulseScroll {
         0%, 100% { opacity: 0.4; transform: translateX(0); }
         50% { opacity: 1; transform: translateX(6px); }
     }
 
-    /* FORCER LE SCROLL - OVERRIDE DE TOUT */
-    #ventesContainer {
-        overflow: visible !important;
-    }
-
-    /* Le conteneur du tableau doit avoir overflow-x:auto */
-    #ventesContainer > div:nth-child(4) {
-        overflow-x: auto !important;
-        overflow-y: visible !important;
-        -webkit-overflow-scrolling: touch !important;
-    }
-
-    /* Tableau responsive */
-    #ventesContainer > div:nth-child(4) table {
-        min-width: 1100px !important;
-        width: 100% !important;
-    }
-
-    /* SUR MOBILE - réduire la largeur min */
+    /* RESPONSIVE - MOBILE */
     @media (max-width: 768px) {
         #ventesContainer { padding: 16px !important; }
         
+        /* Titre */
         #ventesContainer > div:first-child { 
             flex-direction: column !important; 
             align-items: stretch !important;
@@ -162,6 +262,7 @@
             justify-content: center;
         }
         
+        /* Stats en 2 colonnes */
         #ventesContainer > div:nth-child(2) {
             grid-template-columns: 1fr 1fr !important;
             gap: 10px !important;
@@ -176,6 +277,7 @@
             font-size: 1.3rem !important;
         }
         
+        /* Filtres en colonne */
         #ventesContainer > div:nth-child(3) {
             flex-direction: column !important;
             align-items: stretch !important;
@@ -190,26 +292,42 @@
             text-align: center;
         }
         
-        /* Mobile : réduire la largeur min du tableau */
-        #ventesContainer > div:nth-child(4) table {
-            min-width: 800px !important;
+        /* Tableau - scroll horizontal */
+        .table-scroll {
+            padding: 0.5rem 0.5rem 1rem 0.5rem !important;
         }
-        #ventesContainer > div:nth-child(4) table th,
-        #ventesContainer > div:nth-child(4) table td {
+        .table-scroll table {
+            min-width: 800px !important;
+            font-size: 0.75rem !important;
+        }
+        .table-scroll table th,
+        .table-scroll table td {
             padding: 8px 6px !important;
+        }
+        .table-scroll table th {
+            white-space: nowrap !important;
             font-size: 0.7rem !important;
         }
+        .table-scroll table td .statut-badge {
+            font-size: 0.55rem !important;
+            padding: 2px 6px !important;
+        }
+        .table-scroll table td button {
+            font-size: 0.6rem !important;
+            padding: 2px 5px !important;
+        }
         
-        #ventesContainer > div:nth-child(6) {
+        /* Pagination */
+        #ventesContainer > div:last-child {
             flex-direction: column !important;
             align-items: center !important;
             gap: 8px !important;
         }
-        #ventesContainer > div:nth-child(6) span:first-child {
+        #ventesContainer > div:last-child span:first-child {
             font-size: 0.8rem !important;
             text-align: center !important;
         }
-        #ventesContainer > div:nth-child(6) button {
+        #ventesContainer > div:last-child button {
             padding: 6px 12px !important;
             font-size: 0.8rem !important;
         }
@@ -244,18 +362,26 @@
             padding: 8px 14px !important;
         }
         
-        #ventesContainer > div:nth-child(4) table {
+        .table-scroll table {
             min-width: 650px !important;
-            font-size: 0.6rem !important;
+            font-size: 0.65rem !important;
         }
-        #ventesContainer > div:nth-child(4) table th,
-        #ventesContainer > div:nth-child(4) table td {
+        .table-scroll table th,
+        .table-scroll table td {
             padding: 5px 4px !important;
-            font-size: 0.55rem !important;
+        }
+        .table-scroll table td .statut-badge {
+            font-size: 0.5rem !important;
+            padding: 1px 4px !important;
+        }
+        .table-scroll table td button {
+            font-size: 0.5rem !important;
+            padding: 2px 4px !important;
         }
     }
 </style>
 
+<!-- ===== SCRIPTS ===== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     (function() {
@@ -322,13 +448,13 @@
                 'annulé': { bg: '#e74c3c', icon: 'fa-times', text: 'Annulé' }
             };
             const st = s[statut] || s['en attente'];
-            return `<span style="background:${st.bg}; color:white; padding:3px 10px; border-radius:50px; font-size:0.7rem; font-weight:600; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;">
+            return `<span class="statut-badge" style="background:${st.bg}; color:white; padding:3px 10px; border-radius:50px; font-size:0.7rem; font-weight:600; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;">
                 <i class="fas ${st.icon}"></i> ${st.text}
             </span>`;
         }
 
         // ==========================================
-        // RENDU TABLEAU
+        // RENDU TABLEAU - adapté pour les ventes
         // ==========================================
         function renderVentes() {
             const tbody = document.getElementById('ventesTableBody');
@@ -347,19 +473,19 @@
             const items = filteredVentes.slice(start, start + perPage);
 
             tbody.innerHTML = items.map(v => `
-                <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
-                    <td style="padding:10px 8px; font-weight:600; font-size:0.8rem; text-align:center; white-space:nowrap;">${v.id}</td>
-                    <td style="padding:10px 8px; font-weight:500; font-size:0.8rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:130px;" title="${v.prenom || ''} ${v.nom || ''}">${v.prenom || ''} ${v.nom || ''}</td>
-                    <td style="padding:10px 8px; color:#555; font-size:0.75rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;" title="${v.email || '—'}">${v.email || '—'}</td>
-                    <td style="padding:10px 8px; color:#555; font-size:0.75rem; white-space:nowrap;">${v.telephone || '—'}</td>
-                    <td style="padding:10px 8px; color:#555; font-size:0.75rem; white-space:nowrap;">${formatDate(v.created_at)}</td>
-                    <td style="padding:10px 8px; font-weight:700; color:#c9a84c; font-size:0.8rem; white-space:nowrap;">${v.total_achat ? v.total_achat.toFixed(2) + ' €' : '—'}</td>
-                    <td style="padding:10px 8px; color:#555; font-size:0.75rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100px;" title="${v.ville || '—'}">${v.ville || '—'}</td>
-                    <td style="padding:10px 8px; text-align:center; white-space:nowrap;">${getStatutBadge(v.statut)}</td>
-                    <td style="padding:10px 8px; text-align:center; white-space:nowrap;">
-                        <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:3px 8px; border:none; border-radius:4px; background:#27ae60; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
-                        <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:3px 8px; border:none; border-radius:4px; background:#f39c12; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
-                        <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:3px 8px; border:none; border-radius:4px; background:#e74c3c; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
+                <tr data-id="${v.id}">
+                    <td class="col-id">${v.id}</td>
+                    <td class="col-client" title="${v.prenom || ''} ${v.nom || ''}">${v.prenom || ''} ${v.nom || ''}</td>
+                    <td class="col-email" title="${v.email || '—'}">${v.email || '—'}</td>
+                    <td class="col-phone">${v.telephone || '—'}</td>
+                    <td class="col-date">${formatDate(v.created_at)}</td>
+                    <td class="col-total">${v.total_achat ? v.total_achat.toFixed(2) + ' €' : '—'}</td>
+                    <td class="col-ville" title="${v.ville || '—'}">${v.ville || '—'}</td>
+                    <td class="col-statut">${getStatutBadge(v.statut)}</td>
+                    <td class="col-actions">
+                        <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:0.3rem 0.8rem; border:1px solid #27ae60; border-radius:6px; background:#27ae60; color:white; cursor:pointer; font-size:0.7rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
+                        <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:0.3rem 0.8rem; border:1px solid #f39c12; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.7rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
+                        <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:0.3rem 0.8rem; border:1px solid #e74c3c; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.7rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
                     </td>
                 </tr>
             `).join('');
@@ -404,9 +530,11 @@
             }
             if (prevBtn) {
                 prevBtn.disabled = currentPage <= 1;
+                prevBtn.style.opacity = currentPage <= 1 ? '0.5' : '1';
             }
             if (nextBtn) {
                 nextBtn.disabled = currentPage >= totalPages;
+                nextBtn.style.opacity = currentPage >= totalPages ? '0.5' : '1';
             }
         }
 
@@ -657,6 +785,26 @@
         }
 
         // ==========================================
+        // DÉTECTION DU SCROLL (comme le catalogue)
+        // ==========================================
+        function initScrollDetection() {
+            const scrollEl = document.getElementById('tableScrollVentes');
+            if (scrollEl) {
+                scrollEl.addEventListener('scroll', function() {
+                    const indicator = document.querySelector('.scroll-indicator');
+                    if (indicator) {
+                        const maxScroll = this.scrollWidth - this.clientWidth;
+                        if (this.scrollLeft >= maxScroll - 5) {
+                            indicator.style.opacity = '0.3';
+                        } else {
+                            indicator.style.opacity = '1';
+                        }
+                    }
+                });
+            }
+        }
+
+        // ==========================================
         // EXPOSER LES FONCTIONS
         // ==========================================
         window.applyVentesFilters = applyVentesFilters;
@@ -682,6 +830,7 @@
             }
             
             loadVentesData();
+            initScrollDetection();
         }
 
         if (document.readyState === 'loading') {
