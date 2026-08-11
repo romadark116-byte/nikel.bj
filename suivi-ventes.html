@@ -1,4 +1,4 @@
-<!-- suivi-ventes.html - Version avec colonnes réduites -->
+<!-- suivi-ventes.html - Version avec le même tableau que le catalogue produits -->
 <div id="ventesContainer" style="background:#ffffff; border-radius:16px; box-shadow:0 2px 20px rgba(0,0,0,0.08); padding:32px;">
 
     <!-- ===== TITRE ===== -->
@@ -68,31 +68,39 @@
         </button>
     </div>
 
-    <!-- ===== TABLEAU DES VENTES - COLONNES RÉDUITES ===== -->
-    <div style="overflow-x:auto; overflow-y:visible; border-radius:12px; border:1px solid #f0f0f0; -webkit-overflow-scrolling:touch;">
-        <table style="width:100%; border-collapse:collapse; font-size:0.85rem; min-width:900px; table-layout:auto;">
-            <thead>
-                <tr style="background:#f8f8f8; border-bottom:2px solid #f0f0f0;">
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:40px; white-space:nowrap;">#</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:110px; white-space:nowrap;">Client</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:150px; white-space:nowrap;">Email</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:110px; white-space:nowrap;">Téléphone</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:140px; white-space:nowrap;">Date</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:90px; white-space:nowrap;">Total</th>
-                    <th style="text-align:left; padding:10px 8px; font-weight:600; color:#1a1a1a; width:90px; white-space:nowrap;">Ville</th>
-                    <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; width:100px; white-space:nowrap;">Statut</th>
-                    <th style="text-align:center; padding:10px 8px; font-weight:600; color:#1a1a1a; width:120px; white-space:nowrap;">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="ventesTableBody">
-                <tr>
-                    <td colspan="9" style="text-align:center; padding:40px; color:#888;">
-                        <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
-                        Chargement des données...
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <!-- ===== TABLEAU DES VENTES - MÊME STYLE QUE LE CATALOGUE ===== -->
+    <div class="table-wrapper" style="position:relative; background:white; border-radius:24px; box-shadow:0 8px 20px -8px rgba(0,0,0,0.08); border:1px solid #e9edf2; overflow:hidden; margin-top:0.5rem;">
+        <div class="table-scroll" style="overflow-x:auto; overflow-y:visible; padding:0.5rem 1rem 1rem 1rem; scroll-behavior:smooth; -webkit-overflow-scrolling:touch;">
+            <table style="width:100%; min-width:1200px; border-collapse:separate; border-spacing:0; font-size:0.85rem;">
+                <thead>
+                    <tr style="background:#f8fafc; color:#1e293b; border-bottom:2px solid #e2e8f0;">
+                        <th style="position:sticky; top:0; background:#f8fafc; font-weight:600; padding:1rem 0.8rem; text-align:left; border-bottom:2px solid #e2e8f0; white-space:nowrap; z-index:10; border-radius:12px 0 0 0; width:50px; min-width:50px;">#</th>
+                        <th style="position:sticky; top:0; background:#f8fafc; font-weight:600; padding:1rem 0.8rem; text-align:left; border-bottom:2px solid #e2e8f0; white-space:nowrap; z-index:10; min-width:140px;">Client</th>
+                        <th style="position:sticky; top:0; background:#f8fafc; font-weight:600; padding:1rem 0.8rem; text-align:left; border-bottom:2px solid #e2e8f0; white-space:nowrap; z-index:10; min-width:180px;">Email</th>
+                        <th style="position:sticky; top:0; background:#f8fafc; font-weight:600; padding:1rem 0.8rem; text-align:left; border-bottom:2px solid #e2e8f0; white-space:nowrap; z-index:10; min-width:120px;">Téléphone</th>
+                        <th style="position:sticky; top:0; background:#f8fafc; font-weight:600; padding:1rem 0.8rem; text-align:left; border-bottom:2px solid #e2e8f0; white-space:nowrap; z-index:10; min-width:160px;">Date</th>
+                        <th style="position:sticky; top:0; background:#f8fafc; font-weight:600; padding:1rem 0.8rem; text-align:left; border-bottom:2px solid #e2e8f0; white-space:nowrap; z-index:10; min-width:120px;">Total</th>
+                        <th style="position:sticky; top:0; background:#f8fafc; font-weight:600; padding:1rem 0.8rem; text-align:left; border-bottom:2px solid #e2e8f0; white-space:nowrap; z-index:10; min-width:100px;">Ville</th>
+                        <th style="position:sticky; top:0; background:#f8fafc; font-weight:600; padding:1rem 0.8rem; text-align:center; border-bottom:2px solid #e2e8f0; white-space:nowrap; z-index:10; min-width:120px;">Statut</th>
+                        <th style="position:sticky; top:0; background:#f8fafc; font-weight:600; padding:1rem 0.8rem; text-align:right; border-bottom:2px solid #e2e8f0; white-space:nowrap; z-index:10; border-radius:0 12px 0 0; min-width:160px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="ventesTableBody">
+                    <tr>
+                        <td colspan="9" style="text-align:center; padding:40px; color:#888;">
+                            <i class="fas fa-spinner fa-spin" style="font-size:1.5rem; display:block; margin-bottom:12px;"></i>
+                            Chargement des données...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- ===== INDICATEUR DE SCROLL (comme le catalogue) ===== -->
+        <div style="display:flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.6rem 0 0.3rem; font-size:0.8rem; color:#94a3b8; border-top:1px solid #f1f5f9; margin:0 1rem; user-select:none;" id="scrollIndicator">
+            <i class="fas fa-chevron-left" style="animation:pulseScroll 1.5s ease-in-out infinite;"></i>
+            <span>Faites glisser ou scroll horizontalement</span>
+            <i class="fas fa-chevron-right" style="animation:pulseScroll 1.5s ease-in-out infinite;"></i>
+        </div>
     </div>
 
     <!-- ===== PAGINATION ===== -->
@@ -112,6 +120,12 @@
 
 <!-- ===== STYLES RESPONSIVE ===== -->
 <style>
+    /* Animation de pulse pour l'indicateur de scroll */
+    @keyframes pulseScroll {
+        0%, 100% { opacity: 0.4; transform: translateX(0); }
+        50% { opacity: 1; transform: translateX(6px); }
+    }
+
     /* RESPONSIVE - MOBILE */
     @media (max-width: 768px) {
         #ventesContainer { padding: 16px !important; }
@@ -160,43 +174,41 @@
         }
         
         /* Tableau - scroll horizontal */
-        #ventesContainer > div:nth-child(4) {
-            overflow-x: auto !important;
-            -webkit-overflow-scrolling: touch !important;
+        .table-scroll {
+            padding: 0.5rem 0.5rem 1rem 0.5rem !important;
         }
-        #ventesContainer > div:nth-child(4) table {
-            min-width: 700px !important;
+        .table-scroll table {
+            min-width: 900px !important;
             font-size: 0.75rem !important;
         }
-        #ventesContainer > div:nth-child(4) table th,
-        #ventesContainer > div:nth-child(4) table td {
+        .table-scroll table th,
+        .table-scroll table td {
             padding: 8px 6px !important;
-            font-size: 0.7rem !important;
         }
-        #ventesContainer > div:nth-child(4) table th {
+        .table-scroll table th {
             white-space: nowrap !important;
             font-size: 0.7rem !important;
         }
-        #ventesContainer > div:nth-child(4) table td .statut-badge {
+        .table-scroll table td .statut-badge {
             font-size: 0.55rem !important;
             padding: 2px 6px !important;
         }
-        #ventesContainer > div:nth-child(4) table td button {
+        .table-scroll table td button {
             font-size: 0.6rem !important;
             padding: 2px 5px !important;
         }
         
         /* Pagination */
-        #ventesContainer > div:nth-child(5) {
+        #ventesContainer > div:last-child {
             flex-direction: column !important;
             align-items: center !important;
             gap: 8px !important;
         }
-        #ventesContainer > div:nth-child(5) span:first-child {
+        #ventesContainer > div:last-child span:first-child {
             font-size: 0.8rem !important;
             text-align: center !important;
         }
-        #ventesContainer > div:nth-child(5) button {
+        #ventesContainer > div:last-child button {
             padding: 6px 12px !important;
             font-size: 0.8rem !important;
         }
@@ -231,27 +243,25 @@
             padding: 8px 14px !important;
         }
         
-        #ventesContainer > div:nth-child(4) table {
-            min-width: 600px !important;
+        .table-scroll table {
+            min-width: 700px !important;
             font-size: 0.65rem !important;
         }
-        #ventesContainer > div:nth-child(4) table th,
-        #ventesContainer > div:nth-child(4) table td {
+        .table-scroll table th,
+        .table-scroll table td {
             padding: 5px 4px !important;
-            font-size: 0.6rem !important;
         }
-        #ventesContainer > div:nth-child(4) table td .statut-badge {
+        .table-scroll table td .statut-badge {
             font-size: 0.5rem !important;
             padding: 1px 4px !important;
         }
-        #ventesContainer > div:nth-child(4) table td button {
+        .table-scroll table td button {
             font-size: 0.5rem !important;
             padding: 2px 4px !important;
         }
     }
 </style>
 
-<!-- ===== SCRIPTS ===== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     (function() {
@@ -324,7 +334,7 @@
         }
 
         // ==========================================
-        // RENDU TABLEAU
+        // RENDU TABLEAU - MÊME STYLE QUE LE CATALOGUE
         // ==========================================
         function renderVentes() {
             const tbody = document.getElementById('ventesTableBody');
@@ -343,25 +353,62 @@
             const items = filteredVentes.slice(start, start + perPage);
 
             tbody.innerHTML = items.map(v => `
-                <tr style="border-bottom:1px solid #f0f0f0; transition:background 0.2s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
-                    <td style="padding:8px 6px; font-weight:600; font-size:0.8rem; text-align:center;">${v.id}</td>
-                    <td style="padding:8px 6px; font-weight:500; font-size:0.8rem; max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${v.prenom || ''} ${v.nom || ''}">${v.prenom || ''} ${v.nom || ''}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${v.email || '—'}">${v.email || '—'}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap;">${v.telephone || '—'}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; white-space:nowrap;">${formatDate(v.created_at)}</td>
-                    <td style="padding:8px 6px; font-weight:700; color:#c9a84c; font-size:0.8rem; white-space:nowrap;">${v.total_achat ? v.total_achat.toFixed(0).replace('.', ',') + ' FCFA' : '—'}</td>
-                    <td style="padding:8px 6px; color:#555; font-size:0.75rem; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${v.ville || '—'}">${v.ville || '—'}</td>
-                    <td style="padding:8px 6px; text-align:center;">${getStatutBadge(v.statut)}</td>
-                    <td style="padding:8px 6px; text-align:center; white-space:nowrap;">
-                        <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:3px 6px; border:none; border-radius:4px; background:#27ae60; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
-                        <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:3px 6px; border:none; border-radius:4px; background:#f39c12; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
-                        <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:3px 6px; border:none; border-radius:4px; background:#e74c3c; color:white; cursor:pointer; font-size:0.65rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
+                <tr style="border-bottom:1px solid #f1f5f9; transition:background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                    <td style="padding:0.9rem 0.8rem; vertical-align:middle; white-space:nowrap; font-weight:600; text-align:center;">${v.id}</td>
+                    <td style="padding:0.9rem 0.8rem; vertical-align:middle; white-space:nowrap; font-weight:500; max-width:140px; overflow:hidden; text-overflow:ellipsis;" title="${v.prenom || ''} ${v.nom || ''}">${v.prenom || ''} ${v.nom || ''}</td>
+                    <td style="padding:0.9rem 0.8rem; vertical-align:middle; white-space:nowrap; color:#475569; max-width:180px; overflow:hidden; text-overflow:ellipsis;" title="${v.email || '—'}">${v.email || '—'}</td>
+                    <td style="padding:0.9rem 0.8rem; vertical-align:middle; white-space:nowrap; color:#475569;">${v.telephone || '—'}</td>
+                    <td style="padding:0.9rem 0.8rem; vertical-align:middle; white-space:nowrap; color:#475569;">${formatDate(v.created_at)}</td>
+                    <td style="padding:0.9rem 0.8rem; vertical-align:middle; white-space:nowrap; font-weight:600; color:#2563eb;">${v.total_achat ? v.total_achat.toFixed(2) + ' €' : '—'}</td>
+                    <td style="padding:0.9rem 0.8rem; vertical-align:middle; white-space:nowrap; color:#475569; max-width:100px; overflow:hidden; text-overflow:ellipsis;" title="${v.ville || '—'}">${v.ville || '—'}</td>
+                    <td style="padding:0.9rem 0.8rem; vertical-align:middle; white-space:nowrap; text-align:center;">${getStatutBadge(v.statut)}</td>
+                    <td style="padding:0.9rem 0.8rem; vertical-align:middle; white-space:nowrap; text-align:right;">
+                        <button onclick="updateStatut(${v.id}, 'soldé')" style="padding:0.3rem 0.8rem; border:1px solid #27ae60; border-radius:6px; background:#27ae60; color:white; cursor:pointer; font-size:0.7rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" title="Soldé">✅</button>
+                        <button onclick="updateStatut(${v.id}, 'en attente')" style="padding:0.3rem 0.8rem; border:1px solid #f39c12; border-radius:6px; background:#f39c12; color:white; cursor:pointer; font-size:0.7rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" title="En attente">⏳</button>
+                        <button onclick="updateStatut(${v.id}, 'annulé')" style="padding:0.3rem 0.8rem; border:1px solid #e74c3c; border-radius:6px; background:#e74c3c; color:white; cursor:pointer; font-size:0.7rem; margin:1px; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" title="Annulé">❌</button>
                     </td>
                 </tr>
             `).join('');
 
             updateVentesPaginationInfo();
+            
+            // Mettre à jour l'indicateur de scroll
+            updateScrollIndicator();
         }
+
+        // ==========================================
+        // INDICATEUR DE SCROLL (comme le catalogue)
+        // ==========================================
+        function updateScrollIndicator() {
+            const scrollEl = document.querySelector('.table-scroll');
+            const indicator = document.getElementById('scrollIndicator');
+            if (scrollEl && indicator) {
+                const maxScroll = scrollEl.scrollWidth - scrollEl.clientWidth;
+                if (scrollEl.scrollLeft >= maxScroll - 5) {
+                    indicator.style.opacity = '0.3';
+                } else {
+                    indicator.style.opacity = '1';
+                }
+            }
+        }
+
+        // Détection du scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const scrollEl = document.querySelector('.table-scroll');
+            if (scrollEl) {
+                scrollEl.addEventListener('scroll', function() {
+                    const indicator = document.getElementById('scrollIndicator');
+                    if (indicator) {
+                        const maxScroll = this.scrollWidth - this.clientWidth;
+                        if (this.scrollLeft >= maxScroll - 5) {
+                            indicator.style.opacity = '0.3';
+                        } else {
+                            indicator.style.opacity = '1';
+                        }
+                    }
+                });
+            }
+        });
 
         // ==========================================
         // STATISTIQUES
@@ -400,9 +447,13 @@
             }
             if (prevBtn) {
                 prevBtn.disabled = currentPage <= 1;
+                prevBtn.style.opacity = currentPage <= 1 ? '0.5' : '1';
+                prevBtn.style.cursor = currentPage <= 1 ? 'default' : 'pointer';
             }
             if (nextBtn) {
                 nextBtn.disabled = currentPage >= totalPages;
+                nextBtn.style.opacity = currentPage >= totalPages ? '0.5' : '1';
+                nextBtn.style.cursor = currentPage >= totalPages ? 'default' : 'pointer';
             }
         }
 
@@ -678,6 +729,11 @@
             }
             
             loadVentesData();
+            
+            // Initialiser l'indicateur de scroll
+            setTimeout(() => {
+                updateScrollIndicator();
+            }, 500);
         }
 
         if (document.readyState === 'loading') {
@@ -686,4 +742,4 @@
             init();
         }
     })();
-</script> 
+</script>
